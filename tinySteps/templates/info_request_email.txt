@@ -1,0 +1,8 @@
+Hello {{ name }},
+
+Thank you for your interest in our app! We have received your request for information about TinySteps, and we're excited to share more with you.
+
+Our team is reviewing your inquiry and will get back to you shortly with more details. In the meantime, feel free to reach out if you have any additional questions.
+
+Best regards,
+The TinySteps Team
