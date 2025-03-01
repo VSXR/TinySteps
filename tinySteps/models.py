@@ -4,7 +4,6 @@ from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.urls import reverse
 
-
 # ------------------------------------------
 # -- CHILD MODELS --
 # ------------------------------------------
@@ -103,6 +102,7 @@ class ParentsGuides_Model(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     author = models.CharField(max_length=100, null=False, blank=False)
     desc = models.TextField(max_length=2000, null=False, blank=False)
+    image_url = models.CharField(max_length=200, default='images/others/default.jpg')
     comments = GenericRelation(Comment_Model, related_query_name='parent_guide')
 
     def __str__(self):
@@ -117,6 +117,7 @@ class NutritionGuides_Model(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     author = models.CharField(max_length=100, null=False, blank=False)
     desc = models.TextField(max_length=2000, null=False, blank=False)
+    image_url = models.CharField(max_length=200, default='images/others/default.jpg')
     comments = GenericRelation(Comment_Model, related_query_name='nutrition_guide')
 
     def __str__(self):
