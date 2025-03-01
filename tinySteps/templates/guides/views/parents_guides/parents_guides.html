@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    PARENTS GUIDES - TINY STEPS
+{% endblock %}
+
+{% block main_contents %}
+    <div class="container mt-4">
+        <div class="row mb-4">
+            <div class="col">
+                <h2 class="text-primary">PARENTS GUIDES</h2>
+                <p class="lead">Find advice and recommendations for new parents</p>
+            </div>
+        </div>
+
+        <div class="row">
+            {% if parents_guides %}
+                {% for guide in parents_guides %}
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100 shadow-sm">
+                            {% if guide.image %}
+                                <img src="{{ guide.image.url }}" class="card-img-top" alt="{{ guide.title }}">
+                            {% else %}
+                                <img src="{% static 'img/others/default.jpg' %}" class="card-img-top" alt="Nutrición">
+                            {% endif %}
+                            <div class="card-body">
+                                <h5 class="card-title">{{ guide.title }}</h5>
+                                <p class="card-text">{{ guide.description|truncatechars:120 }}</p>
+                            </div>
+                            <div class="card-footer bg-transparent border-0 text-end">
+                                <a href="{% url 'parents_guide_details' guide.id %}" class="btn btn-outline-primary">Show guide</a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="col-12 text-center py-5">
+                    <p class="text-center fs-5">No parents guides available at this moment.</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock main_contents %}

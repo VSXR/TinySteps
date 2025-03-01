@@ -371,20 +371,20 @@ def guides_page(request):
 # PAGINA DE GUIAS PARA PADRES
 def parents_guides_page(request):
     parents_guides = ParentsGuides_Model.objects.all()
-    return render(request, 'guides/parents_guides.html', {'parents_guides': parents_guides})
+    return render(request, 'guides/views/parents_guides/parents_guides.html', {'parents_guides': parents_guides})
 
 def parent_guide_details(request, pk):
     guide = get_object_or_404(ParentsGuides_Model, pk=pk)
-    return render(request, 'guides/parent_guide_details.html', {'guide': guide})
+    return render(request, 'guides/views/parents_guides/view_parent_guide.html', {'guide': guide})
 
 # PAGINA DE GUIAS DE NUTRICION
 def nutrition_guides_page(request):
     nutrition_guides = NutritionGuides_Model.objects.all()
-    return render(request, 'guides/nutrition_guides.html', {'nutrition_guides': nutrition_guides})
+    return render(request, 'guides/views/nutrition_guides/nutrition_guides.html', {'nutrition_guides': nutrition_guides})
 
 def nutrition_guide_details(request, pk):
     guide = get_object_or_404(NutritionGuides_Model, pk=pk)
-    return render(request, 'guides/nutrition_guide_details.html', {'guide': guide})
+    return render(request, 'guides/views/nutrition_guides/view_nutrition_guide.html', {'guide': guide})
 # -----------------------------------------------
 
 

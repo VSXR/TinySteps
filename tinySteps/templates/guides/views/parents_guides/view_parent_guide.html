@@ -1,1 +1,44 @@
-{% comment %} VER LA GUIA DE PADRES ESPECIFICA {% endcomment %}
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    {{ parent_guide.title }} - TINY STEPS
+{% endblock %}
+
+{% block main_contents %}
+    <div class="container mt-4">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'home' %}">Inicio</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'parents_guides_list' %}">Guías para Padres</a></li>
+                <li class="breadcrumb-item active">{{ parent_guide.title }}</li>
+            </ol>
+        </nav>
+        
+        <div class="card mb-4">
+            <div class="card-header">
+                <h2>{{ parent_guide.title }}</h2>
+            </div>
+            <div class="card-body">
+                {% if parent_guide.image %}
+                    <img src="{{ parent_guide.image.url }}" alt="{{ parent_guide.title }}" class="img-fluid mb-3">
+                {% endif %}
+                
+                <p class="text-muted">Uploaded: {{ parent_guide.created_at|date:"d/m/Y" }}</p>
+                <div class="guide-content">
+                    {{ parent_guide.content|safe }}
+                </div>
+                
+                {% if parent_guide.tags.all %}
+                    <div class="mt-3">
+                        <strong>Categories:</strong>
+                        {% for tag in parent_guide.tags.all %}
+                            <span class="badge bg-secondary">{{ tag.name }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        <a href="{% url 'parents_guides' %}" class="btn btn-primary mb-4">Return to the list</a>
+    </div>
+{% endblock main_contents %}
