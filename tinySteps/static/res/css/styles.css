@@ -13,15 +13,18 @@
     box-sizing: border-box;
     font-family: "Poppins", sans-serif;
 }
+
 html {
     overflow-x: hidden;
 }
+
 article {
     flex: 2;
     background-color: #ffffff;
     padding: 20px;
     margin-right: 20px;
 }
+
 aside {
     text-align: center;
     height: 100%;
@@ -31,27 +34,41 @@ aside {
     border: 1px solid #dee2e6;
     border-radius: 5px;
 }
+
 h2 {
     margin: 15px;
     text-align: center;
     font-size: 1.8em;
     font-weight: bold, 500;
-
 }
+
 h3 {
     margin-top: 30px;
     margin-bottom: auto;
     text-align: center;
     font-size: 1.5em;
 }
+
 h4 {
     text-align: center;
     font-size: 1.2em;
 }
 
-/*-----------------*/
-/* CONTENEDORES DE PARRAFOS P ESPECIFICOS, EXCEPTO EL P DEL FOOTER */
-/*-----------------*/
+/*------*/
+/* BODY */
+/*------*/
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    overflow-x: hidden;
+    margin: 0;
+    padding: 0;
+}
+
+/*-------------------------------*/
+/* CONTENEDORES DE PARRAFOS P ESPECIFICOS */
+/*-------------------------------*/
 .specific-paragraphs {
     text-align: justify;
     flex: 1;
@@ -60,14 +77,11 @@ h4 {
     border: 1px solid #dee2e6;
     border-radius: 5px;
     margin-bottom: 30px;
-    margin-bottom: 30px;
 }
 
-/*-----------------*/
-
-/*--------*/
+/*------------------------------------*/
 /* CSS PARA MENSAJES DE info_request_create */
-/*--------*/
+/*------------------------------------*/
 ul.messages {
     list-style-type: none;
     padding: 10px;
@@ -90,7 +104,6 @@ ul.messages li.error {
     background-color: #f8d7da;
     color: #721c24;
 }
-/*-----------------*/
 
 /*--------*/
 /* NAVBAR */
@@ -109,14 +122,13 @@ ul.messages li.error {
 
 /* LOGOTIPO RELECLOUD */
 .tabler--north-star {
-  display: inline-block;
-  width: 24px;
-  height: 24px;
-  background-repeat: no-repeat;
-  background-size: 100% 100%;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='none' stroke='white' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M3 12h18m-9 9V3M7.5 7.5l9 9m-9 0l9-9'/%3E%3C/svg%3E");
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='none' stroke='white' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M3 12h18m-9 9V3M7.5 7.5l9 9m-9 0l9-9'/%3E%3C/svg%3E");
 }
-/* ------------------- */
 
 .logo-container {
     display: flex;
@@ -153,7 +165,6 @@ ul.messages li.error {
     transition: color 0.3s, text-decoration 0.3s;
     position: relative; /* IMPORTANTE POSICIONAR PSEUDO-ELEMENTO! */
 }
-
 
 .nav-item.social {
     font-size: 20px;
@@ -194,14 +205,17 @@ ul.messages li.error {
 /* MAIN */
 /*------*/
 main {
+    flex: 1 0 auto;
     margin-bottom: 10px;
     overflow: hidden;
+    width: 100%;
 }
 
 /* CONTAINERS IN MAIN */
 .col-lg-8 {
     margin-bottom: 15px;
 }
+
 .col-md-8 {
     padding-top: 25px;
     margin-bottom: 15px;
@@ -212,6 +226,7 @@ main {
     padding-top: 10px;
     padding-bottom: 10px;
 }
+
 .list-group-item {
     color: #007BFF;
     text-align: center;
@@ -224,30 +239,25 @@ main {
     box-sizing: border-box;
     border: 3px solid #000000;
 }
+
 .list-group-item a:hover {
     text-decoration: none;
     border: 3px solid #000000;
 } 
+
 .view-destination-btn {
     margin: 20px 0;
     padding-top: 10px;
     padding-bottom: 10px;
 }
 
-/*-----------------*/
-
-/* BOTONES DE PAGINAS DE DESTINATIONS (EDIT Y DELETE) >>> NECESITO IMPLEMENTARLO!!! */
+/* BOTONES DE PAGINAS DE DESTINATIONS (EDIT Y DELETE) */
 .destinationsAction{
     display: flex;
     justify-content: center;
     margin-top: 40px;
     margin-bottom: 40px;
-
 }
-
-/*-----------------*/
-
-
 
 /* IMAGENES */
 .imgWeb {
@@ -255,10 +265,8 @@ main {
     height: auto;
     border: #000000 3px solid;
     border-radius: 3px;
-    margin: 20px;
+    margin: 20px auto;
     display: block;
-    margin-left: auto;
-    margin-right: auto;
 }
 
 .destinationImage {
@@ -274,31 +282,6 @@ main {
     margin-left: auto;
     margin-right: auto;
 }
-
-/* Media query para pantallas de 641px de ancho y mayores */
-@media (min-width: 641px) {
-    .destinationImage {
-        width: 300px;
-        height: 200px; 
-    }
-}
-
-/*-----------------*/
-
-/* FORMULARIOS DE REQUESTS */
-
-
-/*------*/
-/* BODY */
-/*------*/
-
-body {
-    display: flex;
-    flex-direction: column;
-    min-height: 500px; /* MINIMO QUE DEBE TENER EL BODY PARA QUE EL FOOTER NO SE SUBA */
-    overflow-x: hidden;
-}
-
 
 /* ESTILOS CONTENEDOR REPO */
 .enlaceRepo {
@@ -326,11 +309,13 @@ body {
 footer {
     background-color: rgb(186, 1, 25);
     padding: 10px;
+    width: 100%;
+    flex-shrink: 0; /* Evitar que el footer se encoja */
 }
 
 .sticky-footer {
-    position: sticky;
-    top: 100%;
+    position: relative;
+    margin-top: auto; /* Empujar el footer al fondo */
 }
 
 .footer-nav-item {
@@ -344,6 +329,7 @@ footer {
     margin-bottom: auto;
     text-decoration: none; /* QUITAR ENCLACES DEL FOOTER */
 }
+
 .footer-nav-link {
     color: #ffffff;
     text-decoration: none;
@@ -403,19 +389,14 @@ footer {
 /*---------------*/
 
 /* Estilos para iPhone 8 / Redmi 9 */
-@media only screen and (max-device-width: 393px) and (max-device-height: 851px) {
+@media only screen and (max-width: 393px) and (max-device-height: 851px) {
     h1 {
         font-size: 16px;
     }
     p {
         font-size: 14px;
     }
-    img {
-        max-width: 100%;
-        height: auto;
-    }
 }
-
 
 /* iPad Mini (Vertical) */
 @media only screen and (min-width: 394px) and (max-width: 768px) and (min-height: 851px) and (max-height: 1024px) {
@@ -425,11 +406,7 @@ footer {
     p {
         font-size: 16px;
     }
-    img {
-        max-width: 100%;
-        height: auto;
-    }
-
+    
     .navName {
         font-size: 40px;
     }
@@ -452,17 +429,13 @@ footer {
     }
 }
 
-/* iPad Pro 12.9” (Vertical) */
+/* iPad Pro 12.9" (Vertical) */
 @media only screen and (min-width: 769px) and (max-width: 1024px) and (min-height: 1025px) and (max-height: 1366px) {
     h1 {
         font-size: 24px;
     }
     p {
         font-size: 18px;
-    }
-    img {
-        max-width: 100%;
-        height: auto;
     }
 
     .navName {
@@ -495,10 +468,6 @@ footer {
     p {
         font-size: 20px;
     }
-    img {
-        max-width: 100%;
-        height: auto;
-    }
 
     .navName {
         font-size: 40px;
@@ -520,11 +489,6 @@ footer {
     p {
         font-size: 24px;
     }
-    img {
-        max-width: 100%;
-        height: auto;
-    }
-
         
     .navName {
         font-size: 40px;
@@ -538,5 +502,45 @@ footer {
     }
     .nav-item.social::before {
         display: none;
+    }
+}
+
+/* Media query para pantallas de 641px de ancho y mayores */
+@media (min-width: 641px) {
+    .destinationImage {
+        width: 300px;
+        height: 200px; 
+    }
+}
+
+
+/* ++++++++++++++++++ */
+/* OTRAS MEDIAQUERIES */
+/* ++++++++++++++++++ */
+
+/* Media query general para pantallas entre 388px y 1024px */
+@media only screen and (min-width: 388px) and (max-width: 1024px) {
+    .container-fluid {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+    
+    .specific-paragraphs {
+        margin-bottom: 15px;
+    }
+    
+    .imgWeb {
+        max-width: 50%; /* Imagen más grande en pantallas pequeñas-medianas */
+    }
+    
+    .navbar-nav {
+        align-items: center;
+    }
+}
+
+/* Ajuste responsivo de imágenes */
+@media (max-width: 768px) {
+    .imgWeb {
+        max-width: 70%; /* Más ancho en móviles */
     }
 }

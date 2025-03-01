@@ -1,0 +1,2 @@
+*.log filter=empty_filter
+logs/**/*.log filter=empty_filter

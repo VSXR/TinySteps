@@ -74,35 +74,31 @@ WSGI_APPLICATION = "project.wsgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'djangoDB-prod',
-        'HOST': 'tinySteps-proy2-db.postgres.database.azure.com',
-        'USER': 'djangoAdmin',
-        'PASSWORD': 'jango123A',
-        'PORT': '5432',
-        'OPTIONS': {
-            'sslmode': 'require',
-            'sslrootcert': 'Microsoft RSA Root Certificate Authority 2017.crt',
+# CONFIGURACION PARA BASE DE DATOS EN LOCAL
+if DEBUG:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
         }
     }
-}
-
-# Si DJANGO_TESTING está configurado como True, cambia la base de datos
-if os.environ.get('DJANGO_TESTING', False):
-    DATABASES['default'] = {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'tinySteps-proy2-db-unit-tests',  # Base de datos de pruebas
-        'HOST': 'tinySteps-proy2-db-unit-tests.postgres.database.azure.com',
-        'USER': 'djangoAdminTests',
-        'PASSWORD': '123Atests',
-        'PORT': '5432',
-        'OPTIONS': {
-            'sslmode': 'require',
-            'sslrootcert': 'Microsoft RSA Root Certificate Authority 2017.crt',
-        },
+else:
+    # PERO SI SE HACE DEPLOY, SE ACTIVA LA CONFIGURACION PARA BASE DE DATOS EN AZURE
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': 'djangoDB-prod',
+            'HOST': 'tinySteps-proy2-db.postgres.database.azure.com',
+            'USER': 'djangoAdmin',
+            'PASSWORD': 'jango123A',
+            'PORT': '5432',
+            'OPTIONS': {
+                'sslmode': 'require',
+                'sslrootcert': 'Microsoft RSA Root Certificate Authority 2017.crt',
+            }
+        }
     }
+
 
 
 # Password validation

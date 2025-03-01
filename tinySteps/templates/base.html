@@ -44,17 +44,17 @@
                         <ul class="navbar-nav mb-2 mb-lg-0 me-auto">
                             <!-- Enlaces principales -->
                             <li class="nav-item active">
-                                <a href="{% url 'about' %}" class="nav-link custom-underline active" aria-current="page">
+                                <a href="{% url 'your_children' %}" class="nav-link custom-underline active" aria-current="page">
                                     <i class="fa-solid fa-phone"></i> YOUR CHILDREN
                                 </a>
                             </li>
                             <li class="nav-item active">
-                                <a href="{% url 'about' %}" class="nav-link custom-underline active" aria-current="page">
+                                <a href="{% url 'parents_forum' %}" class="nav-link custom-underline active" aria-current="page">
                                     <i class="fa-solid fa-phone"></i> PARENTS FORUM
                                 </a>
                             </li>
                             <li class="nav-item active">
-                                <a href="{% url 'about' %}" class="nav-link custom-underline active" aria-current="page">
+                                <a href="{% url 'guides' %}" class="nav-link custom-underline active" aria-current="page">
                                     <i class="fa-solid fa-phone"></i> GUIDES
                                 </a>
                             </li>
@@ -78,10 +78,10 @@
                                 </li>
                             {% else %}
                                 <li class="nav-item">
-                                    <a class="nav-link">Login</a>
+                                    <a class="nav-link" href="{% url 'login' %}">Login</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link">Register</a>
+                                    <a class="nav-link" href="{% url 'register' %}">Register</a>
                                 </li>
                             {% endif %}
                         </ul>
@@ -118,7 +118,32 @@
 
                         <div class="specific-paragraphs">
                             <p class="text-center">
-                                TINY STEPS is an app designed for first-time parents, launched in 2024, that offers the best tools to 
+                                TINY STEPS is an app designed for first-time parents, launched in 2025, that offers the best tools to 
+                                support your parenting journey. We provide the most intuitive features and the most reliable information 
+                                to make caring for your baby an easy and enjoyable experience. With personalized recommendations, smart scheduling, 
+                                and expert guidance, we ensure that you have everything you need at your fingertips. We are the best option for 
+                                navigating your child's early years with confidence and peace of mind.
+                            </p>
+                            <div class="image-container">
+                                <img src="{% static 'res/img/media/ASTRONAUTA.jpg' %}" class="imgWeb" alt="ASTRONAUTA">
+                            </div>
+                        </div>
+
+                        <div class="specific-paragraphs">
+                            <p class="text-center">
+                                TINY STEPS is an app designed for first-time parents, launched in 2025, that offers the best tools to 
+                                support your parenting journey. We provide the most intuitive features and the most reliable information 
+                                to make caring for your baby an easy and enjoyable experience. With personalized recommendations, smart scheduling, 
+                                and expert guidance, we ensure that you have everything you need at your fingertips. We are the best option for 
+                                navigating your child's early years with confidence and peace of mind.
+                            </p>
+                            <div class="image-container">
+                                <img src="{% static 'res/img/media/ASTRONAUTA.jpg' %}" class="imgWeb" alt="ASTRONAUTA">
+                            </div>
+                        </div>
+                        <div class="specific-paragraphs">
+                            <p class="text-center">
+                                TINY STEPS is an app designed for first-time parents, launched in 2025, that offers the best tools to 
                                 support your parenting journey. We provide the most intuitive features and the most reliable information 
                                 to make caring for your baby an easy and enjoyable experience. With personalized recommendations, smart scheduling, 
                                 and expert guidance, we ensure that you have everything you need at your fingertips. We are the best option for 
@@ -144,17 +169,17 @@
                     </a>
                 </li>
                 <li class="footer-nav-item active">
-                    <a href="{% url 'about' %}" class="footer-nav-link custom-underline active" aria-current="page">
+                    <a href="{% url 'your_children' %}" class="footer-nav-link custom-underline active" aria-current="page">
                         <i class="fa-solid fa-phone"></i> YOUR CHILDREN
                     </a>
                 </li>
                 <li class="footer-nav-item active">
-                    <a href="{% url 'about' %}" class="footer-nav-link custom-underline active" aria-current="page">
+                    <a href="{% url 'parents_forum' %}" class="footer-nav-link custom-underline active" aria-current="page">
                         <i class="fa-solid fa-phone"></i> PARENTS FORUM
                     </a>
                 </li>
                 <li class="footer-nav-item active">
-                    <a href="{% url 'about' %}" class="footer-nav-link custom-underline active" aria-current="page">
+                    <a href="{% url 'guides' %}" class="footer-nav-link custom-underline active" aria-current="page">
                         <i class="fa-solid fa-phone"></i> GUIDES
                     </a>
                 </li>
