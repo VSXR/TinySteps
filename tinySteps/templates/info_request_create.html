@@ -7,17 +7,43 @@
 {% endblock title %}
 
 {% block main_contents %}
-    <h2>REQUEST INFORMATION</h2>
-    <p class="text-center">
-        Please fill out the form below to request additional information about our services. 
-        We will get back to you as soon as possible.
-    </p>
-    <div class="specific-paragraphs container-fluid">
-        <form method="post" action="{% url 'info_request' %}">
-            {% csrf_token %}
-            {{ form|crispy }}
-            <br>
-            <button type="submit" class="btn btn-primary">SUBMIT</button>
-        </form>
-    </div>
+    <main id="main-content">
+        <div class="container mt-4">
+            <div class="row mb-4">
+                <div class="col">
+                    <h2 class="text-center">REQUEST INFORMATION</h2>
+                    <p class="lead text-center">Fill out the form below to request more information</p>
+                </div>
+            </div>
+            
+            <div class="row justify-content-center">
+                <div class="col-md-8">
+                    {% if messages %}
+                        <div class="messages mb-3" role="alert" aria-live="polite">
+                            {% for message in messages %}
+                                <div class="alert {% if message.tags %}alert-{{ message.tags }}{% else %}alert-info{% endif %}">
+                                    {{ message }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    
+                    <form method="post" action="{% url 'info_request' %}" aria-labelledby="form-heading" novalidate>
+                        <span id="form-heading" class="visually-hidden">Information Request Form</span>
+                        {% csrf_token %}
+                        
+                        <div class="card">
+                            <div class="card-body">
+                                {{ form|crispy }}
+                                
+                                <div class="d-grid mt-4">
+                                    <button type="submit" class="btn btn-primary" aria-label="Submit information request">SUBMIT</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
 {% endblock main_contents %}
