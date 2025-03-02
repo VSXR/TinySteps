@@ -214,6 +214,16 @@ aside {
     max-width: 200px;
 }
 
+/* Sticky Navbar Styling */
+.sticky-navbar {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1030;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
 /* Toggle button positioning */
 .navbar-toggler {
     padding: 0.25rem 0.5rem;
@@ -702,7 +712,29 @@ ul.messages li.error {
         width: 100%;
         position: relative;
     }
+    
+    /* Fixed navbar positioning */
+    header {
+        transition: all 0.3s ease;
+    }
+    
+    /* Handle sticky navbar menu */
+    .sticky-navbar .navbar-collapse {
+        top: 56px; /* Height of the navbar */
+        position: fixed;
+        max-height: calc(100vh - 56px);
+        transition: top 0.3s ease;
+    }
+    
+    /* Prevent body scrolling when menu is open */
+    body.navbar-open {
+        overflow: hidden;
+        position: fixed;
+        width: 100%;
+        height: 100%;
+    }
 
+    /* Base navbar collapse styling */
     .navbar-collapse {
         position: fixed;
         top: 56px;
@@ -715,19 +747,23 @@ ul.messages li.error {
         max-height: calc(100vh - 56px);
         overflow-y: auto;
         transform: translateX(0);
-        transition: transform 0.3s ease;
+        transition: transform 0.3s ease, top 0.3s ease;
     }
     
+    /* Animation for collapsing */
     .navbar-collapse.collapsing {
         height: auto !important;
         transition: transform 0.3s ease;
         transform: translateX(-100%);
     }
     
+    /* Animation for expanding */
     .navbar-collapse.show {
         transform: translateX(0);
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
     
+    /* Container adjustments */
     .container-fluid {
         width: 100%;
         max-width: 100%;
@@ -735,6 +771,7 @@ ul.messages li.error {
         padding-right: 15px;
     }
     
+    /* Navbar padding */
     .navbar {
         padding-left: 15px;
         padding-right: 15px;

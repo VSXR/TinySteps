@@ -1,5 +1,174 @@
-{% comment %} AQUI SE VE EL *REQUEST ESPECIFICO* DE UNA PERSONA AL ABRIRSE 
-EN EL FORO 
-- AÑADIR HASTAGS PARA DIFERENCIAR EL CONTENIDO PARA FILTRARLO EN 
-LA PAGINA EE forum_page.html AL HACER LOS FILTROS CON LOS QUE EL USUARIO
-PUEDE INTERACTUAR {% endcomment %}
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ post.title }} - TINY STEPS FORUM{% endblock %}
+
+{% block main_contents %}
+    <main id="main-content">
+        <div class="container mt-4">
+            <!-- Breadcrumb navigation -->
+            <nav aria-label="Breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'index' %}">Home</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'parents_forum' %}">Parents Forum</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">{{ post.title }}</li>
+                </ol>
+            </nav>
+
+            <!-- Main post content -->
+            <article class="card mb-4">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h1 class="mb-0 fs-4">{{ post.title }}</h1>
+                    <div>
+                        {% if user == post.author %}
+                            <a href="{% url 'edit_post' post.id %}" class="btn btn-sm btn-outline-primary" aria-label="Edit this post">
+                                <i class="fa-solid fa-edit" aria-hidden="true"></i> Edit
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="card-body">
+                    <!-- Post metadata -->
+                    <div class="mb-3 d-flex justify-content-between">
+                        <div class="post-author">
+                            <span class="fw-bold">Posted by:</span> {{ post.author.username }}
+                        </div>
+                        <div class="post-date">
+                            <time datetime="{{ post.created_at|date:'Y-m-d' }}">
+                                {{ post.created_at|date:"F j, Y" }}
+                            </time>
+                        </div>
+                    </div>
+                    
+                    <!-- Post content -->
+                    <div class="post-content mb-4">
+                        {{ post.content|safe|linebreaks }}
+                    </div>
+                    
+                    <!-- Category tags/hashtags -->
+                    {% if post.tags.all %}
+                        <div class="post-tags mb-3" aria-labelledby="post-categories">
+                            <h2 id="post-categories" class="visually-hidden">Post Categories</h2>
+                            {% for tag in post.tags.all %}
+                                <a href="{% url 'parents_forum' %}?tag={{ tag.slug }}" class="badge bg-primary text-decoration-none me-1 mb-1">
+                                    #{{ tag.name }}
+                                </a>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    
+                    <!-- Post interactions -->
+                    <div class="post-actions d-flex align-items-center justify-content-between mt-4 pt-3 border-top">
+                        <div>
+                            <button class="btn btn-sm btn-outline-primary me-2" id="like-button" aria-label="Like this post">
+                                <i class="fa-solid fa-heart" aria-hidden="true"></i>
+                                <span id="like-count">{{ post.likes.count }}</span> Likes
+                            </button>
+                            <button class="btn btn-sm btn-outline-primary" id="share-button" aria-label="Share this post">
+                                <i class="fa-solid fa-share" aria-hidden="true"></i> Share
+                            </button>
+                        </div>
+                        <div>
+                            <a href="#comments" class="btn btn-sm btn-outline-secondary">
+                                <i class="fa-solid fa-comments" aria-hidden="true"></i>
+                                {{ post.comments.count }} Comments
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <!-- Comments section -->
+            <section aria-labelledby="comments-heading" id="comments">
+                <h2 id="comments-heading">Comments ({{ post.comments.count }})</h2>
+                
+                {% if post.comments.all %}
+                    <div class="comment-list">
+                        {% for comment in post.comments.all %}
+                            <div class="card mb-3" id="comment-{{ comment.id }}">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <div>
+                                            <strong>{{ comment.author.username }}</strong>
+                                        </div>
+                                        <time datetime="{{ comment.created_at|date:'Y-m-d' }}" class="text-muted">
+                                            {{ comment.created_at|date:"M j, Y" }}
+                                        </time>
+                                    </div>
+                                    <p>{{ comment.content }}</p>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="text-center my-4">No comments yet. Be the first to comment!</p>
+                {% endif %}
+                
+                <!-- Comment form -->
+                {% if user.is_authenticated %}
+                    <div class="card mt-4">
+                        <div class="card-header">
+                            <h3 class="fs-5 mb-0">Add a Comment</h3>
+                        </div>
+                        <div class="card-body">
+                            <form method="post" action="{% url 'add_comment' post.id %}" aria-labelledby="comment-form-heading">
+                                <span id="comment-form-heading" class="visually-hidden">Comment form for this post</span>
+                                {% csrf_token %}
+                                <div class="mb-3">
+                                    <label for="comment-content" class="form-label">Your comment</label>
+                                    <textarea id="comment-content" name="content" rows="3" 
+                                            class="form-control" required aria-required="true"></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Post Comment</button>
+                            </form>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="alert alert-info mt-4">
+                        <p class="mb-0">
+                            <a href="{% url 'login' %}">Log in</a> or 
+                            <a href="{% url 'register' %}">register</a> to post a comment.
+                        </p>
+                    </div>
+                {% endif %}
+            </section>
+
+            <!-- Related posts -->
+            <section aria-labelledby="related-posts-heading" class="mt-5">
+                <h2 id="related-posts-heading">Related Discussions</h2>
+                <div class="row">
+                    {% for related_post in related_posts %}
+                        <div class="col-md-6 mb-3">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h3 class="card-title fs-5">
+                                        <a href="{% url 'view_post' related_post.id %}">
+                                            {{ related_post.title }}
+                                        </a>
+                                    </h3>
+                                    <p class="card-text small">{{ related_post.content|truncatechars:100 }}</p>
+                                    <div class="small text-muted">
+                                        {{ related_post.comments.count }} comments • 
+                                        {{ related_post.created_at|timesince }} ago
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% empty %}
+                        <div class="col-12">
+                            <p class="text-center">No related discussions found.</p>
+                        </div>
+                    {% endfor %}
+                </div>
+            </section>
+            
+            <!-- Back to forum link -->
+            <div class="mt-4 mb-5">
+                <a href="{% url 'parents_forum' %}" class="btn btn-outline-primary">
+                    <i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Back to the Parents Forum
+                </a>
+            </div>
+        </div>
+    </main>
+{% endblock main_contents %}

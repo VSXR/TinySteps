@@ -282,6 +282,38 @@
                         document.body.classList.toggle('navbar-open');
                     });
                 }
+                
+                // Make navbar sticky on scroll, but not when mobile menu is closed
+                const header = document.querySelector('header');
+                const navbarCollapse = document.getElementById('navbarSupportedContent');
+                
+                // Function to update sticky state based on scroll position and menu state
+                function updateStickyState() {
+                    const isMobile = window.innerWidth <= 992;
+                    const isMenuOpen = navbarCollapse.classList.contains('show');
+                    
+                    if (window.scrollY > 0) {
+                        // Add sticky class in both desktop and mobile when scrolling
+                        header.classList.add('sticky-navbar');
+                        
+                        // On mobile, adjust body class based on menu state
+                        if (isMobile && isMenuOpen) {
+                            document.body.classList.add('navbar-open');
+                        }
+                    } else {
+                        // Only remove sticky when at top of page and menu closed (on mobile)
+                        if (!isMobile || (isMobile && !isMenuOpen)) {
+                            header.classList.remove('sticky-navbar');
+                        }
+                    }
+                }
+                
+                // Check on scroll, resize, and mobile menu toggle
+                window.addEventListener('scroll', updateStickyState);
+                document.querySelector('.navbar-toggler').addEventListener('click', function() {
+                    setTimeout(updateStickyState, 50);
+                });
+                window.addEventListener('resize', updateStickyState);
             });
         </script>
     </body>
