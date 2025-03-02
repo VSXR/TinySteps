@@ -211,6 +211,7 @@ aside {
 .nav-link {
     color: var(--text-light);
     display: flex;
+    flex-direction: row;
     align-items: center;
     padding: 0.5rem 0.75rem;
     position: relative;
@@ -229,20 +230,25 @@ aside {
     color: #ffc107 !important;
 }
 
-/* Custom underline animation WHEN ONLY YOUR'E ON HOVER, not active */
+/* Custom underline animation WHEN ONLY YOU'RE ON HOVER, not active */
 .nav-link:hover:not(.active) .nav-text {
     text-decoration: underline;
 }
 
 .nav-link i {
-    margin-right: 0.5rem;
-    font-size: 1rem;
+    display: inline-flex;
+    align-items: center;
+    margin-left: 2px;
+    margin-right: 8px;
+}
+
+.navbar-nav {
+    margin-left: 20px; /* Add space between navbar brand and navigation */
 }
 
 .nav-text {
-    display: inline-block;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    display: inline-flex;
+    align-items: center;
 }
 
 .current {

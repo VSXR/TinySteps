@@ -5,45 +5,50 @@
 {% block title %}TINY STEPS - LOGIN{% endblock %}
 
 {% block main_contents %}
-    <div class="container mt-5">
-        <div class="row justify-content-center">
-            <div class="col-md-6">
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="text-center">LOGIN</h3>
-                    </div>
-                    <div class="card-body">
-                        {% if messages %}
-                        <div class="messages mb-3">
-                            {% for message in messages %}
-                            <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
-                                {{ message }}
-                            </div>
-                            {% endfor %}
+    <main id="main-content">
+        <div class="container mt-5 mb-5">
+            <div class="row justify-content-center">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h1 class="text-center fs-4">LOGIN</h1>
                         </div>
-                        {% endif %}
-                        
-                        <form method="post">
-                            {% csrf_token %}
-                            <div class="mb-3">
-                                <label for="email" class="form-label">Email</label>
-                                <input type="email" name="email" id="email" class="form-control" required>
+                        <div class="card-body">
+                            {% if messages %}
+                            <div class="messages mb-2" role="alert" aria-live="polite">
+                                {% for message in messages %}
+                                <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %} py-2">
+                                    {{ message }}
+                                </div>
+                                {% endfor %}
                             </div>
-                            <div class="mb-3">
-                                <label for="password" class="form-label">Password</label>
-                                <input type="password" name="password" id="password" class="form-control" required>
+                            {% endif %}
+                            
+                            <form method="post" novalidate aria-labelledby="login-heading">
+                                <span id="login-heading" class="visually-hidden">Account login form</span>
+                                {% csrf_token %}
+                                <div class="mb-3">
+                                    <label for="email" class="form-label">Email</label>
+                                    <input type="email" name="email" id="email" class="form-control" 
+                                           aria-required="true" autocomplete="email" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="password" class="form-label">Password</label>
+                                    <input type="password" name="password" id="password" class="form-control" 
+                                           aria-required="true" autocomplete="current-password" required>
+                                </div>
+                                <div class="d-grid">
+                                    <button type="submit" class="btn btn-primary">Login</button>
+                                </div>
+                            </form>
+                            
+                            <div class="text-center mt-3">
+                                <p>Don't have an account? <a href="{% url 'register' %}" aria-label="Register for a new account">Register here</a></p>
                             </div>
-                            <div class="d-grid">
-                                <button type="submit" class="btn btn-primary">Login</button>
-                            </div>
-                        </form>
-                        
-                        <div class="text-center mt-3">
-                            <p>Don't have an account? <a href="{% url 'register' %}">Register here</a></p>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
+    </main>
 {% endblock main_contents %}
