@@ -74,6 +74,11 @@ body {
     padding: 0;
 }
 
+/* Mobile Navigation - Css to prevent horizontal shifting */
+body.navbar-open {
+    overflow: hidden;
+}
+
 /* Skip link for screen readers */
 .skip-link:focus {
     position: fixed;
@@ -183,6 +188,7 @@ aside {
     top: 0;
     z-index: 1000;
     padding: 0.5rem 1rem;
+    width: 100%;
 }
 
 /* Logo and Brand Name */
@@ -191,6 +197,7 @@ aside {
     align-items: center;
     max-width: 50%;
     flex-shrink: 0;
+    position: relative;
 }
 
 .navbar-brand img {
@@ -205,6 +212,20 @@ aside {
     overflow: hidden;
     text-overflow: ellipsis;
     max-width: 200px;
+}
+
+/* Toggle button positioning */
+.navbar-toggler {
+    padding: 0.25rem 0.5rem;
+    font-size: 1rem;
+    position: relative; /* Fix toggle button position */
+    right: 0;
+}
+
+/* Fix collapsed navbar position */
+.navbar-collapse {
+    flex-grow: 1;
+    flex-basis: 100%;
 }
 
 /* Navigation Links */
@@ -616,15 +637,10 @@ ul.messages li.error {
 
 /* Medium screens (tablets) */
 @media (min-width: 577px) and (max-width: 991px) {
-    /* Navigation */
+    /* Navigation - Tablet specific */
     .navbar-collapse {
         max-height: 75vh;
         overflow-y: auto;
-    }
-    
-    .navbar-nav {
-        width: 100%;
-        align-items: center;
     }
     
     .nav-link {
@@ -647,11 +663,10 @@ ul.messages li.error {
         font-size: 15px;
     }
     
-    .footer-link-text {
-        font-size: 14px;
-    }
-    
-    .footer-nav-link i {
+    /* Font sizes */
+    .footer-link-text,
+    .footer-nav-link i,
+    .nav-text {
         font-size: 14px;
     }
     
@@ -675,24 +690,54 @@ ul.messages li.error {
         font-size: clamp(1.5rem, 4vw, 2rem);
     }
     
-    .nav-text {
-        font-size: 0.9rem;
-    }
-    
-    /* Specific tablet layouts */
-    .nav-link {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-    }
-    
-    .nav-item {
-        padding: var(--space-xs);
-        text-align: center;
-    }
-    
     .navbar-brand.navName {
         max-width: 150px;
+    }
+}
+
+/* Mobile & tablet navigation */
+@media (max-width: 991px) {
+    html, body {
+        overflow-x: hidden;
+        width: 100%;
+        position: relative;
+    }
+
+    .navbar-collapse {
+        position: fixed;
+        top: 56px;
+        left: 0;
+        right: 0;
+        width: 100%;
+        background-color: var(--primary-color);
+        padding: 1rem;
+        z-index: 1030;
+        max-height: calc(100vh - 56px);
+        overflow-y: auto;
+        transform: translateX(0);
+        transition: transform 0.3s ease;
+    }
+    
+    .navbar-collapse.collapsing {
+        height: auto !important;
+        transition: transform 0.3s ease;
+        transform: translateX(-100%);
+    }
+    
+    .navbar-collapse.show {
+        transform: translateX(0);
+    }
+    
+    .container-fluid {
+        width: 100%;
+        max-width: 100%;
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+    
+    .navbar {
+        padding-left: 15px;
+        padding-right: 15px;
     }
 }
 
