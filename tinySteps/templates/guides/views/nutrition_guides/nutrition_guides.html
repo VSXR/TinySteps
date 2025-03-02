@@ -6,39 +6,55 @@
 {% endblock %}
 
 {% block main_contents %}
-    <div class="container mt-4">
-        <div class="row mb-4">
-            <div class="col">
-                <h2>NUTRITION GUIDES</h2>
-                <p class="text-center">Find tips and recommendations for healthy eating</p>
+    <main id="main-content">
+        <div class="container mt-4">
+            <div class="row mb-4">
+                <div class="col">
+                    <h2>NUTRITION GUIDES</h2>
+                    <p class="lead text-center">Find tips and recommendations for healthy eating</p>
+                </div>
+            </div>
+
+            <section aria-labelledby="nutrition-guides-content">
+                <h3 id="nutrition-guides-content" class="visually-hidden">Available Nutrition Guides</h3>
+                <div class="row">
+                    {% if nutrition_guides %}
+                        {% for guide in nutrition_guides %}
+                            <div class="col-md-4 mb-4">
+                                <article class="card h-100 shadow-sm">
+                                    {% if guide.image %}
+                                        <img src="{{ guide.image.url }}" class="card-img-top" 
+                                             alt="Visual representation for {{ guide.title }} guide">
+                                    {% else %}
+                                        <img src="{% static 'img/others/default.jpg' %}" class="card-img-top" 
+                                             alt="Default nutrition guide illustration">
+                                    {% endif %}
+                                    <div class="card-body">
+                                        <h4 class="card-title">{{ guide.title }}</h4>
+                                        <p class="card-text">{{ guide.description|truncatechars:120 }}</p>
+                                    </div>
+                                    <div class="card-footer bg-transparent border-0 text-end">
+                                        <a href="{% url 'nutrition_guide_details' %}" class="btn btn-primary mb-4" 
+                                           aria-label="Show details for {{ guide.title }}">Show guide</a>
+                                    </div>
+                                </article>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="col-12 text-center py-5">
+                            <p class="text-center fs-5" role="status">There aren't any nutrition guides available at this moment!</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </section>
+
+            <div class="row mt-5 mb-4">
+                <div class="col text-center">
+                    <a href="{% url 'guides' %}" class="btn btn-primary" aria-label="Return to guides page">
+                        Back to Guides
+                    </a>
+                </div>
             </div>
         </div>
-
-        <div class="row">
-            {% if nutrition_guides %}
-                {% for guide in nutrition_guides %}
-                    <div class="col-md-4 mb-4">
-                        <div class="card h-100 shadow-sm">
-                            {% if guide.image %}
-                                <img src="{{ guide.image.url }}" class="card-img-top" alt="{{ guide.title }}">
-                            {% else %}
-                                <img src="{% static 'img/others/default.jpg' %}" class="card-img-top" alt="Nutrición">
-                            {% endif %}
-                            <div class="card-body">
-                                <h5 class="card-title">{{ guide.title }}</h5>
-                                <p class="card-text">{{ guide.description|truncatechars:120 }}</p>
-                            </div>
-                            <div class="card-footer bg-transparent border-0 text-end">
-                                <a href="{% url 'nutrition_guide_details' %}" class="btn btn-primary mb-4">Show guide</a>
-                            </div>
-                        </div>
-                    </div>
-                {% endfor %}
-            {% else %}
-                <div class="col-12 text-center py-5">
-                    <p class="text-center fs-5">There aren't any nutrition guides available at this moment!</p>
-                </div>
-            {% endif %}
-        </div>
-    </div>
+    </main>
 {% endblock main_contents %}

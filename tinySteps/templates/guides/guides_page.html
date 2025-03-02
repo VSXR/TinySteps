@@ -6,70 +6,92 @@
 {% endblock %}
 
 {% block main_contents %}
-    <h2>GUIDES</h2>
-    <div class="container my-5">
-        <!-- ENLACES DIRECTOS A LAS GUIAS -->
-        <div class="row mb-5">
-            <div class="col-md-6">
-                <div class="card featured-card nutrition-featured h-100">
-                    <div class="card-body text-center d-flex flex-column">
-                        <h3 class="card-title">Nutrition Guides</h3>
-                        <p class="card-text flex-grow-1">Discover the best nutrition practices for your child's healthy development</p>
-                        <a href="{% url 'nutrition_guides' %}" class="btn btn-primary">Explore Nutrition Guides</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="card featured-card parenting-featured h-100">
-                    <div class="card-body text-center d-flex flex-column">
-                        <h3 class="card-title">Parents Guides</h3>
-                        <p class="card-text flex-grow-1">Essential information and tips for first-time parents</p>
-                        <a href="{% url 'parents_guides' %}" class="btn btn-primary">Explore Parent Guides</a>
-                    </div>
+    <main id="main-content">
+        <div class="container mt-4">
+            <div class="row mb-4">
+                <div class="col">
+                    <h2 class="page-title">GUIDES</h2>
                 </div>
             </div>
         </div>
-
-        <!-- Nutrition Guides -->
-        <h3 class="section-title mb-4">Nutrition Guides</h3>
-        <div class="row mb-5">
-            {% for guide in nutrition_guides %}
-                <div class="col-6 col-md-3 mb-4">
-                    <div class="card guide-card h-100">
-                        <img src="{% static guide.image_url %}" class="card-img-top" alt="{{ guide.title }}" style="height: 160px; object-fit: cover;">
-                        <div class="card-body d-flex flex-column">
-                            <h5 class="card-title">{{ guide.title }}</h5>
-                            <p class="card-text flex-grow-1">{{ guide.desc }}</p>
-                            <a href="{% url 'nutrition_guide_details' guide.id %}">Read More</a>
+        <div class="container my-5">
+            <!-- Guide Category Navigation -->
+            <nav aria-label="Guide categories" class="mb-4">
+                <ul class="row list-unstyled mb-5">
+                    <li class="col-md-6">
+                        <div class="card featured-card nutrition-featured h-100">
+                            <div class="card-body text-center d-flex flex-column">
+                                <h2 class="card-title">Nutrition Guides</h2>
+                                <p class="card-text flex-grow-1">Discover the best nutrition practices for your child's healthy development</p>
+                                <a href="{% url 'nutrition_guides' %}" class="btn btn-primary" aria-label="Explore all nutrition guides">Explore Nutrition Guides</a>
+                            </div>
                         </div>
-                    </div>
-                </div>
-                {% empty %}
-                <div class="col-12">
-                    <p class="text-center">There aren't any nutrition guides available at this moment!</p>
-                </div>
-            {% endfor %}
-        </div>
-
-        <!-- New Parent Guides -->
-        <h3 class="section-title mb-4">Parents Guides</h3>
-        <div class="row">
-            {% for guide in parent_guides %}
-                <div class="col-6 col-md-3 mb-4">
-                    <div class="card guide-card h-100">
-                        <img src="{% static guide.image_url %}" class="card-img-top" alt="{{ guide.title }}" style="height: 160px; object-fit: cover;">
-                        <div class="card-body d-flex flex-column">
-                            <h5 class="card-title">{{ guide.title }}</h5>
-                            <p class="card-text flex-grow-1">{{ guide.desc }}</p>
-                            <a href="{% url 'parents_guide_details' guide.id %}">Read More</a>
+                    </li>
+                    <li class="col-md-6">
+                        <div class="card featured-card parenting-featured h-100">
+                            <div class="card-body text-center d-flex flex-column">
+                                <h2 class="card-title">Parents Guides</h2>
+                                <p class="card-text flex-grow-1">Essential information and tips for first-time parents</p>
+                                <a href="{% url 'parents_guides' %}" class="btn btn-primary" aria-label="Explore all parent guides">Explore Parent Guides</a>
+                            </div>
                         </div>
-                    </div>
+                    </li>
+                </ul>
+            </nav>
+
+            <!-- Nutrition Guides Section -->
+            <section aria-labelledby="nutrition-guides-heading">
+                <h2 id="nutrition-guides-heading" class="section-title mb-4">Nutrition Guides</h2>
+                <div class="row mb-5">
+                    {% for guide in nutrition_guides %}
+                        <div class="col-6 col-md-3 mb-4">
+                            <article class="card guide-card h-100">
+                                <img src="{% static guide.image_url %}" class="card-img-top" 
+                                     alt="Illustration for {{ guide.title }}" 
+                                     style="height: 160px; object-fit: cover;">
+                                <div class="card-body d-flex flex-column">
+                                    <h3 class="card-title">{{ guide.title }}</h3>
+                                    <p class="card-text flex-grow-1">{{ guide.desc }}</p>
+                                    <a href="{% url 'nutrition_guide_details' guide.id %}" 
+                                       aria-label="Read more about {{ guide.title }}" 
+                                       class="mt-auto">Read More</a>
+                                </div>
+                            </article>
+                        </div>
+                    {% empty %}
+                        <div class="col-12">
+                            <p class="text-center" role="status">There aren't any nutrition guides available at this moment!</p>
+                        </div>
+                    {% endfor %}
                 </div>
-                {% empty %}
-                <div class="col-12">
-                    <p class="text-center">There aren't any parents guides available at this moment!</p>
+            </section>
+
+            <!-- Parent Guides Section -->
+            <section aria-labelledby="parent-guides-heading">
+                <h2 id="parent-guides-heading" class="section-title mb-4">Parents Guides</h2>
+                <div class="row">
+                    {% for guide in parent_guides %}
+                        <div class="col-6 col-md-3 mb-4">
+                            <article class="card guide-card h-100">
+                                <img src="{% static guide.image_url %}" class="card-img-top" 
+                                     alt="Illustration for {{ guide.title }}" 
+                                     style="height: 160px; object-fit: cover;">
+                                <div class="card-body d-flex flex-column">
+                                    <h3 class="card-title">{{ guide.title }}</h3>
+                                    <p class="card-text flex-grow-1">{{ guide.desc }}</p>
+                                    <a href="{% url 'parents_guide_details' guide.id %}" 
+                                       aria-label="Read more about {{ guide.title }}" 
+                                       class="mt-auto">Read More</a>
+                                </div>
+                            </article>
+                        </div>
+                    {% empty %}
+                        <div class="col-12">
+                            <p class="text-center" role="status">There aren't any parents guides available at this moment!</p>
+                        </div>
+                    {% endfor %}
                 </div>
-            {% endfor %}
+            </section>
         </div>
-    </div>
+    </main>
 {% endblock main_contents %}
