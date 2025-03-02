@@ -22,7 +22,7 @@
             <div class="col-md-6">
                 <div class="card featured-card parenting-featured h-100">
                     <div class="card-body text-center d-flex flex-column">
-                        <h3 class="card-title">New Parent Guides</h3>
+                        <h3 class="card-title">Parents Guides</h3>
                         <p class="card-text flex-grow-1">Essential information and tips for first-time parents</p>
                         <a href="{% url 'parents_guides' %}" class="btn btn-primary">Explore Parent Guides</a>
                     </div>
@@ -46,13 +46,13 @@
                 </div>
                 {% empty %}
                 <div class="col-12">
-                    <p class="text-center">No nutrition guides available at this time.</p>
+                    <p class="text-center">There aren't any nutrition guides available at this moment!</p>
                 </div>
             {% endfor %}
         </div>
 
         <!-- New Parent Guides -->
-        <h3 class="section-title mb-4">New Parent Guides</h3>
+        <h3 class="section-title mb-4">Parents Guides</h3>
         <div class="row">
             {% for guide in parent_guides %}
                 <div class="col-6 col-md-3 mb-4">
@@ -67,7 +67,7 @@
                 </div>
                 {% empty %}
                 <div class="col-12">
-                    <p class="text-center">No parent guides available at this time.</p>
+                    <p class="text-center">There aren't any parents guides available at this moment!</p>
                 </div>
             {% endfor %}
         </div>

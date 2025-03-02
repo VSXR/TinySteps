@@ -1,120 +1,149 @@
 {% load static %}
-<!DOCTYPE html>
 
-<html lang="es ltr">
+<!DOCTYPE html>
+<html lang="en">
     <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="TinySteps - Supporting parents with tools and resources for child development">
+        
         <title>
             {% block title %}
                 TINY STEPS - EVERY STEP MATTERS
             {% endblock title %}
         </title>
         
+        <!-- Preload critical assets -->
+        <link rel="preload" href="{% static 'res/css/styles.css' %}" as="style">
+        <link rel="preload" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" as="style">
+        
+        <!-- CSS files -->
         <link rel="stylesheet" href="{% static 'res/css/styles.css' %}">
         <link rel="icon" href="{% static 'res/img/favicon/favicon.ico' %}" type="image/x-icon">
-
-        <!-- Estilos y fuentes -->
-        <link href="https://cdn.jsdelivr.net/npm/remixicon@4.0.0/fonts/remixicon.css" rel="stylesheet" />
+        <link href="https://cdn.jsdelivr.net/npm/remixicon@4.0.0/fonts/remixicon.css" rel="stylesheet">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
-            integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous" />
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+            integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     </head>
 
     <body>
+        <!-- Skip to main content link for keyboard users -->
+        <a href="#main-content" class="skip-link visually-hidden">Skip to main content</a>
+
         <!-- HEADER (WITH NAVBAR) -->
         <header>
-            <nav class="navbar navbar-expand-lg navbar-dark">
+            <nav class="navbar navbar-expand-lg navbar-dark" aria-label="Main Navigation">
                 <div class="container-fluid">
-                    <!-- Logo -->
+                    <!-- Logo and Site Name -->
                     <div class="logo-container">
                         <a class="navbar-brand navLogo" href="{% url 'index' %}">
-                            <img src="{% static 'res/img/logo/tabler--north-star.png' %}" alt="Tiny Steps Star Logo" /> {% comment %} LOGO TINY STEPS AQUI!! {% endcomment %}
+                            <img src="{% static 'res/img/logo/tabler--north-star.png' %}" alt="Tiny Steps Logo" width="30" height="30">
                         </a>
-                        <a class="navbar-brand navName abs" href="{% url 'index' %}">Tiny Steps</a>
+                        <a class="navbar-brand navName" href="{% url 'index' %}" aria-label="Tiny Steps Home">Tiny Steps</a>
                     </div>
-                    <!-- Botón de navegación para pantallas pequeñas -->
-                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
-                        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    
+                    <!-- Mobile Navigation Toggle -->
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" 
+                        data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" 
+                        aria-expanded="false" aria-label="Toggle navigation menu">
                         <span class="navbar-toggler-icon"></span>
                     </button>
 
-                    <!-- Menú de navegación -->
+                    <!-- Navigation Menu -->
                     <div class="navbar-collapse collapse" id="navbarSupportedContent">
                         <ul class="navbar-nav mb-2 mb-lg-0 me-auto">
-                            <!-- Enlaces principales -->
-                            <li class="nav-item active">
-                                <a href="{% url 'your_children' %}" class="nav-link custom-underline active" aria-current="page">
-                                    <i class="fa-solid fa-phone"></i> YOUR CHILDREN
+                            <!-- Main Navigation Links -->
+                            <li class="nav-item">
+                                <a href="{% url 'your_children' %}" class="nav-link custom-underline{% if request.resolver_match.url_name == 'your_children' %} active" aria-current="page{% else %}"{% endif %}>
+                                    <i class="fa-solid fa-baby" aria-hidden="true"></i>
+                                    <span class="nav-text">YOUR CHILDREN</span>
                                 </a>
                             </li>
-                            <li class="nav-item active">
-                                <a href="{% url 'parents_forum' %}" class="nav-link custom-underline active" aria-current="page">
-                                    <i class="fa-solid fa-phone"></i> PARENTS FORUM
+                            <li class="nav-item">
+                                <a href="{% url 'parents_forum' %}" class="nav-link custom-underline{% if request.resolver_match.url_name == 'parents_forum' %} active" aria-current="page{% else %}"{% endif %}>
+                                    <i class="fa-solid fa-comments" aria-hidden="true"></i> 
+                                    <span class="nav-text">PARENTS FORUM</span>
                                 </a>
                             </li>
-                            <li class="nav-item active">
-                                <a href="{% url 'guides' %}" class="nav-link custom-underline active" aria-current="page">
-                                    <i class="fa-solid fa-phone"></i> GUIDES
+                            <li class="nav-item">
+                                <a href="{% url 'guides' %}" class="nav-link custom-underline{% if request.resolver_match.url_name == 'guides' %} active" aria-current="page{% else %}"{% endif %}>
+                                    <i class="fa-solid fa-book" aria-hidden="true"></i> 
+                                    <span class="nav-text">GUIDES</span>
                                 </a>
                             </li>
-                            <li class="nav-item active">
-                                <a href="{% url 'info_request' %}" class="nav-link custom-underline active" aria-current="page">
-                                    <i class="fa-solid fa-phone"></i> REQUEST INFORMATION
+                            <li class="nav-item">
+                                <a href="{% url 'info_request' %}" class="nav-link custom-underline{% if request.resolver_match.url_name == 'info_request' %} active" aria-current="page{% else %}"{% endif %}>
+                                    <i class="fa-solid fa-phone" aria-hidden="true"></i> 
+                                    <span class="nav-text">REQUEST INFO</span>
                                 </a>
                             </li>
-                            <li class="nav-item active">
-                                <a href="{% url 'about' %}" class="nav-link custom-underline active" aria-current="page">
-                                    <i class="fa-solid fa-question"></i> ABOUT US
+                            <li class="nav-item">
+                                <a href="{% url 'about' %}" class="nav-link custom-underline{% if request.resolver_match.url_name == 'about' %} active" aria-current="page{% else %}"{% endif %}>
+                                    <i class="fa-solid fa-question" aria-hidden="true"></i> 
+                                    <span class="nav-text">ABOUT US</span>
                                 </a>
                             </li>
                         </ul>
 
-                        <!-- Enlaces de autenticación -->
-                        <ul class="navbar-nav ms-auto">
+                        <!-- Authentication Links -->
+                        <ul class="navbar-nav ms-auto me-2">
                             {% if user.is_authenticated %}
                                 <li class="nav-item">
-                                    <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+                                    <a class="nav-link" href="{% url 'logout' %}">
+                                        <i class="fa-solid fa-right-from-bracket" aria-hidden="true"></i> 
+                                        <span class="nav-text">Logout</span>
+                                    </a>
                                 </li>
                             {% else %}
                                 <li class="nav-item">
-                                    <a class="nav-link" href="{% url 'login' %}">Login</a>
+                                    <a class="nav-link" href="{% url 'login' %}">
+                                        <i class="fa-solid fa-right-to-bracket" aria-hidden="true"></i> 
+                                        <span class="nav-text">Login</span>
+                                    </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="{% url 'register' %}">Register</a>
+                                    <a class="nav-link" href="{% url 'register' %}">
+                                        <i class="fa-solid fa-user-plus" aria-hidden="true"></i> 
+                                        <span class="nav-text">Register</span>
+                                    </a>
                                 </li>
                             {% endif %}
                         </ul>
 
-                        <!-- Enlaces sociales -->
-                        <ul class="navbar-nav ms-auto">
-                            <div class="nav-item social">
-                                <a class="nav-item" href="https://github.com/VSXR" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-github"></i></a>
-                            </div>
+                        <!-- Social Links -->
+                        <ul class="navbar-nav social-nav">
+                            <li class="nav-item social">
+                                <a href="https://github.com/VSXR" class="nav-link" target="_blank" rel="noopener noreferrer" aria-label="GitHub Profile">
+                                    <i class="fa-brands fa-github" aria-hidden="true"></i>
+                                    <span class="visually-hidden">GitHub</span>
+                                </a>
+                            </li>
                         </ul>
                     </div>
                 </div>
             </nav>
         </header>
 
-        <!-- Mensajes -->
+        <!-- Flash Messages with ARIA roles -->
         {% if messages %}
-            <ul class="messages">
-                {% for message in messages %}
-                    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-                {% endfor %}
-            </ul>
+            <section aria-label="Notifications" class="message-container">
+                <ul class="messages" role="alert">
+                    {% for message in messages %}
+                        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            </section>
         {% endif %}
 
-        <!-- MAIN -->
-        <main class="container-fluid mt-4">
+        <!-- MAIN CONTENT with landmark -->
+        <main id="main-content" class="container-fluid mt-4">
             {% block main_contents %}
-                <!-- Contenedor principal -->
+                <!-- Main content container -->
                 <div class="container-fluid">
                     
-                    <!-- CONTENIDO PRINCIPAL -->
+                    <!-- PRIMARY CONTENT SECTION -->
                     <section class="mainContent container-fluid">
-                        <h2 class="text-center">WELCOME TO TINY STEPS</h2>
+                        <h1 class="text-center">WELCOME TO TINY STEPS</h1>
                         <div class="specific-paragraphs">
                             <p class="text-center">
                                 TINY STEPS is an app designed for first-time parents, launched in 2025, that offers the best tools to 
@@ -123,9 +152,11 @@
                                 and expert guidance, we ensure that you have everything you need at your fingertips. We are the best option for 
                                 navigating your child's early years with confidence and peace of mind.
                             </p>
-                            <div class="image-container">
-                                <img src="{% static 'res/img/others/default.jpg' %}" class="imgWeb" alt="default-img">
-                            </div>
+                            <figure class="image-container">
+                                <img src="{% static 'res/img/others/default.jpg' %}" class="imgWeb" 
+                                     alt="Parents with baby - parenting support visualization" 
+                                     loading="lazy">
+                            </figure>
                         </div>
                     
                         <div class="specific-paragraphs">
@@ -136,92 +167,76 @@
                                 and expert guidance, we ensure that you have everything you need at your fingertips. We are the best option for 
                                 navigating your child's early years with confidence and peace of mind.
                             </p>
-                            <div class="image-container">
-                                <img src="{% static 'res/img/others/default.jpg' %}" class="imgWeb" alt="default-img">
-                            </div>
+                            <figure class="image-container">
+                                <img src="{% static 'res/img/others/default.jpg' %}" class="imgWeb" 
+                                     alt="Child development milestones tracking feature" 
+                                     loading="lazy">
+                            </figure>
                         </div>
-                        <div class="specific-paragraphs">
-                            <p class="text-center">
-                                TINY STEPS is an app designed for first-time parents, launched in 2025, that offers the best tools to 
-                                support your parenting journey. We provide the most intuitive features and the most reliable information 
-                                to make caring for your baby an easy and enjoyable experience. With personalized recommendations, smart scheduling, 
-                                and expert guidance, we ensure that you have everything you need at your fingertips. We are the best option for 
-                                navigating your child's early years with confidence and peace of mind.
-                            </p>
-                            <div class="image-container">
-                                <img src="{% static 'res/img/others/default.jpg' %}" class="imgWeb" alt="default-img">
-                            </div>
-                        </div>
-                        <div class="specific-paragraphs">
-                            <p class="text-center">
-                                TINY STEPS is an app designed for first-time parents, launched in 2025, that offers the best tools to 
-                                support your parenting journey. We provide the most intuitive features and the most reliable information 
-                                to make caring for your baby an easy and enjoyable experience. With personalized recommendations, smart scheduling, 
-                                and expert guidance, we ensure that you have everything you need at your fingertips. We are the best option for 
-                                navigating your child's early years with confidence and peace of mind.
-                            </p>
-                            <div class="image-container">
-                                <img src="{% static 'res/img/others/default.jpg' %}" class="imgWeb" alt="default-img">
-                            </div>
-                        </div>
-
                     </section>
                 </div>
             {% endblock main_contents %}
         </main>
 
-        <!-- FOOTER -->
+        <!-- FOOTER with navigation landmark -->
         <footer class="footerContainer sticky-footer mt-auto py-3 text-white">
-            <ul class="nav justify-content-center border-bottom pb-3">
-                <!-- Enlaces del pie de página -->
-                <li class="footer-nav-item active">
-                    <a href="{% url 'index' %}" class="footer-nav-link custom-underline active" aria-current="page">
-                        <i class="fa-solid fa-house"></i> HOME
-                    </a>
-                </li>
-                <li class="footer-nav-item active">
-                    <a href="{% url 'your_children' %}" class="footer-nav-link custom-underline active" aria-current="page">
-                        <i class="fa-solid fa-phone"></i> YOUR CHILDREN
-                    </a>
-                </li>
-                <li class="footer-nav-item active">
-                    <a href="{% url 'parents_forum' %}" class="footer-nav-link custom-underline active" aria-current="page">
-                        <i class="fa-solid fa-phone"></i> PARENTS FORUM
-                    </a>
-                </li>
-                <li class="footer-nav-item active">
-                    <a href="{% url 'guides' %}" class="footer-nav-link custom-underline active" aria-current="page">
-                        <i class="fa-solid fa-phone"></i> GUIDES
-                    </a>
-                </li>
-                <li class="footer-nav-item active">
-                    <a href="{% url 'info_request' %}" class="footer-nav-link custom-underline active" aria-current="page">
-                        <i class="fa-solid fa-phone"></i> REQUEST INFORMATION
-                    </a>
-                </li>
-                <li class="footer-nav-item active">
-                    <a href="{% url 'about' %}" class="footer-nav-link custom-underline active" aria-current="page">
-                        <i class="fa-solid fa-question"></i> ABOUT US
-                    </a>
-                </li>
-            </ul>
+            <nav aria-label="Footer Navigation">
+                <ul class="nav footer-nav justify-content-center border-bottom pb-3">
+                    <!-- Footer navigation links with ARIA -->
+                    <li class="footer-nav-item">
+                        <a href="{% url 'index' %}" class="footer-nav-link" aria-label="Home">
+                            <i class="fa-solid fa-house" aria-hidden="true"></i> 
+                            <span class="footer-link-text">HOME</span>
+                        </a>
+                    </li>
+                    <li class="footer-nav-item">
+                        <a href="{% url 'your_children' %}" class="footer-nav-link" aria-label="Your Children">
+                            <i class="fa-solid fa-baby" aria-hidden="true"></i>
+                            <span class="footer-link-text">YOUR CHILDREN</span>
+                        </a>
+                    </li>
+                    <li class="footer-nav-item">
+                        <a href="{% url 'parents_forum' %}" class="footer-nav-link" aria-label="Parents Forum">
+                            <i class="fa-solid fa-comments" aria-hidden="true"></i> 
+                            <span class="footer-link-text">PARENTS FORUM</span>
+                        </a>
+                    </li>
+                    <li class="footer-nav-item">
+                        <a href="{% url 'guides' %}" class="footer-nav-link" aria-label="Guides">
+                            <i class="fa-solid fa-book" aria-hidden="true"></i> 
+                            <span class="footer-link-text">GUIDES</span>
+                        </a>
+                    </li>
+                    <li class="footer-nav-item">
+                        <a href="{% url 'info_request' %}" class="footer-nav-link" aria-label="Request Information">
+                            <i class="fa-solid fa-phone" aria-hidden="true"></i> 
+                            <span class="footer-link-text">REQUEST INFO</span>
+                        </a>
+                    </li>
+                    <li class="footer-nav-item">
+                        <a href="{% url 'about' %}" class="footer-nav-link" aria-label="About Us">
+                            <i class="fa-solid fa-question" aria-hidden="true"></i> 
+                            <span class="footer-link-text">ABOUT US</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
 
-            <!-- Texto de derechos de autor -->
+            <!-- Copyright information with semantic markup -->
             <div class="footerAuthorText text-center mt-3">
                 <div class="madeContainer">
-                    <p>© 2025 Tiny Steps. All rights reserved.</p>
+                    <p><small>&copy; 2025 TinySteps. All rights reserved.</small></p>
                 </div>
                 <div class="madeContainer">
-                    <a href="https://github.com/VSXR" class="madeBy">- MADE BY VSXR -</a>
+                    <a href="https://github.com/VSXR" class="madeBy" rel="noopener noreferrer" target="_blank" aria-label="Made by VSXR - Visit GitHub profile">- MADE BY VSXR -</a>
                 </div>
             </div>
         </footer>
 
-        <!-- Scripts -->
-        <script async src="https://www.instagram.com/embed.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
-        <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        <!-- Scripts with defer for performance -->
+        <script defer src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+        <script defer src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+        <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
             integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
     </body>
 </html>
