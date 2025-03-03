@@ -1,62 +1,86 @@
+"""
+Configuración de Django para el proyecto TinySteps
+"""
+
+# ---------------------------------------------------------------
+# IMPORTACIONES
+# ---------------------------------------------------------------
 import os
 import sys
 from pathlib import Path
 from django.contrib.messages import constants as messages
 
+# ---------------------------------------------------------------
+# CONFIGURACIONES BÁSICAS
+# ---------------------------------------------------------------
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = "django-insecure-elp3%(#9&c9-(5xco05=oh7)7b%zda3j@3qt8@$#dajqhj@^+b"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True # TRUE: FOR LOCAL HOST ONLY (CSS, IMGs AND MEDIA WILL APPEAR CORRECLTY!)!!
+DEBUG = True  # TRUE: FOR LOCAL HOST ONLY (CSS, IMGs AND MEDIA WILL APPEAR CORRECTLY!)
 
+# ---------------------------------------------------------------
+# CONFIGURACIONES DE SEGURIDAD
+# ---------------------------------------------------------------
 ALLOWED_HOSTS = ['tinySteps-django.azurewebsites.net', '127.0.0.1']
 
 CSRF_TRUSTED_ORIGINS = [
     'https://tinySteps-django.azurewebsites.net',  # URL de producción
 ]
 
-# CSRF_COOKIE_SECURE = True
-# SESSION_COOKIE_SECURE = True
-# SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+# Descomentar estas líneas en producción para mejorar la seguridad
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
-# Application definition
+# ---------------------------------------------------------------
+# APLICACIONES Y MIDDLEWARE
+# ---------------------------------------------------------------
+# Aplicaciones instaladas
 INSTALLED_APPS = [
+    # Aplicaciones Django predeterminadas
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    
+    # Aplicaciones de terceros
     'crispy_forms',
     'crispy_bootstrap4',
-    'tinySteps.apps.TinyStepsConfig',
-    'api.apps.ApiConfig',
     'rest_framework',
     'rest_framework.authtoken',
     'whitenoise.runserver_nostatic',
+    
+    # Aplicaciones propias
+    'tinySteps.apps.TinyStepsConfig',
+    'api.apps.ApiConfig',
 ]
 
+# Configuración de Crispy Forms
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
+# Middleware
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware', # CSRF Middleware
+    'django.middleware.csrf.CsrfViewMiddleware',  # CSRF Middleware
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+# ---------------------------------------------------------------
+# CONFIGURACIÓN DE URLS Y TEMPLATES
+# ---------------------------------------------------------------
 ROOT_URLCONF = "project.urls"
+
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
@@ -75,9 +99,11 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "project.wsgi.application"
 
-
-# Database
+# ---------------------------------------------------------------
+# CONFIGURACIÓN DE BASES DE DATOS
+# ---------------------------------------------------------------
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
+
 # CONFIGURACION PARA BASE DE DATOS EN LOCAL
 if DEBUG:
     DATABASES = {
@@ -103,10 +129,12 @@ else:
         }
     }
 
-
-
+# ---------------------------------------------------------------
+# CONFIGURACIÓN DE AUTENTICACIÓN
+# ---------------------------------------------------------------
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
+
 AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
@@ -122,18 +150,24 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
-# Internationalization
+# ---------------------------------------------------------------
+# CONFIGURACIÓN DE INTERNACIONALIZACIÓN
+# ---------------------------------------------------------------
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
+
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
+# ---------------------------------------------------------------
+# CONFIGURACIÓN DE ARCHIVOS ESTÁTICOS Y MEDIA
+# ---------------------------------------------------------------
 # URL para archivos estáticos y de medios
 STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
 
+# Almacenamiento de archivos estáticos
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
@@ -145,11 +179,16 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'tinySteps', 'static'),
 ]
 
+# ---------------------------------------------------------------
+# OTRAS CONFIGURACIONES
+# ---------------------------------------------------------------
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# EMAIL CONFIGURATION
+# ---------------------------------------------------------------
+# CONFIGURACIÓN DE CORREO ELECTRÓNICO
+# ---------------------------------------------------------------
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
@@ -157,3 +196,19 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'c4relecloud@gmail.com'
 EMAIL_HOST_PASSWORD = 'mnvp swyl hjgr pdyl'
 DEFAULT_FROM_EMAIL = 'c4relecloud@gmail.com'
+
+# ---------------------------------------------------------------
+# CONFIGURACIÓN DE REST FRAMEWORK (opcional)
+# ---------------------------------------------------------------
+# Descomentar y configurar si necesitas personalizar REST Framework
+# REST_FRAMEWORK = {
+#     'DEFAULT_AUTHENTICATION_CLASSES': [
+#         'rest_framework.authentication.TokenAuthentication',
+#         'rest_framework.authentication.SessionAuthentication',
+#     ],
+#     'DEFAULT_PERMISSION_CLASSES': [
+#         'rest_framework.permissions.IsAuthenticated',
+#     ],
+#     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+#     'PAGE_SIZE': 10
+# }
