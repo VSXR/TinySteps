@@ -77,7 +77,7 @@ body {
     padding: 0;
 }
 
-/* Mobile Navigation - Prevent horizontal shifting */
+/* Mobile Navigation - Prevent horizontal shifting! */
 body.navbar-open {
     overflow: hidden;
 }
@@ -313,8 +313,13 @@ aside {
 /* Nav Item Links */
 .nav-item a {
     color: var(--text-light);
+    opacity: 1;
     position: relative;
-    transition: color var(--transition-fast), background-color var(--transition-fast);
+    transition: color var(--transition-fast), background-color var(--transition-fast), opacity var(--transition-fast);
+}
+
+.nav-item a:hover {
+    opacity: 0.8;
 }
 
 .nav-item.social {
@@ -325,12 +330,46 @@ aside {
 
 .nav-item.social a {
     color: var(--text-light);
+    opacity: 1;
     text-decoration: none;
+    transition: color var(--transition-fast), background-color var(--transition-fast), opacity var(--transition-fast);
 }
 
 .nav-item.social a:hover {
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: transparent;
     color: var(--text-dark);
+    opacity: 0.8;
+}
+
+/* Logout Button Styling */
+.navbar-nav .nav-item form {
+    display: contents;
+}
+
+.navbar-nav .nav-item .btn-logout {
+    background: transparent;
+    border: none;
+    color: white !important;
+    cursor: pointer;
+    opacity: 1;
+    transition: opacity var(--transition-fast);
+}
+
+.navbar-nav .nav-item .btn-logout:hover {
+    opacity: 0.8;
+}
+
+.navbar-nav .nav-item .btn-logout:hover:not(.active) .nav-text {
+    text-decoration: underline;
+}
+
+.navbar-nav .nav-item .btn-logout.active {
+    color: #ffc107 !important;
+    font-weight: bold;
+}
+
+.navbar-nav .nav-item .btn-logout.active i {
+    color: #ffc107 !important;
 }
 
 /* Animated Underline */
@@ -799,6 +838,15 @@ ul.messages li.error {
     .navbar {
         padding-left: 15px;
         padding-right: 15px;
+    }
+
+    .navbar-nav .nav-item button.nav-link {
+        padding: 0.75rem 1rem;
+    }
+    
+    .navbar-nav .nav-item .btn-logout:hover,
+    .navbar-nav .nav-item .btn-logout:focus {
+        background-color: transparent;
     }
 }
 
