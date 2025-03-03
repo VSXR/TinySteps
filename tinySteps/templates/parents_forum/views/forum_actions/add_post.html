@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 {% load crispy_forms_tags %}
 
 {% block title %}
@@ -73,5 +74,5 @@
 
 {% block extra_js %}
     {{ block.super }}
-    <script src="{% static 'res/javascript/create_forum_post.js' %}"></script>
+    <script src="{% static 'res/javascript/create_post.js' %}"></script>
 {% endblock extra_js %}

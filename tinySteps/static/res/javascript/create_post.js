@@ -2,16 +2,16 @@ document.addEventListener('DOMContentLoaded', function() {
     const postForm = document.querySelector('form[action*="add_post"]');    
     
     if (postForm) {
-        postForm.addEventListener('submit', async function(event) {
-            event.preventDefault();
+        postForm.addEventListener('submit', function(event) {
             const titleInput = document.getElementById('id_title');
             const descInput = document.getElementById('id_desc');
             
             if (!titleInput.value.trim() || !descInput.value.trim()) {
-                showError('Por favor, complete todos los campos obligatorios');
-                return;
+                event.preventDefault();
+                showError('Please complete all required fields');
+                return false;
             }
-            
+
             try {
                 showLoading('Creando discusión...');
                 const postData = {
@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
-    
+
     // Funciones de utilidad
     function showLoading(message) {
         let loadingEl = document.getElementById('loading-indicator');

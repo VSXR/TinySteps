@@ -313,13 +313,8 @@ def search_posts(request):
     })
 
 @login_required
-def start_post(request):
-    """Vista para mostrar el formulario de creación de un post nuevo"""
-    return render(request, 'parents_forum/views/forum_actions/start_post.html')
-
-@login_required
 def add_post(request):
-    """Vista para procesar la creación de un nuevo post"""
+    """Function to handle new post creation"""
     if request.method == 'POST':
         title = request.POST.get('title')
         content = request.POST.get('desc')
@@ -334,13 +329,31 @@ def add_post(request):
             return redirect('view_post', post_id=post.id)
         else:
             messages.error(request, "Please fill all required fields")
-            return redirect('start_post')
     
-    return redirect('parents_forum')
+    return render(request, 'parents_forum/views/forum_actions/add_post.html')
+
+@login_required
+def view_posts_list(request):
+    if request.method == 'POST':
+        title = request.POST.get('title')
+        content = request.POST.get('desc')
+        
+        if title and content:
+            post = ParentsForum_Model.objects.create(
+                title=title,
+                desc=content,
+                author=request.user
+            )
+            messages.success(request, "Post created successfully!")
+            return redirect('view_post', post_id=post.id)
+        else:
+            messages.error(request, "Please fill all required fields")
+            return redirect('add_post')
+    
+    return redirect('view_post', post_id=post.id)
 
 @login_required
 def edit_post(request, post_id):
-    """Vista para editar un post existente"""
     post = get_object_or_404(ParentsForum_Model, id=post_id, author=request.user)
     
     if request.method == 'POST':
@@ -360,7 +373,6 @@ def edit_post(request, post_id):
 
 @login_required
 def delete_post(request, post_id):
-    """Vista para eliminar un post"""
     post = get_object_or_404(ParentsForum_Model, id=post_id, author=request.user)
     
     if request.method == 'POST':
@@ -371,39 +383,31 @@ def delete_post(request, post_id):
     return render(request, 'parents_forum/views/forum_actions/delete_post.html', {'post': post})
 
 def view_post(request, post_id):
-    """Vista para ver un post específico y sus comentarios"""
     post = get_object_or_404(ParentsForum_Model, id=post_id)
-    
-    # Obtener posts relacionados (por ejemplo, del mismo autor o con tags similares)
     related_posts = ParentsForum_Model.objects.filter(author=post.author).exclude(id=post_id)[:4]
     
-    return render(request, 'parents_forum/views/view_post.html', {
+    return render(request, 'parents_forum/views/forum_actions/view_post.html', {
         'post': post,
         'related_posts': related_posts
     })
 
 @login_required
 def add_post_comment(request, post_id):
-    """Vista para añadir un comentario a un post"""
     post = get_object_or_404(ParentsForum_Model, id=post_id)
     
     if request.method == 'POST':
         content = request.POST.get('content')
-        
         if content:
-            # Crear el comentario usando el sistema genérico de contenidos
-            content_type = ContentType.objects.get_for_model(ParentsForum_Model)
             Comment_Model.objects.create(
-                content_type=content_type,
-                object_id=post.id,
+                content_object=post,
                 author=request.user,
                 text=content
             )
             messages.success(request, "Comment added successfully!")
         else:
-            messages.error(request, "Comment text is required")
-            
-    return redirect('view_post', post_id=post_id)
+            messages.error(request, "Please enter a comment.")
+    
+    return redirect('view_post', post_id=post.id)
 
 # -----------------------------------------------
 # -- PARENTS FORUM CLASS-VIEWS --
