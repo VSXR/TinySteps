@@ -20,12 +20,30 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 async function loadParentsForumPosts() {
+    // TIMEOUT TO SHOW A MESSAGE IF POSTS AREN'T LOADED IN 5 SECONDS
+    const timeoutId = setTimeout(() => {
+        hideLoading();
+        
+        // SHOW THE 'NO POSTS' MESSAGE AFTER 5 SECONDS
+        const container = document.getElementById('forum-posts-container');
+        if (container) {
+            container.innerHTML = '<div class="alert alert-info text-center p-4" role="alert">' +
+                '<i class="fa-solid fa-circle-info me-2"></i>' +
+                'There isn\'t any posts available yet!' +
+                '</div>';
+        }
+    }, 5000); // 5 SECONDS TIMEOUT
+    
     try {
+        // CANCEL THE TIMEOUT SINCE POSTS LOADED SUCCESSFULLY
         showLoading('Loading forum posts...');
         const posts = await api.getForumPosts();
+        clearTimeout(timeoutId);
         displayPosts(posts);
         hideLoading();
     } catch (error) {
+        // CANCEL THE TIMEOUT SINCE WE HAVE A SPECIFIC ERROR
+        clearTimeout(timeoutId);
         hideLoading();
         showError('Failed to load forum posts. Please try again later.');
         console.error('Error loading forum posts:', error);
@@ -34,7 +52,6 @@ async function loadParentsForumPosts() {
 
 async function handlePostSubmit(event) {
     event.preventDefault();
-    
     const titleInput = document.getElementById('post-title');
     const contentInput = document.getElementById('post-content');
     
@@ -51,19 +68,17 @@ async function handlePostSubmit(event) {
     try {
         showLoading('Creating post...');
         const newPost = await api.createForumPost(data);
-        
-        // Clear form
+
         titleInput.value = '';
         contentInput.value = '';
         
-        // Add new post to the display
         const postsContainer = document.getElementById('forum-posts-container');
         if (postsContainer) {
-            // Add the new post at the top if container exists
+            // ADD THE NEW POST TO THE TOP OF THE LIST
             const postElement = createPostElement(newPost);
             postsContainer.insertBefore(postElement, postsContainer.firstChild);
         } else {
-            // Reload posts if container doesn't exist
+            // RELAOD THE POSTS IF THE CONTAINER DOESN'T EXIST
             loadParentsForumPosts();
         }
         
@@ -221,12 +236,18 @@ function showMessage(message, type) {
     
     // Auto-remove after 5 seconds
     setTimeout(() => {
-        alertDiv.classList.remove('show');
-        setTimeout(() => alertDiv.remove(), 300);
+        if (alertDiv.parentNode) {
+            alertDiv.classList.remove('show');
+            setTimeout(() => {
+                if (alertDiv.parentNode) {
+                    alertDiv.parentNode.removeChild(alertDiv);
+                }
+            }, 150);
+        }
     }, 5000);
 }
 
-// Helper function to prevent XSS
+// HELPER TO PREVENT XSS ATTACKS
 function escapeHtml(unsafe) {
     return unsafe
         .replace(/&/g, "&amp;")

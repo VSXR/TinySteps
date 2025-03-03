@@ -2,11 +2,17 @@ from django.urls import path
 from . import views
 from django.http import HttpResponseNotFound
 from django.contrib.auth import views as auth_views
-from django.contrib import messages
-from django.shortcuts import redirect
+from django.shortcuts import render
 
 def favicon_view(request):
     return HttpResponseNotFound("Favicon no encontrado")
+
+def page_404(request):
+    return render(request, '404.html')
+
+def test_404(request):
+    return render(request, '404.html')
+
 
 urlpatterns = [
     # RUTA PARA LA PAGINA PRINCIPAL
@@ -53,8 +59,11 @@ urlpatterns = [
    # RUTAS PARA LOGIN Y REGISTRO
     path('login/', views.Login_View.as_view(), name='login'), # FUNCIONA
     path('register/', views.Register_View.as_view(), name='register'), # FUNCIONA
-    path('logout/', views.Logout_View.as_view(), name='logout'),
+    path('logout/', auth_views.LogoutView.as_view(next_page='index'), name='logout'), # FUNCIONA
     
     # OTRAS RUTAS
     path('favicon.ico', favicon_view), # FUNCIONA
+
+    path('page-404/', page_404, name='page_404'),
+    path('test-404/', test_404, name='test_404'),
 ]

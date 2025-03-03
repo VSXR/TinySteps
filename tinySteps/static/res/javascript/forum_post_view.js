@@ -1,12 +1,12 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Get post ID from URL
     const urlPath = window.location.pathname;
     const postId = urlPath.split('/').pop();
     
+    // SETTING THE EVENT LISTENERS FOR THE COMMENT FORM, LIKE BUTTON AND SHARE BUTTON
+    // AND LOADING THE POST DETAILS AND COMMENTS
     if (postId && !isNaN(postId)) {
         loadPostDetails(postId);
         
-        // Set up the comment form submission
         const commentForm = document.querySelector('form[action^="/parents_forum/add_comment"]');
         if (commentForm) {
             commentForm.addEventListener('submit', function(event) {
@@ -15,13 +15,11 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
         
-        // Set up like button
         const likeButton = document.getElementById('like-button');
         if (likeButton) {
             likeButton.addEventListener('click', () => handleLikePost(postId));
         }
         
-        // Set up share button
         const shareButton = document.getElementById('share-button');
         if (shareButton) {
             shareButton.addEventListener('click', () => handleSharePost(postId));
@@ -30,19 +28,57 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 async function loadPostDetails(postId) {
+    // TIMEOUT TO SHOW A MESSAGE IF THE POST ISN'T LOADED IN 5 SECONDS
+    const timeoutId = setTimeout(() => {
+        hideLoading();
+        
+        // IF THE CONTENT ELEMENT IS AVAILABLE, SHOW A MESSAGE,
+        // OTHERWISE, THE PAGE WILL BE EMPTY
+        const contentElement = document.querySelector('.post-content');
+        if (contentElement) {
+            contentElement.innerHTML = '<div class="alert alert-info text-center p-4" role="alert">' +
+                '<i class="fa-solid fa-circle-info me-2"></i>' +
+                'There isn\'t any posts available yet!' +
+                '</div>';
+        }
+        
+        // SET THE LIKE AND COMMENT COUNTERS TO 0
+        const likeCountElement = document.getElementById('like-count');
+        if (likeCountElement) {
+            likeCountElement.textContent = '0';
+        }
+        
+        const commentCountElement = document.querySelector('h2#comments-heading');
+        if (commentCountElement) {
+            commentCountElement.textContent = 'Comments (0)';
+        }
+        
+        // SET THE COMMENT LIST TO A MESSAGE
+        const commentListElement = document.querySelector('.comment-list');
+        if (commentListElement) {
+            const noCommentsElement = document.createElement('p');
+            noCommentsElement.className = 'text-center my-4';
+            noCommentsElement.textContent = 'No comments available.';
+            commentListElement.parentNode.replaceChild(noCommentsElement, commentListElement);
+        }
+    }, 5000); // 5 seconds timeout
+
+    // CANCEL THE TIMEOUT IF THE POST IS LOADED SUCCESSFULLY
     try {
         showLoading('Loading post details...');
         
-        // Load the post details
+        // LOAD THE POST DETAILS AND COMMENTS FROM THE API
         const post = await api.getForumPost(postId);
-        updatePostDetails(post);
+        clearTimeout(timeoutId); // Cancel timeout as data loaded successfully
         
-        // Load the post comments
+        updatePostDetails(post);
         const comments = await api.getForumPostComments(postId);
         displayComments(comments);
         
         hideLoading();
     } catch (error) {
+        clearTimeout(timeoutId); // Cancel timeout as we have a specific error
+        
         hideLoading();
         showError('Failed to load post. Please try again later.');
         console.error('Error loading post:', error);
@@ -57,7 +93,6 @@ function updatePostDetails(post) {
     // Update post content
     const contentElement = document.querySelector('.post-content');
     if (contentElement) {
-        // Use safe HTML rendering with proper escaping if HTML is allowed
         contentElement.innerHTML = post.content.replace(/\n/g, '<br>');
     }
     
@@ -76,19 +111,19 @@ function updatePostDetails(post) {
         });
     }
     
-    // Update like count
+    // UPDATING THE LIKE COUNTER
     const likeCountElement = document.getElementById('like-count');
     if (likeCountElement) {
         likeCountElement.textContent = post.likes_count || 0;
     }
     
-    // Update comment count in header
+    // UPDATING THE COMMENT COUNTER
     const commentCountElement = document.querySelector('h2#comments-heading');
     if (commentCountElement) {
         commentCountElement.textContent = `Comments (${post.comments_count || 0})`;
     }
     
-    // Update tags/categories if available
+    // UPDATING THE TAGS LIST (IF IS AVAILABLE)
     if (post.tags && post.tags.length > 0) {
         const tagsContainer = document.querySelector('.post-tags');
         if (tagsContainer) {
@@ -103,7 +138,7 @@ function updatePostDetails(post) {
         }
     }
     
-    // Update document title
+    // UPDATING THE PAGE TITLE
     document.title = `${post.title} - TINY STEPS FORUM`;
 }
 
@@ -120,7 +155,6 @@ function displayComments(comments) {
     }
     
     commentListElement.innerHTML = '';
-    
     comments.forEach(comment => {
         const commentElement = createCommentElement(comment);
         commentListElement.appendChild(commentElement);
@@ -165,20 +199,17 @@ async function handleCommentSubmit(event, postId) {
     
     try {
         showLoading('Posting your comment...');
-        
         const response = await api.addForumComment(postId, commentContent);
         
-        // Clear the form
+        // CLEARING THE FORM AND DISPLAYING THE NEW COMMENT ONE BY ONE
         form.reset();
-        
-        // Reload comments to show the new one
         const comments = await api.getForumPostComments(postId);
         displayComments(comments);
         
         hideLoading();
         showSuccess('Comment posted successfully!');
         
-        // Scroll to the new comment
+        // SCROLLS TO THE COMMENTS SECTION AFTER POSTING
         const commentsHeading = document.getElementById('comments-heading');
         if (commentsHeading) {
             commentsHeading.scrollIntoView({ behavior: 'smooth' });
@@ -348,7 +379,7 @@ function showMessage(message, type) {
     }, 5000);
 }
 
-// Helper function to prevent XSS
+// HELPER TO PREVENT XSS ATTACKS
 function escapeHtml(unsafe) {
     if (unsafe === null || unsafe === undefined) return '';
     

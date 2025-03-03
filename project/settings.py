@@ -25,7 +25,7 @@ DEBUG = True  # TRUE: FOR LOCAL HOST ONLY (CSS, IMGs AND MEDIA WILL APPEAR CORRE
 # ---------------------------------------------------------------
 # CONFIGURACIONES DE SEGURIDAD
 # ---------------------------------------------------------------
-ALLOWED_HOSTS = ['tinySteps-django.azurewebsites.net', '127.0.0.1']
+ALLOWED_HOSTS = ['tinySteps-django.azurewebsites.net', '127.0.0.1', 'localhost']
 
 CSRF_TRUSTED_ORIGINS = [
     'https://tinySteps-django.azurewebsites.net',  # URL de producción

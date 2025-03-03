@@ -1,7 +1,10 @@
+# Django core imports
 from django.contrib import messages
-from django.contrib.auth import login
-from django.contrib.auth import views as auth_views
+from django.contrib.auth import login, views as auth_views
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.contenttypes.models import ContentType
 from django.contrib.messages.views import SuccessMessageMixin
 from django.core.mail import send_mail
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
@@ -12,9 +15,6 @@ from django.template.loader import render_to_string
 from django.urls import reverse_lazy
 from django.views import generic
 from django.views.generic.edit import CreateView
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.contenttypes.models import ContentType
 
 # LOCAL IMPORTS
 from .forms import InfoRequest_Form, Milestone_Form
@@ -37,6 +37,9 @@ def index(request):
 
 def about(request):
     return render(request, 'about.html')
+
+def page_not_found(request, exception):
+    return render(request, '404.html', status=404)
 # -----------------------------------------------
 
 
@@ -63,13 +66,13 @@ class Login_View(auth_views.LoginView):
         if request.user.is_authenticated:
             return redirect('index')
         return super().get(request, *args, **kwargs)
-    
+
 class Logout_View(auth_views.LogoutView):
-    next_page = reverse_lazy('index')
+    next_page = 'index'
     
-    def get(self, request, *args, **kwargs):
-        messages.success(self.request, "Logout successful!")
-        return super().get(request, *args, **kwargs)
+    def dispatch(self, request, *args, **kwargs):
+            messages.success(request, 'You have been successfully logged out!')
+            return super().dispatch(request, *args, **kwargs)
 
 class Register_View(CreateView):
     form_class = UserCreationForm
