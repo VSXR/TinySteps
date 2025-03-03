@@ -4,7 +4,8 @@ from django.contrib.auth import views as auth_views
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.messages.views import SuccessMessageMixin
 from django.core.mail import send_mail
-from django.core.paginator import Paginator
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+from django.db.models import Q
 from django.http import Http404
 from django.shortcuts import render, redirect, get_object_or_404
 from django.template.loader import render_to_string
@@ -13,6 +14,7 @@ from django.views import generic
 from django.views.generic.edit import CreateView
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.contenttypes.models import ContentType
 
 # LOCAL IMPORTS
 from .forms import InfoRequest_Form, Milestone_Form
@@ -256,38 +258,149 @@ def add_comment(request, model_type, pk):
 # -- PARENTS FORUM FUNCTION-BASED VIEWS --
 # -----------------------------------------------
 def parents_forum_page(request):
-    forums_list = ParentsForum_Model.objects.all()
+    posts_list = ParentsForum_Model.objects.all()
     
     # Búsqueda por título
     query = request.GET.get('search')
     if query:
-        forums_list = forums_list.filter(title__icontains=query)
+        posts_list = posts_list.filter(title__icontains=query)
         
     # Filtrar por categoría
     category = request.GET.get('category')
     if category:
-        forums_list = forums_list.filter(category=category)
+        posts_list = posts_list.filter(category=category)
     
     # Ordenar resultados
     sort = request.GET.get('sort', 'created_at')
     if sort == 'title':
-        forums_list = forums_list.order_by('title')
+        posts_list = posts_list.order_by('title')
     else:
-        forums_list = forums_list.order_by('-created_at')
+        posts_list = posts_list.order_by('-created_at')
     
     # Paginación
-    paginator = Paginator(forums_list, 10)  # 10 foros por página
+    paginator = Paginator(posts_list, 10)
     page = request.GET.get('page')
-    forums = paginator.get_page(page)
+    try:
+        posts = paginator.get_page(page)
+    except (PageNotAnInteger, EmptyPage):
+        posts = paginator.page(1)
     
-    return render(request, 'parents_forum/parents_forum_page.html', {'forums': forums})
+    return render(request, 'parents_forum/parents_forum_page.html', {'posts': posts})
 
-def parents_forum_details(request, pk):
-    forum_details = get_object_or_404(ParentsForum_Model, pk=pk)
-    # Marcar como visto
-    if request.user.is_authenticated:
-        Notification_Model.objects.filter(user=request.user, forum=forum_details).update(read=True)
-    return render(request, 'parents_forum/forum_details.html', {'forum': forum_details})
+def search_posts(request):
+    query = request.GET.get('q', '')
+    if query:
+        posts_list = ParentsForum_Model.objects.filter(
+            Q(title__icontains=query) | 
+            Q(desc__icontains=query)
+        ).order_by('-created_at')
+    else:
+        posts_list = ParentsForum_Model.objects.all().order_by('-created_at')
+    
+    paginator = Paginator(posts_list, 10)
+    page = request.GET.get('page', 1)
+    try:
+        posts = paginator.page(page)
+    except (PageNotAnInteger, EmptyPage):
+        posts = paginator.page(1)
+    
+    return render(request, 'parents_forum/parents_forum_page.html', {
+        'posts': posts,
+        'query': query
+    })
+
+@login_required
+def start_post(request):
+    """Vista para mostrar el formulario de creación de un post nuevo"""
+    return render(request, 'parents_forum/views/forum_actions/start_post.html')
+
+@login_required
+def add_post(request):
+    """Vista para procesar la creación de un nuevo post"""
+    if request.method == 'POST':
+        title = request.POST.get('title')
+        content = request.POST.get('desc')
+        
+        if title and content:
+            post = ParentsForum_Model.objects.create(
+                title=title,
+                desc=content,
+                author=request.user
+            )
+            messages.success(request, "Post created successfully!")
+            return redirect('view_post', post_id=post.id)
+        else:
+            messages.error(request, "Please fill all required fields")
+            return redirect('start_post')
+    
+    return redirect('parents_forum')
+
+@login_required
+def edit_post(request, post_id):
+    """Vista para editar un post existente"""
+    post = get_object_or_404(ParentsForum_Model, id=post_id, author=request.user)
+    
+    if request.method == 'POST':
+        title = request.POST.get('title')
+        content = request.POST.get('desc')
+        
+        if title and content:
+            post.title = title
+            post.desc = content
+            post.save()
+            messages.success(request, "Post updated successfully!")
+            return redirect('view_post', post_id=post.id)
+        else:
+            messages.error(request, "Please fill all required fields")
+    
+    return render(request, 'parents_forum/views/forum_actions/edit_post.html', {'post': post})
+
+@login_required
+def delete_post(request, post_id):
+    """Vista para eliminar un post"""
+    post = get_object_or_404(ParentsForum_Model, id=post_id, author=request.user)
+    
+    if request.method == 'POST':
+        post.delete()
+        messages.success(request, "Post deleted successfully!")
+        return redirect('parents_forum')
+    
+    return render(request, 'parents_forum/views/forum_actions/delete_post.html', {'post': post})
+
+def view_post(request, post_id):
+    """Vista para ver un post específico y sus comentarios"""
+    post = get_object_or_404(ParentsForum_Model, id=post_id)
+    
+    # Obtener posts relacionados (por ejemplo, del mismo autor o con tags similares)
+    related_posts = ParentsForum_Model.objects.filter(author=post.author).exclude(id=post_id)[:4]
+    
+    return render(request, 'parents_forum/views/view_post.html', {
+        'post': post,
+        'related_posts': related_posts
+    })
+
+@login_required
+def add_post_comment(request, post_id):
+    """Vista para añadir un comentario a un post"""
+    post = get_object_or_404(ParentsForum_Model, id=post_id)
+    
+    if request.method == 'POST':
+        content = request.POST.get('content')
+        
+        if content:
+            # Crear el comentario usando el sistema genérico de contenidos
+            content_type = ContentType.objects.get_for_model(ParentsForum_Model)
+            Comment_Model.objects.create(
+                content_type=content_type,
+                object_id=post.id,
+                author=request.user,
+                text=content
+            )
+            messages.success(request, "Comment added successfully!")
+        else:
+            messages.error(request, "Comment text is required")
+            
+    return redirect('view_post', post_id=post_id)
 
 # -----------------------------------------------
 # -- PARENTS FORUM CLASS-VIEWS --

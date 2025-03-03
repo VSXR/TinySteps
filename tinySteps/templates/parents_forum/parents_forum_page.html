@@ -3,7 +3,6 @@
 
 {% block title %}TINY STEPS - PARENTS FORUM{% endblock %}
 
-{% comment %} TODO: IMPLEMENTAR LOGICA DE FILTROS DE CATEGORIAS, PAGINACION Y COMPROBAR forum_request O forum_requests (CUAL ME QUEDO) {% endcomment %}
 {% block main_contents %}
     <main id="main-content">
         <div class="container mt-4">
@@ -19,19 +18,19 @@
                 <div class="col-12 d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
                     <div class="forum-actions">
                         {% if user.is_authenticated %}
-                            <a href="{% url 'start_forum_request' %}" class="btn btn-primary w-100 w-md-auto" aria-label="Create a new post">
-                                <i class="fa-solid fa-plus" aria-hidden="true"></i> New Forum Request
+                            <a href="{% url 'start_post' %}" class="btn btn-primary w-100 w-md-auto" aria-label="Create a new post">
+                                <i class="fa-solid fa-plus" aria-hidden="true"></i> New Post
                             </a>
                         {% else %}
                             <a href="{% url 'login' %}" class="btn btn-outline-primary w-100 w-md-auto" aria-label="Login to create a post">
-                                <span class="d-none d-md-inline">Login to make a forum request</span>
-                                <span class="d-md-none">Login to make a forum request</span>
+                                <span class="d-none d-md-inline">Login to create a post</span>
+                                <span class="d-md-none">Login to create a post</span>
                             </a>
                         {% endif %}
                     </div>
                     <div class="forum-search">
-                        <form class="d-flex" role="search" aria-label="Search forum forum requests">
-                            <input class="form-control me-2" type="search" placeholder="Search forum requests" aria-label="Search forum requests">
+                        <form class="d-flex" role="search" action="{% url 'search_posts' %}" method="get" aria-label="Search forum posts">
+                            <input class="form-control me-2" type="search" name="q" placeholder="Search posts" aria-label="Search posts">
                             <button class="btn btn-outline-primary" type="submit">Search</button>
                         </form>
                     </div>
@@ -43,7 +42,25 @@
                 <h3 id="forum-categories" class="visually-hidden">Forum Categories</h3>
                 <div class="row mb-4">
                     <div class="col">
-                        <div class="row filter-categories" role="group" aria-label="Filter forum requests by category">
+
+                        <!-- Messages Container -->
+                        <div class="row">
+                            <div class="col">
+                                <div id="messages-container" class="messages mb-3" role="alert" aria-live="polite">
+                                    {% if messages %}
+                                        {% for message in messages %}
+                                            <div class="alert {% if message.tags %}alert-{{ message.tags }}{% else %}alert-info{% endif %} alert-dismissible fade show">
+                                                {{ message }}
+                                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                            </div>
+                                        {% endfor %}
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Filter Categories -->
+                        <div class="row filter-categories" role="group" aria-label="Filter posts by category">
                             <div class="col-6 col-sm-4 col-md-3 col-lg mb-2">
                                 <button class="btn btn-sm btn-outline-primary active w-100" data-filter="all">All Posts</button>
                             </div>
@@ -83,94 +100,100 @@
             </section>
 
             <!-- Forum Posts -->
-            <section aria-labelledby="forum-request-heading">
-                <h3 id="forum-request-heading" class="mb-4">Recent Discussions</h3>
+            <section aria-labelledby="posts-heading">
+                <h3 id="posts-heading" class="mb-4">Recent Discussions</h3>
                 <div class="row">
                     <div class="col">
-                        {% if forum_requests %}
-                            <div class="list-group forum-request">
-                                {% for forum_request in posts %}
-                                    <article class="list-group-item list-group-item-action forum-request p-3 mb-3">
-                                        <div class="d-flex w-100 justify-content-between align-items-center">
-                                            <h3 class="mb-2">
-                                                <a href="{% url 'view_forum_request' forum_request.id %}" class="forum-request-title">
-                                                    {{ forum_request.title }}
-                                                </a>
-                                            </h3>
-                                            <small class="text-muted">{{ forum_request.created_at|date:"d/M/Y" }}</small>
-                                        </div>
-                                        <div class="forum-request-preview mb-3">
-                                            <p>{{ forum_request.content|truncatechars:150 }}</p>
-                                        </div>
-                                        <div class="d-flex justify-content-between align-items-center">
-                                            <div class="forum-request-meta">
-                                                <small class="text-muted">
-                                                    Posted by <span class="fw-bold">{{ forum_request.author.username }}</span>
-                                                </small>
-                                                <div class="forum-request-tags mt-2">
-                                                    {% for tag in forum_request.tags.all %}
-                                                        <span class="badge bg-primary me-1">{{ tag.name }}</span>
-                                                    {% endfor %}
+                        <div id="forum-posts-container">
+                            {% if posts %}
+                                <div class="list-group posts">
+                                    {% for post in posts %}
+                                        <article class="list-group-item list-group-item-action post p-3 mb-3">
+                                            <!-- Contenido del post -->
+                                            <div class="d-flex w-100 justify-content-between align-items-center">
+                                                <h3 class="mb-2">
+                                                    <a href="{% url 'view_post' post.id %}" class="post-title">
+                                                        {{ post.title }}
+                                                    </a>
+                                                </h3>
+                                                <small class="text-muted">{{ post.created_at|date:"d/M/Y" }}</small>
+                                            </div>
+                                            <div class="post-preview mb-3">
+                                                <p>{{ post.content|truncatechars:150 }}</p>
+                                            </div>
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <div class="post-meta">
+                                                    <small class="text-muted">
+                                                        Posted by <span class="fw-bold">{{ post.author.username }}</span>
+                                                    </small>
+                                                    <div class="post-tags mt-2">
+                                                        {% for tag in post.tags.all %}
+                                                            <span class="badge bg-primary me-1">{{ tag.name }}</span>
+                                                        {% endfor %}
+                                                    </div>
+                                                </div>
+                                                <div class="post-stats d-flex align-items-center">
+                                                    <span class="me-3" title="Comments">
+                                                        <i class="fa-solid fa-comments" aria-hidden="true"></i>
+                                                        <span class="ms-1">{{ post.comments.count }}</span>
+                                                        <span class="visually-hidden">comments</span>
+                                                    </span>
+                                                    <span title="Likes">
+                                                        <i class="fa-solid fa-heart" aria-hidden="true"></i>
+                                                        <span class="ms-1">{{ post.likes.count }}</span>
+                                                        <span class="visually-hidden">likes</span>
+                                                    </span>
                                                 </div>
                                             </div>
-                                            <div class="forum-request-stats d-flex align-items-center">
-                                                <span class="me-3" title="Comments">
-                                                    <i class="fa-solid fa-comments" aria-hidden="true"></i>
-                                                    <span class="ms-1">{{ forum_request.comments.count }}</span>
-                                                    <span class="visually-hidden">comments</span>
-                                                </span>
-                                                <span title="Likes">
-                                                    <i class="fa-solid fa-heart" aria-hidden="true"></i>
-                                                    <span class="ms-1">{{ forum_request.likes.count }}</span>
-                                                    <span class="visually-hidden">likes</span>
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </article>
-                                {% endfor %}
-                            </div>
-                            
-                            <!-- Pagination -->
-                            <nav aria-label="Forum request pagination" class="my-4">
-                                <ul class="pagination justify-content-center">
-                                    {% if forum_requests.has_previous %}
-                                        <li class="page-item">
-                                            <a class="page-link" href="?page=1" aria-label="First page">
-                                                <span aria-hidden="true">&laquo;</span> First
-                                            </a>
+                                        </article>
+                                    {% endfor %}
+                                </div>
+                                
+                                <!-- Pagination -->
+                                <nav aria-label="Forum post pagination" class="my-4">
+                                    <ul class="pagination justify-content-center">
+                                        {% if posts.has_previous %}
+                                            <li class="page-item">
+                                                <a class="page-link" href="?page=1" aria-label="First page">
+                                                    <span aria-hidden="true">&laquo;</span> First
+                                                </a>
+                                            </li>
+                                            <li class="page-item">
+                                                <a class="page-link" href="?page={{ posts.previous_page_number }}" aria-label="Previous page">
+                                                    Previous
+                                                </a>
+                                            </li>
+                                        {% endif %}
+                                        
+                                        <li class="page-item active" aria-current="page">
+                                            <span class="page-link">
+                                                Page {{ posts.number }} of {{ posts.paginator.num_pages }}
+                                            </span>
                                         </li>
-                                        <li class="page-item">
-                                            <a class="page-link" href="?page={{ forum_requests.previous_page_number }}" aria-label="Previous page">
-                                                Previous
-                                            </a>
-                                        </li>
-                                    {% endif %}
-                                    
-                                    <li class="page-item active" aria-current="page">
-                                        <span class="page-link">
-                                            Page {{ forum_requests.number }} of {{ forum_requests.paginator.num_pages }}
-                                        </span>
-                                    </li>
-                                    
-                                    {% if forum_requests.has_next %}
-                                        <li class="page-item">
-                                            <a class="page-link" href="?page={{ forum_requests.next_page_number }}" aria-label="Next page">
-                                                Next
-                                            </a>
-                                        </li>
-                                        <li class="page-item">
-                                            <a class="page-link" href="?page={{ forum_requests.paginator.num_pages }}" aria-label="Last page">
-                                                Last <span aria-hidden="true">&raquo;</span>
-                                            </a>
-                                        </li>
-                                    {% endif %}
-                                </ul>
-                            </nav>
-                        {% else %}
-                            <div class="alert alert-info text-center" role="status">
-                                <p class="mb-0">No forum requests available yet, be the first to start a discussion!</p>
-                            </div>
-                        {% endif %}
+                                        
+                                        {% if posts.has_next %}
+                                            <li class="page-item">
+                                                <a class="page-link" href="?page={{ posts.next_page_number }}" aria-label="Next page">
+                                                    Next
+                                                </a>
+                                            </li>
+                                            <li class="page-item">
+                                                <a class="page-link" href="?page={{ posts.paginator.num_pages }}" aria-label="Last page">
+                                                    Last <span aria-hidden="true">&raquo;</span>
+                                                </a>
+                                            </li>
+                                        {% endif %}
+                                    </ul>
+                                </nav>
+                            {% else %}
+                                <div class="text-center loading-indicator">
+                                    <div class="spinner-border" role="status">
+                                        <span class="visually-hidden">Loading...</span>
+                                    </div>
+                                    <p>Loading forum posts...</p>
+                                </div>
+                            {% endif %}
+                        </div>
                     </div>
                 </div>
             </section>
@@ -193,3 +216,8 @@
         </div>
     </main>
 {% endblock main_contents %}
+
+{% block extra_js %}
+    {{ block.super }}
+    <script src="{% static 'res/javascript/parents_forum.js' %}"></script>
+{% endblock extra_js %}

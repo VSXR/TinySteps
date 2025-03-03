@@ -84,13 +84,14 @@ class ParentsForum_Model(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='forum_posts')
     desc = models.TextField(max_length=2000, null=False, blank=False)
     comments = GenericRelation(Comment_Model, related_query_name='forum')
+    likes = models.ManyToManyField(User, related_name='liked_posts', blank=True)
 
     def __str__(self):
         truncated_desc = (self.desc[:30] + "...") if len(self.desc) > 30 else self.desc
         return f"{self.title} - {truncated_desc}"
 
     def get_absolute_url(self):
-        return reverse('child_details', kwargs={'pk': self.pk})
+        return reverse('view_post', kwargs={'post_id': self.pk})
 # ------------------------------------------
 
 

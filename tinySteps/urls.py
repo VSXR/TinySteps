@@ -25,14 +25,14 @@ urlpatterns = [
     
 
     # RUTA PARA PARENTS FORUM
-    # TODO: ACABAR DE IMPLEMENTAR RUTAS PARA FORO CON FILTROS (EDAD ...) CORRECTAMENTE
-    path('parents-forum/', views.parents_forum_page, name='parents_forum'),
-    path('parents-forum/<int:pk>/', views.parents_forum_details, name='parents_forum_details'),
-
-    path('parents-forum/add-forum/', views.ParentsForum_Add_View.as_view(), name='add_forum'),
-    path('parents-forum/<int:pk>/update-forum/', views.ParentsForum_Update_View.as_view(), name='update_forum'),
-    path('parents-forum/<int:pk>/delete-forum/', views.ParentsForum_Delete_View.as_view(), name='delete_forum'),
-
+    path('parents_forum/', views.parents_forum_page, name='parents_forum'),
+    path('parents_forum/search/', views.search_posts, name='search_posts'),
+    path('parents_forum/posts/new/', views.start_post, name='start_post'),
+    path('parents_forum/posts/add/', views.add_post, name='add_post'),
+    path('parents_forum/posts/<int:post_id>/', views.view_post, name='view_post'),
+    path('parents_forum/posts/<int:post_id>/edit/', views.edit_post, name='edit_post'),
+    path('parents_forum/posts/<int:post_id>/delete/', views.delete_post, name='delete_post'),
+    path('parents_forum/posts/<int:post_id>/comment/', views.add_post_comment, name='add_comment'),
 
     # RUTA PARA GUIDES (LAS GUIAS LAS ESCRIBE, ELIMINA Y EDITA EL ADMIN)
     # TODO: ACABAR DE IMPLEMENTAR RUTAS PARA GUIDES CON FILTROS (EDAD ...) CORRECTAMENTE
