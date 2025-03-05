@@ -1,6 +1,6 @@
 from django.urls import path
 from . import views
-from django.http import HttpResponseNotFound
+from django.http import HttpResponseNotFound, Http404
 from django.contrib.auth import views as auth_views
 from django.shortcuts import render
 
@@ -8,7 +8,7 @@ def favicon_view(request):
     return HttpResponseNotFound("Favicon no encontrado")
 
 def page_404(request):
-    return render(request, '404.html')
+    raise Http404(request, '404.html', status=404)
 
 def test_404(request):
     return render(request, '404.html')
@@ -63,6 +63,6 @@ urlpatterns = [
     # OTRAS RUTAS
     path('favicon.ico', favicon_view), # FUNCIONA
 
-    path('page-404/', page_404, name='page_404'),
-    path('test-404/', test_404, name='test_404'),
+    path('page-404/', views.page_not_found, name='page_404'),
+    path('test-404/', page_404, name='test_404'),
 ]

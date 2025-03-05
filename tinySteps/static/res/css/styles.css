@@ -592,15 +592,20 @@ ul.messages li.error {
     text-align: center;
 }
 
-.list-group-item a {
-    border: 3px solid var(--text-dark);
-    box-sizing: border-box;
+.post-title {
+    border: none !important;
+    outline: none !important;
+    color: var(--link-color);
+    font-weight: 500;
+    text-decoration: none;
+    transition: color var(--transition-fast);
 }
 
-.list-group-item a:hover {
-    border: 3px solid var(--text-dark);
-    text-decoration: none;
-} 
+.post-title:hover {
+    color: var(--link-hover);
+    text-decoration: underline;
+}
+
 
 .view-destination-btn {
     margin: var(--space-lg) 0;

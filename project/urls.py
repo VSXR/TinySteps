@@ -1,6 +1,9 @@
 from django.contrib import admin
 from django.urls import path, include
 
+# Importamos la vista de error 404
+from tinySteps.views import page_not_found
+
 urlpatterns = [
     path('', include('tinySteps.urls')),
     path('api/', include('api.urls')),
