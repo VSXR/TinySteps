@@ -1,9 +1,11 @@
 from rest_framework import viewsets, permissions, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
+from django.http import Http404
+from django.contrib import messages
 
 from .serializers import (
     User_Serializer,
@@ -21,8 +23,7 @@ from tinySteps.models import (
     YourChild_Model,
     Milestone_Model,
     ParentsForum_Model,
-    ParentsGuides_Model,
-    NutritionGuides_Model,
+    Guides_Model,
     Comment_Model,
     Notification_Model,
     InfoRequest_Model
@@ -31,7 +32,7 @@ from tinySteps.models import (
 # Custom permissions
 class IsOwnerOrReadOnly(permissions.BasePermission):
     """
-    Custom permission to only allow owners of an object to edit it.
+    Custom permission to only allow owners of an object to edit it
     """
     def has_object_permission(self, request, view, obj):
         # Read permissions are allowed to any request
@@ -46,6 +47,24 @@ class IsOwnerOrReadOnly(permissions.BasePermission):
             
         return False
 
+# User API views
+class User_ViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = User.objects.all().order_by('-date_joined')
+    serializer_class = User_Serializer
+    permission_classes = [permissions.IsAdminUser]
+    
+    @action(detail=False, methods=['get'])
+    def me(self, request):
+        """Endpoint for getting the current authenticated user's information"""
+        if not request.user.is_authenticated:
+            return Response(
+                {'error': 'Authentication required'}, 
+                status=status.HTTP_401_UNAUTHORIZED
+            )
+        
+        serializer = self.get_serializer(request.user)
+        return Response(serializer.data)
+
 # Child API views
 class YourChild_ViewSet(viewsets.ModelViewSet):
     serializer_class = YourChild_Serializer
@@ -57,7 +76,7 @@ class YourChild_ViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
-# Cambiado de MilestoneViewSet a Milestone_ViewSet para mantener consistencia de nombres
+# Milestone API views
 class Milestone_ViewSet(viewsets.ModelViewSet):
     serializer_class = Milestone_Serializer
     permission_classes = [permissions.IsAuthenticated, IsOwnerOrReadOnly]
@@ -88,30 +107,27 @@ class ParentsForum_ViewSet(viewsets.ModelViewSet):
         serializer.save(author=self.request.user)
     
     @action(detail=True, methods=['post'])
-    def add_comment(self, request, pk=None):
-        forum = self.get_object()
-        text = request.data.get('text', '')
+    def add_comment(request, model_type, pk):
+        if model_type == 'forum':
+            obj = get_object_or_404(ParentsForum_Model, pk=pk)
+        elif model_type == 'parent_guide':
+            obj = get_object_or_404(Guides_Model, pk=pk, guide_type='parent')
+        elif model_type == 'nutrition_guide':
+            obj = get_object_or_404(Guides_Model, pk=pk, guide_type='nutrition')
+        else:
+            raise Http404("Invalid content type")
         
-        if not text:
-            return Response(
-                {'error': 'Comment text is required'}, 
-                status=status.HTTP_400_BAD_REQUEST
-            )
-            
-        # Get content type for forum model
-        content_type = ContentType.objects.get_for_model(ParentsForum_Model)
+        if request.method == 'POST':
+            text = request.POST.get('text')
+            if text:
+                Comment_Model.objects.create(
+                    content_object=obj,
+                    author=request.user,
+                    text=text
+                )
+                messages.success(request, "Comment added successfully.")
+            return redirect(obj.get_absolute_url())
         
-        # Create comment
-        comment = Comment_Model.objects.create(
-            content_type=content_type,
-            object_id=forum.id,
-            author=request.user,
-            text=text
-        )
-        
-        serializer = Comment_Serializer(comment)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
-    
     @action(detail=True, methods=['get'])
     def comments(self, request, pk=None):
         forum = self.get_object()
@@ -151,13 +167,13 @@ class ParentsForum_ViewSet(viewsets.ModelViewSet):
 
 # Guides API views
 class ParentsGuide_ViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = ParentsGuides_Model.objects.all().order_by('-created_at')
+    queryset = Guides_Model.objects.filter(guide_type='parent').order_by('-created_at')
     serializer_class = ParentsGuide_Serializer
     
     @action(detail=True, methods=['get'])
     def comments(self, request, pk=None):
         guide = self.get_object()
-        content_type = ContentType.objects.get_for_model(ParentsGuides_Model)
+        content_type = ContentType.objects.get_for_model(Guides_Model)
         comments = Comment_Model.objects.filter(
             content_type=content_type,
             object_id=guide.id
@@ -183,10 +199,7 @@ class ParentsGuide_ViewSet(viewsets.ReadOnlyModelViewSet):
                 status=status.HTTP_400_BAD_REQUEST
             )
             
-        # Get content type for guide model
-        content_type = ContentType.objects.get_for_model(ParentsGuides_Model)
-        
-        # Create comment
+        content_type = ContentType.objects.get_for_model(Guides_Model)
         comment = Comment_Model.objects.create(
             content_type=content_type,
             object_id=guide.id,
@@ -198,13 +211,13 @@ class ParentsGuide_ViewSet(viewsets.ReadOnlyModelViewSet):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 class NutritionGuide_ViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = NutritionGuides_Model.objects.all().order_by('-created_at')
+    queryset = Guides_Model.objects.filter(guide_type='nutrition').order_by('-created_at')
     serializer_class = NutritionGuide_Serializer
     
     @action(detail=True, methods=['get'])
     def comments(self, request, pk=None):
         guide = self.get_object()
-        content_type = ContentType.objects.get_for_model(NutritionGuides_Model)
+        content_type = ContentType.objects.get_for_model(Guides_Model)
         comments = Comment_Model.objects.filter(
             content_type=content_type,
             object_id=guide.id
@@ -230,10 +243,7 @@ class NutritionGuide_ViewSet(viewsets.ReadOnlyModelViewSet):
                 status=status.HTTP_400_BAD_REQUEST
             )
             
-        # Get content type for guide model
-        content_type = ContentType.objects.get_for_model(NutritionGuides_Model)
-        
-        # Create comment
+        content_type = ContentType.objects.get_for_model(Guides_Model)
         comment = Comment_Model.objects.create(
             content_type=content_type,
             object_id=guide.id,

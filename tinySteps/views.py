@@ -21,8 +21,9 @@ from .forms import InfoRequest_Form, Milestone_Form
 from .models import (
     InfoRequest_Model, 
     YourChild_Model, 
-    ParentsForum_Model, 
-    ParentsGuides_Model, 
+    ParentsForum_Model,
+    Guides_Model, # BASE MODEL FOR PARENTS AND NUTRITION GUIDES
+    ParentsGuides_Model,
     NutritionGuides_Model,
     Comment_Model,
     Milestone_Model,
@@ -97,7 +98,7 @@ class Register_View(CreateView):
 def dashboard(request):
     children = YourChild_Model.objects.filter(user=request.user)
     recent_forums = ParentsForum_Model.objects.all().order_by('-created_at')[:5]
-    recent_guides = ParentsGuides_Model.objects.all().order_by('-created_at')[:5]
+    recent_guides = Guides_Model.objects.filter(guide_type='parent').order_by('-created_at')[:5]
     
     return render(request, 'dashboard.html', {
         'children': children,
@@ -481,37 +482,40 @@ class ParentsForum_Delete_View(LoginRequiredMixin, SuccessMessageMixin, generic.
 # -----------------------------------------------
 # PAGINA GENERAL DE GUIAS
 def guides_page(request):
-    parents_guides = ParentsGuides_Model.objects.all()
-    nutrition_guides = NutritionGuides_Model.objects.all()
+    # Filter the guides by type
+    parent_guides = Guides_Model.objects.filter(guide_type='parent')
+    nutrition_guides = Guides_Model.objects.filter(guide_type='nutrition')
     return render(request, 'guides/guides_page.html', {
-        'parents_guides': parents_guides,
+        'parent_guides': parent_guides,
         'nutrition_guides': nutrition_guides
     })
 
-# PAGINA DE GUIAS PARA PADRES
 def parents_guides_page(request):
-    parents_guides = ParentsGuides_Model.objects.all()
-    return render(request, 'guides/views/parents_guides/parents_guides.html', {'parents_guides': parents_guides})
+    parents_guides = Guides_Model.objects.filter(guide_type='parent')
+    return render(request, 'guides/views/parents_guides/parents_guides.html', 
+                 {'parents_guides': parents_guides})
 
 def parent_guide_details(request, pk):
-    guide = get_object_or_404(ParentsGuides_Model, pk=pk)
-    return render(request, 'guides/views/parents_guides/view_parent_guide.html', {'guide': guide})
+    guide = get_object_or_404(Guides_Model, pk=pk, guide_type='parent')
+    return render(request, 'guides/views/parents_guides/view_parent_guide.html', 
+                 {'parent_guide': guide})
 
-# PAGINA DE GUIAS DE NUTRICION
 def nutrition_guides_page(request):
-    nutrition_guides = NutritionGuides_Model.objects.all()
-    return render(request, 'guides/views/nutrition_guides/nutrition_guides.html', {'nutrition_guides': nutrition_guides})
+    nutrition_guides = Guides_Model.objects.filter(guide_type='nutrition')
+    return render(request, 'guides/views/nutrition_guides/nutrition_guides.html', 
+                 {'nutrition_guides': nutrition_guides})
 
 def nutrition_guide_details(request, pk):
-    guide = get_object_or_404(NutritionGuides_Model, pk=pk)
-    return render(request, 'guides/views/nutrition_guides/view_nutrition_guide.html', {'guide': guide})
+    guide = get_object_or_404(Guides_Model, pk=pk, guide_type='nutrition')
+    return render(request, 'guides/views/nutrition_guides/view_nutrition_guide.html', 
+                 {'nutrition_guide': guide})
 # -----------------------------------------------
 
 
 # ------------------------------------
 # -- INFO REQUEST CLASS-VIEWS --
 # ------------------------------------
-class InfoRequestCreate(SuccessMessageMixin, generic.CreateView):
+class InfoRequestCreate_View(SuccessMessageMixin, generic.CreateView):
     template_name = 'info_request_create.html'
     model = InfoRequest_Model
     form_class = InfoRequest_Form

@@ -98,37 +98,58 @@ class ParentsForum_Model(models.Model):
 # ------------------------------------------
 # -- GUIDES MODELS --
 # ------------------------------------------
-class ParentsGuides_Model(models.Model):
+class Guides_Model(models.Model):
     title = models.CharField(max_length=100)
     created_at = models.DateTimeField(auto_now_add=True)
     author = models.CharField(max_length=100, null=False, blank=False)
     desc = models.TextField(max_length=2000, null=False, blank=False)
     image_url = models.CharField(max_length=200, default='images/others/default.jpg')
-    comments = GenericRelation(Comment_Model, related_query_name='parent_guide')
-
-    def __str__(self):
-        truncated_desc = (self.desc[:30] + "...") if len(self.desc) > 30 else self.desc
-        return f"{self.title} - {truncated_desc}"
-
-    def get_absolute_url(self):
-        return reverse('parents_guide_details', kwargs={'pk': self.pk})
     
-class NutritionGuides_Model(models.Model):
-    title = models.CharField(max_length=100)
-    created_at = models.DateTimeField(auto_now_add=True)
-    author = models.CharField(max_length=100, null=False, blank=False)
-    desc = models.TextField(max_length=2000, null=False, blank=False)
-    image_url = models.CharField(max_length=200, default='images/others/default.jpg')
-    comments = GenericRelation(Comment_Model, related_query_name='nutrition_guide')
-
+    GUIDE_TYPE_CHOICES = (
+        ('parent', 'Parent Guide'),
+        ('nutrition', 'Nutrition Guide'),
+    )
+    guide_type = models.CharField(max_length=20, choices=GUIDE_TYPE_CHOICES, default='parent')
+    
+    comments = GenericRelation(Comment_Model, related_query_name='guide')
+    
     def __str__(self):
         truncated_desc = (self.desc[:30] + "...") if len(self.desc) > 30 else self.desc
         return f"{self.title} - {truncated_desc}"
-
+    
     def get_absolute_url(self):
-        return reverse('nutrition_guide_details', kwargs={'pk': self.pk})
-# ------------------------------------------
+        if self.guide_type == 'parent':
+            return reverse('parents_guide_details', kwargs={'pk': self.pk})
+        elif self.guide_type == 'nutrition':
+            return reverse('nutrition_guide_details', kwargs={'pk': self.pk})
+        return reverse('guide_details', kwargs={'pk': self.pk})
 
+# MODELOS PROXY PARA FILTRAR LOS GUIDES POR TIPO
+# ------------------------------------------
+class ParentsGuides_Model(Guides_Model):
+    class Meta:
+        proxy = True
+        
+    def save(self, *args, **kwargs):
+        self.guide_type = 'parent'
+        super().save(*args, **kwargs)
+    
+    @classmethod
+    def get_queryset(cls):
+        return Guides_Model.objects.filter(guide_type='parent')
+        
+class NutritionGuides_Model(Guides_Model):
+    class Meta:
+        proxy = True
+        
+    def save(self, *args, **kwargs):
+        self.guide_type = 'nutrition'
+        super().save(*args, **kwargs)
+    
+    @classmethod
+    def get_queryset(cls):
+        return Guides_Model.objects.filter(guide_type='nutrition')
+# ------------------------------------------
 
 # ------------------------------------------
 # -- INFO REQUEST MODELS --

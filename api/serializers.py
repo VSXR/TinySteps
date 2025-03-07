@@ -5,8 +5,7 @@ from tinySteps.models import (
     YourChild_Model, 
     Milestone_Model, 
     ParentsForum_Model,
-    ParentsGuides_Model,
-    NutritionGuides_Model,
+    Guides_Model,
     Comment_Model,
     Notification_Model,
     InfoRequest_Model
@@ -64,8 +63,8 @@ class ParentsGuide_Serializer(serializers.ModelSerializer):
     comments_count = serializers.SerializerMethodField()
     
     class Meta:
-        model = ParentsGuides_Model
-        fields = ['id', 'title', 'content', 'image', 'created_at', 'comments_count']
+        model = Guides_Model
+        fields = ['id', 'title', 'desc', 'image_url', 'created_at', 'comments_count']
         
     def get_comments_count(self, obj):
         return obj.comments.count()
@@ -74,8 +73,8 @@ class NutritionGuide_Serializer(serializers.ModelSerializer):
     comments_count = serializers.SerializerMethodField()
     
     class Meta:
-        model = NutritionGuides_Model
-        fields = ['id', 'title', 'content', 'image', 'created_at', 'comments_count']
+        model = Guides_Model
+        fields = ['id', 'title', 'desc', 'image_url', 'created_at', 'comments_count']
         
     def get_comments_count(self, obj):
         return obj.comments.count()

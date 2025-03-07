@@ -1,0 +1,482 @@
+[
+    {
+        "title": "Sleep training methods - which one worked for you?",
+        "desc": "I'm struggling with my 6-month-old's sleep patterns. We've tried the Ferber method but had mixed results. Has anyone had success with other sleep training techniques? I'd love to hear what worked for your baby and how long it took to establish a good sleep routine.",
+        "category": "sleep"
+    },
+    {
+        "title": "Starting solid foods - best first foods?",
+        "desc": "My pediatrician says it's time to introduce solids to my 5-month-old, but I'm unsure where to start. Should I begin with rice cereal, fruits, or vegetables? Looking for recommendations on what worked well as first foods and any tips on how to introduce them successfully.",
+        "category": "food"
+    },
+    {
+        "title": "Diaper rash not clearing up - help!",
+        "desc": "My baby has had a persistent diaper rash for over a week despite trying different creams and more frequent changes. Has anyone dealt with stubborn diaper rash? What remedies or products finally worked for you? I'm worried it might be a yeast infection.",
+        "category": "health"
+    },
+    {
+        "title": "Transitioning from co-sleeping to crib",
+        "desc": "We've been co-sleeping with our 10-month-old since birth, but we'd like to transition her to her own crib now. Every attempt has resulted in hours of crying. Has anyone successfully made this transition? What strategies helped your baby adjust to sleeping independently?",
+        "category": "sleep"
+    },
+    {
+        "title": "Preparing for daycare - tips and advice",
+        "desc": "I'll be going back to work in a month and my 4-month-old will start daycare. I'm both anxious and feeling guilty about the transition. Parents who've been through this, how did you prepare your baby (and yourself)? Any recommendations for making the adjustment easier?",
+        "category": "care"
+    },
+    {
+        "title": "Baby not meeting developmental milestones",
+        "desc": "My 9-month-old isn't crawling yet while other babies his age are already pulling up to stand. The pediatrician says not to worry, but I can't help comparing. Did any of your children develop motor skills at their own pace? When should I be concerned?",
+        "category": "development"
+    },
+    {
+        "title": "Teething remedies that actually work",
+        "desc": "My little one is teething and seems miserable day and night. We've tried teething toys, cold washcloths, and even some over-the-counter gels, but nothing provides lasting relief. What teething remedies have worked best for your babies? Any natural solutions to recommend?",
+        "category": "health"
+    },
+    {
+        "title": "Traveling with a baby for the first time",
+        "desc": "We're planning our first family trip with our 8-month-old, a 3-hour flight followed by a 2-hour drive. I'm nervous about how she'll handle the travel. What are your essential tips for flying with an infant? How do you manage naps and feeding while traveling?",
+        "category": "travel"
+    },
+    {
+        "title": "How to handle well-meaning but outdated advice from grandparents",
+        "desc": "My in-laws are constantly offering baby care advice that contradicts current recommendations (like wanting to put cereal in bottles, using bumpers in the crib, etc.). How do you respectfully set boundaries with grandparents without creating family tension?",
+        "category": "family"
+    },
+    {
+        "title": "Baby-proofing essentials - what actually matters?",
+        "desc": "My 7-month-old is starting to become mobile, and I'm overwhelmed by all the baby-proofing products available. Which safety measures are absolutely necessary, and which ones might be overkill? What were your baby-proofing priorities?",
+        "category": "safety"
+    },
+    {
+        "title": "Dealing with separation anxiety",
+        "desc": "My 11-month-old has developed intense separation anxiety and cries desperately whenever I leave the room. It's making simple tasks difficult, and I can't even use the bathroom in peace. Is this phase normal and how long does it typically last? What helped your baby overcome this stage?",
+        "category": "development"
+    },
+    {
+        "title": "Baby won't take a bottle - urgent help needed!",
+        "desc": "I exclusively breastfed my 3-month-old, but now need to return to work. She absolutely refuses any bottle, no matter what type we try. I'm desperate and worried about leaving her with a caregiver. Has anyone successfully overcome bottle refusal? What finally worked?",
+        "category": "feeding"
+    },
+    {
+        "title": "Best books for early development",
+        "desc": "I want to start reading to my 4-month-old regularly. Are there specific types of books that are better for early development? Looking for recommendations on high-contrast books, interactive books, or anything that particularly engaged your young baby.",
+        "category": "development"
+    },
+    {
+        "title": "Baby suddenly refusing favorite foods",
+        "desc": "My 14-month-old used to eat everything, but suddenly has become extremely picky. Foods he loved last week are now tossed on the floor. Is this a normal phase? How do you handle meal times without making separate meals or stressing about nutrition?",
+        "category": "food"
+    },
+    {
+        "title": "Managing eczema in infants",
+        "desc": "My baby has developed eczema patches on her cheeks and behind her knees. The pediatrician prescribed a steroid cream, but I'm looking for more long-term management strategies. Has anyone identified specific triggers or found effective treatments for their baby's eczema?",
+        "category": "health"
+    },
+    {
+        "title": "Tips for flying solo with a baby",
+        "desc": "I need to fly across the country by myself with my 9-month-old. I'm anxious about managing everything alone - from getting through security to diaper changes in the tiny airplane bathroom. Any strategies from parents who have traveled solo with an infant?",
+        "category": "travel"
+    },
+    {
+        "title": "Dealing with a nursing strike",
+        "desc": "My 7-month-old has suddenly refused to breastfeed, though she'll take expressed milk from a bottle. This happened out of the blue, and I'm worried about our breastfeeding relationship ending before I was ready. Has anyone successfully overcome a nursing strike?",
+        "category": "feeding"
+    },
+    {
+        "title": "Should I be concerned about my baby's flat spot?",
+        "desc": "I've noticed my 4-month-old is developing a flat spot on the back of his head. How concerned should I be? Did anyone's baby have plagiocephaly that resolved without a helmet? What techniques helped reshape your baby's head?",
+        "category": "health"
+    },
+    {
+        "title": "Baby sign language - worth the effort?",
+        "desc": "I'm considering teaching my 6-month-old baby sign language to help with communication before she can talk. For parents who tried this, was it worth the effort? Which signs did your baby pick up first, and did it reduce frustration during the pre-verbal stage?",
+        "category": "development"
+    },
+    {
+        "title": "Transitioning from two naps to one",
+        "desc": "My 14-month-old seems to be fighting his afternoon nap, but gets overtired by evening with just a morning nap. How did you handle the transition from two naps to one? What schedule ended up working best for your toddler?",
+        "category": "sleep"
+    },
+    {
+        "title": "Best toys for encouraging development",
+        "desc": "With so many baby toys marketed as 'educational', I'm overwhelmed by choices. What toys actually engaged your baby and seemed to help their development? Looking for recommendations that aren't just battery-operated noise makers!",
+        "category": "development"
+    },
+    {
+        "title": "How to handle a baby who hates tummy time",
+        "desc": "My 3-month-old absolutely screams whenever we try tummy time. I know it's important for development, but it's becoming a stressful experience for both of us. Did anyone have success with a baby who initially hated tummy time? What approaches worked?",
+        "category": "development"
+    },
+    {
+        "title": "Transitioning from formula to whole milk",
+        "desc": "My baby is approaching his first birthday, and I'm wondering about the best way to transition from formula to whole milk. Should I mix them gradually? What if he doesn't like the taste? Would love to hear how this transition went for your little ones.",
+        "category": "feeding"
+    },
+    {
+        "title": "Baby grabbing and pulling hair - how to stop?",
+        "desc": "My 8-month-old has developed a strong grip and has started grabbing and pulling hair painfully. Saying 'no' or 'gentle' doesn't seem to register yet. How have you handled this phase without constantly wearing your hair up or avoiding close contact?",
+        "category": "behavior"
+    },
+    {
+        "title": "Tips for transitioning to a sippy cup",
+        "desc": "My 10-month-old is still using a bottle, but I'd like to introduce a sippy cup soon. Any tips on making this transition smoother? Which sippy cups worked best for your baby, and how did you encourage them to drink from it?",
+        "category": "feeding"
+    },
+    {
+        "title": "Baby's first haircut - when and how to do it?",
+        "desc": "My 1-year-old's hair is getting long and starting to get in his eyes. When did you decide it was time for your baby's first haircut? Did you go to a salon or try it at home? Any tips for making the experience less stressful for both baby and parent?",
+        "category": "care"
+    },
+    {
+        "title": "How to encourage independent play",
+        "desc": "My 11-month-old seems to need constant entertainment and gets fussy when I'm not actively playing with her. How can I encourage more independent playtime? What toys or activities have helped your baby play on their own for short periods?",
+        "category": "development"
+    },
+    {
+        "title": "Baby's first cold - how to provide relief?",
+        "desc": "My 6-month-old has caught her first cold and is congested and miserable. What are your go-to remedies for providing relief from cold symptoms in young babies? Any tips for helping them sleep better or making it easier for them to breathe?",
+        "category": "health"
+    },
+    {
+        "title": "Tips for transitioning to a toddler bed",
+        "desc": "My 2-year-old is starting to climb out of his crib, so it's time to transition to a toddler bed. I'm worried about how he'll handle the change and whether he'll stay in bed at night. Any tips for making this transition smoother and ensuring he stays in bed?",
+        "category": "sleep"
+    },
+    {
+        "title": "Baby's first words - what did they say?",
+        "desc": "I'm eagerly awaiting my baby's first words and wondering what to expect. What were your baby's first words, and at what age did they start talking? Did they have any cute mispronunciations or funny attempts at words?",
+        "category": "development"
+    },
+    {
+        "title": "How to handle a baby who hates the car seat",
+        "desc": "My 4-month-old screams as soon as we put her in the car seat, making every car ride a stressful experience. I've tried toys, mirrors, and soothing music, but nothing seems to help. How have you managed a baby who hates the car seat? Any tips for making car rides more bearable?",
+        "category": "travel"
+    },
+    {
+        "title": "Baby's first steps - how did you encourage walking?",
+        "desc": "My 11-month-old is cruising along furniture but seems hesitant to take those first independent steps. How did you encourage your baby to start walking? Were there specific activities or toys that motivated them to take those first steps?",
+        "category": "development"
+    },
+    {
+        "title": "How to handle a baby who hates bath time",
+        "desc": "My 7-month-old screams as soon as we put her in the bath, making the whole experience stressful for both of us. I've tried different water temperatures, toys, and even showering together, but nothing seems to help. How have you managed a baby who hates bath time?",
+        "category": "care"
+    },
+    {
+        "title": "Baby's first birthday party - tips and ideas",
+        "desc": "My baby's first birthday is coming up, and I want to make it special without going overboard. Any tips for planning a memorable first birthday party? What themes, decorations, or activities were a hit with your little one and guests?",
+        "category": "celebration"
+    },
+    {
+        "title": "How to handle a baby who hates being dressed",
+        "desc": "My 5-month-old cries and squirms every time I try to dress her, making getting ready a daily struggle. I've tried distracting her with toys, singing, and changing locations, but nothing seems to help. How have you managed a baby who hates getting dressed?",
+        "category": "care"
+    },
+    {
+        "title": "Baby's first swim - tips for a successful outing",
+        "desc": "I'm planning to take my 8-month-old swimming for the first time and want to make it a fun and safe experience. Any tips for baby's first swim? What should I pack, how can I keep her warm, and are there any safety precautions I should be aware of?",
+        "category": "care"
+    },
+    {
+        "title": "When to introduce allergenic foods?",
+        "desc": "I've heard conflicting advice about introducing potential allergens like peanuts, eggs, and fish to my 6-month-old. Some say introduce early, others say wait. What's the current recommendation, and how did you introduce these foods to your baby?",
+        "category": "food"
+    },
+    {
+        "title": "Managing screen time for babies",
+        "desc": "My mother-in-law always wants to show my 9-month-old videos on her phone. I've read about limiting screen time, but it's causing family tension. How do other parents handle screen time for babies under 1? What limits have you set?",
+        "category": "development"
+    },
+    {
+        "title": "Baby refuses to sit in high chair",
+        "desc": "Mealtimes have become a struggle because my 11-month-old suddenly hates being confined to her high chair. She arches her back and screams until we take her out. Any creative solutions for a baby who won't sit in their high chair?",
+        "category": "feeding"
+    },
+    {
+        "title": "Coping with postpartum hair loss",
+        "desc": "I'm 4 months postpartum and losing hair by the handful. It's starting to affect my confidence. When did your postpartum hair loss peak and how long before it improved? Any products or styles that helped disguise the thinning?",
+        "category": "health"
+    },
+    {
+        "title": "Starting a bedtime routine - what works best?",
+        "desc": "My 3-month-old doesn't have a consistent bedtime routine yet. I'd like to establish one to help signal that it's time to sleep. What bedtime routines worked for your babies? How long should the routine be at this age?",
+        "category": "sleep"
+    },
+    {
+        "title": "Tips for photographing baby milestones",
+        "desc": "I want to capture my baby's first year but I'm not a professional photographer. What setups, props, or techniques have helped you take great milestone photos at home? Any apps or services you recommend for preserving these memories?",
+        "category": "care"
+    },
+    {
+        "title": "Baby suddenly waking up multiple times at night",
+        "desc": "My 8-month-old was sleeping through the night but has suddenly started waking 3-4 times again. Could this be the 8-month sleep regression? How long did it last for your baby and what helped you get through it?",
+        "category": "sleep"
+    },
+    {
+        "title": "Surviving a road trip with a 6-month-old",
+        "desc": "We're planning an 8-hour drive to visit family with our 6-month-old. Should we drive straight through or break it up? What worked for keeping your baby content during long car rides? Any scheduling tips?",
+        "category": "travel"
+    },
+    {
+        "title": "Getting baby to nap somewhere other than your arms",
+        "desc": "My 2-month-old will only nap while being held. The moment I try to put him down, he wakes up crying. I'm exhausted and can't get anything done. How did you transition your contact napper to sleeping independently?",
+        "category": "sleep"
+    },
+    {
+        "title": "Dealing with baby's first fever",
+        "desc": "My 7-month-old has his first fever (101°F). The doctor said to monitor him, but I'm still worried. How do you know when a fever is serious enough to go to the ER? What helped your baby feel comfortable during a fever?",
+        "category": "health"
+    },
+    {
+        "title": "Balancing attention between baby and older children",
+        "desc": "Since having my baby 3 months ago, my 4-year-old has been acting out to get attention. I feel guilty that I can't give him the same focus as before. How do you balance meeting a baby's needs while still making older siblings feel special?",
+        "category": "family"
+    },
+    {
+        "title": "Baby hates the stroller - alternatives for getting out?",
+        "desc": "My 5-month-old screams whenever I put her in the stroller, which makes it difficult to go for walks or run errands. Has anyone else dealt with a stroller-hating baby? What carriers or alternatives worked for you?",
+        "category": "travel"
+    },
+    {
+        "title": "When to start brushing baby's teeth?",
+        "desc": "My 8-month-old just got her first tooth! When should I start brushing it, and what's the best way to do this with a squirmy baby? What toothbrushes or products worked well for introducing oral hygiene to your little one?",
+        "category": "health"
+    },
+    {
+        "title": "DIY baby food recipes and storage tips",
+        "desc": "I want to start making my own baby food for my 6-month-old but don't know where to begin. What fruits and vegetables did you start with? Any time-saving prep methods or favorite combinations your baby loved?",
+        "category": "food"
+    },
+    {
+        "title": "Baby not interested in crawling",
+        "desc": "My 10-month-old shows no interest in crawling and gets frustrated on her tummy. She scoots on her bottom instead. Should I be concerned she's skipping this milestone? How can I encourage crawling if she prefers other movement?",
+        "category": "development"
+    },
+    {
+        "title": "Managing visitors after baby's birth",
+        "desc": "We're expecting our first child next month and already feeling overwhelmed by family members who want to visit immediately. How did you manage visitor expectations after birth? How long did you wait before allowing visitors?",
+        "category": "family"
+    },
+    {
+        "title": "Best baby carriers for back support",
+        "desc": "I'm experiencing back pain from carrying my 15-pound 4-month-old. Which baby carriers provide the best support for parent's backs? Looking for recommendations that distribute weight evenly and work for longer wearing periods.",
+        "category": "care"
+    },
+    {
+        "title": "Baby suddenly refusing breast but takes bottle",
+        "desc": "My 5-month-old has started refusing to breastfeed but will happily take expressed milk from a bottle. I'm worried about nipple confusion and losing our breastfeeding relationship. Has anyone successfully overcome this preference for bottles?",
+        "category": "feeding"
+    },
+    {
+        "title": "Tips for trimming baby's nails safely",
+        "desc": "I'm terrified of cutting my 2-month-old's tiny fingernails. They're so sharp but she moves so much! What tools or techniques have worked best for safely trimming your baby's nails without causing injury?",
+        "category": "care"
+    },
+    {
+        "title": "Baby prefers one parent over the other",
+        "desc": "My 11-month-old has started strongly preferring me over my husband. She cries when he tries to hold her or put her to bed. My husband is feeling rejected and hurt. Is this normal development and how can we handle this phase?",
+        "category": "family"
+    },
+    {
+        "title": "Postpartum exercise - when and how to start?",
+        "desc": "I'm 8 weeks postpartum and cleared for exercise, but I'm exhausted and don't know where to begin. How did other moms ease back into fitness? Any postpartum-specific programs or routines that worked well while caring for a newborn?",
+        "category": "health"
+    },
+    {
+        "title": "Handling judgemental comments about parenting choices",
+        "desc": "I'm constantly receiving unsolicited advice and judgmental comments about everything from breastfeeding to how I dress my baby. How do you respond to people who criticize your parenting choices without damaging relationships?",
+        "category": "family"
+    },
+    {
+        "title": "Baby refusing to eat vegetables",
+        "desc": "My 9-month-old used to eat any vegetable I offered, but now refuses anything green. I've tried mixing with fruits, different preparations, and eating them myself, but no luck. Any creative ways you've successfully introduced vegetables to a resistant baby?",
+        "category": "food"
+    },
+    {
+        "title": "Setting up a nursery on a budget",
+        "desc": "We're expecting our first baby but have limited funds for nursery setup. What items were truly essential for your baby's room and which fancy items could you have skipped? Looking for budget-friendly nursery ideas and secondhand shopping tips.",
+        "category": "care"
+    },
+    {
+        "title": "Baby pulling to stand but can't get back down",
+        "desc": "My 10-month-old recently learned to pull herself up to standing, but doesn't know how to sit back down. She gets stuck standing and cries until I help her. Did your baby go through this phase and how did you teach them to get back down?",
+        "category": "development"
+    },
+    {
+        "title": "Worried about baby's weight gain",
+        "desc": "My 4-month-old has dropped from the 50th to the 15th percentile for weight. The doctor isn't concerned yet, but I'm anxious. Has anyone else had a baby who tracked on a lower curve? What helped improve weight gain if that was needed?",
+        "category": "health"
+    },
+    {
+        "title": "Surviving sleep deprivation with a newborn",
+        "desc": "I'm 3 weeks in with my first baby and the sleep deprivation is hitting hard. I feel like I'm in survival mode. How did other parents cope with extreme fatigue? Any practical tips for functioning when you're running on empty?",
+        "category": "sleep"
+    },
+    {
+        "title": "Choosing the right childcare option",
+        "desc": "I need to return to work in two months and am torn between daycare, nanny, or family care for my baby. How did you decide what childcare arrangement was best? What factors were most important in your decision?",
+        "category": "care"
+    },
+    {
+        "title": "Baby's first dental appointment - when and what to expect?",
+        "desc": "My baby has several teeth now, and I'm wondering when I should schedule her first dental visit. When did you take your child for their first checkup, and what was the experience like? Any tips for making it a positive experience?",
+        "category": "health"
+    },
+    {
+        "title": "Tracking baby's development - apps or journals?",
+        "desc": "I want to track my baby's milestones and development but not sure the best way. Do you recommend any particular apps or traditional baby books? What method of recording milestones worked best for your busy lifestyle?",
+        "category": "development"
+    },
+    {
+        "title": "Baby suddenly afraid of bath time",
+        "desc": "My 7-month-old used to love baths but has suddenly developed a fear of the tub and screams the entire time. This change happened overnight with no obvious cause. Has anyone experienced this sudden bath fear and found ways to make bathing enjoyable again?",
+        "category": "care"
+    },
+    {
+        "title": "Tips for flying internationally with a baby",
+        "desc": "We're planning a 12-hour international flight with our 9-month-old. I'm nervous about such a long flight, time zone changes, and sleeping arrangements. Has anyone done long-haul flights with an infant? What made the journey manageable?",
+        "category": "travel"
+    },
+    {
+        "title": "Managing baby's congestion without medication",
+        "desc": "My 3-month-old has congestion but is too young for cold medicine. The saline drops and bulb syringe help temporarily but don't provide lasting relief. What natural remedies have worked for your baby's congestion?",
+        "category": "health"
+    },
+    {
+        "title": "Introducing a lovey or comfort object",
+        "desc": "I'd like to introduce a comfort object to help my 6-month-old self-soothe at bedtime. When did you introduce a lovey or special toy? Any recommendations for safe options for younger babies?",
+        "category": "sleep"
+    },
+    {
+        "title": "Dealing with constipation after starting solids",
+        "desc": "Since starting solids two weeks ago, my 6-month-old has become constipated. She seems uncomfortable and her stools are hard. What foods helped regulate your baby's digestion when starting solids? Should I be concerned?",
+        "category": "health"
+    },
+    {
+        "title": "Baby fascinated by pets - safety concerns?",
+        "desc": "My 8-month-old is obsessed with our cat and constantly tries to grab his fur, tail, and whiskers. The cat is tolerant but I worry about scratching or safety issues. How have you managed baby-pet interactions safely?",
+        "category": "safety"
+    },
+    {
+        "title": "Creating a will and guardianship plans",
+        "desc": "Since becoming parents, my partner and I realize we need to create a will and designate guardians for our child. This feels overwhelming and emotional. How did you approach this important decision and what factors influenced your choice?",
+        "category": "family"
+    },
+    {
+        "title": "Best shoes for beginning walkers?",
+        "desc": "My 13-month-old is taking her first steps and I'm confused about footwear. Some say barefoot is best, others recommend specific supportive shoes. What shoes worked best for your new walker and did you notice any difference between types?",
+        "category": "development"
+    },
+    {
+        "title": "Surviving a stomach bug with a baby",
+        "desc": "My 10-month-old has his first stomach bug with vomiting and diarrhea. The pediatrician said to focus on hydration, but he's refusing fluids. How did you keep your baby hydrated during illness? When did you know it was time to seek medical care?",
+        "category": "health"
+    },
+    {
+        "title": "Baby loves daycare provider more than me",
+        "desc": "My 11-month-old lights up and gets more excited to see her daycare provider than me at pickup time. I know it's good that she loves her caregiver, but I can't help feeling hurt. Has anyone else experienced this and how did you handle these feelings?",
+        "category": "family"
+    },
+    {
+        "title": "Favorite sensory activities for 6-12 month olds",
+        "desc": "I want to provide more sensory experiences for my 8-month-old at home. What simple sensory play activities have your babies enjoyed? Looking for ideas that are developmentally appropriate and not too messy!",
+        "category": "development"
+    },
+    {
+        "title": "Managing Christmas with a baby - gift expectations",
+        "desc": "With our baby's first Christmas approaching, grandparents are asking what to get her. I'm worried about gift overload and too many toys. How did you handle family gift expectations and avoid being overwhelmed with too much stuff?",
+        "category": "celebration"
+    },
+    {
+        "title": "Baby shows no stranger anxiety",
+        "desc": "My 9-month-old happily goes to anyone who wants to hold her, even complete strangers. I've read that stranger anxiety is normal at this age, so I'm a bit concerned about her lack of caution. Is this something to worry about developmentally?",
+        "category": "development"
+    },
+    {
+        "title": "Tips for taking baby's temperature accurately",
+        "desc": "My 4-month-old feels warm but I'm struggling to get a consistent temperature reading. I've tried forehead, ear and underarm thermometers with different results each time. Which method is most accurate for babies and any tips for a squirmy infant?",
+        "category": "health"
+    },
+    {
+        "title": "Helping baby learn to use a straw cup",
+        "desc": "My 10-month-old doesn't understand how to drink from a straw cup. I've tried demonstrating, guiding the straw to her mouth, and different types of cups, but she just chews on the straw. What techniques worked for teaching your baby to use a straw?",
+        "category": "feeding"
+    },
+    {
+        "title": "Maintaining friendships after becoming a parent",
+        "desc": "Since having my baby 6 months ago, I've barely seen my childless friends. I miss adult interaction but struggle with the logistics and guilt of taking time away from baby. How have you maintained friendships after becoming a parent?",
+        "category": "family"
+    },
+    {
+        "title": "Baby has different nap schedule at daycare",
+        "desc": "My 8-month-old naps twice at home but only once at daycare. This is affecting his mood and evening routine. Has anyone successfully synchronized home/daycare schedules? Should I adjust our weekend routine to match daycare's schedule?",
+        "category": "sleep"
+    },
+    {
+        "title": "When do babies understand 'no'?",
+        "desc": "My 9-month-old has started touching everything dangerous - outlets, cords, the dog's tail - and doesn't respond when I say 'no.' At what age did your baby begin to understand basic commands or redirection? What techniques worked besides just baby-proofing?",
+        "category": "development"
+    },
+    {
+        "title": "Switching pediatricians - when and how?",
+        "desc": "I'm not comfortable with our current pediatrician's communication style and am considering switching doctors. How did you know it was time to find a new pediatrician? Any advice for finding one that's a good fit for your parenting approach?",
+        "category": "health"
+    },
+    {
+        "title": "Sleep training while room-sharing",
+        "desc": "We currently room-share with our 5-month-old but his frequent night wakings are affecting our sleep. Is it possible to sleep train while still sharing a room? What methods worked if you weren't ready to move baby to their own room?",
+        "category": "sleep"
+    },
+    {
+        "title": "Coping with postpartum body image issues",
+        "desc": "Eight months after giving birth, I still don't recognize my body and it's affecting my self-esteem. My clothes fit differently, I have stretch marks, and things just aren't where they used to be. How did other moms come to terms with postpartum body changes?",
+        "category": "health"
+    },
+    {
+        "title": "Safe sun protection for babies",
+        "desc": "Summer is approaching and I'm unsure about sun protection for my 4-month-old. I've heard conflicting advice about sunscreen usage for babies under 6 months. What sun protection methods worked best for your young baby?",
+        "category": "safety"
+    },
+    {
+        "title": "Preparing frozen meals before baby arrives",
+        "desc": "I'm 36 weeks pregnant and want to prepare some freezer meals for after baby arrives. Which meals worked best for easy reheating? How many should I prepare and any tips for efficient meal prep while heavily pregnant?",
+        "category": "food"
+    },
+    {
+        "title": "Managing baby's first haircut - when and how?",
+        "desc": "My 14-month-old has uneven hair growth that's starting to look untidy, but I'm nervous about his first haircut. When did you decide it was time? Did you use a professional children's salon or try it at home? Any tips for keeping a squirmy toddler still?",
+        "category": "care"
+    },
+    {
+        "title": "Baby only naps in moving car or stroller",
+        "desc": "My 5-month-old refuses to nap anywhere except in a moving car or stroller. I'm exhausted from driving or walking for every nap. Has anyone successfully transitioned their motion-dependent napper to sleeping in a crib?",
+        "category": "sleep"
+    },
+    {
+        "title": "Childproofing rental property - non-permanent solutions",
+        "desc": "We live in a rental and can't make permanent modifications for childproofing. With a newly mobile 9-month-old, I'm concerned about safety. What effective but non-permanent childproofing solutions worked in your rental home?",
+        "category": "safety"
+    },
+    {
+        "title": "Baby started daycare and is constantly sick",
+        "desc": "My 7-month-old started daycare a month ago and has been sick with different viruses almost continuously since then. Is this normal? How long did the 'daycare illness phase' last for your child and how did you manage work with a frequently sick baby?",
+        "category": "health"
+    },
+    {
+        "title": "When did your baby sleep through the night?",
+        "desc": "My 7-month-old still wakes 2-3 times each night for feeds. Friends suggest he should be sleeping through by now, which has me questioning if I'm doing something wrong. When did your baby naturally sleep through the night without sleep training?",
+        "category": "sleep"
+    },
+    {
+        "title": "Handling baby's first birthday during pandemic",
+        "desc": "My daughter's first birthday is approaching but COVID restrictions limit our celebration options. I want to make it special even if we can't have the party I envisioned. Any creative ideas for celebrating this milestone during pandemic limitations?",
+        "category": "celebration"
+    },
+    {
+        "title": "Struggling with breastfeeding aversion",
+        "desc": "I've been breastfeeding my 11-month-old but recently developed strong negative feelings during nursing sessions. I want to continue until at least 12 months but these feelings of aversion are intense. Has anyone experienced this and found ways to cope?",
+        "category": "feeding"
+    }
+]

@@ -50,7 +50,7 @@ urlpatterns = [
     path('guides/nutrition-guides/<int:pk>/', views.nutrition_guide_details, name='nutrition_guide_details'),
     
     # RUTA PARA LA PAGINA DE INFO REQUEST
-    path('info-request/', views.InfoRequestCreate.as_view(), name='info_request'),  # FUNCIONA
+    path('info-request/', views.InfoRequestCreate_View.as_view(), name='info_request'),  # FUNCIONA
 
     # RUTA ABOUT
     path('about/', views.about, name='about'), # FUNCIONA
