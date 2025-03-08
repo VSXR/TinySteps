@@ -68,3 +68,4 @@ class Milestone_Form(forms.ModelForm):
             'achieved_date': forms.DateInput(attrs={'type': 'date'}),
             'description': forms.Textarea(attrs={'rows': 4}),
         }
+

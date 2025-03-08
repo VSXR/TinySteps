@@ -140,7 +140,7 @@
                                                     </span>
                                                     <span title="Likes">
                                                         <i class="fa-solid fa-heart" aria-hidden="true"></i>
-                                                        <span class="ms-1">{{ post.likes.count }}</span>
+                                                        <span class="ms-1">{{ post.likes.count|default:"0" }}</span>
                                                         <span class="visually-hidden">likes</span>
                                                     </span>
                                                 </div>

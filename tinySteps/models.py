@@ -7,6 +7,7 @@ from django.db import models
 from django.urls import reverse
 from django.utils import timezone
 
+
 # ------------------------------------------
 # -- GENERIC COMMENT MODEL --
 # ------------------------------------------
@@ -33,6 +34,25 @@ class Comment_Model(models.Model):
 # ------------------------------------------
 
 # ------------------------------------------
+# -- GENERIC LIKE MODEL --
+# ------------------------------------------
+class Like_Model(models.Model):
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey('content_type', 'object_id')
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('content_type', 'object_id', 'user')
+        verbose_name = "Like"
+        verbose_name_plural = "Likes"
+    
+    def __str__(self):
+        return f"{self.user.username} liked {self.content_object}"
+# ------------------------------------------
+
+# ------------------------------------------
 # -- NOTIFICATION MODELS --
 # ------------------------------------------
 class Notification_Model(models.Model):
@@ -46,6 +66,10 @@ class Notification_Model(models.Model):
         
     def __str__(self):
         return f"{self.user.username} - {self.message[:30]}..."
+# ------------------------------------------
+
+# ------------------------------------------
+# -- TODO: USER PROFILE MODEL --
 # ------------------------------------------
 
 
@@ -103,13 +127,18 @@ class Milestone_Model(models.Model):
 # -- PARENTS FORUM MODELS --
 # ------------------------------------------
 class ParentsForum_Model(models.Model):
-    title = models.CharField(max_length=100)
-    created_at = models.DateTimeField(auto_now_add=True)
+    title = models.CharField(max_length=100, db_index=True)  # Add index for search
+    created_at = models.DateTimeField(auto_now_add=True, db_index=True)  # Add index for sorting
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='forum_posts')
     desc = models.TextField(max_length=2000, null=False, blank=False)
     comments = GenericRelation(Comment_Model, related_query_name='forum')
     likes = models.ManyToManyField(User, related_name='liked_posts', blank=True)
-
+    
+    class Meta:
+        indexes = [
+            models.Index(fields=['created_at', 'title']),
+        ]
+    
     def __str__(self):
         truncated_desc = (self.desc[:30] + "...") if len(self.desc) > 30 else self.desc
         return f"{self.title} - {truncated_desc}"

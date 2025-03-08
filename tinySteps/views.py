@@ -9,10 +9,13 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.messages.views import SuccessMessageMixin
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from django.core.mail import send_mail
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
-from django.db.models import Q
-from django.http import Http404
+from django.db import models
+from django.db.models import Q, Prefetch
+from django.http import Http404, JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy
@@ -34,6 +37,7 @@ from .models import (
     ParentsGuides_Model,
     NutritionGuides_Model,
     Comment_Model,
+    Like_Model,
     PasswordReset_Model,
     Milestone_Model,
     Notification_Model,
@@ -348,14 +352,74 @@ def add_comment(request, model_type, pk):
         return redirect(obj.get_absolute_url())
 # -----------------------------------------------
 
+# -----------------------------------------------
+# -- LIKES FUNCTION-BASED VIEWS --
+# -----------------------------------------------
+@login_required
+def like_toggle(request, content_type_id, object_id):
+    content_type = get_object_or_404(ContentType, id=content_type_id)
+    
+    try:
+        obj = content_type.get_object_for_this_type(id=object_id)
+        like_exists = Like_Model.objects.filter(
+            content_type=content_type,
+            object_id=object_id,
+            user=request.user
+        ).exists()
+        
+        if like_exists:
+            # Unlike
+            Like_Model.objects.filter(
+                content_type=content_type,
+                object_id=object_id,
+                user=request.user
+            ).delete()
+            liked = False
+        else:
+            # Like
+            Like_Model.objects.create(
+                content_type=content_type,
+                object_id=object_id,
+                user=request.user
+            )
+            liked = True
+        
+        likes_count = Like_Model.objects.filter(
+            content_type=content_type,
+            object_id=object_id
+        ).count()
+        
+        return JsonResponse({
+            'status': 'success',
+            'liked': liked,
+            'likes_count': likes_count
+        })
+        
+    except Exception as e:
+        logging.error(f"Error in like_toggle: {str(e)}")
+        return JsonResponse({
+            'status': 'error',
+            'message': 'An error occurred processing your request'
+        }, status=400)
+# -----------------------------------------------
 
 # -----------------------------------------------
 # -- PARENTS FORUM FUNCTION-BASED VIEWS --
 # -----------------------------------------------
 # TODO: IMPLEMENTAR LAS REVIEWS DE LOS POSTS Y LIKES  Y ORDENAMIENTO POR TIEMPO
 def parents_forum_page(request):
-    posts_list = ParentsForum_Model.objects.all()
+    # We use select_related and prefetch_related to avoid N+1 queries!
+    posts_list = ParentsForum_Model.objects.select_related('author').all()
+    content_type = ContentType.objects.get_for_model(ParentsForum_Model)
     
+    posts_list = posts_list.prefetch_related(
+        Prefetch('comments', 
+                 queryset=Comment_Model.objects.filter(
+                     content_type=content_type
+                 ).select_related('author')
+        )
+    )
+
     # Filtrar por búsqueda
     query = request.GET.get('search')
     if query:
@@ -370,6 +434,22 @@ def parents_forum_page(request):
     sort = request.GET.get('sort', 'created_at')
     if sort == 'title':
         posts_list = posts_list.order_by('title')
+    elif sort == 'most_liked':
+        content_type = ContentType.objects.get_for_model(ParentsForum_Model)
+        posts_list = posts_list.annotate(
+            likes_count=models.Count(
+                'like_model',
+                filter=models.Q(like_model__content_type=content_type)
+            )
+        ).order_by('-likes_count', '-created_at')
+    elif sort == 'most_commented':
+        content_type = ContentType.objects.get_for_model(ParentsForum_Model)
+        posts_list = posts_list.annotate(
+            comments_count=models.Count(
+                'comment_model',
+                filter=models.Q(comment_model__content_type=content_type)
+            )
+        ).order_by('-comments_count', '-created_at')
     else:
         posts_list = posts_list.order_by('-created_at')
     
@@ -381,7 +461,12 @@ def parents_forum_page(request):
     except (PageNotAnInteger, EmptyPage):
         posts = paginator.page(1)
     
-    return render(request, 'parents_forum/parents_forum_page.html', {'posts': posts})
+    return render(request, 'parents_forum/parents_forum_page.html', {
+        'posts': posts,
+        'selected_sort': sort,
+        'query': query,
+        'category': category
+    })
 
 def search_posts(request):
     query = request.GET.get('q', '')
@@ -447,33 +532,43 @@ def view_posts_list(request):
 
 @login_required
 def edit_post(request, post_id):
-    post = get_object_or_404(ParentsForum_Model, id=post_id, author=request.user)
+    post = get_object_or_404(ParentsForum_Model, id=post_id)
     
-    if request.method == 'POST':
-        title = request.POST.get('title')
-        content = request.POST.get('desc')
+    if request.user == post.author or request.user.is_staff or request.user.is_superuser:
+        if request.method == 'POST':
+            title = request.POST.get('title')
+            content = request.POST.get('desc')
+
+            if title and content:
+                post.title = title
+                post.desc = content
+                post.save()
+                messages.success(request, "Post updated successfully!")
+                return redirect('view_post', post_id=post.id)
+            else:
+                messages.error(request, "Please fill all required fields")
         
-        if title and content:
-            post.title = title
-            post.desc = content
-            post.save()
-            messages.success(request, "Post updated successfully!")
-            return redirect('view_post', post_id=post.id)
-        else:
-            messages.error(request, "Please fill all required fields")
-    
-    return render(request, 'parents_forum/views/forum_actions/edit_post.html', {'post': post})
+        return render(request, 'parents_forum/views/forum_actions/edit_post.html', {'post': post})
+    else:
+        messages.error(request, "You don't have permission to edit this post")
+        return redirect('parents_forum')
 
 @login_required
 def delete_post(request, post_id):
-    post = get_object_or_404(ParentsForum_Model, id=post_id, author=request.user)
+    # Buscar el post sin filtrar por autor
+    post = get_object_or_404(ParentsForum_Model, id=post_id)
     
-    if request.method == 'POST':
-        post.delete()
-        messages.success(request, "Post deleted successfully!")
+    # Verificar si el usuario es autor o administrador
+    if request.user == post.author or request.user.is_staff or request.user.is_superuser:
+        if request.method == 'POST':
+            post.delete()
+            messages.success(request, "Post deleted successfully!")
+            return redirect('parents_forum')
+        
+        return render(request, 'parents_forum/views/forum_actions/delete_post.html', {'post': post})
+    else:
+        messages.error(request, "You don't have permission to delete this post")
         return redirect('parents_forum')
-    
-    return render(request, 'parents_forum/views/forum_actions/delete_post.html', {'post': post})
 
 def view_post(request, post_id):
     post = get_object_or_404(ParentsForum_Model, id=post_id)
@@ -501,6 +596,58 @@ def add_post_comment(request, post_id):
             messages.error(request, "Please enter a comment.")
     
     return redirect('view_post', post_id=post.id)
+
+@login_required
+def forum_post_like_toggle(request, post_id):
+    if request.method != 'POST':
+        return JsonResponse({'status': 'error', 'message': 'Method not allowed'}, status=405)
+    
+    try:
+        post = get_object_or_404(ParentsForum_Model, pk=post_id)
+        content_type = ContentType.objects.get_for_model(ParentsForum_Model)
+        
+        # Check if user already liked this post
+        like_exists = Like_Model.objects.filter(
+            content_type=content_type,
+            object_id=post_id,
+            user=request.user
+        ).exists()
+        
+        if like_exists:
+            # Unlike
+            Like_Model.objects.filter(
+                content_type=content_type,
+                object_id=post_id,
+                user=request.user
+            ).delete()
+            liked = False
+        else:
+            # Like
+            Like_Model.objects.create(
+                content_type=content_type,
+                object_id=post_id,
+                user=request.user
+            )
+            liked = True
+        
+        # Get total likes count
+        likes_count = Like_Model.objects.filter(
+            content_type=content_type,
+            object_id=post_id
+        ).count()
+        
+        return JsonResponse({
+            'status': 'success',
+            'liked': liked,
+            'likes_count': likes_count
+        })
+        
+    except Exception as e:
+        return JsonResponse({
+            'status': 'error',
+            'message': 'An error occurred processing your request'
+        }, status=400)
+
 
 # -----------------------------------------------
 # -- PARENTS FORUM CLASS-VIEWS --
@@ -545,7 +692,7 @@ class ParentsForum_Update_View(LoginRequiredMixin, SuccessMessageMixin, generic.
 
 class ParentsForum_Delete_View(LoginRequiredMixin, SuccessMessageMixin, generic.DeleteView):
     login_url = 'login'
-    template_name = 'parents_forums/forum_confirm_delete.html'
+    template_name = 'parents_forum/views/forum_actions/delete_post.html'
     model = ParentsForum_Model
     success_url = reverse_lazy('parents_forum')
     success_message = "Forum deleted successfully!"
@@ -556,10 +703,18 @@ class ParentsForum_Delete_View(LoginRequiredMixin, SuccessMessageMixin, generic.
         return response
     
     def get_queryset(self):
+        # Permitir a administradores ver todos los posts
+        if self.request.user.is_staff or self.request.user.is_superuser:
+            return ParentsForum_Model.objects.all()
+        # Usuarios normales solo ven sus propios posts
         return super().get_queryset().filter(author=self.request.user)
     
     def get_object(self, queryset=None):
-        obj = super().get_object()
+        obj = super().get_object(queryset)
+        # Permitir a administradores acceder a cualquier post
+        if self.request.user.is_staff or self.request.user.is_superuser:
+            return obj
+        # Para usuarios normales, verificar si son autores
         if not obj.author == self.request.user:
             raise Http404
         return obj
@@ -625,3 +780,22 @@ class InfoRequest_View(SuccessMessageMixin, generic.CreateView):
             fail_silently=False,
         )
         return response
+# ------------------------------------
+
+# ------------------------------------
+# -- NOTIFICATIONS FUNCTION-BASED VIEWS --
+# ------------------------------------
+@receiver(post_save, sender=Comment_Model)
+def notify_post_author_of_new_comment(sender, instance, created, **kwargs):
+    if created and hasattr(instance.content_object, 'author'):
+        post_author = instance.content_object.author
+        if post_author != instance.author and post_author.email:
+            post_title = instance.content_object.title if hasattr(instance.content_object, 'title') else 'your content'
+            
+            send_mail(
+                f'New comment on {post_title}',
+                f'{instance.author.username} commented: "{instance.text[:100]}..."',
+                settings.DEFAULT_FROM_EMAIL,
+                [post_author.email],
+                fail_silently=True,
+            )

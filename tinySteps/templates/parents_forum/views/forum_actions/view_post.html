@@ -23,7 +23,7 @@
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h1 class="mb-0 fs-4">{{ post.title }}</h1>
                     <div>
-                        {% if user == post.author %}
+                        {% if user == post.author or user.is_staff or user.is_superuser %}
                             <a href="{% url 'edit_post' post.id %}" class="btn btn-sm btn-outline-primary" aria-label="Edit this post">
                                 <i class="fa-solid fa-edit" aria-hidden="true"></i> Edit
                             </a>
@@ -40,13 +40,18 @@
                         <div class="post-author">
                             <span class="fw-bold">Posted by:</span> {{ post.author.username }}
                         </div>
-                        <div class="post-date">
+                        <div class="post-date d-flex align-items-center">
+                            <button id="like-button" class="btn btn-outline-primary me-2 like-button" aria-label="Like this post" aria-pressed="false">
+                                <i class="fa-solid fa-heart" aria-hidden="true"></i>
+                                <span id="like-count" class="like-count">{{ post.likes_count|default:"0" }}</span>
+                                <span class="visually-hidden">likes</span>
+                            </button>
                             <time datetime="{{ post.created_at|date:'Y-m-d' }}">
                                 {{ post.created_at|date:"F j, Y" }}
                             </time>
                         </div>
                     </div>
-                    
+
                     <!-- Post content -->
                     <div class="post-content mb-4">
                         {{ post.desc|safe|linebreaks }}

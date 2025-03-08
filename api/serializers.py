@@ -11,12 +11,18 @@ from tinySteps.models import (
     InfoRequest_Model
 )
 
+###########################################################################
+# USUARIOS
+###########################################################################
 class User_Serializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['id', 'username', 'email', 'first_name', 'last_name']
         read_only_fields = ['id']
 
+###########################################################################
+# NIÑOS Y HITOS DE DESARROLLO
+###########################################################################
 class YourChild_Serializer(serializers.ModelSerializer):
     class Meta:
         model = YourChild_Model
@@ -29,6 +35,9 @@ class Milestone_Serializer(serializers.ModelSerializer):
         fields = '__all__'
         read_only_fields = ['id']
 
+###########################################################################
+# FOROS Y COMENTARIOS
+###########################################################################
 class Comment_Serializer(serializers.ModelSerializer):
     author_name = serializers.SerializerMethodField()
     
@@ -59,6 +68,9 @@ class ParentsForum_Serializer(serializers.ModelSerializer):
     def get_likes_count(self, obj):
         return obj.likes.count()
 
+###########################################################################
+# GUÍAS PARA PADRES Y NUTRICIÓN
+###########################################################################
 class ParentsGuide_Serializer(serializers.ModelSerializer):
     comments_count = serializers.SerializerMethodField()
     
@@ -79,12 +91,18 @@ class NutritionGuide_Serializer(serializers.ModelSerializer):
     def get_comments_count(self, obj):
         return obj.comments.count()
 
+###########################################################################
+# NOTIFICACIONES
+###########################################################################
 class Notification_Serializer(serializers.ModelSerializer):
     class Meta:
         model = Notification_Model
         fields = ['id', 'title', 'message', 'read', 'created_at']
         read_only_fields = ['id', 'created_at']
 
+###########################################################################
+# SOLICITUDES DE INFORMACIÓN
+###########################################################################
 class InfoRequest_Serializer(serializers.ModelSerializer):
     class Meta:
         model = InfoRequest_Model

@@ -606,6 +606,35 @@ ul.messages li.error {
     text-decoration: underline;
 }
 
+/* Post Likes */
+.like-button {
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.like-button.liked {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+    color: white;
+}
+
+.like-button:hover {
+    transform: scale(1.05);
+}
+
+.like-button i {
+    transition: transform 0.2s ease;
+}
+
+.like-button:hover i {
+    transform: scale(1.2);
+}
+
+.like-button.liked i {
+    color: white;
+}
 
 .view-destination-btn {
     margin: var(--space-lg) 0;

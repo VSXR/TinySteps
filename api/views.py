@@ -29,14 +29,20 @@ from tinySteps.models import (
     InfoRequest_Model
 )
 
-# Custom permissions
+###########################################################################
+# PERMISOS PERSONALIZADOS
+###########################################################################
 class IsOwnerOrReadOnly(permissions.BasePermission):
     """
-    Custom permission to only allow owners of an object to edit it
+    Custom permission to allow owners or admins to edit objects
     """
     def has_object_permission(self, request, view, obj):
         # Read permissions are allowed to any request
         if request.method in permissions.SAFE_METHODS:
+            return True
+
+        # Si el usuario es administrador, permitir cualquier operación
+        if request.user.is_staff or request.user.is_superuser:
             return True
 
         # Write permissions are only allowed to the owner
@@ -46,8 +52,46 @@ class IsOwnerOrReadOnly(permissions.BasePermission):
             return obj.author == request.user
             
         return False
+    
+class IsAdminOrOwnerOrReadOnly(permissions.BasePermission):
+    """
+    Object-level permission para permitir:
+    - Lectura a cualquier usuario autenticado
+    - Escritura al propietario
+    - Todas las acciones a administradores
+    """
+    def has_permission(self, request, view):
+        # Permitir GET, HEAD, OPTIONS a cualquier usuario
+        if request.method in permissions.SAFE_METHODS:
+            return request.user.is_authenticated
+            
+        # Permitir POST a usuarios autenticados y administradores
+        if request.method == 'POST':
+            return request.user.is_authenticated
+            
+        # Para otros métodos (PUT, PATCH, DELETE), comprobar permisos a nivel de objeto
+        return True
+    
+    def has_object_permission(self, request, view, obj):
+        # Lectura permitida para cualquier request autenticada
+        if request.method in permissions.SAFE_METHODS:
+            return request.user.is_authenticated
 
-# User API views
+        # Los administradores pueden hacer cualquier cosa
+        if request.user.is_staff or request.user.is_superuser:
+            return True
+
+        # El propietario puede editar sus propios objetos
+        if hasattr(obj, 'user'):
+            return obj.user == request.user
+        elif hasattr(obj, 'author'):
+            return obj.author == request.user
+            
+        return False
+
+###########################################################################
+# USUARIOS
+###########################################################################
 class User_ViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = User.objects.all().order_by('-date_joined')
     serializer_class = User_Serializer
@@ -65,10 +109,12 @@ class User_ViewSet(viewsets.ReadOnlyModelViewSet):
         serializer = self.get_serializer(request.user)
         return Response(serializer.data)
 
-# Child API views
+###########################################################################
+# NIÑOS Y HITOS DE DESARROLLO
+###########################################################################
 class YourChild_ViewSet(viewsets.ModelViewSet):
     serializer_class = YourChild_Serializer
-    permission_classes = [permissions.IsAuthenticated, IsOwnerOrReadOnly]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsAdminOrOwnerOrReadOnly]
     
     def get_queryset(self):
         return YourChild_Model.objects.filter(user=self.request.user)
@@ -76,10 +122,9 @@ class YourChild_ViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
-# Milestone API views
 class Milestone_ViewSet(viewsets.ModelViewSet):
     serializer_class = Milestone_Serializer
-    permission_classes = [permissions.IsAuthenticated, IsOwnerOrReadOnly]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsAdminOrOwnerOrReadOnly]
     
     def get_queryset(self):
         child_id = self.request.query_params.get('child', None)
@@ -95,10 +140,12 @@ class Milestone_ViewSet(viewsets.ModelViewSet):
         child = get_object_or_404(YourChild_Model, id=child_id, user=self.request.user)
         serializer.save(child=child)
 
-# Forum API views
+###########################################################################
+# FOROS Y COMENTARIOS
+###########################################################################
 class ParentsForum_ViewSet(viewsets.ModelViewSet):
     serializer_class = ParentsForum_Serializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsAdminOrOwnerOrReadOnly]
     
     def get_queryset(self):
         return ParentsForum_Model.objects.all().order_by('-created_at')
@@ -165,10 +212,13 @@ class ParentsForum_ViewSet(viewsets.ModelViewSet):
             'likes_count': forum.likes.count()
         })
 
-# Guides API views
-class ParentsGuide_ViewSet(viewsets.ReadOnlyModelViewSet):
+###########################################################################
+# GUÍAS PARA PADRES Y NUTRICIÓN
+###########################################################################
+class ParentsGuide_ViewSet(viewsets.ModelViewSet):  # Cambiar de ReadOnlyModelViewSet a ModelViewSet
     queryset = Guides_Model.objects.filter(guide_type='parent').order_by('-created_at')
     serializer_class = ParentsGuide_Serializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsAdminOrOwnerOrReadOnly]
     
     @action(detail=True, methods=['get'])
     def comments(self, request, pk=None):
@@ -210,9 +260,10 @@ class ParentsGuide_ViewSet(viewsets.ReadOnlyModelViewSet):
         serializer = Comment_Serializer(comment)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-class NutritionGuide_ViewSet(viewsets.ReadOnlyModelViewSet):
+class NutritionGuide_ViewSet(viewsets.ModelViewSet):  # Cambiar de ReadOnlyModelViewSet a ModelViewSet
     queryset = Guides_Model.objects.filter(guide_type='nutrition').order_by('-created_at')
     serializer_class = NutritionGuide_Serializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsAdminOrOwnerOrReadOnly]
     
     @action(detail=True, methods=['get'])
     def comments(self, request, pk=None):
@@ -254,7 +305,9 @@ class NutritionGuide_ViewSet(viewsets.ReadOnlyModelViewSet):
         serializer = Comment_Serializer(comment)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-# Notification API views
+###########################################################################
+# NOTIFICACIONES
+###########################################################################
 class Notification_ViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = Notification_Serializer
     permission_classes = [permissions.IsAuthenticated]
@@ -269,7 +322,9 @@ class Notification_ViewSet(viewsets.ReadOnlyModelViewSet):
         notification.save()
         return Response({'status': 'notification marked as read'})
 
-# Info Request API views
+###########################################################################
+# SOLICITUDES DE INFORMACIÓN
+###########################################################################
 class InfoRequest_ViewSet(viewsets.ModelViewSet):
     serializer_class = InfoRequest_Serializer
     

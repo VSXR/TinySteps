@@ -1,13 +1,8 @@
-"""
-Configuración de Django para el proyecto TinySteps
-"""
-# ---------------------------------------------------------------
-# IMPORTACIONES
-# ---------------------------------------------------------------
 import os
 import sys
 from pathlib import Path
 from django.contrib.messages import constants as messages
+from rest_framework.views import APIView, Response, status, exceptions
 
 # ---------------------------------------------------------------
 # CONFIGURACIONES BÁSICAS
@@ -195,20 +190,20 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'c4relecloud@gmail.com'
 EMAIL_HOST_PASSWORD = 'mnvp swyl hjgr pdyl'
 DEFAULT_FROM_EMAIL = 'c4relecloud@gmail.com'
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 # ---------------------------------------------------------------
-# CONFIGURACIÓN DE REST FRAMEWORK (opcional)
+# CONFIGURACIÓN DE REST FRAMEWORK
 # ---------------------------------------------------------------
-# Descomentar y configurar si necesitas personalizar REST Framework
-# REST_FRAMEWORK = {
-#     'DEFAULT_AUTHENTICATION_CLASSES': [
-#         'rest_framework.authentication.TokenAuthentication',
-#         'rest_framework.authentication.SessionAuthentication',
-#     ],
-#     'DEFAULT_PERMISSION_CLASSES': [
-#         'rest_framework.permissions.IsAuthenticated',
-#     ],
-#     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-#     'PAGE_SIZE': 10
-# }
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10,
+    'EXCEPTION_HANDLER': 'api.exceptions.custom_exception_handler'
+}

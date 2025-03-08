@@ -221,6 +221,7 @@ async function handleCommentSubmit(event, postId) {
     }
 }
 
+// Replace the existing handleLikePost function
 async function handleLikePost(postId) {
     if (!isAuthenticated()) {
         showLoginPrompt('Please log in to like this post');
@@ -228,27 +229,34 @@ async function handleLikePost(postId) {
     }
     
     try {
+        showLoading('Processing...');
         const response = await api.likeForumPost(postId);
+        hideLoading();
         
         // Update the like count in the UI
         const likeCount = document.getElementById('like-count');
-        if (likeCount) {
-            // If the API returns the new count, use it, otherwise just increment
-            if (response && response.likes_count !== undefined) {
-                likeCount.textContent = response.likes_count;
-            } else {
-                likeCount.textContent = parseInt(likeCount.textContent || '0') + 1;
-            }
+        if (likeCount && response && response.likes_count !== undefined) {
+            likeCount.textContent = response.likes_count;
         }
         
-        // Optional: Change button appearance to show it's been liked
+        // Update button appearance based on liked state
         const likeButton = document.getElementById('like-button');
-        if (likeButton) {
-            likeButton.classList.add('btn-primary');
-            likeButton.classList.remove('btn-outline-primary');
+        if (likeButton && response && response.liked !== undefined) {
+            if (response.liked) {
+                likeButton.classList.add('liked', 'btn-primary');
+                likeButton.classList.remove('btn-outline-primary');
+                likeButton.setAttribute('aria-pressed', 'true');
+                showSuccess('Post liked!');
+            } else {
+                likeButton.classList.remove('liked', 'btn-primary');
+                likeButton.classList.add('btn-outline-primary');
+                likeButton.setAttribute('aria-pressed', 'false');
+                showSuccess('Post unliked');
+            }
         }
     } catch (error) {
-        showError('Failed to like the post. Please try again.');
+        hideLoading();
+        showError('Failed to process your like. Please try again.');
         console.error('Error liking post:', error);
     }
 }

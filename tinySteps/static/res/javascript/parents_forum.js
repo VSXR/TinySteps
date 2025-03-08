@@ -140,6 +140,11 @@ function createPostElement(post) {
                     <span class="ms-1">${post.comments_count || 0}</span>
                     <span class="visually-hidden">comments</span>
                 </span>
+                <span title="Likes">
+                    <i class="fa-solid fa-heart" aria-hidden="true"></i>
+                    <span class="ms-1">${post.likes_count || 0}</span>
+                    <span class="visually-hidden">likes</span>
+                </span>
             </div>
         </div>
     `;

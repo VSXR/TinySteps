@@ -36,7 +36,8 @@ urlpatterns = [
     path('parents_forum/posts/<int:post_id>/edit/', views.edit_post, name='edit_post'),
     path('parents_forum/posts/<int:post_id>/delete/', views.delete_post, name='delete_post'),
     path('parents_forum/posts/<int:post_id>/comment/', views.add_post_comment, name='add_post_comment'),
-
+    path('parents_forum/posts/<int:post_id>/like/', views.forum_post_like_toggle, name='forum_post_like_toggle'),
+        
     # RUTA PARA GUIDES (LAS GUIAS LAS ESCRIBE, ELIMINA Y EDITA EL ADMIN)
     # TODO: ACABAR DE IMPLEMENTAR RUTAS PARA GUIDES CON FILTROS (EDAD ...) CORRECTAMENTE
     path('guides/', views.guides_page, name='guides'),
@@ -58,11 +59,19 @@ urlpatterns = [
     path('register/', views.Register_View.as_view(), name='register'), # FUNCIONA
     path('logout/', auth_views.LogoutView.as_view(next_page='index'), name='logout'), # FUNCIONA
    
-    # Password reset URLs
-    path('password/reset/', views.password_reset_request, name='password_reset'),
-    path('password/reset/done/', views.password_reset_done, name='password_reset_done'),
-    path('password/reset/confirm/<uuid:token>/', views.password_reset_confirm, name='password_reset_confirm'),
-    path('password/reset/complete/', views.password_reset_complete, name='password_reset_complete'),
+    # RESET PASSWORDs URLs
+    path('password/reset/', auth_views.PasswordResetView.as_view(
+        template_name='user_accounts/user_password/password_request.html', 
+        email_template_name='user_password/email_templates/reset_email.txt', 
+        subject_template_name='user_password/email_templates/reset_subject.txt', 
+        success_url='/password/reset/done/'), name='password_reset'),
+    path('password/reset/done/', auth_views.PasswordResetDoneView.as_view(
+        template_name='user_accounts/user_password/password_done.html'), name='password_reset_done'),
+    path('password/reset/confirm/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(
+        template_name='user_accounts/user_password/password_confirm.html', 
+        success_url='/password/reset/complete/'), name='password_reset_confirm'),
+    path('password/reset/complete/', auth_views.PasswordResetCompleteView.as_view(
+        template_name='user_accounts/user_password/password_complete.html'), name='password_reset_complete'),
 
     # OTRAS RUTAS
     path('favicon.ico', favicon_view), # FUNCIONA
