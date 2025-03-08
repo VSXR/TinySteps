@@ -1,9 +1,12 @@
-# Django core imports
+import logging
+from django import forms
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import login, views as auth_views
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.messages.views import SuccessMessageMixin
 from django.core.mail import send_mail
@@ -17,7 +20,12 @@ from django.views import generic
 from django.views.generic.edit import CreateView
 
 # LOCAL IMPORTS
-from .forms import InfoRequest_Form, Milestone_Form
+from .forms import (
+    InfoRequest_Form, 
+    Milestone_Form,
+    PasswordResetRequest_Form, 
+    PasswordResetConfirm_Form,
+)
 from .models import (
     InfoRequest_Model, 
     YourChild_Model, 
@@ -26,6 +34,7 @@ from .models import (
     ParentsGuides_Model,
     NutritionGuides_Model,
     Comment_Model,
+    PasswordReset_Model,
     Milestone_Model,
     Notification_Model,
 )
@@ -37,10 +46,10 @@ def index(request):
     return render(request, 'index.html')
 
 def about(request):
-    return render(request, 'about.html')
+    return render(request, 'about/about.html')
 
 def page_not_found(request, exception):
-    return render(request, '404.html', status=404)
+    return render(request, 'others/404.html', status=404)
 # -----------------------------------------------
 
 
@@ -48,7 +57,7 @@ def page_not_found(request, exception):
 # -- LOGIN, LOGOUT AND REGISTER CLASS-VIEWS --
 # -----------------------------------------------
 class Login_View(auth_views.LoginView):
-    template_name = 'user_accounts/users/login_page.html'
+    template_name = 'user_accounts/login_page.html'
     redirect_authenticated_user = True
     
     def get_success_url(self):
@@ -77,7 +86,7 @@ class Logout_View(auth_views.LogoutView):
 
 class Register_View(CreateView):
     form_class = UserCreationForm
-    template_name = 'user_accounts/users/register_page.html'
+    template_name = 'user_accounts/register_page.html'
     success_url = reverse_lazy('index')
     
     def get_success_url(self):
@@ -89,23 +98,92 @@ class Register_View(CreateView):
         messages.success(self.request, "Registration successful!")
         return super().form_valid(form)
 
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        if User.objects.filter(email=email).exists():
+            raise forms.ValidationError("This email is already registered. Please use a different email or try to log in.")
+        return email
+
     def get(self, request, *args, **kwargs):
         if request.user.is_authenticated:
             return redirect('index')
         return super().get(request, *args, **kwargs)
-
-@login_required
-def dashboard(request):
-    children = YourChild_Model.objects.filter(user=request.user)
-    recent_forums = ParentsForum_Model.objects.all().order_by('-created_at')[:5]
-    recent_guides = Guides_Model.objects.filter(guide_type='parent').order_by('-created_at')[:5]
-    
-    return render(request, 'dashboard.html', {
-        'children': children,
-        'recent_forums': recent_forums,
-        'recent_guides': recent_guides
-    })
 # -----------------------------------------------
+
+# ------------------------------------------
+# -- PASSWORD RESET VIEWS --
+# ------------------------------------------
+def password_reset_request(request):
+    if request.method == 'POST':
+        form = PasswordResetRequest_Form(request.POST)
+        if form.is_valid():
+            email = form.cleaned_data['email']
+            user_qs = User.objects.filter(email=email, is_active=True)
+            
+            if user_qs.exists():
+                user = user_qs.first()
+                token = PasswordReset_Model.objects.create(user=user)
+                subject = render_to_string('user_password/email_templates/reset_subject.txt')
+                subject = ''.join(subject.splitlines())
+                
+                context = {
+                    'user': user,
+                    'token': token.token,
+                    'reset_url': request.build_absolute_uri(f'/password/reset/confirm/{token.token}/'),
+                }
+                email_text = render_to_string('user_password/email_templates/reset_email.txt', context)
+                
+                send_mail(
+                    subject,
+                    email_text,
+                    settings.DEFAULT_FROM_EMAIL,
+                    [user.email],
+                    fail_silently=False,
+                )
+                messages.success(request, "Password reset email sent. Please check your inbox.")
+            
+            return redirect('password_reset_done')
+    else:
+        form = PasswordResetRequest_Form()
+    
+    return render(request, 'user_accounts/user_password/password_request.html', {'form': form})
+
+def password_reset_done(request):
+    return render(request, 'user_accounts/user_password/password_done.html')
+
+def password_reset_confirm(request, token):
+    try:
+        token_obj = PasswordReset_Model.objects.get(token=token, is_used=False)
+        if token_obj.is_expired:
+            messages.error(request, "Password reset link has expired. Please request a new one.")
+            return render(request, 'user_accounts/user_password/password_confirm.html', {'validlink': False})
+        
+        user = token_obj.user
+        if request.method == 'POST':
+            form = PasswordResetConfirm_Form(user, request.POST)
+            if form.is_valid():
+                form.save()
+                token_obj.is_used = True
+                token_obj.save()
+                
+                messages.success(request, "Your password has been set. You can log in now with your new password.")
+                return redirect('password_reset_complete')
+        else:
+            form = PasswordResetConfirm_Form(user)
+        
+        return render(request, 'user_accounts/user_password/password_confirm.html', {
+            'form': form, 
+            'validlink': True,
+            'token': token
+        })
+        
+    except (PasswordReset_Model.DoesNotExist, ValueError):
+        messages.error(request, "The password reset link was invalid, possibly because it has already been used.")
+        return render(request, 'user_accounts/user_password/password_confirm.html', {'validlink': False})
+
+def password_reset_complete(request):
+    return render(request, 'user_accounts/user_password/password_complete.html')
+# ------------------------------------------
 
 
 # -----------------------------------------------
@@ -137,6 +215,19 @@ def add_milestone(request, child_id):
         form = Milestone_Form()
     
     return render(request, 'your_children/add_milestone.html', {'form': form, 'child': child})
+
+@login_required
+def dashboard(request):
+    children = YourChild_Model.objects.filter(user=request.user)
+    recent_forums = ParentsForum_Model.objects.all().order_by('-created_at')[:5]
+    recent_guides = Guides_Model.objects.filter(guide_type='parent').order_by('-created_at')[:5]
+    
+    return render(request, 'dashboard.html', {
+        'children': children,
+        'recent_forums': recent_forums,
+        'recent_guides': recent_guides
+    })
+# -----------------------------------------------
 
 # -----------------------------------------------
 # -- YOUR CHILDREN CLASS-VIEWS --
@@ -261,10 +352,11 @@ def add_comment(request, model_type, pk):
 # -----------------------------------------------
 # -- PARENTS FORUM FUNCTION-BASED VIEWS --
 # -----------------------------------------------
+# TODO: IMPLEMENTAR LAS REVIEWS DE LOS POSTS Y LIKES  Y ORDENAMIENTO POR TIEMPO
 def parents_forum_page(request):
     posts_list = ParentsForum_Model.objects.all()
     
-    # Búsqueda por título
+    # Filtrar por búsqueda
     query = request.GET.get('search')
     if query:
         posts_list = posts_list.filter(title__icontains=query)
@@ -482,7 +574,6 @@ class ParentsForum_Delete_View(LoginRequiredMixin, SuccessMessageMixin, generic.
 # -----------------------------------------------
 # PAGINA GENERAL DE GUIAS
 def guides_page(request):
-    # Filter the guides by type
     parent_guides = Guides_Model.objects.filter(guide_type='parent')
     nutrition_guides = Guides_Model.objects.filter(guide_type='nutrition')
     return render(request, 'guides/guides_page.html', {
@@ -492,31 +583,27 @@ def guides_page(request):
 
 def parents_guides_page(request):
     parents_guides = Guides_Model.objects.filter(guide_type='parent')
-    return render(request, 'guides/views/parents_guides/parents_guides.html', 
-                 {'parents_guides': parents_guides})
+    return render(request, 'guides/views/parents_guides/parents_guides.html', {'parents_guides': parents_guides})
 
 def parent_guide_details(request, pk):
     guide = get_object_or_404(Guides_Model, pk=pk, guide_type='parent')
-    return render(request, 'guides/views/parents_guides/view_parent_guide.html', 
-                 {'parent_guide': guide})
+    return render(request, 'guides/views/parents_guides/view_parent_guide.html', {'parent_guide': guide})
 
 def nutrition_guides_page(request):
     nutrition_guides = Guides_Model.objects.filter(guide_type='nutrition')
-    return render(request, 'guides/views/nutrition_guides/nutrition_guides.html', 
-                 {'nutrition_guides': nutrition_guides})
+    return render(request, 'guides/views/nutrition_guides/nutrition_guides.html', {'nutrition_guides': nutrition_guides})
 
 def nutrition_guide_details(request, pk):
     guide = get_object_or_404(Guides_Model, pk=pk, guide_type='nutrition')
-    return render(request, 'guides/views/nutrition_guides/view_nutrition_guide.html', 
-                 {'nutrition_guide': guide})
+    return render(request, 'guides/views/nutrition_guides/view_nutrition_guide.html', {'nutrition_guide': guide})
 # -----------------------------------------------
 
 
 # ------------------------------------
 # -- INFO REQUEST CLASS-VIEWS --
 # ------------------------------------
-class InfoRequestCreate_View(SuccessMessageMixin, generic.CreateView):
-    template_name = 'info_request_create.html'
+class InfoRequest_View(SuccessMessageMixin, generic.CreateView):
+    template_name = 'info_request/info_request_form.html'
     model = InfoRequest_Model
     form_class = InfoRequest_Form
     success_message = "Thank you, %(name)s! Your request has been sent successfully. Check your email for more information!"
@@ -526,8 +613,8 @@ class InfoRequestCreate_View(SuccessMessageMixin, generic.CreateView):
         response = super().form_valid(form)
         # ENVIAMOS EL CORREO ELECTRONICO
         info_request = form.instance
-        subject = 'Info Request Received'
-        message = render_to_string('info_request_email.txt', {
+        subject = 'Info Request Received - Tiny Steps'
+        message = render_to_string('info_request/email_templates/info_request_email.txt', {
             'name': info_request.name,
         })
         send_mail(

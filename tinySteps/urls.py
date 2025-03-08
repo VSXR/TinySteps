@@ -13,7 +13,6 @@ def page_404(request):
 def test_404(request):
     return render(request, '404.html')
 
-
 urlpatterns = [
     # RUTA PARA LA PAGINA PRINCIPAL
     path('', views.index, name='index'), # FUNCIONA
@@ -29,7 +28,6 @@ urlpatterns = [
     path('your-children/<int:pk>/needs/calendar/', views.YourChild_Calendar_View.as_view(), name='child_calendar'),
     path('your-children/<int:pk>/needs/vaccine-card/', views.YourChild_VaccineCard_View.as_view(), name='child_vaccine_card'),
     
-
     # RUTA PARA PARENTS FORUM
     path('parents_forum/', views.parents_forum_page, name='parents_forum'),
     path('parents_forum/search/', views.search_posts, name='search_posts'),
@@ -50,16 +48,22 @@ urlpatterns = [
     path('guides/nutrition-guides/<int:pk>/', views.nutrition_guide_details, name='nutrition_guide_details'),
     
     # RUTA PARA LA PAGINA DE INFO REQUEST
-    path('info-request/', views.InfoRequestCreate_View.as_view(), name='info_request'),  # FUNCIONA
+    path('info-request/', views.InfoRequest_View.as_view(), name='info_request'),  # FUNCIONA
 
     # RUTA ABOUT
     path('about/', views.about, name='about'), # FUNCIONA
 
-   # RUTAS PARA LOGIN Y REGISTRO
+    # RUTAS PARA LOGIN Y REGISTRO
     path('login/', views.Login_View.as_view(), name='login'), # FUNCIONA
     path('register/', views.Register_View.as_view(), name='register'), # FUNCIONA
     path('logout/', auth_views.LogoutView.as_view(next_page='index'), name='logout'), # FUNCIONA
-    
+   
+    # Password reset URLs
+    path('password/reset/', views.password_reset_request, name='password_reset'),
+    path('password/reset/done/', views.password_reset_done, name='password_reset_done'),
+    path('password/reset/confirm/<uuid:token>/', views.password_reset_confirm, name='password_reset_confirm'),
+    path('password/reset/complete/', views.password_reset_complete, name='password_reset_complete'),
+
     # OTRAS RUTAS
     path('favicon.ico', favicon_view), # FUNCIONA
 

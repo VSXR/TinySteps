@@ -1,4 +1,4 @@
-Hello,
+Hello {{ user.username }},
 
 You're receiving this email because you requested a password reset for your TinySteps account.
 

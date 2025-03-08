@@ -1,37 +1,11 @@
+import uuid
+from datetime import timedelta
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.urls import reverse
-
-# ------------------------------------------
-# -- CHILD MODELS --
-# ------------------------------------------
-class YourChild_Model(models.Model):
-    name = models.CharField(unique=True, null=False, blank=False, max_length=50)
-    second_name = models.CharField(max_length=50, null=True, blank=True)
-    birth_date = models.DateField(null=False, blank=False)
-    image_url = models.URLField(max_length=200, null=False, blank=False)
-    age = models.IntegerField(null=False, blank=False)
-    weight = models.FloatField(null=True, blank=True)
-    height = models.FloatField(null=True, blank=True)
-    gender = models.CharField(max_length=1, null=False, blank=False)
-    desc = models.TextField(max_length=2000, null=True, blank=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='children')
-
-    def __str__(self):
-        return self.name
-    
-    def get_absolute_url(self):
-        return reverse('child_details', kwargs={'pk': self.pk})
-
-class Milestone_Model(models.Model):
-    child = models.ForeignKey(YourChild_Model, on_delete=models.CASCADE, related_name='milestones')
-    title = models.CharField(max_length=100)
-    achieved_date = models.DateField()
-    description = models.TextField()
-    photo = models.ImageField(upload_to='milestone_photos/', blank=True, null=True)
-# ------------------------------------------
+from django.utils import timezone
 
 # ------------------------------------------
 # -- GENERIC COMMENT MODEL --
@@ -76,6 +50,56 @@ class Notification_Model(models.Model):
 
 
 # ------------------------------------------
+# -- PASSWORD RESET MODEL --
+# ------------------------------------------
+class PasswordReset_Model(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='password_reset_tokens')
+    token = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    is_used = models.BooleanField(default=False)
+    
+    def __str__(self):
+        return f"Password reset token for {self.user.username}"
+    
+    @property
+    def is_expired(self):
+        expiry_time = self.created_at + timedelta(hours=24)
+        return timezone.now() > expiry_time
+    
+    def get_absolute_url(self):
+        return reverse('password_reset_confirm', kwargs={'token': self.token})
+# ------------------------------------------
+
+# ------------------------------------------
+# -- CHILD MODELS --
+# ------------------------------------------
+class YourChild_Model(models.Model):
+    name = models.CharField(unique=True, null=False, blank=False, max_length=50)
+    second_name = models.CharField(max_length=50, null=True, blank=True)
+    birth_date = models.DateField(null=False, blank=False)
+    image_url = models.URLField(max_length=200, null=False, blank=False)
+    age = models.IntegerField(null=False, blank=False)
+    weight = models.FloatField(null=True, blank=True)
+    height = models.FloatField(null=True, blank=True)
+    gender = models.CharField(max_length=1, null=False, blank=False)
+    desc = models.TextField(max_length=2000, null=True, blank=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='children')
+
+    def __str__(self):
+        return self.name
+    
+    def get_absolute_url(self):
+        return reverse('child_details', kwargs={'pk': self.pk})
+
+class Milestone_Model(models.Model):
+    child = models.ForeignKey(YourChild_Model, on_delete=models.CASCADE, related_name='milestones')
+    title = models.CharField(max_length=100)
+    achieved_date = models.DateField()
+    description = models.TextField()
+    photo = models.ImageField(upload_to='milestone_photos/', blank=True, null=True)
+# ------------------------------------------
+
+# ------------------------------------------
 # -- PARENTS FORUM MODELS --
 # ------------------------------------------
 class ParentsForum_Model(models.Model):
@@ -94,9 +118,8 @@ class ParentsForum_Model(models.Model):
         return reverse('view_post', kwargs={'post_id': self.pk})
 # ------------------------------------------
 
-
 # ------------------------------------------
-# -- GUIDES MODELS --
+# -- GUIDES MODELS (USA HERENCIA) --
 # ------------------------------------------
 class Guides_Model(models.Model):
     title = models.CharField(max_length=100)
