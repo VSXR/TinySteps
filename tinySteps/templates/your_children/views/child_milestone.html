@@ -42,44 +42,47 @@
             <div class="row justify-content-center">
                 <div class="col-md-8">
                     <div class="card shadow-sm">
+                        <div class="card-header bg-light">
+                            <h2 class="fs-5 mb-0">Milestone Details</h2>
+                        </div>
                         <div class="card-body">
-                            <form method="post" enctype="multipart/form-data" novalidate aria-labelledby="form-heading">
-                                <h2 id="form-heading" class="fs-5 mb-3">Milestone Details</h2>
+                            <form method="post" enctype="multipart/form-data" novalidate>
                                 {% csrf_token %}
                                 
+                                {% if form.non_field_errors %}
+                                    <div class="alert alert-danger">
+                                        {% for error in form.non_field_errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                                
                                 <div class="mb-3">
-                                    <label for="id_title" class="form-label">Title <span class="text-danger">*</span>
-                                        <span class="visually-hidden">(required)</span>
-                                    </label>
-                                    <input type="text" name="title" id="id_title" class="form-control" 
-                                           required aria-required="true">
+                                    <label for="id_title" class="form-label">Title <span class="text-danger">*</span></label>
+                                    {{ form.title|as_crispy_field }}
                                     <div class="form-text">What milestone did your child achieve?</div>
                                 </div>
                                 
                                 <div class="mb-3">
-                                    <label for="id_achieved_date" class="form-label">Date Achieved <span class="text-danger">*</span>
-                                        <span class="visually-hidden">(required)</span>
-                                    </label>
-                                    <input type="date" name="achieved_date" id="id_achieved_date" class="form-control" 
-                                           required aria-required="true" max="{{ today|date:'Y-m-d' }}">
+                                    <label for="id_achieved_date" class="form-label">Date Achieved <span class="text-danger">*</span></label>
+                                    {{ form.achieved_date|as_crispy_field }}
                                 </div>
                                 
                                 <div class="mb-3">
                                     <label for="id_description" class="form-label">Description</label>
-                                    <textarea name="description" id="id_description" rows="4" class="form-control"></textarea>
+                                    {{ form.description|as_crispy_field }}
                                     <div class="form-text">Details about this achievement</div>
                                 </div>
                                 
                                 <div class="mb-3">
                                     <label for="id_photo" class="form-label">Photo</label>
-                                    <input type="file" name="photo" id="id_photo" class="form-control" 
-                                           accept="image/*">
+                                    {{ form.photo|as_crispy_field }}
                                     <div class="form-text">Upload a photo of this moment (optional)</div>
                                 </div>
                                 
                                 <div class="d-flex justify-content-between mt-4">
                                     <a href="{% url 'your_child' child.id %}" class="btn btn-outline-secondary">
-                                        Cancel
+                                        <i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Cancel
                                     </a>
                                     <button type="submit" class="btn btn-primary">
                                         <i class="fa-solid fa-flag" aria-hidden="true"></i> Save Milestone

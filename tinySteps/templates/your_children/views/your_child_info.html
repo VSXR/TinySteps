@@ -146,7 +146,7 @@
                                         {% else %}
                                             <p class="text-muted fst-italic text-center">No milestones recorded yet!</p>
                                             <div class="text-center">
-                                                <a href="{% url 'add_milestone' child.id %}" class="btn btn-sm btn-outline-success">
+                                                <a href="{% url 'child_milestone' child.id %}" class="btn btn-sm btn-outline-success">
                                                     <i class="fa-solid fa-plus"></i> Add First Milestone
                                                 </a>
                                             </div>
@@ -174,7 +174,7 @@
                             </button>
                             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="moreActions">
                                 <li>
-                                    <a class="dropdown-item" href="{% url 'add_milestone' child.id %}">
+                                    <a class="dropdown-item" href="{% url 'child_milestone' child.id %}">
                                         <i class="fa-solid fa-flag" aria-hidden="true"></i> Add Milestone
                                     </a>
                                 </li>

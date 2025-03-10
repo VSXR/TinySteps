@@ -15,6 +15,7 @@ from django.core.mail import send_mail
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.db import models
 from django.db.models import Q, Prefetch
+from django.utils import timezone
 from django.http import Http404, JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.template.loader import render_to_string
@@ -144,7 +145,7 @@ def your_child(request, pk):
     return render(request, 'your_children/views/your_child_info.html', {'child': child})
 
 @login_required
-def add_milestone(request, child_id):
+def child_milestone(request, child_id):
     child = get_object_or_404(YourChild_Model, id=child_id, user=request.user)
     
     if request.method == 'POST':
@@ -154,11 +155,16 @@ def add_milestone(request, child_id):
             milestone.child = child
             milestone.save()
             messages.success(request, "Milestone added!")
-            return redirect('child_details', pk=child_id)
+            return redirect('your_child', pk=child_id)
     else:
         form = Milestone_Form()
     
-    return render(request, 'your_children/views/child_needs/add_milestone.html', {'form': form, 'child': child})
+    # TODO: CORREGIR PATH DEL MILESTONE!
+    return render(request, 'your_children/views/child_needs/add_milestone.html', {
+        'form': form, 
+        'child': child,
+        'today': timezone.now().date()  # Add today's date for the date field max attribute
+    })
 
 @login_required
 def dashboard(request):

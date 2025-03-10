@@ -20,7 +20,7 @@ urlpatterns = [
     # RUTA PARA YOUR CHILDREN
     path('your-children/', views.your_children, name='your_children'),
     path('your-children/<int:pk>', views.your_child, name='child_details'),
-    path('your-children/<int:child_id>/add-milestone/', views.add_milestone, name='add_milestone'),
+    path('your-children/<int:child_id>/add-milestone/', views.child_milestone, name='child_milestone'),    
     
     path('your-children/add/', views.YourChild_Add_View.as_view(), name='add_child'),
     path('your-children/<int:pk>/update/', views.YourChild_UpdateDetails_View.as_view(), name='child_update'),
