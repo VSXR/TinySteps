@@ -58,9 +58,9 @@
                                     </div>
                                     <div class="card-footer bg-transparent border-0">
                                         <div class="d-flex justify-content-between align-items-center">
-                                            <a href="{% url 'your_child' child.id %}" class="btn btn-outline-primary" 
-                                               aria-label="View details for {{ child.name }}">
-                                               <i class="fa-solid fa-eye" aria-hidden="true"></i> View Details
+                                            <a href="{% url 'child_details' child.id %}" class="btn btn-outline-primary" 
+                                                aria-label="View details for {{ child.name }}">
+                                                <i class="fa-solid fa-eye" aria-hidden="true"></i> View Details
                                             </a>
                                             <div class="dropdown">
                                                 <button class="btn btn-outline-secondary dropdown-toggle" type="button" 
@@ -70,7 +70,7 @@
                                                 </button>
                                                 <ul class="dropdown-menu" aria-labelledby="childActions{{ child.id }}">
                                                     <li>
-                                                        <a class="dropdown-item" href="{% url 'edit_child' child.id %}">
+                                                        <a class="dropdown-item" href="{% url 'child_update' child.id %}">
                                                             <i class="fa-solid fa-pen-to-square" aria-hidden="true"></i> Edit
                                                         </a>
                                                     </li>
@@ -86,7 +86,7 @@
                                                     </li>
                                                     <li><hr class="dropdown-divider"></li>
                                                     <li>
-                                                        <a class="dropdown-item text-danger" href="{% url 'delete_child' child.id %}">
+                                                        <a class="dropdown-item text-danger" href="{% url 'child_delete' child.id %}">
                                                             <i class="fa-solid fa-trash" aria-hidden="true"></i> Delete
                                                         </a>
                                                     </li>

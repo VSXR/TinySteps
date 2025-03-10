@@ -1,0 +1,183 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block title %}Add Child - TINY STEPS{% endblock %}
+
+{% block main_contents %}
+    <main id="main-content">
+        <div class="container mt-4 mb-5">
+            <div class="row mb-4">
+                <div class="col">
+                    <h1 id="page-heading">Add New Child</h1>
+                    <p class="lead text-center" id="page-description">Enter your child's information below to set up their profile</p>
+                </div>
+            </div>
+
+            <!-- Messages Container -->
+            <div class="row">
+                <div class="col">
+                    <div id="messages-container" class="messages mb-3" role="alert" aria-live="polite">
+                        {% if messages %}
+                            {% for message in messages %}
+                                <div class="alert {% if message.tags %}alert-{{ message.tags }}{% else %}alert-info{% endif %} alert-dismissible fade show">
+                                    {{ message }}
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+           <!-- Your Children List -->
+            {% if children %}
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <div class="card shadow-sm">
+                            <div class="card-header bg-light">
+                                <h3 class="card-title fs-5 mb-0">Your Children</h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    {% for child in children %}
+                                    <div class="col-md-6 col-lg-4 mb-3">
+                                        <div class="d-flex align-items-center">
+                                            <div class="flex-shrink-0 me-2">
+                                                <img src="{{ child.image_url }}" alt="{{ child.name }}" 
+                                                    class="rounded-circle" width="40" height="40" style="object-fit: cover;">
+                                            </div>
+                                            <div>
+                                                <h4 class="fs-6 mb-0">
+                                                    <a href="{% url 'your_child' child.id %}" class="text-decoration-none">
+                                                        {{ child.name }}
+                                                    </a>
+                                                </h4>
+                                                <span class="badge bg-primary">{{ child.age }} months</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+
+            <div class="row justify-content-center">
+                <div class="col-md-8 col-lg-6">
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <form method="post" novalidate aria-labelledby="form-heading">
+                                <h2 id="form-heading" class="fs-5 mb-3">Child Information</h2>
+                                {% csrf_token %}
+                                
+                                <div class="mb-3">
+                                    <label for="id_name" class="form-label">Name <span class="text-danger">*</span>
+                                        <span class="visually-hidden">(required)</span>
+                                    </label>
+                                    <input type="text" name="name" id="id_name" required class="form-control" 
+                                           aria-required="true" aria-describedby="name-help">
+                                    <div id="name-help" class="form-text">Your child's first name</div>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="id_second_name" class="form-label">Second Name</label>
+                                    <input type="text" name="second_name" id="id_second_name" class="form-control">
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="id_birth_date" class="form-label">Birth Date <span class="text-danger">*</span>
+                                        <span class="visually-hidden">(required)</span>
+                                    </label>
+                                    <input type="date" name="birth_date" id="id_birth_date" required class="form-control" 
+                                           aria-required="true" max="{{ today|date:'Y-m-d' }}">
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="id_age" class="form-label">Age (in months) <span class="text-danger">*</span>
+                                        <span class="visually-hidden">(required)</span>
+                                    </label>
+                                    <input type="number" name="age" id="id_age" required min="0" max="60" class="form-control" 
+                                           aria-required="true">
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="id_gender" class="form-label">Gender <span class="text-danger">*</span>
+                                        <span class="visually-hidden">(required)</span>
+                                    </label>
+                                    <select name="gender" id="id_gender" required class="form-select" aria-required="true">
+                                        <option value="">Select gender</option>
+                                        <option value="M">Male</option>
+                                        <option value="F">Female</option>
+                                        <option value="O">Other</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="id_image_url" class="form-label">Photo URL <span class="text-danger">*</span>
+                                        <span class="visually-hidden">(required)</span>
+                                    </label>
+                                    <input type="url" name="image_url" id="id_image_url" required class="form-control" 
+                                           aria-required="true" aria-describedby="image-help">
+                                    <div id="image-help" class="form-text">A URL to an image of your child</div>
+                                </div>
+                                
+                                <div class="row mb-3">
+                                    <div class="col-md-6 mb-3 mb-md-0">
+                                        <label for="id_weight" class="form-label">Weight (kg)</label>
+                                        <input type="number" name="weight" id="id_weight" step="0.01" min="0" class="form-control">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="id_height" class="form-label">Height (cm)</label>
+                                        <input type="number" name="height" id="id_height" step="0.1" min="0" class="form-control">
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="id_desc" class="form-label">Description</label>
+                                    <textarea name="desc" id="id_desc" rows="3" class="form-control" 
+                                              aria-describedby="desc-help"></textarea>
+                                    <div id="desc-help" class="form-text">Add any additional information about your child</div>
+                                </div>
+                                
+                                <div class="d-flex justify-content-between mt-4">
+                                    <a href="{% url 'your_children' %}" class="btn btn-outline-secondary" aria-label="Cancel and return to your children page">
+                                        Cancel
+                                    </a>
+                                    <button type="submit" class="btn btn-primary" aria-label="Add this child to your profile">
+                                        Add Child
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+{% endblock main_contents %}
+
+{% block extra_js %}
+    {{ block.super }}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Automatically calculate age when birth date changes
+            const birthDateField = document.getElementById('id_birth_date');
+            const ageField = document.getElementById('id_age');
+            
+            if (birthDateField && ageField) {
+                birthDateField.addEventListener('change', function() {
+                    const birthDate = new Date(this.value);
+                    if (!isNaN(birthDate)) {
+                        const today = new Date();
+                        let months = (today.getFullYear() - birthDate.getFullYear()) * 12;
+                        months += today.getMonth() - birthDate.getMonth();
+                        ageField.value = months;
+                    }
+                });
+            }
+        });
+    </script>
+{% endblock extra_js %}

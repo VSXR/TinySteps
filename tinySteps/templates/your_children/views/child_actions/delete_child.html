@@ -1,0 +1,124 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Delete Child - TINY STEPS{% endblock %}
+
+{% block main_contents %}
+    <main id="main-content">
+        <div class="container mt-4 mb-5">
+            <div class="row mb-4">
+                <div class="col">
+                    <h1 id="page-heading">Delete Child Profile</h1>
+                    <p class="lead text-center text-danger" id="page-description">
+                        <i class="fa-solid fa-exclamation-triangle" aria-hidden="true"></i> 
+                        This action cannot be undone
+                    </p>
+                </div>
+            </div>
+
+            <!-- Messages Container -->
+            <div class="row">
+                <div class="col">
+                    <div id="messages-container" class="messages mb-3" role="alert" aria-live="polite">
+                        {% if messages %}
+                            {% for message in messages %}
+                                <div class="alert {% if message.tags %}alert-{{ message.tags }}{% else %}alert-info{% endif %} alert-dismissible fade show">
+                                    {{ message }}
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Your Children List -->
+            {% if children %}
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="card shadow-sm">
+                        <div class="card-header bg-light">
+                            <h3 class="card-title fs-5 mb-0">Your Children</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                {% for child_item in children %}
+                                <div class="col-md-6 col-lg-4 mb-3">
+                                    <div class="d-flex align-items-center {% if child_item.id == yourchild_model.id %}bg-light rounded p-2{% endif %}">
+                                        <div class="flex-shrink-0 me-2">
+                                            <img src="{{ child_item.image_url }}" alt="{{ child_item.name }}" 
+                                                class="rounded-circle" width="40" height="40" style="object-fit: cover;">
+                                        </div>
+                                        <div>
+                                            <h4 class="fs-6 mb-0">
+                                                <a href="{% url 'child_details' child_item.id %}" class="text-decoration-none">
+                                                    {{ child_item.name }}
+                                                </a>
+                                                {% if child_item.id == yourchild_model.id %}
+                                                <span class="badge bg-danger">Deleting</span>
+                                                {% endif %}
+                                            </h4>
+                                            <span class="badge bg-primary">{{ child_item.age }} months</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <div class="row justify-content-center">
+                <div class="col-md-8 col-lg-6">
+                    <div class="card shadow-sm border-danger">
+                        <div class="card-header bg-danger text-white">
+                            <h2 class="card-title fs-5 mb-0">Confirm Deletion</h2>
+                        </div>
+                        <div class="card-body">
+                            <div class="card-body">
+                            <div class="d-flex align-items-center mb-4">
+                                <div class="flex-shrink-0 me-3">
+                                    <img src="{{ yourchild_model.image_url }}" alt="{{ yourchild_model.name }}" 
+                                         class="rounded-circle" style="width: 64px; height: 64px; object-fit: cover;">
+                                </div>
+                                <div>
+                                    <h3 class="fs-5 mb-0">{{ yourchild_model.name }}</h3>
+                                    <p class="text-muted small mb-0">{{ yourchild_model.age }} months old</p>
+                                </div>
+                            </div>
+                            
+                            <div class="alert alert-warning" role="alert">
+                                <h4 class="alert-heading fs-6">Warning!</h4>
+                                <p>You are about to permanently delete {{ yourchild_model.name }}'s profile and all associated data including:</p>
+                                <ul>
+                                    <li>All milestone records</li>
+                                    <li>Calendar events</li>
+                                    <li>Vaccination records</li>
+                                </ul>
+                                <p class="mb-0">This action cannot be reversed.</p>
+                            </div>
+                            
+                            <form method="post" aria-labelledby="delete-form-heading">
+                                <h2 id="delete-form-heading" class="visually-hidden">Delete child confirmation form</h2>
+                                {% csrf_token %}
+                                
+                                <div class="d-flex justify-content-between mt-4">
+                                    <a href="{% url 'your_children' %}" class="btn btn-outline-secondary" 
+                                       aria-label="Cancel deletion and return to your children page">
+                                        Cancel
+                                    </a>
+                                    <button type="submit" class="btn btn-danger" 
+                                            aria-label="Permanently delete {{ yourchild_model.name }}'s profile">
+                                        Delete Permanently
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+{% endblock main_contents %}

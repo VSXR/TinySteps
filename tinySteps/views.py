@@ -26,8 +26,8 @@ from django.views.generic.edit import CreateView
 from .forms import (
     InfoRequest_Form, 
     Milestone_Form,
-    PasswordResetRequest_Form, 
-    PasswordResetConfirm_Form,
+    PasswordReset_Form,
+    CustomUserCreation_Form,
 )
 from .models import (
     InfoRequest_Model, 
@@ -38,9 +38,6 @@ from .models import (
     NutritionGuides_Model,
     Comment_Model,
     Like_Model,
-    PasswordReset_Model,
-    Milestone_Model,
-    Notification_Model,
 )
 
 # -----------------------------------------------
@@ -89,7 +86,7 @@ class Logout_View(auth_views.LogoutView):
             return super().dispatch(request, *args, **kwargs)
 
 class Register_View(CreateView):
-    form_class = UserCreationForm
+    form_class = CustomUserCreation_Form
     template_name = 'user_accounts/register_page.html'
     success_url = reverse_lazy('index')
     
@@ -101,13 +98,7 @@ class Register_View(CreateView):
         login(self.request, user)
         messages.success(self.request, "Registration successful!")
         return super().form_valid(form)
-
-    def clean_email(self):
-        email = self.cleaned_data.get('email')
-        if User.objects.filter(email=email).exists():
-            raise forms.ValidationError("This email is already registered. Please use a different email or try to log in.")
-        return email
-
+    
     def get(self, request, *args, **kwargs):
         if request.user.is_authenticated:
             return redirect('index')
@@ -117,76 +108,25 @@ class Register_View(CreateView):
 # ------------------------------------------
 # -- PASSWORD RESET VIEWS --
 # ------------------------------------------
-def password_reset_request(request):
+def password_reset(request):
     if request.method == 'POST':
-        form = PasswordResetRequest_Form(request.POST)
+        form = PasswordReset_Form(request.POST)
         if form.is_valid():
-            email = form.cleaned_data['email']
-            user_qs = User.objects.filter(email=email, is_active=True)
+            # Si el formulario es válido, obtenemos el usuario
+            username = form.cleaned_data['username']
+            user = User.objects.get(username=username)
             
-            if user_qs.exists():
-                user = user_qs.first()
-                token = PasswordReset_Model.objects.create(user=user)
-                subject = render_to_string('user_password/email_templates/reset_subject.txt')
-                subject = ''.join(subject.splitlines())
-                
-                context = {
-                    'user': user,
-                    'token': token.token,
-                    'reset_url': request.build_absolute_uri(f'/password/reset/confirm/{token.token}/'),
-                }
-                email_text = render_to_string('user_password/email_templates/reset_email.txt', context)
-                
-                send_mail(
-                    subject,
-                    email_text,
-                    settings.DEFAULT_FROM_EMAIL,
-                    [user.email],
-                    fail_silently=False,
-                )
-                messages.success(request, "Password reset email sent. Please check your inbox.")
+            # Establecemos la nueva contraseña
+            password = form.cleaned_data['new_password1']
+            user.set_password(password)
+            user.save()
             
-            return redirect('password_reset_done')
+            messages.success(request, "Your password has been updated successfully! You can now log in.")
+            return redirect('login')
     else:
-        form = PasswordResetRequest_Form()
+        form = PasswordReset_Form()
     
-    return render(request, 'user_accounts/user_password/password_request.html', {'form': form})
-
-def password_reset_done(request):
-    return render(request, 'user_accounts/user_password/password_done.html')
-
-def password_reset_confirm(request, token):
-    try:
-        token_obj = PasswordReset_Model.objects.get(token=token, is_used=False)
-        if token_obj.is_expired:
-            messages.error(request, "Password reset link has expired. Please request a new one.")
-            return render(request, 'user_accounts/user_password/password_confirm.html', {'validlink': False})
-        
-        user = token_obj.user
-        if request.method == 'POST':
-            form = PasswordResetConfirm_Form(user, request.POST)
-            if form.is_valid():
-                form.save()
-                token_obj.is_used = True
-                token_obj.save()
-                
-                messages.success(request, "Your password has been set. You can log in now with your new password.")
-                return redirect('password_reset_complete')
-        else:
-            form = PasswordResetConfirm_Form(user)
-        
-        return render(request, 'user_accounts/user_password/password_confirm.html', {
-            'form': form, 
-            'validlink': True,
-            'token': token
-        })
-        
-    except (PasswordReset_Model.DoesNotExist, ValueError):
-        messages.error(request, "The password reset link was invalid, possibly because it has already been used.")
-        return render(request, 'user_accounts/user_password/password_confirm.html', {'validlink': False})
-
-def password_reset_complete(request):
-    return render(request, 'user_accounts/user_password/password_complete.html')
+    return render(request, 'user_accounts/user_password/reset_password.html', {'form': form})
 # ------------------------------------------
 
 
@@ -201,7 +141,7 @@ def your_children(request):
 @login_required(login_url='login')
 def your_child(request, pk):
     child = get_object_or_404(YourChild_Model, pk=pk)
-    return render(request, 'your_children/child_detail.html', {'child': child})
+    return render(request, 'your_children/views/your_child_info.html', {'child': child})
 
 @login_required
 def add_milestone(request, child_id):
@@ -218,7 +158,7 @@ def add_milestone(request, child_id):
     else:
         form = Milestone_Form()
     
-    return render(request, 'your_children/add_milestone.html', {'form': form, 'child': child})
+    return render(request, 'your_children/views/child_needs/add_milestone.html', {'form': form, 'child': child})
 
 @login_required
 def dashboard(request):
@@ -238,7 +178,7 @@ def dashboard(request):
 # -----------------------------------------------
 class YourChild_Add_View(LoginRequiredMixin, SuccessMessageMixin, generic.CreateView):
     login_url = 'login'
-    template_name = 'your_children/child_create.html'
+    template_name = 'your_children/views/child_actions/add_child.html'
     model = YourChild_Model
     fields = ['name', 'second_name', 'birth_date', 'image_url', 'age', 'weight', 'height', 'gender', 'desc']
     success_url = reverse_lazy('your_children')
@@ -256,7 +196,7 @@ class YourChild_Add_View(LoginRequiredMixin, SuccessMessageMixin, generic.Create
 
 class YourChild_Delete_View(LoginRequiredMixin, SuccessMessageMixin, generic.DeleteView):
     login_url = 'login'
-    template_name = 'your_children/child_confirm_delete.html'
+    template_name = 'your_children/views/child_actions/delete_child.html'
     model = YourChild_Model
     success_url = reverse_lazy('your_children')
     success_message = "Child removed successfully!"
@@ -280,7 +220,7 @@ class YourChild_Delete_View(LoginRequiredMixin, SuccessMessageMixin, generic.Del
 
 class YourChild_UpdateDetails_View(LoginRequiredMixin, SuccessMessageMixin, generic.UpdateView):
     login_url = 'login'
-    template_name = 'your_children/your_child_edit.html'
+    template_name = 'your_children/views/child_actions/edit_child.html'
     model = YourChild_Model
     fields = ['name', 'age', 'gender', 'desc']
     success_url = reverse_lazy('your_children')
@@ -300,7 +240,7 @@ class YourChild_UpdateDetails_View(LoginRequiredMixin, SuccessMessageMixin, gene
 
 class YourChild_Calendar_View(LoginRequiredMixin, generic.DetailView):
     login_url = 'login'
-    template_name = 'your_children/child_calendar.html'
+    template_name = 'your_children/views/child_needs/calendar.html'
     model = YourChild_Model
     
     def get_queryset(self):
@@ -314,7 +254,7 @@ class YourChild_Calendar_View(LoginRequiredMixin, generic.DetailView):
     
 class YourChild_VaccineCard_View(LoginRequiredMixin, generic.DetailView):
     login_url = 'login'
-    template_name = 'your_children/child_vaccine_card.html'
+    template_name = 'your_children/views/child_needs/vaccine_card.html'
     model = YourChild_Model
     
     def get_queryset(self):
@@ -574,9 +514,14 @@ def view_post(request, post_id):
     post = get_object_or_404(ParentsForum_Model, id=post_id)
     related_posts = ParentsForum_Model.objects.filter(author=post.author).exclude(id=post_id)[:4]
     
+    user_liked = False
+    if request.user.is_authenticated:
+        user_liked = post.likes.filter(id=request.user.id).exists()
+    
     return render(request, 'parents_forum/views/forum_actions/view_post.html', {
         'post': post,
-        'related_posts': related_posts
+        'related_posts': related_posts,
+        'user_liked': user_liked
     })
 
 @login_required

@@ -139,6 +139,10 @@ class ParentsForum_Model(models.Model):
             models.Index(fields=['created_at', 'title']),
         ]
     
+    @property
+    def likes_count(self):
+        return self.likes.count()
+    
     def __str__(self):
         truncated_desc = (self.desc[:30] + "...") if len(self.desc) > 30 else self.desc
         return f"{self.title} - {truncated_desc}"

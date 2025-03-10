@@ -1,23 +1,12 @@
-class TinySteps_API {
-    constructor() {
-        this.csrftoken = this.getCookie_for_CSRF('csrftoken');
-        this.baseUrl = '/api/';
-    }
+/**
+ * API client for TinySteps backend
+ */
+import { getCookie } from './utils.js';
 
-    // HELPER TO GET CSRF TOKEN FROM COOKIE
-    getCookie_for_CSRF(name) {
-        let cookieValue = null;
-        if (document.cookie && document.cookie !== '') {
-            const cookies = document.cookie.split(';');
-            for (let i = 0; i < cookies.length; i++) {
-                const cookie = cookies[i].trim();
-                if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                    break;
-                }
-            }
-        }
-        return cookieValue;
+class TinyStepsAPI {
+    constructor() {
+        this.csrftoken = getCookie('csrftoken');
+        this.baseUrl = '/api/';
     }
 
     // Generic fetch method with CSRF protection
@@ -63,7 +52,7 @@ class TinySteps_API {
         }
     }
 
-    // Children API methods
+    // ====== CHILDREN API ======
     async getChildren() {
         return this.fetchAPI('children/');
     }
@@ -84,7 +73,7 @@ class TinySteps_API {
         return this.fetchAPI(`children/${id}/`, 'DELETE');
     }
     
-    // Milestone API methods
+    // ====== MILESTONE API ======
     async getMilestones(childId) {
         return this.fetchAPI(`milestones/?child=${childId}`);
     }
@@ -101,7 +90,7 @@ class TinySteps_API {
         return this.fetchAPI(`milestones/${id}/`, 'DELETE');
     }
     
-    // Forum API methods
+    // ====== FORUM API ======
     async getForumPosts() {
         return this.fetchAPI('forums/');
     }
@@ -134,7 +123,7 @@ class TinySteps_API {
         return this.fetchAPI(`forums/${postId}/like/`, 'POST');
     }
         
-    // Guide API methods
+    // ====== GUIDE API ======
     async getParentsGuides() {
         return this.fetchAPI('parents-guides/');
     }
@@ -167,7 +156,7 @@ class TinySteps_API {
         return this.fetchAPI(`nutrition-guides/${guideId}/add_comment/`, 'POST', { text });
     }
     
-    // Notification API methods
+    // ====== NOTIFICATION API ======
     async getNotifications() {
         return this.fetchAPI('notifications/');
     }
@@ -176,10 +165,12 @@ class TinySteps_API {
         return this.fetchAPI(`notifications/${id}/mark_read/`, 'POST');
     }
     
-    // Info request API methods
+    // ====== INFO REQUEST API ======
     async createInfoRequest(data) {
         return this.fetchAPI('info-requests/', 'POST', data);
     }
 }
 
-const api = new TinySteps_API();
+// Export a singleton instance
+const api = new TinyStepsAPI();
+export default api;

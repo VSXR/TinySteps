@@ -190,7 +190,7 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'c4relecloud@gmail.com'
 EMAIL_HOST_PASSWORD = 'mnvp swyl hjgr pdyl'
 DEFAULT_FROM_EMAIL = 'c4relecloud@gmail.com'
-# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 # ---------------------------------------------------------------
 # CONFIGURACIÓN DE REST FRAMEWORK

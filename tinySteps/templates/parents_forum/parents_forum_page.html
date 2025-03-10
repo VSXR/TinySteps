@@ -109,14 +109,16 @@
                                 <div class="list-group posts">
                                     {% for post in posts %}
                                         <article class="list-group-item list-group-item-action post p-3 mb-3">
-                                            <!-- Contenido del post -->
-                                            <div class="d-flex w-100 justify-content-between align-items-center">
-                                                <h3 class="mb-2">
+                                            <!-- Post content -->
+                                            <div class="d-flex flex-column flex-sm-row w-100 justify-content-between align-items-start align-items-sm-center">
+                                                <h3 class="mb-2 text-break">
                                                     <a href="{% url 'view_post' post.id %}" class="post-title">
                                                         {{ post.title }}
                                                     </a>
                                                 </h3>
-                                                <small class="text-muted">{{ post.created_at|date:"d/M/Y" }}</small>
+                                                <div class="ms-0 ms-sm-3 mb-2 mb-sm-0 flex-shrink-0">
+                                                    <small class="text-muted d-sm-block">{{ post.created_at|date:"d/M/Y" }}</small>
+                                                </div>
                                             </div>
                                             <div class="post-preview mb-3">
                                                 <p>{{ post.content|truncatechars:150 }}</p>

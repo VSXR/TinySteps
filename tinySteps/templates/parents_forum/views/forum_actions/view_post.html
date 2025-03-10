@@ -4,6 +4,7 @@
 {% block title %}{{ post.title }} - Parents Forum{% endblock %}
 
 {% block main_contents %}
+    {% csrf_token %}
     <main id="main-content">
         <div class="container mt-4 mb-5">
             <!-- Messages container -->
@@ -20,33 +21,51 @@
 
             <!-- Main post content -->
             <article class="card mb-4">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h1 class="mb-0 fs-4">{{ post.title }}</h1>
-                    <div>
+                <div class="card-header">
+                    <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-2">
+                        <h1 class="mb-0 fs-4 fw-bold">{{ post.title }}</h1>
                         {% if user == post.author or user.is_staff or user.is_superuser %}
-                            <a href="{% url 'edit_post' post.id %}" class="btn btn-sm btn-outline-primary" aria-label="Edit this post">
-                                <i class="fa-solid fa-edit" aria-hidden="true"></i> Edit
-                            </a>
-                            <a href="{% url 'delete_post' post.id %}" class="btn btn-sm btn-outline-danger" aria-label="Delete this post">
-                                <i class="fa-solid fa-trash" aria-hidden="true"></i> Delete
-                            </a>
+                            <div class="d-flex gap-2 flex-shrink-0">
+                                <div class="dropdown d-md-none">
+                                    <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="fa-solid fa-ellipsis-vertical" aria-hidden="true"></i>
+                                        <span class="visually-hidden">Post actions</span>
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-end">
+                                        <li><a class="dropdown-item" href="{% url 'edit_post' post.id %}">
+                                            <i class="fa-solid fa-edit" aria-hidden="true"></i> Edit
+                                        </a></li>
+                                        <li><a class="dropdown-item text-danger" href="{% url 'delete_post' post.id %}">
+                                            <i class="fa-solid fa-trash" aria-hidden="true"></i> Delete
+                                        </a></li>
+                                    </ul>
+                                </div>
+                                <div class="d-none d-md-flex gap-2">
+                                    <a href="{% url 'edit_post' post.id %}" class="btn btn-sm btn-outline-primary" aria-label="Edit this post">
+                                        <i class="fa-solid fa-edit" aria-hidden="true"></i> Edit
+                                    </a>
+                                    <a href="{% url 'delete_post' post.id %}" class="btn btn-sm btn-outline-danger" aria-label="Delete this post">
+                                        <i class="fa-solid fa-trash" aria-hidden="true"></i> Delete
+                                    </a>
+                                </div>
+                            </div>
                         {% endif %}
                     </div>
                 </div>
                 
                 <div class="card-body">
                     <!-- Post metadata -->
-                    <div class="mb-3 d-flex justify-content-between">
+                    <div class="mb-3 d-flex flex-column flex-sm-row justify-content-between gap-2">
                         <div class="post-author">
                             <span class="fw-bold">Posted by:</span> {{ post.author.username }}
                         </div>
-                        <div class="post-date d-flex align-items-center">
-                            <button id="like-button" class="btn btn-outline-primary me-2 like-button" aria-label="Like this post" aria-pressed="false">
+                        <div class="post-date d-flex align-items-center gap-2">
+                            <button id="like-button" class="btn btn-outline-primary btn-sm like-button {% if user_liked %}liked{% endif %}" aria-label="Like this post" aria-pressed="{% if user_liked %}true{% else %}false{% endif %}">
                                 <i class="fa-solid fa-heart" aria-hidden="true"></i>
-                                <span id="like-count" class="like-count">{{ post.likes_count|default:"0" }}</span>
+                                <span id="like-count" class="like-count">{{ post.likes.count }}</span>
                                 <span class="visually-hidden">likes</span>
                             </button>
-                            <time datetime="{{ post.created_at|date:'Y-m-d' }}">
+                            <time datetime="{{ post.created_at|date:'Y-m-d' }}" class="text-muted small ms-auto">
                                 {{ post.created_at|date:"F j, Y" }}
                             </time>
                         </div>

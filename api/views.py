@@ -259,6 +259,27 @@ class ParentsGuide_ViewSet(viewsets.ModelViewSet):  # Cambiar de ReadOnlyModelVi
         
         serializer = Comment_Serializer(comment)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+    
+    @action(detail=True, methods=['post'])
+    def like(self, request, pk=None):
+        if not request.user.is_authenticated:
+            return Response({'error': 'Authentication required'}, status=status.HTTP_401_UNAUTHORIZED)
+            
+        forum = self.get_object()
+        if forum.likes.filter(id=request.user.id).exists():
+            # Unlike the post
+            forum.likes.remove(request.user)
+            liked = False
+        else:
+            # Like the post
+            forum.likes.add(request.user)
+            liked = True
+
+        return Response({
+            'liked': liked,
+            'likes_count': forum.likes.count()
+        })
+
 
 class NutritionGuide_ViewSet(viewsets.ModelViewSet):  # Cambiar de ReadOnlyModelViewSet a ModelViewSet
     queryset = Guides_Model.objects.filter(guide_type='nutrition').order_by('-created_at')

@@ -20,7 +20,8 @@ urlpatterns = [
     # RUTA PARA YOUR CHILDREN
     path('your-children/', views.your_children, name='your_children'),
     path('your-children/<int:pk>', views.your_child, name='child_details'),
-
+    path('your-children/<int:child_id>/add-milestone/', views.add_milestone, name='add_milestone'),
+    
     path('your-children/add/', views.YourChild_Add_View.as_view(), name='add_child'),
     path('your-children/<int:pk>/update/', views.YourChild_UpdateDetails_View.as_view(), name='child_update'),
     path('your-children/<int:pk>/delete/', views.YourChild_Delete_View.as_view(), name='child_delete'),
@@ -39,12 +40,9 @@ urlpatterns = [
     path('parents_forum/posts/<int:post_id>/like/', views.forum_post_like_toggle, name='forum_post_like_toggle'),
         
     # RUTA PARA GUIDES (LAS GUIAS LAS ESCRIBE, ELIMINA Y EDITA EL ADMIN)
-    # TODO: ACABAR DE IMPLEMENTAR RUTAS PARA GUIDES CON FILTROS (EDAD ...) CORRECTAMENTE
     path('guides/', views.guides_page, name='guides'),
-
     path('guides/parents-guides/', views.parents_guides_page, name='parents_guides'),
     path('guides/parents-guides/<int:pk>/', views.parent_guide_details, name='parents_guide_details'),
-
     path('guides/nutrition-guides/', views.nutrition_guides_page, name='nutrition_guides'),
     path('guides/nutrition-guides/<int:pk>/', views.nutrition_guide_details, name='nutrition_guide_details'),
     
@@ -58,21 +56,8 @@ urlpatterns = [
     path('login/', views.Login_View.as_view(), name='login'), # FUNCIONA
     path('register/', views.Register_View.as_view(), name='register'), # FUNCIONA
     path('logout/', auth_views.LogoutView.as_view(next_page='index'), name='logout'), # FUNCIONA
-   
-    # RESET PASSWORDs URLs
-    path('password/reset/', auth_views.PasswordResetView.as_view(
-        template_name='user_accounts/user_password/password_request.html', 
-        email_template_name='user_password/email_templates/reset_email.txt', 
-        subject_template_name='user_password/email_templates/reset_subject.txt', 
-        success_url='/password/reset/done/'), name='password_reset'),
-    path('password/reset/done/', auth_views.PasswordResetDoneView.as_view(
-        template_name='user_accounts/user_password/password_done.html'), name='password_reset_done'),
-    path('password/reset/confirm/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(
-        template_name='user_accounts/user_password/password_confirm.html', 
-        success_url='/password/reset/complete/'), name='password_reset_confirm'),
-    path('password/reset/complete/', auth_views.PasswordResetCompleteView.as_view(
-        template_name='user_accounts/user_password/password_complete.html'), name='password_reset_complete'),
-
+    path('password/reset/', views.password_reset, name='password_reset'),
+    
     # OTRAS RUTAS
     path('favicon.ico', favicon_view), # FUNCIONA
 
