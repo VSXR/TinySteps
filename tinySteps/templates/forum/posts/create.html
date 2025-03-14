@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block title %}
+    TINY STEPS - Start a New Discussion
+{% endblock title %}
+
+{% block main_contents %}
+    <main id="main-content">
+        <div class="container mt-4 mb-5">
+            <div class="row mb-4">
+                <div class="col">
+                    <h1 id="page-heading">Start a New Discussion</h1>
+                    <p class="lead text-center" id="page-description">Share your parenting experiences or questions with other parents</p>
+                </div>
+            </div>
+            
+            <div class="row justify-content-center">
+                <div class="col-md-8">
+                    {% if messages %}
+                        {% include 'partials/messages.html' %}
+                    {% endif %}
+                    
+                    <div class="card">
+                        <div class="card-body">
+                            <form method="post" action="{% url 'add_post' %}" aria-labelledby="form-heading" novalidate>
+                                <span id="form-heading" class="visually-hidden">New discussion form</span>
+                                {% csrf_token %}
+                                
+                                <div class="mb-3">
+                                    <label for="id_title" class="form-label">Discussion Title <span class="text-danger" aria-hidden="true">*</span>
+                                        <span class="visually-hidden">(required)</span>
+                                    </label>
+                                    <input type="text" name="title" maxlength="100" class="form-control" required id="id_title" 
+                                        aria-describedby="title-help">
+                                    <div id="title-help" class="form-text">Choose a clear, specific title for your discussion (100 characters max)</div>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="id_desc" class="form-label">Your Message <span class="text-danger" aria-hidden="true">*</span>
+                                        <span class="visually-hidden">(required)</span>
+                                    </label>
+                                    <textarea name="desc" cols="40" rows="6" class="form-control" required id="id_desc" 
+                                            aria-describedby="desc-help"></textarea>
+                                    <div id="desc-help" class="form-text">Share your experience, question, or advice (2000 characters max)</div>
+                                </div>
+                                
+                                <div class="d-grid mt-4">
+                                    <button type="submit" class="btn btn-primary" aria-label="Create new discussion">
+                                        <i class="fa-solid fa-plus me-2" aria-hidden="true"></i>CREATE DISCUSSION
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-3 text-center">
+                        <a href="{% url 'parents_forum' %}" class="btn btn-outline-secondary" aria-label="Return to forums list">
+                            <i class="fa-solid fa-arrow-left me-2" aria-hidden="true"></i>Back to Forums
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+{% endblock main_contents %}
+
+{% block extra_js %}
+    {{ block.super }}
+    <script src="{% static 'res/javascript/create_post.js' %}"></script>
+{% endblock extra_js %}

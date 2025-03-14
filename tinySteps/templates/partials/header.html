@@ -1,0 +1,25 @@
+{% load static %}
+
+<header>
+    <nav class="navbar navbar-expand-lg navbar-dark" aria-label="Main Navigation">
+        <div class="container-fluid">
+            <!-- Logo and Site Name -->
+            <div class="logo-container d-flex align-items-center">
+                <a class="navbar-brand navLogo d-flex align-items-center me-0" href="{% url 'index' %}">
+                    <img src="{% static 'res/img/logo/tinySteps-logo.png' %}" alt="Tiny Steps Logo" width="30" height="30">
+                </a>
+                <a class="navbar-brand navName ms-2" href="{% url 'index' %}" aria-label="Tiny Steps Home">Tiny Steps</a>
+            </div>
+            
+            <!-- Mobile Navigation Toggle -->
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" 
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" 
+                aria-expanded="false" aria-label="Toggle navigation menu">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <!-- Navigation Menu -->
+            {% include 'partials/navigation.html' %}
+        </div>
+    </nav>
+</header>

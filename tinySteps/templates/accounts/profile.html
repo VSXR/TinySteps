@@ -1,0 +1,175 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}My Profile - TINY STEPS{% endblock %}
+
+{% block main_contents %}
+    <main id="main-content">
+        <div class="container mt-4 mb-5">
+            <!-- Page Header -->
+            <div class="row mb-4">
+                <div class="col">
+                    <h1 id="page-heading">My Profile</h1>
+                    <p class="lead text-center" id="page-description">Manage your account settings and view your activity</p>
+                </div>
+            </div>
+
+            <!-- Messages Container -->
+            {% include 'partials/messages.html' %}
+
+            <!-- Main Content -->
+            <div class="row mb-4">
+                <!-- Profile Information -->
+                <div class="col-md-4">
+                    <div class="card h-100">
+                        <div class="card-header">
+                            <h2 class="fs-5 mb-0">Profile Information</h2>
+                        </div>
+                        <div class="card-body text-center">
+                            <div class="mb-3">
+                                <img src="{% static 'res/img/others/default_avatar.jpg' %}" alt="Profile Picture" 
+                                     class="rounded-circle" style="width: 120px; height: 120px; object-fit: cover;">
+                            </div>
+                            <h3 class="fs-5 mb-3">{{ user.username }}</h3>
+                            <ul class="list-group list-group-flush text-start mb-3">
+                                <li class="list-group-item">
+                                    <strong>Email:</strong> {{ user.email }}
+                                </li>
+                                <li class="list-group-item">
+                                    <strong>Joined:</strong> {{ user.date_joined|date:"F j, Y" }}
+                                </li>
+                                <li class="list-group-item">
+                                    <strong>Children:</strong> {{ user.children.count }}
+                                </li>
+                                <li class="list-group-item">
+                                    <strong>Forum Posts:</strong> {{ user.forum_posts.count }}
+                                </li>
+                            </ul>
+                            <a href="#" class="btn btn-outline-primary btn-sm">
+                                <i class="fa-solid fa-pen-to-square" aria-hidden="true"></i> Edit Profile
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Children Summary -->
+                <div class="col-md-8">
+                    <div class="card h-100">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h2 class="fs-5 mb-0">My Children</h2>
+                            <a href="{% url 'add_child' %}" class="btn btn-sm btn-outline-primary">
+                                <i class="fa-solid fa-plus" aria-hidden="true"></i> Add Child
+                            </a>
+                        </div>
+                        <div class="card-body">
+                            {% if user.children.all %}
+                                <div class="row row-cols-1 row-cols-md-2 g-3">
+                                    {% for child in user.children.all %}
+                                        <div class="col">
+                                            <div class="card h-100">
+                                                <div class="card-body text-center">
+                                                    <div class="mb-3">
+                                                        <img src="{{ child.get_image }}" alt="{{ child.name }}" 
+                                                             class="rounded-circle" style="width: 80px; height: 80px; object-fit: cover;">
+                                                    </div>
+                                                    <h3 class="fs-6 mb-1">{{ child.name }}</h3>
+                                                    <p class="mb-3">
+                                                        <span class="badge bg-primary">{{ child.age }} months</span>
+                                                    </p>
+                                                    <div class="d-flex justify-content-center gap-2">
+                                                        <a href="{% url 'child_details' child.id %}" class="btn btn-sm btn-primary">
+                                                            <i class="fa-solid fa-eye" aria-hidden="true"></i> View Details
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                <div class="text-center p-4">
+                                    <p class="text-muted mb-3">You haven't added any children yet.</p>
+                                    <a href="{% url 'add_child' %}" class="btn btn-primary">
+                                        <i class="fa-solid fa-plus" aria-hidden="true"></i> Add Your First Child
+                                    </a>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Forum Activity -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="card h-100">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h2 class="fs-5 mb-0">My Forum Activity</h2>
+                            <a href="{% url 'parents_forum' %}" class="btn btn-sm btn-outline-primary">
+                                <i class="fa-solid fa-comments" aria-hidden="true"></i> Go to Forum
+                            </a>
+                        </div>
+                        <div class="card-body">
+                            {% if user.forum_posts.all %}
+                                <div class="list-group">
+                                    {% for post in user.forum_posts.all|slice:":5" %}
+                                        <a href="{% url 'view_post' post.id %}" class="list-group-item list-group-item-action">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <h3 class="h6 mb-0">{{ post.title }}</h3>
+                                                <small class="text-muted">{{ post.created_at|date:"M d, Y" }}</small>
+                                            </div>
+                                            <p class="mb-0 small text-muted">
+                                                {{ post.desc|truncatechars:100 }}
+                                            </p>
+                                        </a>
+                                    {% endfor %}
+                                </div>
+                                {% if user.forum_posts.count > 5 %}
+                                    <div class="text-center mt-3">
+                                        <a href="{% url 'parents_forum' %}" class="btn btn-sm btn-outline-secondary">
+                                            View All Posts
+                                        </a>
+                                    </div>
+                                {% endif %}
+                            {% else %}
+                                <div class="text-center p-4">
+                                    <p class="text-muted mb-3">You haven't created any forum posts yet.</p>
+                                    <a href="{% url 'add_post' %}" class="btn btn-primary">
+                                        <i class="fa-solid fa-plus" aria-hidden="true"></i> Create Your First Post
+                                    </a>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Account Actions -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="card h-100">
+                        <div class="card-header">
+                            <h2 class="fs-5 mb-0">Account Actions</h2>
+                        </div>
+                        <div class="card-body">
+                            <div class="d-flex flex-column flex-md-row gap-2">
+                                <a href="{% url 'password_reset' %}" class="btn btn-outline-secondary">
+                                    <i class="fa-solid fa-key" aria-hidden="true"></i> Change Password
+                                </a>
+                                <a href="#" class="btn btn-outline-primary">
+                                    <i class="fa-solid fa-bell" aria-hidden="true"></i> Notification Settings
+                                </a>
+                                <form action="{% url 'logout' %}" method="post" class="d-inline">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-outline-danger ms-auto">
+                                        <i class="fa-solid fa-sign-out-alt" aria-hidden="true"></i> Logout
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+{% endblock main_contents %}

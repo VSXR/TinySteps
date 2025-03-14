@@ -1,8 +1,10 @@
+from django.conf import settings
+from django.conf.urls.static import static
+from django.contrib.auth import views as auth_views
+from django.http import Http404, HttpResponseNotFound
+from django.shortcuts import render
 from django.urls import path
 from . import views
-from django.http import HttpResponseNotFound, Http404
-from django.contrib.auth import views as auth_views
-from django.shortcuts import render
 
 def favicon_view(request):
     return HttpResponseNotFound("Favicon no encontrado")
@@ -40,23 +42,21 @@ urlpatterns = [
     path('parents_forum/posts/<int:post_id>/like/', views.forum_post_like_toggle, name='forum_post_like_toggle'),
         
     # RUTA PARA GUIDES (LAS GUIAS LAS ESCRIBE, ELIMINA Y EDITA EL ADMIN)
-    path('guides/', views.guides_page, name='guides'),
-    path('guides/parents-guides/', views.parents_guides_page, name='parents_guides'),
+    path('guides/', views.guides_page, name='guides'),    path('guides/parents-guides/', views.parents_guides_page, name='parents_guides'),
     path('guides/parents-guides/<int:pk>/', views.parent_guide_details, name='parents_guide_details'),
     path('guides/nutrition-guides/', views.nutrition_guides_page, name='nutrition_guides'),
     path('guides/nutrition-guides/<int:pk>/', views.nutrition_guide_details, name='nutrition_guide_details'),
     
-    # RUTA PARA LA PAGINA DE INFO REQUEST
-    path('info-request/', views.InfoRequest_View.as_view(), name='info_request'),  # FUNCIONA
+    # RUTA PARA LA PAGINA DE CONTACTO
+    path('contact/', views.Contact_View.as_view(), name='contact'),  # FUNCIONA
 
     # RUTA ABOUT
     path('about/', views.about, name='about'), # FUNCIONA
 
-    # RUTAS PARA LOGIN Y REGISTRO
-    path('login/', views.Login_View.as_view(), name='login'), # FUNCIONA
+    # RUTAS PARA EL USUARIO
+    path('profile/', views.profile, name='profile'),    path('login/', views.Login_View.as_view(), name='login'), # FUNCIONA
     path('register/', views.Register_View.as_view(), name='register'), # FUNCIONA
-    path('logout/', auth_views.LogoutView.as_view(next_page='index'), name='logout'), # FUNCIONA
-    path('password/reset/', views.password_reset, name='password_reset'),
+    path('logout/', views.Logout_View.as_view(), name='logout'),    path('password/reset/', views.password_reset, name='password_reset'),
     
     # OTRAS RUTAS
     path('favicon.ico', favicon_view), # FUNCIONA
@@ -64,3 +64,8 @@ urlpatterns = [
     path('page-404/', views.page_not_found, name='page_404'),
     path('test-404/', page_404, name='test_404'),
 ]
+
+# # ------------------------------------------
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

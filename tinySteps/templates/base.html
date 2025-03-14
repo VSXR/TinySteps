@@ -25,213 +25,20 @@
             integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     </head>
-
     <body>
-        <!-- Skip to main content link for keyboard users -->
         <a href="#main-content" class="skip-link visually-hidden">Skip to main content</a>
+        {% include 'partials/header.html' %}
+        {% include 'partials/messages.html' %}
 
-        <!-- HEADER (WITH NAVBAR) -->
-        <header>
-            <nav class="navbar navbar-expand-lg navbar-dark" aria-label="Main Navigation">
-                <div class="container-fluid">
-                    <!-- Logo and Site Name -->
-                    <div class="logo-container d-flex align-items-center">
-                        <a class="navbar-brand navLogo d-flex align-items-center me-0" href="{% url 'index' %}">
-                            <img src="{% static 'res/img/logo/tinySteps-logo.png' %}" alt="Tiny Steps Logo" width="30" height="30">
-                        </a>
-                        <a class="navbar-brand navName ms-2" href="{% url 'index' %}" aria-label="Tiny Steps Home">Tiny Steps</a>
-                    </div>
-                    
-                    <!-- Mobile Navigation Toggle -->
-                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" 
-                        data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" 
-                        aria-expanded="false" aria-label="Toggle navigation menu">
-                        <span class="navbar-toggler-icon"></span>
-                    </button>
-
-                    <!-- Navigation Menu -->
-                    <div class="navbar-collapse collapse" id="navbarSupportedContent">
-                        <ul class="navbar-nav mb-2 mb-lg-0 me-auto">
-                            <!-- Main Navigation Links -->
-                            <li class="nav-item">
-                                <a href="{% url 'your_children' %}" class="nav-link {% if request.resolver_match.url_name == 'your_children' %}active{% endif %}">
-                                    <i class="fa-solid fa-baby" aria-hidden="true"></i>
-                                    <span class="nav-text">YOUR CHILDREN</span>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="{% url 'parents_forum' %}" class="nav-link {% if request.resolver_match.url_name == 'parents_forum' %}active{% endif %}">
-                                    <i class="fa-solid fa-comments" aria-hidden="true"></i> 
-                                    <span class="nav-text">PARENTS FORUM</span>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="{% url 'guides' %}" class="nav-link {% if 'guides' in request.path %}active{% endif %}">
-                                    <i class="fa-solid fa-book" aria-hidden="true"></i> 
-                                    <span class="nav-text">GUIDES</span>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="{% url 'info_request' %}" class="nav-link {% if request.resolver_match.url_name == 'info_request' %}active{% endif %}">
-                                    <i class="fa-solid fa-phone" aria-hidden="true"></i> 
-                                    <span class="nav-text">REQUEST INFO</span>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="{% url 'about' %}" class="nav-link {% if request.resolver_match.url_name == 'about' %}active{% endif %}">
-                                    <i class="fa-solid fa-question" aria-hidden="true"></i> 
-                                    <span class="nav-text">ABOUT US</span>
-                                </a>
-                            </li>
-                        </ul>
-
-                        <!-- Authentication Links -->
-                        <ul class="navbar-nav ms-auto me-2">
-                            {% if user.is_authenticated %}
-                                <li class="nav-item">
-                                    <form method="post" action="{% url 'logout' %}" class="m-0 p-0">
-                                        {% csrf_token %}
-                                        <button type="submit" class="nav-link btn-logout {% if request.resolver_match.url_name == 'logout' %}active{% endif %}" aria-label="Logout">
-                                            <i class="fa-solid fa-right-from-bracket" aria-hidden="true"></i> 
-                                            <span class="nav-text">Logout</span>
-                                        </button>
-                                    </form>
-                                </li>
-                            {% else %}
-                                <li class="nav-item">
-                                    <a class="nav-link {% if request.resolver_match.url_name == 'login' %}active{% endif %}" href="{% url 'login' %}">
-                                        <i class="fa-solid fa-right-to-bracket" aria-hidden="true"></i> 
-                                        <span class="nav-text">Login</span>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link {% if request.resolver_match.url_name == 'register' %}active{% endif %}" href="{% url 'register' %}">
-                                        <i class="fa-solid fa-user-plus" aria-hidden="true"></i> 
-                                        <span class="nav-text">Register</span>
-                                    </a>
-                                </li>
-                            {% endif %}
-                        </ul>
-
-                        <!-- Social Links -->
-                        <ul class="navbar-nav social-nav">
-                            <li class="nav-item social">
-                                <a href="https://github.com/VSXR" class="nav-link" target="_blank" rel="noopener noreferrer" aria-label="GitHub Profile">
-                                    <i class="fa-brands fa-github" aria-hidden="true"></i>
-                                    <span class="visually-hidden">GitHub</span>
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </nav>
-        </header>
-
-        <!-- Flash Messages with ARIA roles -->
-        {% if messages %}
-            <section aria-label="Notifications" class="message-container">
-                <ul class="messages" role="alert">
-                    {% for message in messages %}
-                        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-                    {% endfor %}
-                </ul>
-            </section>
-        {% endif %}
-
-        <!-- MAIN CONTENT with landmark -->
         <main id="main-content" class="container-fluid mt-4">
-            {% block main_contents %} 
-                <!-- Contenedor principal -->
-                <div class="container-fluid">
-                    
-                    <!-- CONTENIDO PRINCIPAL -->
-                    <div class="mainContent container-fluid">
-                        <section class="container mt-4" aria-labelledby="welcome-heading">
-                            <div class="row mb-4">
-                                <div class="col">
-                                    <h1 id="welcome-heading" class="text-center">Welcome to Tiny Steps</h1>
-                                    <span class="sr-only">(Every step matters)</span>
-                                </div>
-                            </div>
-                        </section>
-                        
-                        <section aria-labelledby="about-section">
-                            <h2 id="about-section" class="visually-hidden">About Tiny Steps</h2>
-                            <div class="specific-paragraphs">
-                                <p class="text-center">
-                                    Tiny Steps is an app designed for first-time parents, launched in 2025, that offers the best tools to 
-                                    support your parenting journey. We provide the most intuitive features and the most reliable information 
-                                    to make caring for your baby an easy and enjoyable experience.
-                                </p>
-                                <div class="image-container">
-                                    <img src="{% static 'res/img/logo/tinySteps-logo.png' %}" class="imgWeb-logo" 
-                                        alt="A parent using the Tiny Steps app with their baby" 
-                                        loading="lazy">
-                                </div>
-                            </div>
-                        </section>
-                        
-                    </div>
-                </div>
+            {% block main_contents %}
+                <!-- Default body content of Tiny Steps -->
             {% endblock main_contents %}
         </main>
 
-        <!-- FOOTER with navigation landmark -->
-        <footer class="footerContainer sticky-footer mt-auto py-3 text-white">
-            <nav aria-label="Footer Navigation">
-                <ul class="nav footer-nav justify-content-center border-bottom pb-3">
-                    <!-- Footer navigation links with ARIA -->
-                    <li class="footer-nav-item">
-                        <a href="{% url 'index' %}" class="footer-nav-link" aria-label="Home">
-                            <i class="fa-solid fa-house" aria-hidden="true"></i> 
-                            <span class="footer-link-text">HOME</span>
-                        </a>
-                    </li>
-                    <li class="footer-nav-item">
-                        <a href="{% url 'your_children' %}" class="footer-nav-link" aria-label="Your Children">
-                            <i class="fa-solid fa-baby" aria-hidden="true"></i>
-                            <span class="footer-link-text">YOUR CHILDREN</span>
-                        </a>
-                    </li>
-                    <li class="footer-nav-item">
-                        <a href="{% url 'parents_forum' %}" class="footer-nav-link" aria-label="Parents Forum">
-                            <i class="fa-solid fa-comments" aria-hidden="true"></i> 
-                            <span class="footer-link-text">PARENTS FORUM</span>
-                        </a>
-                    </li>
-                    <li class="footer-nav-item">
-                        <a href="{% url 'guides' %}" class="footer-nav-link" aria-label="Guides">
-                            <i class="fa-solid fa-book" aria-hidden="true"></i> 
-                            <span class="footer-link-text">GUIDES</span>
-                        </a>
-                    </li>
-                    <li class="footer-nav-item">
-                        <a href="{% url 'info_request' %}" class="footer-nav-link" aria-label="Request Information">
-                            <i class="fa-solid fa-phone" aria-hidden="true"></i> 
-                            <span class="footer-link-text">REQUEST INFO</span>
-                        </a>
-                    </li>
-                    <li class="footer-nav-item">
-                        <a href="{% url 'about' %}" class="footer-nav-link" aria-label="About Us">
-                            <i class="fa-solid fa-question" aria-hidden="true"></i> 
-                            <span class="footer-link-text">ABOUT US</span>
-                        </a>
-                    </li>
-                </ul>
-            </nav>
-
-            <!-- Copyright information with semantic markup -->
-            <div class="footerAuthorText text-center mt-3">
-                <div class="madeContainer">
-                    <p><small>&copy; 2025 TinySteps. All rights reserved.</small></p>
-                </div>
-                <div class="madeContainer">
-                    <a href="https://github.com/VSXR" class="madeBy" rel="noopener noreferrer" target="_blank" aria-label="Made by VSXR - Visit GitHub profile">- MADE BY VSXR -</a>
-                </div>
-            </div>
-        </footer>
-
-        <!-- Scripts with defer for performance -->
+        {% include 'partials/footer.html' %}
+        
+        <!-- Scripts -->
         <script defer src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
         <script defer src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
         <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
@@ -281,5 +88,41 @@
                 window.addEventListener('resize', updateStickyState);
             });
         </script>
+
+        <!-- Script para consumir mensajes a los 5s -->
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                // Get all message alerts
+                const alerts = document.querySelectorAll('.alert');
+                
+                // Setup auto-dismiss for alerts
+                alerts.forEach(alert => {
+                    // Mark messages as viewed in session storage
+                    const messageText = alert.textContent.trim();
+                    const messageKey = 'msg_' + messageText.substring(0, 20);
+                    
+                    // Only show message if it hasn't been seen
+                    if (!sessionStorage.getItem(messageKey)) {
+                        sessionStorage.setItem(messageKey, 'seen');
+                    } else {
+                        // Hide duplicate message
+                        alert.style.display = 'none';
+                    }
+                    
+                    // Auto dismiss after 5 seconds
+                    setTimeout(() => {
+                        if (alert.parentNode) {
+                            alert.classList.remove('show');
+                            setTimeout(() => {
+                                if (alert.parentNode) {
+                                    alert.parentNode.removeChild(alert);
+                                }
+                            }, 150);
+                        }
+                    }, 5000);
+                });
+            });
+        </script>
+
     </body>
 </html>

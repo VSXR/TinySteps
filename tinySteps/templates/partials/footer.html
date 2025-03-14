@@ -1,0 +1,54 @@
+{% load static %}
+
+<footer class="footerContainer sticky-footer mt-auto py-3 text-white">
+    <nav aria-label="Footer Navigation">
+        <ul class="nav footer-nav justify-content-center border-bottom pb-3">
+            <li class="footer-nav-item">
+                <a href="{% url 'index' %}" class="footer-nav-link" aria-label="Home">
+                    <i class="fa-solid fa-house" aria-hidden="true"></i> 
+                    <span class="footer-link-text">HOME</span>
+                </a>
+            </li>
+            <li class="footer-nav-item">
+                <a href="{% url 'your_children' %}" class="footer-nav-link" aria-label="Your Children">
+                    <i class="fa-solid fa-baby" aria-hidden="true"></i>
+                    <span class="footer-link-text">YOUR CHILDREN</span>
+                </a>
+            </li>
+            <li class="footer-nav-item">
+                <a href="{% url 'parents_forum' %}" class="footer-nav-link" aria-label="Parents Forum">
+                    <i class="fa-solid fa-comments" aria-hidden="true"></i> 
+                    <span class="footer-link-text">PARENTS FORUM</span>
+                </a>
+            </li>
+            <li class="footer-nav-item">
+                <a href="{% url 'guides' %}" class="footer-nav-link" aria-label="Guides">
+                    <i class="fa-solid fa-book" aria-hidden="true"></i> 
+                    <span class="footer-link-text">GUIDES</span>
+                </a>
+            </li>
+            <li class="footer-nav-item">
+                <a href="{% url 'contact' %}" class="footer-nav-link" aria-label="Contact">
+                    <i class="fa-solid fa-envelope" aria-hidden="true"></i> 
+                    <span class="footer-link-text">CONTACT</span>
+                </a>
+            </li>
+            <li class="footer-nav-item">
+                <a href="{% url 'about' %}" class="footer-nav-link" aria-label="About Us">
+                    <i class="fa-solid fa-users" aria-hidden="true"></i> 
+                    <span class="footer-link-text">ABOUT US</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- Copyright information -->
+    <div class="footerAuthorText text-center mt-3">
+        <div class="madeContainer">
+            <p><small>&copy; 2025 TinySteps. All rights reserved.</small></p>
+        </div>
+        <div class="madeContainer">
+            <a href="https://github.com/VSXR" class="madeBy" rel="noopener noreferrer" target="_blank" aria-label="Made by VSXR - Visit GitHub profile">- MADE BY VSXR -</a>
+        </div>
+    </div>
+</footer>

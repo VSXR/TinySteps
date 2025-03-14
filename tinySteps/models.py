@@ -1,4 +1,4 @@
-import uuid
+import uuid, time
 from datetime import timedelta
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
@@ -98,23 +98,39 @@ class PasswordReset_Model(models.Model):
 # -- CHILD MODELS --
 # ------------------------------------------
 class YourChild_Model(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='children')
+    
     name = models.CharField(unique=True, null=False, blank=False, max_length=50)
     second_name = models.CharField(max_length=50, null=True, blank=True)
+    
     birth_date = models.DateField(null=False, blank=False)
-    image_url = models.URLField(max_length=200, null=False, blank=False)
+    gender = models.CharField(max_length=1, null=False, blank=False)
     age = models.IntegerField(null=False, blank=False)
+    
     weight = models.FloatField(null=True, blank=True)
     height = models.FloatField(null=True, blank=True)
-    gender = models.CharField(max_length=1, null=False, blank=False)
+    
     desc = models.TextField(max_length=2000, null=True, blank=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='children')
-
+    image = models.ImageField(upload_to='child_photos/', null=True, blank=True)
+    image_url = models.URLField(max_length=200, null=True, blank=True) 
+    
     def __str__(self):
         return self.name
     
     def get_absolute_url(self):
         return reverse('child_details', kwargs={'pk': self.pk})
-
+    
+    @property
+    def get_image(self):
+        cache_buster = f"?v={int(time.time())}"
+        
+        if self.image and hasattr(self.image, 'url'):
+            return f"{self.image.url}{cache_buster}"
+        elif self.image_url:
+            return f"{self.image_url}{cache_buster}"
+        else:
+            return f"/static/res/img/others/default_child.jpg{cache_buster}"
+    
 class Milestone_Model(models.Model):
     child = models.ForeignKey(YourChild_Model, on_delete=models.CASCADE, related_name='milestones')
     title = models.CharField(max_length=100)
@@ -127,8 +143,8 @@ class Milestone_Model(models.Model):
 # -- PARENTS FORUM MODELS --
 # ------------------------------------------
 class ParentsForum_Model(models.Model):
-    title = models.CharField(max_length=100, db_index=True)  # Add index for search
-    created_at = models.DateTimeField(auto_now_add=True, db_index=True)  # Add index for sorting
+    title = models.CharField(max_length=100, db_index=True)
+    created_at = models.DateTimeField(auto_now_add=True, db_index=True)
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='forum_posts')
     desc = models.TextField(max_length=2000, null=False, blank=False)
     comments = GenericRelation(Comment_Model, related_query_name='forum')
@@ -219,5 +235,5 @@ class InfoRequest_Model(models.Model):
         return f"{self.name}, your info request has been submitted correctly!"
     
     def get_absolute_url(self):
-        return reverse('info_request')
+        return reverse('contact')
 # ------------------------------------------

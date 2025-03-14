@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
-from .models import InfoRequest_Model,PasswordReset_Model, Milestone_Model
+from .models import InfoRequest_Model, PasswordReset_Model, Milestone_Model, YourChild_Model
 
 class InfoRequest_Form(forms.ModelForm):
     class Meta:
@@ -140,3 +140,29 @@ class CustomUserCreation_Form(UserCreationForm):
         if commit:
             self.user.save()
         return self.user
+    
+class YourChild_Form(forms.ModelForm):
+    class Meta:
+        model = YourChild_Model
+        fields = ['name', 'second_name', 'birth_date', 'gender', 'age', 
+                  'weight', 'height', 'desc', 'image', 'image_url']
+        widgets = {
+            'birth_date': forms.DateInput(attrs={'type': 'date'}),
+            'desc': forms.Textarea(attrs={'rows': 4}),
+            'image': forms.FileInput(attrs={'accept': 'image/*'}),
+            'image_url': forms.URLInput(attrs={'placeholder': 'https://...'}),
+        }
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['second_name'].required = False
+        self.fields['weight'].required = False
+        self.fields['height'].required = False
+        self.fields['desc'].required = False
+        self.fields['image'].required = False
+        self.fields['image_url'].required = False
+        
+        # Textos de ayuda para los campos del form de añadir hijo
+        self.fields['image'].help_text = "Sube una foto desde tu dispositivo"
+        self.fields['image_url'].help_text = "O proporciona una URL a una imagen"
+        self.fields['desc'].help_text = "Información adicional sobre tu hijo"

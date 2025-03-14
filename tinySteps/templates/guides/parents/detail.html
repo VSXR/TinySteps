@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    {{ parent_guide.title }} - TINY STEPS
+{% endblock %}
+
+{% block main_contents %}
+    <main id="main-content">
+        <div class="container mt-4">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'index' %}">Home</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'parents_guides' %}">Parents Guides</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">{{ parent_guide.title }}</li>
+                </ol>
+            </nav>
+            
+            <article class="card mb-4">
+                <div class="card-header">
+                    <h2>{{ parent_guide.title }}</h2>
+                </div>
+                <div class="card-body">
+                    {% if parent_guide.image %}
+                        <img src="{{ parent_guide.image.url }}" 
+                             alt="Illustration for {{ parent_guide.title }} parenting guide" 
+                             class="img-fluid mb-3">
+                    {% endif %}
+                    
+                    <p class="text-muted">Published: {{ parent_guide.created_at|date:"d/m/Y" }}</p>
+                    <div class="guide-content">
+                        {{ parent_guide.content|safe }}
+                    </div>
+                    
+                    {% if parent_guide.tags.all %}
+                        <div class="mt-3" aria-labelledby="categories-heading">
+                            <h3 id="categories-heading" class="h6 d-inline">Categories:</h3>
+                            <ul class="list-inline d-inline">
+                                {% for tag in parent_guide.tags.all %}
+                                    <li class="list-inline-item">
+                                        <span class="badge bg-secondary">{{ tag.name }}</span>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% endif %}
+                </div>
+            </article>
+            <a href="{% url 'parents_guides' %}" class="btn btn-primary mb-4" 
+               aria-label="Return to parents guides list">Return to the list</a>
+        </div>
+    </main>
+{% endblock main_contents %}

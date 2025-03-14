@@ -29,6 +29,7 @@ from .forms import (
     Milestone_Form,
     PasswordReset_Form,
     CustomUserCreation_Form,
+    YourChild_Form,
 )
 from .models import (
     InfoRequest_Model, 
@@ -45,13 +46,14 @@ from .models import (
 # -- GENERAL FUNCTION-BASED VIEWS --
 # -----------------------------------------------
 def index(request):
-    return render(request, 'index.html')
+    return render(request, 'pages/index.html')
 
 def about(request):
-    return render(request, 'about/about.html')
+    return render(request, 'pages/about.html')
 
 def page_not_found(request, exception):
-    return render(request, 'others/404.html', status=404)
+    return render(request, 'pages/404.html', status=404)
+
 # -----------------------------------------------
 
 
@@ -59,7 +61,7 @@ def page_not_found(request, exception):
 # -- LOGIN, LOGOUT AND REGISTER CLASS-VIEWS --
 # -----------------------------------------------
 class Login_View(auth_views.LoginView):
-    template_name = 'user_accounts/login_page.html'
+    template_name = 'accounts/login.html'
     redirect_authenticated_user = True
     
     def get_success_url(self):
@@ -88,7 +90,7 @@ class Logout_View(auth_views.LogoutView):
 
 class Register_View(CreateView):
     form_class = CustomUserCreation_Form
-    template_name = 'user_accounts/register_page.html'
+    template_name = 'accounts/register.html'
     success_url = reverse_lazy('index')
     
     def get_success_url(self):
@@ -104,6 +106,21 @@ class Register_View(CreateView):
         if request.user.is_authenticated:
             return redirect('index')
         return super().get(request, *args, **kwargs)
+@login_required
+def profile(request):
+    # We get the children of the user and the forum posts they have created
+    children = YourChild_Model.objects.filter(user=request.user)
+    
+    forum_posts = ParentsForum_Model.objects.filter(author=request.user)\
+        .annotate(comments_count=models.Count('comments'))\
+        .order_by('-created_at')
+    
+    context = {
+        'children': children,
+        'forum_posts': forum_posts[:5],
+    }
+    
+    return render(request, 'accounts/profile.html', context)
 # -----------------------------------------------
 
 # ------------------------------------------
@@ -127,7 +144,8 @@ def password_reset(request):
     else:
         form = PasswordReset_Form()
     
-    return render(request, 'user_accounts/user_password/reset_password.html', {'form': form})
+    return render(request, 'accounts/user_password/reset_password.html', {'form': form})
+
 # ------------------------------------------
 
 
@@ -137,12 +155,12 @@ def password_reset(request):
 @login_required(login_url='login')
 def your_children(request):
     children = YourChild_Model.objects.filter(user=request.user)
-    return render(request, 'your_children/your_children_page.html', {'children': children})
+    return render(request, 'children/list.html', {'children': children})
 
 @login_required(login_url='login')
 def your_child(request, pk):
     child = get_object_or_404(YourChild_Model, pk=pk)
-    return render(request, 'your_children/views/your_child_info.html', {'child': child})
+    return render(request, 'children/detail.html', {'child': child})
 
 @login_required
 def child_milestone(request, child_id):
@@ -159,24 +177,12 @@ def child_milestone(request, child_id):
     else:
         form = Milestone_Form()
     
-    # TODO: CORREGIR PATH DEL MILESTONE!
-    return render(request, 'your_children/views/child_needs/add_milestone.html', {
+    return render(request, 'children/features/milestones/index.html', {
         'form': form, 
         'child': child,
-        'today': timezone.now().date()  # Add today's date for the date field max attribute
+        'today': timezone.now().date()
     })
 
-@login_required
-def dashboard(request):
-    children = YourChild_Model.objects.filter(user=request.user)
-    recent_forums = ParentsForum_Model.objects.all().order_by('-created_at')[:5]
-    recent_guides = Guides_Model.objects.filter(guide_type='parent').order_by('-created_at')[:5]
-    
-    return render(request, 'dashboard.html', {
-        'children': children,
-        'recent_forums': recent_forums,
-        'recent_guides': recent_guides
-    })
 # -----------------------------------------------
 
 # -----------------------------------------------
@@ -184,9 +190,9 @@ def dashboard(request):
 # -----------------------------------------------
 class YourChild_Add_View(LoginRequiredMixin, SuccessMessageMixin, generic.CreateView):
     login_url = 'login'
-    template_name = 'your_children/views/child_actions/add_child.html'
+    template_name = 'children/actions/create.html'
     model = YourChild_Model
-    fields = ['name', 'second_name', 'birth_date', 'image_url', 'age', 'weight', 'height', 'gender', 'desc']
+    form_class = YourChild_Form
     success_url = reverse_lazy('your_children')
     success_message = "Child added successfully!"
 
@@ -194,15 +200,17 @@ class YourChild_Add_View(LoginRequiredMixin, SuccessMessageMixin, generic.Create
         form.instance.user = self.request.user
         return super().form_valid(form)
     
-    def get_queryset(self):
-        return super().get_queryset().filter(user=self.request.user)
-    
-    def get_success_url(self):
-        return reverse_lazy('your_children')
+    def post(self, request, *args, **kwargs):
+        form = self.get_form()
+        form.instance.user = request.user
+        if form.is_valid():
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
 
 class YourChild_Delete_View(LoginRequiredMixin, SuccessMessageMixin, generic.DeleteView):
     login_url = 'login'
-    template_name = 'your_children/views/child_actions/delete_child.html'
+    template_name = 'children/actions/delete.html'
     model = YourChild_Model
     success_url = reverse_lazy('your_children')
     success_message = "Child removed successfully!"
@@ -226,11 +234,15 @@ class YourChild_Delete_View(LoginRequiredMixin, SuccessMessageMixin, generic.Del
 
 class YourChild_UpdateDetails_View(LoginRequiredMixin, SuccessMessageMixin, generic.UpdateView):
     login_url = 'login'
-    template_name = 'your_children/views/child_actions/edit_child.html'
+    template_name = 'children/actions/edit.html'
     model = YourChild_Model
-    fields = ['name', 'age', 'gender', 'desc']
-    success_url = reverse_lazy('your_children')
+    form_class = YourChild_Form
     success_message = "Child information updated successfully!"
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['children'] = YourChild_Model.objects.filter(user=self.request.user)
+        return context
     
     def get_queryset(self):
         return super().get_queryset().filter(user=self.request.user)
@@ -241,12 +253,31 @@ class YourChild_UpdateDetails_View(LoginRequiredMixin, SuccessMessageMixin, gene
             raise Http404
         return obj
     
-    def get_success_url(self):
-        return reverse_lazy('your_children')
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        self.object = form.save(commit=True)  
+        self.object.refresh_from_db() # Importante: Forzamos el guardado y la recarga del objeto para evitar problemas con las relaciones!
+        
+        messages.success(self.request, "Child information updated successfully!")
+        return super().form_valid(form)
 
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        form = self.form_class(request.POST, request.FILES, instance=self.object)
+        if form.is_valid():
+            return self.form_valid(form)
+        return self.form_invalid(form)
+
+    def get_success_url(self):
+        return reverse_lazy('child_details', kwargs={'pk': self.object.pk})
+
+
+# -----------------------------------------------
+# --- CHILD FEATURES CLASS-VIEWS ---
+# -----------------------------------------------
 class YourChild_Calendar_View(LoginRequiredMixin, generic.DetailView):
     login_url = 'login'
-    template_name = 'your_children/views/child_needs/calendar.html'
+    template_name = 'children/features/calendar/index.html'
     model = YourChild_Model
     
     def get_queryset(self):
@@ -260,7 +291,7 @@ class YourChild_Calendar_View(LoginRequiredMixin, generic.DetailView):
     
 class YourChild_VaccineCard_View(LoginRequiredMixin, generic.DetailView):
     login_url = 'login'
-    template_name = 'your_children/views/child_needs/vaccine_card.html'
+    template_name = 'children/features/vaccine-card/index.html'
     model = YourChild_Model
     
     def get_queryset(self):
@@ -271,6 +302,7 @@ class YourChild_VaccineCard_View(LoginRequiredMixin, generic.DetailView):
         if not obj.user == self.request.user:
             raise Http404
         return obj
+
 # -----------------------------------------------
 
 # -----------------------------------------------
@@ -296,6 +328,7 @@ def add_comment(request, model_type, pk):
             )
             messages.success(request, "Comentario añadido correctamente.")
         return redirect(obj.get_absolute_url())
+
 # -----------------------------------------------
 
 # -----------------------------------------------
@@ -347,14 +380,13 @@ def like_toggle(request, content_type_id, object_id):
             'status': 'error',
             'message': 'An error occurred processing your request'
         }, status=400)
+
 # -----------------------------------------------
 
 # -----------------------------------------------
 # -- PARENTS FORUM FUNCTION-BASED VIEWS --
 # -----------------------------------------------
-# TODO: IMPLEMENTAR LAS REVIEWS DE LOS POSTS Y LIKES  Y ORDENAMIENTO POR TIEMPO
 def parents_forum_page(request):
-    # We use select_related and prefetch_related to avoid N+1 queries!
     posts_list = ParentsForum_Model.objects.select_related('author').all()
     content_type = ContentType.objects.get_for_model(ParentsForum_Model)
     
@@ -407,7 +439,7 @@ def parents_forum_page(request):
     except (PageNotAnInteger, EmptyPage):
         posts = paginator.page(1)
     
-    return render(request, 'parents_forum/parents_forum_page.html', {
+    return render(request, 'forum/index.html', {
         'posts': posts,
         'selected_sort': sort,
         'query': query,
@@ -431,14 +463,13 @@ def search_posts(request):
     except (PageNotAnInteger, EmptyPage):
         posts = paginator.page(1)
     
-    return render(request, 'parents_forum/parents_forum_page.html', {
+    return render(request, 'forum/index.html', {
         'posts': posts,
         'query': query
     })
 
 @login_required
 def add_post(request):
-    """Function to handle new post creation"""
     if request.method == 'POST':
         title = request.POST.get('title')
         content = request.POST.get('desc')
@@ -454,7 +485,7 @@ def add_post(request):
         else:
             messages.error(request, "Please fill all required fields")
     
-    return render(request, 'parents_forum/views/forum_actions/add_post.html')
+    return render(request, 'forum/posts/create.html')
 
 @login_required
 def view_posts_list(request):
@@ -494,24 +525,22 @@ def edit_post(request, post_id):
             else:
                 messages.error(request, "Please fill all required fields")
         
-        return render(request, 'parents_forum/views/forum_actions/edit_post.html', {'post': post})
+        return render(request, 'forum/posts/edit.html', {'post': post})
     else:
         messages.error(request, "You don't have permission to edit this post")
         return redirect('parents_forum')
 
 @login_required
 def delete_post(request, post_id):
-    # Buscar el post sin filtrar por autor
     post = get_object_or_404(ParentsForum_Model, id=post_id)
     
-    # Verificar si el usuario es autor o administrador
     if request.user == post.author or request.user.is_staff or request.user.is_superuser:
         if request.method == 'POST':
             post.delete()
             messages.success(request, "Post deleted successfully!")
             return redirect('parents_forum')
         
-        return render(request, 'parents_forum/views/forum_actions/delete_post.html', {'post': post})
+        return render(request, 'forum/posts/delete.html', {'post': post})
     else:
         messages.error(request, "You don't have permission to delete this post")
         return redirect('parents_forum')
@@ -524,7 +553,7 @@ def view_post(request, post_id):
     if request.user.is_authenticated:
         user_liked = post.likes.filter(id=request.user.id).exists()
     
-    return render(request, 'parents_forum/views/forum_actions/view_post.html', {
+    return render(request, 'forum/posts/detail.html', {
         'post': post,
         'related_posts': related_posts,
         'user_liked': user_liked
@@ -605,7 +634,7 @@ def forum_post_like_toggle(request, post_id):
 # -----------------------------------------------
 class ParentsForum_Add_View(LoginRequiredMixin, SuccessMessageMixin, generic.CreateView):
     login_url = 'login'
-    template_name = 'parents_forums/forum_create.html'
+    template_name = 'forum/posts/create.html'
     model = ParentsForum_Model
     fields = ['title', 'desc']
     success_url = reverse_lazy('parents_forum')
@@ -623,7 +652,7 @@ class ParentsForum_Add_View(LoginRequiredMixin, SuccessMessageMixin, generic.Cre
     
 class ParentsForum_Update_View(LoginRequiredMixin, SuccessMessageMixin, generic.UpdateView):
     login_url = 'login'
-    template_name = 'parents_forums/forum_update.html'
+    template_name = 'forum/posts/edit.html'
     model = ParentsForum_Model
     fields = ['title', 'desc']
     success_url = reverse_lazy('parents_forum')
@@ -643,7 +672,7 @@ class ParentsForum_Update_View(LoginRequiredMixin, SuccessMessageMixin, generic.
 
 class ParentsForum_Delete_View(LoginRequiredMixin, SuccessMessageMixin, generic.DeleteView):
     login_url = 'login'
-    template_name = 'parents_forum/views/forum_actions/delete_post.html'
+    template_name = 'forum/posts/delete.html'
     model = ParentsForum_Model
     success_url = reverse_lazy('parents_forum')
     success_message = "Forum deleted successfully!"
@@ -672,44 +701,46 @@ class ParentsForum_Delete_View(LoginRequiredMixin, SuccessMessageMixin, generic.
     
     def get_success_url(self):
         return reverse_lazy('parents_forum')
+
 # -----------------------------------------------
 
 
 # -----------------------------------------------
 # -- GUIDES FUNCTION-BASED VIEWS --
 # -----------------------------------------------
-# PAGINA GENERAL DE GUIAS
 def guides_page(request):
-    parent_guides = Guides_Model.objects.filter(guide_type='parent')
-    nutrition_guides = Guides_Model.objects.filter(guide_type='nutrition')
-    return render(request, 'guides/guides_page.html', {
+    """Main landing page for guides, showing both nutrition and parent guides"""
+    parent_guides = Guides_Model.objects.filter(guide_type='parent')[:4]
+    nutrition_guides = Guides_Model.objects.filter(guide_type='nutrition')[:4]
+    return render(request, 'guides/index.html', {
         'parent_guides': parent_guides,
         'nutrition_guides': nutrition_guides
     })
 
 def parents_guides_page(request):
     parents_guides = Guides_Model.objects.filter(guide_type='parent')
-    return render(request, 'guides/views/parents_guides/parents_guides.html', {'parents_guides': parents_guides})
+    return render(request, 'guides/parents/list.html', {'parents_guides': parents_guides})
 
 def parent_guide_details(request, pk):
     guide = get_object_or_404(Guides_Model, pk=pk, guide_type='parent')
-    return render(request, 'guides/views/parents_guides/view_parent_guide.html', {'parent_guide': guide})
+    return render(request, 'guides/parents/detail.html', {'parent_guide': guide})
 
 def nutrition_guides_page(request):
     nutrition_guides = Guides_Model.objects.filter(guide_type='nutrition')
-    return render(request, 'guides/views/nutrition_guides/nutrition_guides.html', {'nutrition_guides': nutrition_guides})
+    return render(request, 'guides/nutrition/list.html', {'nutrition_guides': nutrition_guides})
 
 def nutrition_guide_details(request, pk):
     guide = get_object_or_404(Guides_Model, pk=pk, guide_type='nutrition')
-    return render(request, 'guides/views/nutrition_guides/view_nutrition_guide.html', {'nutrition_guide': guide})
+    return render(request, 'guides/nutrition/detail.html', {'nutrition_guide': guide})
+
 # -----------------------------------------------
 
 
 # ------------------------------------
 # -- INFO REQUEST CLASS-VIEWS --
 # ------------------------------------
-class InfoRequest_View(SuccessMessageMixin, generic.CreateView):
-    template_name = 'info_request/info_request_form.html'
+class Contact_View(SuccessMessageMixin, generic.CreateView):
+    template_name = 'contact/form.html'
     model = InfoRequest_Model
     form_class = InfoRequest_Form
     success_message = "Thank you, %(name)s! Your request has been sent successfully. Check your email for more information!"
@@ -718,19 +749,20 @@ class InfoRequest_View(SuccessMessageMixin, generic.CreateView):
     def form_valid(self, form):
         response = super().form_valid(form)
         # ENVIAMOS EL CORREO ELECTRONICO
-        info_request = form.instance
-        subject = 'Info Request Received - Tiny Steps'
-        message = render_to_string('info_request/email_templates/info_request_email.txt', {
-            'name': info_request.name,
+        contact = form.instance
+        subject = 'Request Received - Tiny Steps'
+        message = render_to_string('contact/emails/confirmation.txt', {
+            'name': contact.name,
         })
         send_mail(
             subject,
             message,
             'c4relecloud@gmail.com',
-            [info_request.email],
+            [contact.email],
             fail_silently=False,
         )
         return response
+
 # ------------------------------------
 
 # ------------------------------------

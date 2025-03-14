@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block title %}Add Milestone for {{ child.name }} - TINY STEPS{% endblock %}
+
+{% block main_contents %}
+    <main id="main-content">
+        <div class="container mt-4 mb-5">
+            <!-- Page Header -->
+            <div class="row mb-4">
+                <div class="col">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="{% url 'your_children' %}">Your Children</a></li>
+                            <li class="breadcrumb-item"><a href="{% url 'your_child' child.id %}">{{ child.name }}</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Add Milestone</li>
+                        </ol>
+                    </nav>
+                    <h1 id="page-heading">Add Milestone for {{ child.name }}</h1>
+                    <p class="lead text-center" id="page-description">Record important developmental achievements</p>
+                </div>
+            </div>
+
+            <!-- Messages Container -->
+            <div class="row">
+                <div class="col">
+                    <div id="messages-container" class="messages mb-3" role="alert" aria-live="polite">
+                        {% if messages %}
+                            {% include 'partials/messages.html' %}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Milestone Form -->
+            <div class="row justify-content-center">
+                <div class="col-md-8">
+                    <div class="card shadow-sm">
+                        <div class="card-header bg-light">
+                            <h2 class="fs-5 mb-0">Milestone Details</h2>
+                        </div>
+                        <div class="card-body">
+                            <form method="post" enctype="multipart/form-data" novalidate>
+                                {% csrf_token %}
+                                
+                                {% if form.non_field_errors %}
+                                    <div class="alert alert-danger">
+                                        {% for error in form.non_field_errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                                
+                                <div class="mb-3">
+                                    <label for="id_title" class="form-label">Title <span class="text-danger">*</span></label>
+                                    {{ form.title|as_crispy_field }}
+                                    <div class="form-text">What milestone did your child achieve?</div>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="id_achieved_date" class="form-label">Date Achieved <span class="text-danger">*</span></label>
+                                    {{ form.achieved_date|as_crispy_field }}
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="id_description" class="form-label">Description</label>
+                                    {{ form.description|as_crispy_field }}
+                                    <div class="form-text">Details about this achievement</div>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="id_photo" class="form-label">Photo</label>
+                                    {{ form.photo|as_crispy_field }}
+                                    <div class="form-text">Upload a photo of this moment (optional)</div>
+                                </div>
+                                
+                                <div class="d-flex justify-content-between mt-4">
+                                    <a href="{% url 'your_child' child.id %}" class="btn btn-outline-secondary">
+                                        <i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Cancel
+                                    </a>
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fa-solid fa-flag" aria-hidden="true"></i> Save Milestone
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+{% endblock main_contents %}

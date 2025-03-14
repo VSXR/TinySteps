@@ -157,21 +157,17 @@ USE_TZ = True
 # ---------------------------------------------------------------
 # CONFIGURACIÓN DE ARCHIVOS ESTÁTICOS Y MEDIA
 # ---------------------------------------------------------------
-# URL para archivos estáticos y de medios
+# Rutas para archivos estáticos
 STATIC_URL = '/static/'
-MEDIA_URL = '/media/'
-
-# Almacenamiento de archivos estáticos
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
-
-# Ruta para archivos de medios
-MEDIA_ROOT = os.path.join(BASE_DIR, 'tinySteps', 'static', 'res', 'img', 'media')
-
-# Ruta para archivos estáticos
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'tinySteps', 'static'),
 ]
+
+# Configuración de archivos de medios (separada de estáticos)
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # ---------------------------------------------------------------
 # OTRAS CONFIGURACIONES

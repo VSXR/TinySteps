@@ -1,0 +1,81 @@
+{% load static %}
+
+<div class="navbar-collapse collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mb-2 mb-lg-0 me-auto">
+        <!-- Main Navigation Links -->
+        <li class="nav-item">
+            <a href="{% url 'your_children' %}" class="nav-link {% if request.resolver_match.url_name == 'your_children' %}active{% endif %}">
+                <i class="fa-solid fa-baby" aria-hidden="true"></i>
+                <span class="nav-text">YOUR CHILDREN</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="{% url 'parents_forum' %}" class="nav-link {% if request.resolver_match.url_name == 'parents_forum' %}active{% endif %}">
+                <i class="fa-solid fa-comments" aria-hidden="true"></i> 
+                <span class="nav-text">PARENTS FORUM</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="{% url 'guides' %}" class="nav-link {% if 'guides' in request.path %}active{% endif %}">
+                <i class="fa-solid fa-book" aria-hidden="true"></i> 
+                <span class="nav-text">GUIDES</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="{% url 'contact' %}" class="nav-link {% if request.resolver_match.url_name == 'contact' %}active{% endif %}">
+                <i class="fa-solid fa-envelope" aria-hidden="true"></i> 
+                <span class="nav-text">CONTACT</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="{% url 'about' %}" class="nav-link {% if request.resolver_match.url_name == 'about' %}active{% endif %}">
+                <i class="fa-solid fa-users" aria-hidden="true"></i> 
+                <span class="nav-text">ABOUT US</span>
+            </a>
+        </li>
+    </ul>
+
+    <!-- User Account Links -->
+    <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+        {% if user.is_authenticated %}
+            <li class="nav-item">
+                <a class="nav-link {% if request.resolver_match.url_name == 'profile' %}active{% endif %}" href="{% url 'profile' %}">
+                    <i class="fa-solid fa-user" aria-hidden="true"></i> 
+                    <span class="nav-text">{{ user.username }}</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <form method="post" action="{% url 'logout' %}">
+                    {% csrf_token %}
+                    <button type="submit" class="nav-link btn-logout {% if request.resolver_match.url_name == 'logout' %}active{% endif %}" aria-label="Logout">
+                        <i class="fa-solid fa-right-from-bracket" aria-hidden="true"></i> 
+                        <span class="nav-text">Logout</span>
+                    </button>
+                </form>
+            </li>
+        {% else %}
+            <li class="nav-item">
+                <a class="nav-link {% if request.resolver_match.url_name == 'login' %}active{% endif %}" href="{% url 'login' %}">
+                    <i class="fa-solid fa-right-to-bracket" aria-hidden="true"></i> 
+                    <span class="nav-text">Login</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if request.resolver_match.url_name == 'register' %}active{% endif %}" href="{% url 'register' %}">
+                    <i class="fa-solid fa-user-plus" aria-hidden="true"></i> 
+                    <span class="nav-text">Register</span>
+                </a>
+            </li>
+        {% endif %}
+    </ul>
+
+    <!-- Social Links -->
+    <ul class="navbar-nav social-nav">
+        <li class="nav-item social">
+            <a href="https://github.com/VSXR" class="nav-link" target="_blank" rel="noopener noreferrer" aria-label="GitHub Profile">
+                <i class="fa-brands fa-github" aria-hidden="true"></i>
+                <span class="visually-hidden">GitHub</span>
+            </a>
+        </li>
+    </ul>
+</div>

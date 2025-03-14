@@ -1,0 +1,116 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block title %}Edit Child - TINY STEPS{% endblock %}
+
+{% block main_contents %}
+    <main id="main-content">
+        <div class="container mt-4 mb-5">
+            <div class="row mb-4">
+                <div class="col">
+                    <h1 id="page-heading">Edit Child Information</h1>
+                    <p class="lead text-center" id="page-description">Update {{ child.name }}'s information below</p>
+                </div>
+            </div>
+
+            <!-- Messages Container -->
+            <div class="row">
+                <div class="col">
+                    <div id="messages-container" class="messages mb-3" role="alert" aria-live="polite">
+                        {% if messages %}
+                            {% include 'partials/messages.html' %}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="row justify-content-center">
+                <div class="col-md-8 col-lg-6">
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <form method="post" enctype="multipart/form-data" novalidate aria-labelledby="form-heading">
+                                <h2 id="form-heading" class="fs-5 mb-3">Update Information</h2>
+                                {% csrf_token %}
+                                
+                                <!-- Nombre y segundo nombre -->
+                                <div class="mb-3">
+                                    <label for="id_name" class="form-label">Name <span class="text-danger">*</span></label>
+                                    <input type="text" name="name" id="id_name" value="{{ form.name.value|default:'' }}" class="form-control" required>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="id_second_name" class="form-label">Second Name</label>
+                                    <input type="text" name="second_name" id="id_second_name" value="{{ form.second_name.value|default:'' }}" class="form-control">
+                                </div>
+                                
+                                <!-- Fecha de nacimiento y edad -->
+                                <div class="mb-3">
+                                    <label for="id_birth_date" class="form-label">Birth Date <span class="text-danger">*</span></label>
+                                    <input type="date" name="birth_date" id="id_birth_date" value="{{ form.birth_date.value|date:'Y-m-d' }}" class="form-control" required>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="id_age" class="form-label">Age (months) <span class="text-danger">*</span></label>
+                                    <input type="number" name="age" id="id_age" value="{{ form.age.value }}" class="form-control" required>
+                                </div>
+                                
+                                <!-- Género -->
+                                <div class="mb-3">
+                                    <label for="id_gender" class="form-label">Gender <span class="text-danger">*</span></label>
+                                    <select name="gender" id="id_gender" class="form-select" required>
+                                        <option value="">Select gender</option>
+                                        <option value="M" {% if form.gender.value == 'M' %}selected{% endif %}>Male</option>
+                                        <option value="F" {% if form.gender.value == 'F' %}selected{% endif %}>Female</option>
+                                        <option value="O" {% if form.gender.value == 'O' %}selected{% endif %}>Other</option>
+                                    </select>
+                                </div>
+                                
+                                <!-- Peso y altura -->
+                                <div class="row mb-3">
+                                    <div class="col-md-6 mb-3 mb-md-0">
+                                        <label for="id_weight" class="form-label">Weight (kg)</label>
+                                        <input type="number" name="weight" id="id_weight" step="0.01" min="0" value="{{ form.weight.value|default:'' }}" class="form-control">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="id_height" class="form-label">Height (cm)</label>
+                                        <input type="number" name="height" id="id_height" step="0.1" min="0" value="{{ form.height.value|default:'' }}" class="form-control">
+                                    </div>
+                                </div>
+                                
+                                <!-- Descripción -->
+                                <div class="mb-3">
+                                    <label for="id_desc" class="form-label">Description</label>
+                                    <textarea name="desc" id="id_desc" class="form-control">{{ form.desc.value|default:'' }}</textarea>
+                                </div>
+                                
+                                <!-- Foto -->
+                                <div class="mb-3">
+                                    <label for="id_image" class="form-label">Upload Photo</label>
+                                    <input type="file" name="image" id="id_image" class="form-control" accept="image/*">
+                                    {% if form.instance.image %}
+                                        <div class="mt-2">
+                                            <p class="small">Current photo:</p>
+                                            <img src="{{ form.instance.get_image }}" alt="{{ form.instance.name }}" style="max-width: 100px;" class="img-thumbnail">
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="id_image_url" class="form-label">Photo URL</label>
+                                    <input type="url" name="image_url" id="id_image_url" value="{{ form.image_url.value|default:'' }}" class="form-control">
+                                </div>
+                                
+                                <!-- Botones -->
+                                <div class="d-flex justify-content-between">
+                                    <a href="{% url 'your_children' %}" class="btn btn-outline-secondary">Cancel</a>
+                                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+{% endblock main_contents %}

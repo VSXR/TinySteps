@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    PARENTS GUIDES - TINY STEPS
+{% endblock %}
+
+{% block main_contents %}
+    <main id="main-content">
+        <div class="container mt-4">
+            <div class="row mb-4">
+                <div class="col">
+                    <h2>PARENTS GUIDES</h2>
+                    <p class="lead text-center">Find advice and recommendations for new parents</p>
+                </div>
+            </div>
+
+            <section aria-labelledby="parents-guides-content">
+                <h3 id="parents-guides-content" class="visually-hidden">Available Parents Guides</h3>
+                <div class="row">
+                    {% if parents_guides %}
+                        {% for guide in parents_guides %}
+                            <div class="col-md-4 mb-4">
+                                <article class="card h-100 shadow-sm">
+                                    {% if guide.image %}
+                                        <img src="{{ guide.image.url }}" class="card-img-top" 
+                                             alt="Visual representation for {{ guide.title }} guide">
+                                    {% else %}
+                                        <img src="{% static 'img/others/default.jpg' %}" class="card-img-top" 
+                                             alt="Default parenting guide illustration">
+                                    {% endif %}
+                                    <div class="card-body">
+                                        <h4 class="card-title">{{ guide.title }}</h4>
+                                        <p class="card-text">{{ guide.description|truncatechars:120 }}</p>
+                                    </div>
+                                    <div class="card-footer bg-transparent border-0 text-end">
+                                        <a href="{% url 'nutrition_guide_details' guide.id %}" class="btn btn-primary mb-4" 
+                                        aria-label="Show details for {{ guide.title }}">Show guide</a>
+                                    </div>
+                                </article>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="col-12 text-center py-5">
+                            <p class="text-center fs-5" role="status">There aren't any parents guides available at this moment!</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </section>
+            
+            <div class="row mt-5 mb-4">
+                <div class="col text-center">
+                    <a href="{% url 'guides' %}" class="btn btn-primary" aria-label="Return to guides page">
+                        Back to Guides
+                    </a>
+                </div>
+            </div>
+        </div>
+    </main>
+{% endblock main_contents %}
