@@ -1,17 +1,18 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load i18n %}
 
-{% block title %}Delete Child - TINY STEPS{% endblock %}
+{% block title %}{% trans "Delete Child - TINY STEPS" %}{% endblock %}
 
 {% block main_contents %}
     <main id="main-content">
         <div class="container mt-4 mb-5">
             <div class="row mb-4">
                 <div class="col">
-                    <h1 id="page-heading">Delete Child Profile</h1>
+                    <h1 id="page-heading">{% trans "Delete Child Profile" %}</h1>
                     <p class="lead text-center text-danger" id="page-description">
                         <i class="fa-solid fa-exclamation-triangle" aria-hidden="true"></i> 
-                        This action cannot be undone
+                        {% trans "This action cannot be undone" %}
                     </p>
                 </div>
             </div>
@@ -33,7 +34,7 @@
                 <div class="col-12">
                     <div class="card shadow-sm">
                         <div class="card-header bg-light">
-                            <h3 class="card-title fs-5 mb-0">Your Children</h3>
+                            <h3 class="card-title fs-5 mb-0">{% trans "Your Children" %}</h3>
                         </div>
                         <div class="card-body">
                             <div class="row">
@@ -50,10 +51,10 @@
                                                     {{ child_item.name }}
                                                 </a>
                                                 {% if child_item.id == yourchild_model.id %}
-                                                <span class="badge bg-danger">Deleting</span>
+                                                <span class="badge bg-danger">{% trans "Deleting" %}</span>
                                                 {% endif %}
                                             </h4>
-                                            <span class="badge bg-primary">{{ child_item.age }} months</span>
+                                            <span class="badge bg-primary">{% blocktrans with age=child_item.age %}{{ age }} months{% endblocktrans %}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -69,10 +70,9 @@
                 <div class="col-md-8 col-lg-6">
                     <div class="card shadow-sm border-danger">
                         <div class="card-header bg-danger text-white">
-                            <h2 class="card-title fs-5 mb-0">Confirm Deletion</h2>
+                            <h2 class="card-title fs-5 mb-0">{% trans "Confirm Deletion" %}</h2>
                         </div>
                         <div class="card-body">
-                            <div class="card-body">
                             <div class="d-flex align-items-center mb-4">
                                 <div class="flex-shrink-0 me-3">
                                     <img src="{{ yourchild_model.image_url }}" alt="{{ yourchild_model.name }}" 
@@ -80,33 +80,33 @@
                                 </div>
                                 <div>
                                     <h3 class="fs-5 mb-0">{{ yourchild_model.name }}</h3>
-                                    <p class="text-muted small mb-0">{{ yourchild_model.age }} months old</p>
+                                    <p class="text-muted small mb-0">{% blocktrans with age=yourchild_model.age %}{{ age }} months old{% endblocktrans %}</p>
                                 </div>
                             </div>
                             
                             <div class="alert alert-warning" role="alert">
-                                <h4 class="alert-heading fs-6">Warning!</h4>
-                                <p>You are about to permanently delete {{ yourchild_model.name }}'s profile and all associated data including:</p>
+                                <h4 class="alert-heading fs-6">{% trans "Warning!" %}</h4>
+                                <p>{% blocktrans with name=yourchild_model.name %}You are about to permanently delete {{ name }}'s profile and all associated data including:{% endblocktrans %}</p>
                                 <ul>
-                                    <li>All milestone records</li>
-                                    <li>Calendar events</li>
-                                    <li>Vaccination records</li>
+                                    <li>{% trans "All milestone records" %}</li>
+                                    <li>{% trans "Calendar events" %}</li>
+                                    <li>{% trans "Vaccination records" %}</li>
                                 </ul>
-                                <p class="mb-0">This action cannot be reversed.</p>
+                                <p class="mb-0">{% trans "This action cannot be reversed." %}</p>
                             </div>
                             
                             <form method="post" aria-labelledby="delete-form-heading">
-                                <h2 id="delete-form-heading" class="visually-hidden">Delete child confirmation form</h2>
+                                <h2 id="delete-form-heading" class="visually-hidden">{% trans "Delete child confirmation form" %}</h2>
                                 {% csrf_token %}
                                 
                                 <div class="d-flex justify-content-between mt-4">
                                     <a href="{% url 'your_children' %}" class="btn btn-outline-secondary" 
-                                       aria-label="Cancel deletion and return to your children page">
-                                        Cancel
+                                       aria-label="{% trans 'Cancel deletion and return to your children page' %}">
+                                        {% trans "Cancel" %}
                                     </a>
                                     <button type="submit" class="btn btn-danger" 
-                                            aria-label="Permanently delete {{ yourchild_model.name }}'s profile">
-                                        Delete Permanently
+                                            aria-label="{% blocktrans with name=yourchild_model.name %}Permanently delete {{ name }}'s profile{% endblocktrans %}">
+                                        {% trans "Delete Permanently" %}
                                     </button>
                                 </div>
                             </form>

@@ -17,7 +17,80 @@ from rest_framework.exceptions import (
     Throttled,
 )
 
+# Configuración de logger
 logger = logging.getLogger('api_exceptions')
+
+# Custom API exceptions
+class ChildNotFound(NotFound):
+    default_detail = "El niño no fue encontrado o no tienes permiso para acceder a él."
+
+class ResourceAlreadyExists(APIException):
+    status_code = status.HTTP_409_CONFLICT
+    default_detail = "El recurso ya existe."
+    default_code = 'resource_already_exists'
+
+class RelatedObjectDoesNotExist(NotFound):
+    default_detail = "Un objeto relacionado necesario no existe."
+    default_code = 'related_object_not_found'
+
+class VaccineCardNotFound(NotFound):
+    default_detail = "La cartilla de vacunación no fue encontrada."
+    default_code = 'vaccine_card_not_found'
+
+class EventNotFound(NotFound):
+    default_detail = "El evento no fue encontrado."
+    default_code = 'event_not_found'
+
+def handle_django_validation_error(exc):
+    """Maneja errores de validación de Django"""
+    from rest_framework.response import Response
+    
+    error_dict = {'status': 'error', 'type': 'validation_error', 'code': status.HTTP_400_BAD_REQUEST}
+    
+    if hasattr(exc, 'message_dict'):
+        error_dict['details'] = exc.message_dict
+    else:
+        error_dict['message'] = exc.messages[0] if exc.messages else "Error de validación"
+    
+    return Response(error_dict, status=status.HTTP_400_BAD_REQUEST)
+
+def handle_integrity_error(exc):
+    """Maneja errores de integridad de la base de datos"""
+    from rest_framework.response import Response
+    
+    error_dict = {
+        'status': 'error',
+        'type': 'database_error',
+        'code': status.HTTP_400_BAD_REQUEST,
+        'message': "Error de integridad en la base de datos"
+    }
+    
+    if settings.DEBUG:
+        error_dict['debug'] = {'details': str(exc)}
+    
+    return Response(error_dict, status=status.HTTP_400_BAD_REQUEST)
+
+def handle_generic_exception(exc):
+    """Maneja excepciones genéricas no controladas"""
+    from rest_framework.response import Response
+    
+    logger.exception("Excepción no controlada", exc_info=exc)
+    
+    error_dict = {
+        'status': 'error',
+        'type': 'server_error',
+        'code': status.HTTP_500_INTERNAL_SERVER_ERROR,
+        'message': "Error interno del servidor"
+    }
+    
+    if settings.DEBUG:
+        error_dict['debug'] = {
+            'exception_class': exc.__class__.__name__,
+            'details': str(exc),
+            'traceback': traceback.format_exc()
+        }
+    
+    return Response(error_dict, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 def custom_exception_handler(exc, context):
     """
@@ -84,68 +157,13 @@ def custom_exception_handler(exc, context):
             }
             
         response.data = error_data
-        
     else:
-        # Para excepciones no manejadas por DRF
-        logger.error(f"Excepción no manejada: {exc}")
-        
-        # Intentamos manejar algunas excepciones comunes de Django
+        # Manejo de errores no manejados por DRF
         if isinstance(exc, DjangoValidationError):
             response = handle_django_validation_error(exc)
         elif isinstance(exc, IntegrityError):
             response = handle_integrity_error(exc)
-        elif isinstance(exc, Exception):
+        else:
             response = handle_generic_exception(exc)
     
     return response
-
-def handle_django_validation_error(exc):
-    """Maneja errores de validación de Django"""
-    from rest_framework.response import Response
-    
-    error_dict = {'status': 'error', 'type': 'validation_error', 'code': status.HTTP_400_BAD_REQUEST}
-    
-    if hasattr(exc, 'message_dict'):
-        error_dict['details'] = exc.message_dict
-    else:
-        error_dict['message'] = exc.messages[0] if exc.messages else "Error de validación"
-    
-    return Response(error_dict, status=status.HTTP_400_BAD_REQUEST)
-
-def handle_integrity_error(exc):
-    """Maneja errores de integridad de la base de datos"""
-    from rest_framework.response import Response
-    
-    error_dict = {
-        'status': 'error',
-        'type': 'database_error',
-        'code': status.HTTP_400_BAD_REQUEST,
-        'message': "Error de integridad en la base de datos"
-    }
-    
-    if settings.DEBUG:
-        error_dict['debug'] = {'details': str(exc)}
-    
-    return Response(error_dict, status=status.HTTP_400_BAD_REQUEST)
-
-def handle_generic_exception(exc):
-    """Maneja excepciones genéricas no controladas"""
-    from rest_framework.response import Response
-    
-    logger.exception("Excepción no controlada", exc_info=exc)
-    
-    error_dict = {
-        'status': 'error',
-        'type': 'server_error',
-        'code': status.HTTP_500_INTERNAL_SERVER_ERROR,
-        'message': "Error interno del servidor"
-    }
-    
-    if settings.DEBUG:
-        error_dict['debug'] = {
-            'exception_class': exc.__class__.__name__,
-            'details': str(exc),
-            'traceback': traceback.format_exc()
-        }
-    
-    return Response(error_dict, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

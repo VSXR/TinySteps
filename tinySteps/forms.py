@@ -1,57 +1,71 @@
 from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
-from .models import InfoRequest_Model, PasswordReset_Model, Milestone_Model, YourChild_Model
+from django.utils.translation import gettext as _
+from .models import Contact_Model, PasswordReset_Model, Milestone_Model, YourChild_Model
 
-class InfoRequest_Form(forms.ModelForm):
-    class Meta:
-        model = InfoRequest_Model
-        fields = ['name', 'email', 'message']
-
-class Milestone_Form(forms.ModelForm):
-    class Meta:
-        model = Milestone_Model
-        fields = ['title', 'achieved_date', 'description', 'photo']
-        widgets = {
-            'achieved_date': forms.DateInput(attrs={'type': 'date'}),
-            'description': forms.Textarea(attrs={'rows': 4}),
-        }
+class CustomUserCreation_Form(UserCreationForm):
+    email = forms.EmailField(
+        required=True,
+        widget=forms.EmailInput(attrs={
+            'class': 'form-control',
+            'placeholder': _('Enter your email address'),
+            'autocomplete': 'email'
+        })
+    )
+    
+    class Meta(UserCreationForm.Meta):
+        model = User
+        fields = UserCreationForm.Meta.fields + ('email',)
+    
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        if User.objects.filter(email=email).exists():
+            raise forms.ValidationError(_("This email is already registered! Please use a different email or try logging in."))
+        return email
+    
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        user.email = self.cleaned_data['email']
+        if commit:
+            user.save()
+        return user
 
 class PasswordReset_Form(forms.Form):
     username = forms.CharField(
-        label="Username",
+        label=_("Username"),
         max_length=150,
         widget=forms.TextInput(attrs={
             'class': 'form-control',
-            'placeholder': 'Enter your username',
+            'placeholder': _('Enter your username'),
             'autocomplete': 'username',
         })
     )
     
     email = forms.EmailField(
-        label="Email",
+        label=_("Email"),
         widget=forms.EmailInput(attrs={
             'class': 'form-control', 
-            'placeholder': 'Enter your email address',
+            'placeholder': _('Enter your email address'),
             'autocomplete': 'email',
         })
     )
     
     new_password1 = forms.CharField(
-        label="New password",
+        label=_("New password"),
         widget=forms.PasswordInput(attrs={
             'class': 'form-control',
-            'placeholder': 'Enter new password',
+            'placeholder': _('Enter new password'),
             'autocomplete': 'new-password',
         }),
         strip=False,
     )
     
     new_password2 = forms.CharField(
-        label="Confirm new password",
+        label=_("Confirm new password"),
         widget=forms.PasswordInput(attrs={
             'class': 'form-control',
-            'placeholder': 'Confirm new password',
+            'placeholder': _('Confirm new password'),
             'autocomplete': 'new-password',
         }),
         strip=False,
@@ -64,83 +78,19 @@ class PasswordReset_Form(forms.Form):
         password1 = cleaned_data.get('new_password1')
         password2 = cleaned_data.get('new_password2')
         
-        # Verificar que el usuario existe y el email coincide
         try:
             user = User.objects.get(username=username)
             if user.email != email:
-                raise forms.ValidationError("El email no corresponde al usuario indicado.")
+                raise forms.ValidationError(_("The email does not correspond to the indicated user!"))
         except User.DoesNotExist:
-            raise forms.ValidationError("No existe un usuario con este nombre de usuario.")
+            raise forms.ValidationError(_("There is no user with this username!"))
         
-        # Verificar que las contraseñas coinciden
         if password1 and password2 and password1 != password2:
-            raise forms.ValidationError("Las contraseñas no coinciden.")
+            raise forms.ValidationError(_("Passwords do not match."))
         
         return cleaned_data
 
-class CustomUserCreation_Form(UserCreationForm):
-    email = forms.EmailField(
-        required=True,
-        widget=forms.EmailInput(attrs={
-            'class': 'form-control',
-            'placeholder': 'Enter your email address',
-            'autocomplete': 'email'
-        })
-    )
-    
-    class Meta(UserCreationForm.Meta):
-        model = User
-        fields = UserCreationForm.Meta.fields + ('email',)
-    
-    def clean_email(self):
-        email = self.cleaned_data.get('email')
-        if User.objects.filter(email=email).exists():
-            raise forms.ValidationError("Este email ya está registrado. Por favor usa otro email o intenta iniciar sesión.")
-        return email
-    
-    def save(self, commit=True):
-        user = super().save(commit=False)
-        user.email = self.cleaned_data['email']
-        if commit:
-            user.save()
-        return user
-
-
-    new_password1 = forms.CharField(
-        label="New password",
-        widget=forms.PasswordInput(attrs={
-            'class': 'form-control',
-            'autocomplete': 'new-password',
-        }),
-        strip=False,
-    )
-    new_password2 = forms.CharField(
-        label="Confirm new password",
-        widget=forms.PasswordInput(attrs={
-            'class': 'form-control',
-            'autocomplete': 'new-password',
-        }),
-        strip=False,
-    )
-    
-    def __init__(self, user=None, *args, **kwargs):
-        self.user = user
-        super().__init__(*args, **kwargs)
-        
-    def clean_new_password2(self):
-        password1 = self.cleaned_data.get('new_password1')
-        password2 = self.cleaned_data.get('new_password2')
-        if password1 and password2 and password1 != password2:
-            raise forms.ValidationError("The two password fields didn't match!")
-        return password2
-    
-    def save(self, commit=True):
-        password = self.cleaned_data["new_password1"]
-        self.user.set_password(password)
-        if commit:
-            self.user.save()
-        return self.user
-    
+# Model Forms
 class YourChild_Form(forms.ModelForm):
     class Meta:
         model = YourChild_Model
@@ -152,6 +102,18 @@ class YourChild_Form(forms.ModelForm):
             'image': forms.FileInput(attrs={'accept': 'image/*'}),
             'image_url': forms.URLInput(attrs={'placeholder': 'https://...'}),
         }
+        labels = {
+            'name': _('Name'),
+            'second_name': _('Second Name'),
+            'birth_date': _('Birth Date'),
+            'gender': _('Gender'),
+            'age': _('Age'),
+            'weight': _('Weight'),
+            'height': _('Height'),
+            'desc': _('Description'),
+            'image': _('Image'),
+            'image_url': _('Image URL'),
+        }
     
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -162,7 +124,34 @@ class YourChild_Form(forms.ModelForm):
         self.fields['image'].required = False
         self.fields['image_url'].required = False
         
-        # Textos de ayuda para los campos del form de añadir hijo
-        self.fields['image'].help_text = "Sube una foto desde tu dispositivo"
-        self.fields['image_url'].help_text = "O proporciona una URL a una imagen"
-        self.fields['desc'].help_text = "Información adicional sobre tu hijo"
+        self.fields['image'].help_text = _("Upload a photo from your device")
+        self.fields['image_url'].help_text = _("Or provide a URL to an image")
+        self.fields['desc'].help_text = _("Additional information about your child")
+
+class Milestone_Form(forms.ModelForm):
+    class Meta:
+        model = Milestone_Model
+        fields = ['title', 'achieved_date', 'description', 'photo']
+        widgets = {
+            'achieved_date': forms.DateInput(attrs={'type': 'date'}),
+            'description': forms.Textarea(attrs={'rows': 4}),
+        }
+        labels = {
+            'title': _('Title'),
+            'achieved_date': _('Achieved Date'),
+            'description': _('Description'),
+            'photo': _('Photo'),
+        }
+
+class Contact_Form(forms.ModelForm):
+    class Meta:
+        model = Contact_Model
+        fields = ['name', 'email', 'message']
+        widgets = {
+            'message': forms.Textarea(attrs={'rows': 4}),
+        }
+        labels = {
+            'name': _('Name'),
+            'email': _('Email'),
+            'message': _('Message'),
+        }

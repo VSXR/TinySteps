@@ -1,0 +1,2442 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-03-15 16:07+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? "
+"1 : 2;\n"
+
+#: .\project\settings.py:47
+msgid "English"
+msgstr ""
+
+#: .\project\settings.py:48
+msgid "Spanish"
+msgstr ""
+
+#: .\tinySteps\forms.py:12 .\tinySteps\forms.py:49
+msgid "Enter your email address"
+msgstr ""
+
+#: .\tinySteps\forms.py:24
+msgid ""
+"This email is already registered! Please use a different email or try "
+"logging in."
+msgstr ""
+
+#: .\tinySteps\forms.py:36 .\tinySteps\templates\accounts\login.html:26
+#: .\tinySteps\templates\accounts\register.html:34
+msgid "Username"
+msgstr ""
+
+#: .\tinySteps\forms.py:40
+msgid "Enter your username"
+msgstr ""
+
+#: .\tinySteps\forms.py:46 .\tinySteps\forms.py:155 .\tinySteps\models.py:304
+#: .\tinySteps\templates\accounts\register.html:48
+msgid "Email"
+msgstr ""
+
+#: .\tinySteps\forms.py:55
+msgid "New password"
+msgstr ""
+
+#: .\tinySteps\forms.py:58
+msgid "Enter new password"
+msgstr ""
+
+#: .\tinySteps\forms.py:65 .\tinySteps\forms.py:68
+msgid "Confirm new password"
+msgstr ""
+
+#: .\tinySteps\forms.py:84
+msgid "The email does not correspond to the indicated user!"
+msgstr ""
+
+#: .\tinySteps\forms.py:86
+msgid "There is no user with this username!"
+msgstr ""
+
+#: .\tinySteps\forms.py:89
+msgid "Passwords do not match."
+msgstr ""
+
+#: .\tinySteps\forms.py:106 .\tinySteps\forms.py:154 .\tinySteps\models.py:101
+#: .\tinySteps\models.py:163 .\tinySteps\models.py:303
+#: .\tinySteps\templates\children\actions\create.html:75
+#: .\tinySteps\templates\children\actions\edit.html:41
+#: .\tinySteps\templates\children\features\vaccine-card\index.html:87
+msgid "Name"
+msgstr ""
+
+#: .\tinySteps\forms.py:107
+#: .\tinySteps\templates\children\actions\create.html:84
+#: .\tinySteps\templates\children\actions\edit.html:46
+msgid "Second Name"
+msgstr ""
+
+#: .\tinySteps\forms.py:108
+#: .\tinySteps\templates\children\actions\create.html:89
+#: .\tinySteps\templates\children\actions\edit.html:52
+msgid "Birth Date"
+msgstr ""
+
+#: .\tinySteps\forms.py:109 .\tinySteps\models.py:105
+#: .\tinySteps\templates\children\actions\create.html:105
+#: .\tinySteps\templates\children\actions\edit.html:63
+msgid "Gender"
+msgstr ""
+
+#: .\tinySteps\forms.py:110 .\tinySteps\models.py:106
+msgid "Age"
+msgstr ""
+
+#: .\tinySteps\forms.py:111 .\tinySteps\models.py:108
+#: .\tinySteps\templates\children\detail.html:83
+msgid "Weight"
+msgstr ""
+
+#: .\tinySteps\forms.py:112 .\tinySteps\models.py:109
+#: .\tinySteps\templates\children\detail.html:89
+msgid "Height"
+msgstr ""
+
+#: .\tinySteps\forms.py:113 .\tinySteps\forms.py:142 .\tinySteps\models.py:111
+#: .\tinySteps\models.py:140 .\tinySteps\models.py:190
+#: .\tinySteps\models.py:220 .\tinySteps\models.py:251
+#: .\tinySteps\templates\children\actions\create.html:143
+#: .\tinySteps\templates\children\actions\edit.html:86
+#: .\tinySteps\templates\children\features\calendar\index.html:143
+msgid "Description"
+msgstr ""
+
+#: .\tinySteps\forms.py:114 .\tinySteps\models.py:112
+msgid "Image"
+msgstr ""
+
+#: .\tinySteps\forms.py:115 .\tinySteps\models.py:113 .\tinySteps\models.py:252
+msgid "Image URL"
+msgstr ""
+
+#: .\tinySteps\forms.py:127
+msgid "Upload a photo from your device"
+msgstr ""
+
+#: .\tinySteps\forms.py:128
+msgid "Or provide a URL to an image"
+msgstr ""
+
+#: .\tinySteps\forms.py:129
+msgid "Additional information about your child"
+msgstr ""
+
+#: .\tinySteps\forms.py:140 .\tinySteps\models.py:138 .\tinySteps\models.py:186
+#: .\tinySteps\models.py:217 .\tinySteps\models.py:248
+#: .\tinySteps\templates\children\features\calendar\index.html:114
+msgid "Title"
+msgstr ""
+
+#: .\tinySteps\forms.py:141
+msgid "Achieved Date"
+msgstr ""
+
+#: .\tinySteps\forms.py:143 .\tinySteps\models.py:141
+msgid "Photo"
+msgstr ""
+
+#: .\tinySteps\forms.py:156 .\tinySteps\models.py:52 .\tinySteps\models.py:305
+msgid "Message"
+msgstr ""
+
+#: .\tinySteps\models.py:20
+msgid "Text"
+msgstr ""
+
+#: .\tinySteps\models.py:21 .\tinySteps\models.py:40 .\tinySteps\models.py:53
+#: .\tinySteps\models.py:72 .\tinySteps\models.py:193 .\tinySteps\models.py:218
+#: .\tinySteps\models.py:249 .\tinySteps\models.py:306
+msgid "Created at"
+msgstr ""
+
+#: .\tinySteps\models.py:28
+msgid "Comment"
+msgstr ""
+
+#: .\tinySteps\models.py:29 .\tinySteps\templates\forum\index.html:139
+msgid "Comments"
+msgstr ""
+
+#: .\tinySteps\models.py:44
+msgid "Like"
+msgstr ""
+
+#: .\tinySteps\models.py:45 .\tinySteps\templates\forum\index.html:144
+msgid "Likes"
+msgstr ""
+
+#: .\tinySteps\models.py:48
+#, python-format
+msgid "%(username)s liked %(object)s"
+msgstr ""
+
+#: .\tinySteps\models.py:54
+msgid "Read"
+msgstr ""
+
+#: .\tinySteps\models.py:58
+msgid "Notification"
+msgstr ""
+
+#: .\tinySteps\models.py:59
+msgid "Notifications"
+msgstr ""
+
+#: .\tinySteps\models.py:73
+msgid "Is used"
+msgstr ""
+
+#: .\tinySteps\models.py:76
+msgid "Password Reset Token"
+msgstr ""
+
+#: .\tinySteps\models.py:77
+msgid "Password Reset Tokens"
+msgstr ""
+
+#: .\tinySteps\models.py:80
+#, python-format
+msgid "Password reset token for %(username)s"
+msgstr ""
+
+#: .\tinySteps\models.py:95
+#: .\tinySteps\templates\children\actions\create.html:110
+#: .\tinySteps\templates\children\actions\edit.html:66
+msgid "Male"
+msgstr ""
+
+#: .\tinySteps\models.py:96
+#: .\tinySteps\templates\children\actions\create.html:111
+#: .\tinySteps\templates\children\actions\edit.html:67
+msgid "Female"
+msgstr ""
+
+#: .\tinySteps\models.py:102
+msgid "Second name"
+msgstr ""
+
+#: .\tinySteps\models.py:104
+msgid "Birth date"
+msgstr ""
+
+#: .\tinySteps\models.py:116
+msgid "Child"
+msgstr ""
+
+#: .\tinySteps\models.py:117
+msgid "Children"
+msgstr ""
+
+#: .\tinySteps\models.py:139
+msgid "Achieved date"
+msgstr ""
+
+#: .\tinySteps\models.py:144
+#: .\tinySteps\templates\children\features\calendar\index.html:201
+#: .\tinySteps\templates\children\features\calendar\index.html:240
+msgid "Milestone"
+msgstr ""
+
+#: .\tinySteps\models.py:145
+#: .\tinySteps\templates\children\features\calendar\index.html:53
+msgid "Milestones"
+msgstr ""
+
+#: .\tinySteps\models.py:152 .\tinySteps\templates\children\detail.html:64
+#: .\tinySteps\templates\children\list.html:80
+msgid "Vaccine Card"
+msgstr ""
+
+#: .\tinySteps\models.py:153
+msgid "Vaccine Cards"
+msgstr ""
+
+#: .\tinySteps\models.py:156
+#, python-format
+msgid "Vaccine card for %(name)s"
+msgstr ""
+
+#: .\tinySteps\models.py:164 .\tinySteps\models.py:188
+#: .\tinySteps\templates\children\features\calendar\index.html:133
+#: .\tinySteps\templates\children\features\vaccine-card\index.html:88
+#: .\tinySteps\templates\children\features\vaccine-card\index.html:188
+msgid "Date"
+msgstr ""
+
+#: .\tinySteps\models.py:165
+#: .\tinySteps\templates\children\features\vaccine-card\index.html:203
+msgid "Notes"
+msgstr ""
+
+#: .\tinySteps\models.py:166
+#: .\tinySteps\templates\children\features\vaccine-card\index.html:47
+#: .\tinySteps\templates\children\features\vaccine-card\index.html:76
+#: .\tinySteps\templates\children\features\vaccine-card\index.html:89
+#: .\tinySteps\templates\children\features\vaccine-card\index.html:139
+msgid "Administered"
+msgstr ""
+
+#: .\tinySteps\models.py:167
+msgid "Next dose date"
+msgstr ""
+
+#: .\tinySteps\models.py:170 .\tinySteps\models.py:179
+#: .\tinySteps\templates\children\features\calendar\index.html:124
+#: .\tinySteps\templates\children\features\calendar\index.html:200
+#: .\tinySteps\templates\children\features\calendar\index.html:239
+msgid "Vaccine"
+msgstr ""
+
+#: .\tinySteps\models.py:171
+#: .\tinySteps\templates\children\features\calendar\index.html:49
+msgid "Vaccines"
+msgstr ""
+
+#: .\tinySteps\models.py:178
+#: .\tinySteps\templates\children\features\calendar\index.html:123
+msgid "Medical Appointment"
+msgstr ""
+
+#: .\tinySteps\models.py:180
+#: .\tinySteps\templates\children\features\calendar\index.html:125
+msgid "Development Milestone"
+msgstr ""
+
+#: .\tinySteps\models.py:181
+#: .\tinySteps\templates\children\features\calendar\index.html:57
+#: .\tinySteps\templates\children\features\calendar\index.html:126
+#: .\tinySteps\templates\children\features\calendar\index.html:202
+#: .\tinySteps\templates\children\features\calendar\index.html:241
+#: .\tinySteps\templates\forum\index.html:70
+msgid "Feeding"
+msgstr ""
+
+#: .\tinySteps\models.py:182
+#: .\tinySteps\templates\children\actions\create.html:112
+#: .\tinySteps\templates\children\actions\edit.html:68
+#: .\tinySteps\templates\children\features\calendar\index.html:127
+#: .\tinySteps\templates\children\features\calendar\index.html:203
+#: .\tinySteps\templates\children\features\calendar\index.html:242
+msgid "Other"
+msgstr ""
+
+#: .\tinySteps\models.py:187
+msgid "Type"
+msgstr ""
+
+#: .\tinySteps\models.py:189
+#: .\tinySteps\templates\children\features\calendar\index.html:137
+msgid "Time"
+msgstr ""
+
+#: .\tinySteps\models.py:191
+msgid "Has reminder"
+msgstr ""
+
+#: .\tinySteps\models.py:192
+msgid "Reminder minutes"
+msgstr ""
+
+#: .\tinySteps\models.py:194
+msgid "Updated at"
+msgstr ""
+
+#: .\tinySteps\models.py:197
+msgid "Calendar Event"
+msgstr ""
+
+#: .\tinySteps\models.py:198
+msgid "Calendar Events"
+msgstr ""
+
+#: .\tinySteps\models.py:228
+msgid "Parents Forum Post"
+msgstr ""
+
+#: .\tinySteps\models.py:229
+msgid "Parents Forum Posts"
+msgstr ""
+
+#: .\tinySteps\models.py:244 .\tinySteps\models.py:274
+msgid "Parent Guide"
+msgstr ""
+
+#: .\tinySteps\models.py:245 .\tinySteps\models.py:288
+msgid "Nutrition Guide"
+msgstr ""
+
+#: .\tinySteps\models.py:250
+msgid "Author"
+msgstr ""
+
+#: .\tinySteps\models.py:253
+msgid "Guide type"
+msgstr ""
+
+#: .\tinySteps\models.py:257
+msgid "Guide"
+msgstr ""
+
+#: .\tinySteps\models.py:258 .\tinySteps\templates\partials\footer.html:26
+msgid "Guides"
+msgstr ""
+
+#: .\tinySteps\models.py:275
+msgid "Parent Guides"
+msgstr ""
+
+#: .\tinySteps\models.py:289 .\tinySteps\templates\guides\index.html:26
+#: .\tinySteps\templates\guides\index.html:46
+#: .\tinySteps\templates\guides\nutrition\detail.html:15
+msgid "Nutrition Guides"
+msgstr ""
+
+#: .\tinySteps\models.py:309
+msgid "Contact Request"
+msgstr ""
+
+#: .\tinySteps\models.py:310
+msgid "Contact Requests"
+msgstr ""
+
+#: .\tinySteps\models.py:313
+#, python-format
+msgid "%(name)s, your info request has been submitted correctly!"
+msgstr ""
+
+#: .\tinySteps\templates\accounts\login.html:6
+msgid "TINY STEPS - LOGIN"
+msgstr ""
+
+#: .\tinySteps\templates\accounts\login.html:15
+msgid "LOGIN"
+msgstr ""
+
+#: .\tinySteps\templates\accounts\login.html:23
+msgid "Account login form"
+msgstr ""
+
+#: .\tinySteps\templates\accounts\login.html:31
+#: .\tinySteps\templates\accounts\register.html:63
+msgid "Password"
+msgstr ""
+
+#: .\tinySteps\templates\accounts\login.html:36
+#: .\tinySteps\templates\partials\navigation.html:61
+msgid "Login"
+msgstr ""
+
+#: .\tinySteps\templates\accounts\login.html:44
+#, python-format
+msgid ""
+"\n"
+"                                <p>Don't have an account? <a "
+"href=\"%(register_url)s\" aria-label=\"Register for a new account\">Register "
+"here</a></p>\n"
+"                                "
+msgstr ""
+
+#: .\tinySteps\templates\accounts\login.html:48
+#, python-format
+msgid ""
+"\n"
+"                                <p>Forgot your password? <a "
+"href=\"%(password_reset_url)s\" aria-label=\"Reset your password\">Reset "
+"password here</a></p>\n"
+"                                "
+msgstr ""
+
+#: .\tinySteps\templates\accounts\profile.html:5
+msgid "My Profile - TINY STEPS"
+msgstr ""
+
+#: .\tinySteps\templates\accounts\profile.html:13
+msgid "My Profile"
+msgstr ""
+
+#: .\tinySteps\templates\accounts\profile.html:14
+msgid "Manage your account settings and view your activity"
+msgstr ""
+
+#: .\tinySteps\templates\accounts\profile.html:27
+msgid "Profile Information"
+msgstr ""
+
+#: .\tinySteps\templates\accounts\profile.html:31
+msgid "Profile Picture"
+msgstr ""
+
+#: .\tinySteps\templates\accounts\profile.html:37
+msgid "Email:"
+msgstr ""
+
+#: .\tinySteps\templates\accounts\profile.html:40
+msgid "Joined:"
+msgstr ""
+
+#: .\tinySteps\templates\accounts\profile.html:43
+msgid "Children:"
+msgstr ""
+
+#: .\tinySteps\templates\accounts\profile.html:46
+msgid "Forum Posts:"
+msgstr ""
+
+#: .\tinySteps\templates\accounts\profile.html:50
+#: .\tinySteps\templates\children\detail.html:58
+msgid "Edit Profile"
+msgstr ""
+
+#: .\tinySteps\templates\accounts\profile.html:60
+msgid "My Children"
+msgstr ""
+
+#: .\tinySteps\templates\accounts\profile.html:62
+#: .\tinySteps\templates\children\actions\create.html:154
+#: .\tinySteps\templates\children\list.html:32
+msgid "Add Child"
+msgstr ""
+
+#: .\tinySteps\templates\accounts\profile.html:78
+#, python-format
+msgid ""
+"\n"
+"                                                        <span class=\"badge "
+"bg-primary\">%(age)s months</span>\n"
+"                                                        "
+msgstr ""
+
+#: .\tinySteps\templates\accounts\profile.html:84
+#: .\tinySteps\templates\children\list.html:59
+msgid "View Details"
+msgstr ""
+
+#: .\tinySteps\templates\accounts\profile.html:94
+msgid "You haven't added any children yet."
+msgstr ""
+
+#: .\tinySteps\templates\accounts\profile.html:96
+msgid "Add Your First Child"
+msgstr ""
+
+#: .\tinySteps\templates\accounts\profile.html:110
+msgid "My Forum Activity"
+msgstr ""
+
+#: .\tinySteps\templates\accounts\profile.html:112
+msgid "Go to Forum"
+msgstr ""
+
+#: .\tinySteps\templates\accounts\profile.html:133
+msgid "View All Posts"
+msgstr ""
+
+#: .\tinySteps\templates\accounts\profile.html:139
+msgid "You haven't created any forum posts yet."
+msgstr ""
+
+#: .\tinySteps\templates\accounts\profile.html:141
+msgid "Create Your First Post"
+msgstr ""
+
+#: .\tinySteps\templates\accounts\profile.html:155
+msgid "Account Actions"
+msgstr ""
+
+#: .\tinySteps\templates\accounts\profile.html:160
+#: .\tinySteps\templates\accounts\reset.html:14
+#: .\tinySteps\templates\accounts\reset.html:85
+msgid "Change Password"
+msgstr ""
+
+#: .\tinySteps\templates\accounts\profile.html:163
+msgid "Notification Settings"
+msgstr ""
+
+#: .\tinySteps\templates\accounts\profile.html:168
+#: .\tinySteps\templates\partials\navigation.html:51
+#: .\tinySteps\templates\partials\navigation.html:53
+msgid "Logout"
+msgstr ""
+
+#: .\tinySteps\templates\accounts\register.html:6
+msgid "TINY STEPS - REGISTER"
+msgstr ""
+
+#: .\tinySteps\templates\accounts\register.html:15
+msgid "REGISTER"
+msgstr ""
+
+#: .\tinySteps\templates\accounts\register.html:31
+msgid "Account registration form"
+msgstr ""
+
+#: .\tinySteps\templates\accounts\register.html:38
+msgid "Username must be unique"
+msgstr ""
+
+#: .\tinySteps\templates\accounts\register.html:52
+msgid "Required field"
+msgstr ""
+
+#: .\tinySteps\templates\accounts\register.html:53
+msgid "Valid email address required"
+msgstr ""
+
+#: .\tinySteps\templates\accounts\register.html:76
+msgid "Repeat Password"
+msgstr ""
+
+#: .\tinySteps\templates\accounts\register.html:89
+#: .\tinySteps\templates\partials\navigation.html:67
+msgid "Register"
+msgstr ""
+
+#: .\tinySteps\templates\accounts\register.html:95
+msgid "Already have an account?"
+msgstr ""
+
+#: .\tinySteps\templates\accounts\register.html:96
+msgid "Login here"
+msgstr ""
+
+#: .\tinySteps\templates\accounts\reset.html:5
+msgid "TINY STEPS - CHANGE PASSWORD"
+msgstr ""
+
+#: .\tinySteps\templates\accounts\reset.html:67
+msgid ""
+"Make sure your password is at least 8 characters long and not too common."
+msgstr ""
+
+#: .\tinySteps\templates\accounts\reset.html:92
+#, python-format
+msgid ""
+"\n"
+"                                <p>Remember your password? <a "
+"href=\"%(login_url)s\">Return to login</a></p>\n"
+"                                "
+msgstr ""
+
+#: .\tinySteps\templates\children\actions\create.html:6
+msgid "Add Child - TINY STEPS"
+msgstr ""
+
+#: .\tinySteps\templates\children\actions\create.html:13
+msgid "Add New Child"
+msgstr ""
+
+#: .\tinySteps\templates\children\actions\create.html:14
+msgid "Enter your child's information below to set up their profile"
+msgstr ""
+
+#: .\tinySteps\templates\children\actions\create.html:35
+#: .\tinySteps\templates\children\actions\delete.html:37
+#: .\tinySteps\templates\children\detail.html:15
+#: .\tinySteps\templates\children\features\calendar\index.html:23
+#: .\tinySteps\templates\children\features\vaccine-card\index.html:21
+#: .\tinySteps\templates\partials\footer.html:14
+msgid "Your Children"
+msgstr ""
+
+#: .\tinySteps\templates\children\actions\create.html:53
+#: .\tinySteps\templates\children\actions\delete.html:57
+#: .\tinySteps\templates\children\detail.html:48
+#, python-format
+msgid "%(age)s months"
+msgstr ""
+
+#: .\tinySteps\templates\children\actions\create.html:71
+msgid "Child Information"
+msgstr ""
+
+#: .\tinySteps\templates\children\actions\create.html:76
+#: .\tinySteps\templates\children\actions\create.html:90
+#: .\tinySteps\templates\children\actions\create.html:98
+#: .\tinySteps\templates\children\actions\create.html:106
+#: .\tinySteps\templates\forum\posts\create.html:34
+#: .\tinySteps\templates\forum\posts\create.html:43
+#: .\tinySteps\templates\forum\posts\edit.html:35
+#: .\tinySteps\templates\forum\posts\edit.html:45
+msgid "(required)"
+msgstr ""
+
+#: .\tinySteps\templates\children\actions\create.html:80
+msgid "Your child's first name"
+msgstr ""
+
+#: .\tinySteps\templates\children\actions\create.html:97
+msgid "Age (in months)"
+msgstr ""
+
+#: .\tinySteps\templates\children\actions\create.html:109
+#: .\tinySteps\templates\children\actions\edit.html:65
+msgid "Select gender"
+msgstr ""
+
+#: .\tinySteps\templates\children\actions\create.html:118
+#: .\tinySteps\templates\children\actions\edit.html:92
+msgid "Upload Photo"
+msgstr ""
+
+#: .\tinySteps\templates\children\actions\create.html:121
+msgid "Upload a photo of your child from your device"
+msgstr ""
+
+#: .\tinySteps\templates\children\actions\create.html:125
+#: .\tinySteps\templates\children\actions\edit.html:103
+msgid "Photo URL"
+msgstr ""
+
+#: .\tinySteps\templates\children\actions\create.html:128
+msgid "Alternatively, provide a URL to an image"
+msgstr ""
+
+#: .\tinySteps\templates\children\actions\create.html:133
+#: .\tinySteps\templates\children\actions\edit.html:75
+msgid "Weight (kg)"
+msgstr ""
+
+#: .\tinySteps\templates\children\actions\create.html:137
+#: .\tinySteps\templates\children\actions\edit.html:79
+msgid "Height (cm)"
+msgstr ""
+
+#: .\tinySteps\templates\children\actions\create.html:146
+msgid "Add any additional information about your child"
+msgstr ""
+
+#: .\tinySteps\templates\children\actions\create.html:150
+msgid "Cancel and return to your children page"
+msgstr ""
+
+#: .\tinySteps\templates\children\actions\create.html:151
+#: .\tinySteps\templates\children\actions\delete.html:105
+#: .\tinySteps\templates\children\actions\edit.html:109
+#: .\tinySteps\templates\children\features\calendar\index.html:176
+#: .\tinySteps\templates\children\features\calendar\index.html:281
+#: .\tinySteps\templates\children\features\vaccine-card\index.html:219
+#: .\tinySteps\templates\children\features\vaccine-card\index.html:286
+#: .\tinySteps\templates\forum\posts\delete.html:47
+#: .\tinySteps\templates\forum\posts\edit.html:54
+msgid "Cancel"
+msgstr ""
+
+#: .\tinySteps\templates\children\actions\create.html:153
+msgid "Add this child to your profile"
+msgstr ""
+
+#: .\tinySteps\templates\children\actions\delete.html:5
+msgid "Delete Child - TINY STEPS"
+msgstr ""
+
+#: .\tinySteps\templates\children\actions\delete.html:12
+msgid "Delete Child Profile"
+msgstr ""
+
+#: .\tinySteps\templates\children\actions\delete.html:15
+msgid "This action cannot be undone"
+msgstr ""
+
+#: .\tinySteps\templates\children\actions\delete.html:54
+msgid "Deleting"
+msgstr ""
+
+#: .\tinySteps\templates\children\actions\delete.html:73
+#: .\tinySteps\templates\children\features\calendar\index.html:274
+#: .\tinySteps\templates\children\features\vaccine-card\index.html:279
+msgid "Confirm Deletion"
+msgstr ""
+
+#: .\tinySteps\templates\children\actions\delete.html:83
+#, python-format
+msgid "%(age)s months old"
+msgstr ""
+
+#: .\tinySteps\templates\children\actions\delete.html:88
+msgid "Warning!"
+msgstr ""
+
+#: .\tinySteps\templates\children\actions\delete.html:89
+#, python-format
+msgid ""
+"You are about to permanently delete %(name)s's profile and all associated "
+"data including:"
+msgstr ""
+
+#: .\tinySteps\templates\children\actions\delete.html:91
+msgid "All milestone records"
+msgstr ""
+
+#: .\tinySteps\templates\children\actions\delete.html:92
+msgid "Calendar events"
+msgstr ""
+
+#: .\tinySteps\templates\children\actions\delete.html:93
+msgid "Vaccination records"
+msgstr ""
+
+#: .\tinySteps\templates\children\actions\delete.html:95
+msgid "This action cannot be reversed."
+msgstr ""
+
+#: .\tinySteps\templates\children\actions\delete.html:99
+msgid "Delete child confirmation form"
+msgstr ""
+
+#: .\tinySteps\templates\children\actions\delete.html:104
+msgid "Cancel deletion and return to your children page"
+msgstr ""
+
+#: .\tinySteps\templates\children\actions\delete.html:108
+#, python-format
+msgid "Permanently delete %(name)s's profile"
+msgstr ""
+
+#: .\tinySteps\templates\children\actions\delete.html:109
+#: .\tinySteps\templates\forum\posts\delete.html:50
+msgid "Delete Permanently"
+msgstr ""
+
+#: .\tinySteps\templates\children\actions\edit.html:6
+msgid "Edit Child - TINY STEPS"
+msgstr ""
+
+#: .\tinySteps\templates\children\actions\edit.html:13
+msgid "Edit Child Information"
+msgstr ""
+
+#: .\tinySteps\templates\children\actions\edit.html:15
+#, python-format
+msgid "Update %(child_name)s's information below"
+msgstr ""
+
+#: .\tinySteps\templates\children\actions\edit.html:36
+msgid "Update Information"
+msgstr ""
+
+#: .\tinySteps\templates\children\actions\edit.html:57
+msgid "Age (months)"
+msgstr ""
+
+#: .\tinySteps\templates\children\actions\edit.html:96
+msgid "Current photo:"
+msgstr ""
+
+#: .\tinySteps\templates\children\actions\edit.html:110
+#: .\tinySteps\templates\forum\posts\edit.html:57
+msgid "Save Changes"
+msgstr ""
+
+#: .\tinySteps\templates\children\detail.html:5
+#: .\tinySteps\templates\guides\parents\detail.html:6
+msgid "TINY STEPS"
+msgstr ""
+
+#: .\tinySteps\templates\children\detail.html:20
+msgid "Child profile and development information"
+msgstr ""
+
+#: .\tinySteps\templates\children\detail.html:53
+#, python-format
+msgid "Born on %(date)s"
+msgstr ""
+
+#: .\tinySteps\templates\children\detail.html:61
+msgid "View Calendar"
+msgstr ""
+
+#: .\tinySteps\templates\children\detail.html:74
+msgid "Details"
+msgstr ""
+
+#: .\tinySteps\templates\children\detail.html:79
+msgid "Physical Measurements"
+msgstr ""
+
+#: .\tinySteps\templates\children\detail.html:84
+#, python-format
+msgid "%(weight)s kg"
+msgstr ""
+
+#: .\tinySteps\templates\children\detail.html:90
+#, python-format
+msgid "%(height)s cm"
+msgstr ""
+
+#: .\tinySteps\templates\children\detail.html:97
+msgid "Growth Status"
+msgstr ""
+
+#: .\tinySteps\templates\children\detail.html:101
+#, python-format
+msgid "Tracking normal growth for %(age)s months"
+msgstr ""
+
+#: .\tinySteps\templates\children\detail.html:103
+msgid "Add weight and height to track growth"
+msgstr ""
+
+#: .\tinySteps\templates\children\detail.html:110
+#, python-format
+msgid "About %(name)s"
+msgstr ""
+
+#: .\tinySteps\templates\children\detail.html:116
+msgid "No description added yet."
+msgstr ""
+
+#: .\tinySteps\templates\children\detail.html:124
+msgid "Recent Milestones"
+msgstr ""
+
+#: .\tinySteps\templates\children\detail.html:142
+msgid "View All Milestones"
+msgstr ""
+
+#: .\tinySteps\templates\children\detail.html:145
+msgid "No milestones recorded yet!"
+msgstr ""
+
+#: .\tinySteps\templates\children\detail.html:148
+msgid "Add First Milestone"
+msgstr ""
+
+#: .\tinySteps\templates\children\detail.html:165
+msgid "Back to Children"
+msgstr ""
+
+#: .\tinySteps\templates\children\detail.html:171
+msgid "More Actions"
+msgstr ""
+
+#: .\tinySteps\templates\children\detail.html:176
+msgid "Add Milestone"
+msgstr ""
+
+#: .\tinySteps\templates\children\detail.html:181
+msgid "Growth Chart"
+msgstr ""
+
+#: .\tinySteps\templates\children\detail.html:187
+msgid "Delete Profile"
+msgstr ""
+
+#: .\tinySteps\templates\children\detail.html:199
+#, python-format
+msgid "Resources for %(age)s Month Old"
+msgstr ""
+
+#: .\tinySteps\templates\children\detail.html:203
+msgid "Based on your child's age, these resources might be helpful:"
+msgstr ""
+
+#: .\tinySteps\templates\children\detail.html:208
+msgid "Nutrition"
+msgstr ""
+
+#: .\tinySteps\templates\children\detail.html:209
+msgid "Find age-appropriate nutrition guidelines for your child."
+msgstr ""
+
+#: .\tinySteps\templates\children\detail.html:211
+msgid "View Nutrition Guides"
+msgstr ""
+
+#: .\tinySteps\templates\children\detail.html:219
+#: .\tinySteps\templates\forum\index.html:80
+msgid "Development"
+msgstr ""
+
+#: .\tinySteps\templates\children\detail.html:220
+#, python-format
+msgid "Learn about developmental milestones for %(age)s month olds."
+msgstr ""
+
+#: .\tinySteps\templates\children\detail.html:222
+msgid "View Development Guides"
+msgstr ""
+
+#: .\tinySteps\templates\children\features\calendar\index.html:5
+msgid "Calendar of"
+msgstr ""
+
+#: .\tinySteps\templates\children\features\calendar\index.html:20
+#: .\tinySteps\templates\children\features\vaccine-card\index.html:18
+msgid "Breadcrumb navigation"
+msgstr ""
+
+#: .\tinySteps\templates\children\features\calendar\index.html:22
+#: .\tinySteps\templates\children\features\vaccine-card\index.html:20
+#: .\tinySteps\templates\guides\nutrition\detail.html:14
+#: .\tinySteps\templates\guides\parents\detail.html:14
+#: .\tinySteps\templates\partials\footer.html:8
+msgid "Home"
+msgstr ""
+
+#: .\tinySteps\templates\children\features\calendar\index.html:25
+#: .\tinySteps\templates\children\list.html:75
+msgid "Calendar"
+msgstr ""
+
+#: .\tinySteps\templates\children\features\calendar\index.html:32
+#, python-format
+msgid "Calendar of %(name)s"
+msgstr ""
+
+#: .\tinySteps\templates\children\features\calendar\index.html:33
+msgid "Manage medical appointments, vaccines and other important events"
+msgstr ""
+
+#: .\tinySteps\templates\children\features\calendar\index.html:41
+msgid "Events summary"
+msgstr ""
+
+#: .\tinySteps\templates\children\features\calendar\index.html:43
+#, python-format
+msgid "Medical Appointments: %(event_stats.doctor)s"
+msgstr ""
+
+#: .\tinySteps\templates\children\features\calendar\index.html:45
+msgid "Medical Appointments"
+msgstr ""
+
+#: .\tinySteps\templates\children\features\calendar\index.html:47
+#, python-format
+msgid "Vaccines: %(event_stats.vaccine)s"
+msgstr ""
+
+#: .\tinySteps\templates\children\features\calendar\index.html:51
+#, python-format
+msgid "Milestones: %(event_stats.milestone)s"
+msgstr ""
+
+#: .\tinySteps\templates\children\features\calendar\index.html:55
+#, python-format
+msgid "Feeding: %(event_stats.feeding)s"
+msgstr ""
+
+#: .\tinySteps\templates\children\features\calendar\index.html:59
+#, python-format
+msgid "Others: %(event_stats.other)s"
+msgstr ""
+
+#: .\tinySteps\templates\children\features\calendar\index.html:61
+msgid "Others"
+msgstr ""
+
+#: .\tinySteps\templates\children\features\calendar\index.html:73
+msgid "Events Calendar"
+msgstr ""
+
+#: .\tinySteps\templates\children\features\calendar\index.html:78
+msgid "Change calendar view"
+msgstr ""
+
+#: .\tinySteps\templates\children\features\calendar\index.html:79
+msgid "Month"
+msgstr ""
+
+#: .\tinySteps\templates\children\features\calendar\index.html:80
+msgid "Week"
+msgstr ""
+
+#: .\tinySteps\templates\children\features\calendar\index.html:81
+msgid "Day"
+msgstr ""
+
+#: .\tinySteps\templates\children\features\calendar\index.html:82
+msgid "List"
+msgstr ""
+
+#: .\tinySteps\templates\children\features\calendar\index.html:84
+msgid "Today"
+msgstr ""
+
+#: .\tinySteps\templates\children\features\calendar\index.html:90
+msgid "Events calendar"
+msgstr ""
+
+#: .\tinySteps\templates\children\features\calendar\index.html:93
+msgid "Loading calendar..."
+msgstr ""
+
+#: .\tinySteps\templates\children\features\calendar\index.html:95
+msgid "Loading events..."
+msgstr ""
+
+#: .\tinySteps\templates\children\features\calendar\index.html:108
+msgid "Add Event"
+msgstr ""
+
+#: .\tinySteps\templates\children\features\calendar\index.html:117
+msgid "Event or appointment name"
+msgstr ""
+
+#: .\tinySteps\templates\children\features\calendar\index.html:121
+msgid "Event type"
+msgstr ""
+
+#: .\tinySteps\templates\children\features\calendar\index.html:146
+msgid "Add details about the event"
+msgstr ""
+
+#: .\tinySteps\templates\children\features\calendar\index.html:152
+msgid "Activate reminder"
+msgstr ""
+
+#: .\tinySteps\templates\children\features\calendar\index.html:155
+msgid "Remind in advance:"
+msgstr ""
+
+#: .\tinySteps\templates\children\features\calendar\index.html:157
+msgid "15 minutes before"
+msgstr ""
+
+#: .\tinySteps\templates\children\features\calendar\index.html:158
+msgid "30 minutes before"
+msgstr ""
+
+#: .\tinySteps\templates\children\features\calendar\index.html:159
+msgid "1 hour before"
+msgstr ""
+
+#: .\tinySteps\templates\children\features\calendar\index.html:160
+msgid "2 hours before"
+msgstr ""
+
+#: .\tinySteps\templates\children\features\calendar\index.html:161
+msgid "1 day before"
+msgstr ""
+
+#: .\tinySteps\templates\children\features\calendar\index.html:169
+msgid "Delete this event"
+msgstr ""
+
+#: .\tinySteps\templates\children\features\calendar\index.html:170
+#: .\tinySteps\templates\children\features\calendar\index.html:282
+#: .\tinySteps\templates\children\features\vaccine-card\index.html:106
+#: .\tinySteps\templates\children\features\vaccine-card\index.html:153
+#: .\tinySteps\templates\children\features\vaccine-card\index.html:213
+#: .\tinySteps\templates\children\features\vaccine-card\index.html:287
+#: .\tinySteps\templates\children\list.html:86
+#: .\tinySteps\templates\forum\posts\detail.html:35
+#: .\tinySteps\templates\forum\posts\detail.html:44
+msgid "Delete"
+msgstr ""
+
+#: .\tinySteps\templates\children\features\calendar\index.html:175
+msgid "Cancel event editing"
+msgstr ""
+
+#: .\tinySteps\templates\children\features\calendar\index.html:179
+msgid "Save Event"
+msgstr ""
+
+#: .\tinySteps\templates\children\features\calendar\index.html:189
+msgid "Reminders"
+msgstr ""
+
+#: .\tinySteps\templates\children\features\calendar\index.html:190
+#, python-format
+msgid "Number of reminders: %(upcoming_reminders|length)s"
+msgstr ""
+
+#: .\tinySteps\templates\children\features\calendar\index.html:195
+msgid "Reminder:"
+msgstr ""
+
+#: .\tinySteps\templates\children\features\calendar\index.html:195
+#: .\tinySteps\templates\children\features\calendar\index.html:234
+#: .\tinySteps\templates\children\features\vaccine-card\index.html:238
+msgid "on"
+msgstr ""
+
+#: .\tinySteps\templates\children\features\calendar\index.html:195
+#: .\tinySteps\templates\children\features\calendar\index.html:234
+msgid "at"
+msgstr ""
+
+#: .\tinySteps\templates\children\features\calendar\index.html:199
+#: .\tinySteps\templates\children\features\calendar\index.html:238
+msgid "Medical"
+msgstr ""
+
+#: .\tinySteps\templates\children\features\calendar\index.html:220
+msgid "No upcoming reminders"
+msgstr ""
+
+#: .\tinySteps\templates\children\features\calendar\index.html:228
+msgid "Upcoming Events"
+msgstr ""
+
+#: .\tinySteps\templates\children\features\calendar\index.html:229
+#, python-format
+msgid "Number of upcoming events: %(upcoming_events|length)s"
+msgstr ""
+
+#: .\tinySteps\templates\children\features\calendar\index.html:234
+msgid "Event:"
+msgstr ""
+
+#: .\tinySteps\templates\children\features\calendar\index.html:259
+msgid "No upcoming events"
+msgstr ""
+
+#: .\tinySteps\templates\children\features\calendar\index.html:275
+#: .\tinySteps\templates\children\features\vaccine-card\index.html:280
+#: .\tinySteps\templates\forum\index.html:55
+#: .\tinySteps\templates\partials\messages.html:9
+msgid "Close"
+msgstr ""
+
+#: .\tinySteps\templates\children\features\calendar\index.html:278
+msgid ""
+"Are you sure you want to delete this event? This action cannot be undone."
+msgstr ""
+
+#: .\tinySteps\templates\children\features\vaccine-card\index.html:5
+msgid "Vaccination Card of"
+msgstr ""
+
+#: .\tinySteps\templates\children\features\vaccine-card\index.html:23
+msgid "Vaccination Card"
+msgstr ""
+
+#: .\tinySteps\templates\children\features\vaccine-card\index.html:30
+#, python-format
+msgid "Vaccination Card of %(name)s"
+msgstr ""
+
+#: .\tinySteps\templates\children\features\vaccine-card\index.html:31
+msgid "Vaccine tracking and upcoming doses"
+msgstr ""
+
+#: .\tinySteps\templates\children\features\vaccine-card\index.html:39
+msgid "Vaccine summary"
+msgstr ""
+
+#: .\tinySteps\templates\children\features\vaccine-card\index.html:41
+msgid "Total vaccines:"
+msgstr ""
+
+#: .\tinySteps\templates\children\features\vaccine-card\index.html:43
+msgid "Total Vaccines"
+msgstr ""
+
+#: .\tinySteps\templates\children\features\vaccine-card\index.html:45
+msgid "Administered vaccines:"
+msgstr ""
+
+#: .\tinySteps\templates\children\features\vaccine-card\index.html:49
+msgid "Pending vaccines:"
+msgstr ""
+
+#: .\tinySteps\templates\children\features\vaccine-card\index.html:51
+#: .\tinySteps\templates\children\features\vaccine-card\index.html:77
+#: .\tinySteps\templates\children\features\vaccine-card\index.html:139
+msgid "Pending"
+msgstr ""
+
+#: .\tinySteps\templates\children\features\vaccine-card\index.html:53
+msgid "Upcoming vaccines:"
+msgstr ""
+
+#: .\tinySteps\templates\children\features\vaccine-card\index.html:55
+msgid "Upcoming this month"
+msgstr ""
+
+#: .\tinySteps\templates\children\features\vaccine-card\index.html:67
+msgid "Vaccine Registry"
+msgstr ""
+
+#: .\tinySteps\templates\children\features\vaccine-card\index.html:72
+msgid "Search vaccine..."
+msgstr ""
+
+#: .\tinySteps\templates\children\features\vaccine-card\index.html:72
+msgid "Search vaccine"
+msgstr ""
+
+#: .\tinySteps\templates\children\features\vaccine-card\index.html:74
+msgid "Vaccine filters"
+msgstr ""
+
+#: .\tinySteps\templates\children\features\vaccine-card\index.html:75
+msgid "All"
+msgstr ""
+
+#: .\tinySteps\templates\children\features\vaccine-card\index.html:82
+msgid "Vaccine list"
+msgstr ""
+
+#: .\tinySteps\templates\children\features\vaccine-card\index.html:84
+#, python-format
+msgid "Vaccine list for %(name)s"
+msgstr ""
+
+#: .\tinySteps\templates\children\features\vaccine-card\index.html:90
+msgid "Next Dose"
+msgstr ""
+
+#: .\tinySteps\templates\children\features\vaccine-card\index.html:91
+#: .\tinySteps\templates\children\list.html:65
+msgid "Actions"
+msgstr ""
+
+#: .\tinySteps\templates\children\features\vaccine-card\index.html:97
+msgid "Vaccine:"
+msgstr ""
+
+#: .\tinySteps\templates\children\features\vaccine-card\index.html:100
+msgid "Yes"
+msgstr ""
+
+#: .\tinySteps\templates\children\features\vaccine-card\index.html:100
+msgid "No"
+msgstr ""
+
+#: .\tinySteps\templates\children\features\vaccine-card\index.html:103
+#: .\tinySteps\templates\children\features\vaccine-card\index.html:150
+#: .\tinySteps\templates\children\list.html:70
+#: .\tinySteps\templates\forum\posts\detail.html:32
+#: .\tinySteps\templates\forum\posts\detail.html:41
+msgid "Edit"
+msgstr ""
+
+#: .\tinySteps\templates\children\features\vaccine-card\index.html:103
+#: .\tinySteps\templates\children\features\vaccine-card\index.html:149
+msgid "Edit vaccine"
+msgstr ""
+
+#: .\tinySteps\templates\children\features\vaccine-card\index.html:106
+#: .\tinySteps\templates\children\features\vaccine-card\index.html:152
+msgid "Delete vaccine"
+msgstr ""
+
+#: .\tinySteps\templates\children\features\vaccine-card\index.html:116
+#: .\tinySteps\templates\children\features\vaccine-card\index.html:162
+msgid "No vaccines registered"
+msgstr ""
+
+#: .\tinySteps\templates\children\features\vaccine-card\index.html:117
+#: .\tinySteps\templates\children\features\vaccine-card\index.html:163
+#, python-format
+msgid "Start recording %(name)s's vaccines"
+msgstr ""
+
+#: .\tinySteps\templates\children\features\vaccine-card\index.html:119
+#: .\tinySteps\templates\children\features\vaccine-card\index.html:165
+msgid "Add First Vaccine"
+msgstr ""
+
+#: .\tinySteps\templates\children\features\vaccine-card\index.html:130
+msgid "Mobile vaccine list"
+msgstr ""
+
+#: .\tinySteps\templates\children\features\vaccine-card\index.html:145
+msgid "Next dose:"
+msgstr ""
+
+#: .\tinySteps\templates\children\features\vaccine-card\index.html:176
+msgid "Add Vaccine"
+msgstr ""
+
+#: .\tinySteps\templates\children\features\vaccine-card\index.html:181
+msgid "Vaccine Name"
+msgstr ""
+
+#: .\tinySteps\templates\children\features\vaccine-card\index.html:184
+msgid "Ex: Hexavalent, MMR, etc."
+msgstr ""
+
+#: .\tinySteps\templates\children\features\vaccine-card\index.html:194
+msgid "Vaccine already administered"
+msgstr ""
+
+#: .\tinySteps\templates\children\features\vaccine-card\index.html:198
+msgid "Next Dose Date"
+msgstr ""
+
+#: .\tinySteps\templates\children\features\vaccine-card\index.html:206
+msgid "Additional information about the vaccine, reactions, etc."
+msgstr ""
+
+#: .\tinySteps\templates\children\features\vaccine-card\index.html:212
+msgid "Delete this vaccine"
+msgstr ""
+
+#: .\tinySteps\templates\children\features\vaccine-card\index.html:218
+msgid "Cancel vaccine editing"
+msgstr ""
+
+#: .\tinySteps\templates\children\features\vaccine-card\index.html:222
+msgid "Save Vaccine"
+msgstr ""
+
+#: .\tinySteps\templates\children\features\vaccine-card\index.html:232
+msgid "Upcoming Vaccines"
+msgstr ""
+
+#: .\tinySteps\templates\children\features\vaccine-card\index.html:233
+msgid "Number of upcoming vaccines:"
+msgstr ""
+
+#: .\tinySteps\templates\children\features\vaccine-card\index.html:238
+msgid "Upcoming vaccine:"
+msgstr ""
+
+#: .\tinySteps\templates\children\features\vaccine-card\index.html:253
+msgid "No upcoming vaccines"
+msgstr ""
+
+#: .\tinySteps\templates\children\features\vaccine-card\index.html:261
+msgid "Vaccination Guide"
+msgstr ""
+
+#: .\tinySteps\templates\children\features\vaccine-card\index.html:264
+#, python-format
+msgid "Check the recommended vaccination schedule according to %(name)s's age."
+msgstr ""
+
+#: .\tinySteps\templates\children\features\vaccine-card\index.html:265
+msgid "View Recommended Schedule"
+msgstr ""
+
+#: .\tinySteps\templates\children\features\vaccine-card\index.html:283
+msgid ""
+"Are you sure you want to delete this vaccine? This action cannot be undone."
+msgstr ""
+
+#: .\tinySteps\templates\children\list.html:5
+msgid "TINY STEPS - YOUR CHILDREN"
+msgstr ""
+
+#: .\tinySteps\templates\children\list.html:12
+#: .\tinySteps\templates\partials\footer.html:16
+#: .\tinySteps\templates\partials\navigation.html:10
+msgid "YOUR CHILDREN"
+msgstr ""
+
+#: .\tinySteps\templates\children\list.html:13
+msgid "Manage your children's information and track their development"
+msgstr ""
+
+#: .\tinySteps\templates\children\list.html:31
+msgid "Add a new child"
+msgstr ""
+
+#: .\tinySteps\templates\children\list.html:39
+msgid "Your Children List"
+msgstr ""
+
+#: .\tinySteps\templates\children\list.html:48
+#, python-format
+msgid "%(child.age)s months"
+msgstr ""
+
+#: .\tinySteps\templates\children\list.html:52
+msgid "Gender:"
+msgstr ""
+
+#: .\tinySteps\templates\children\list.html:58
+#, python-format
+msgid "View details for %(name)s"
+msgstr ""
+
+#: .\tinySteps\templates\children\list.html:64
+#, python-format
+msgid "More options for %(name)s"
+msgstr ""
+
+#: .\tinySteps\templates\children\list.html:100
+msgid ""
+"You haven't added any children yet. Click the \"Add Child\" button to get "
+"started!"
+msgstr ""
+
+#: .\tinySteps\templates\children\list.html:109
+msgid "Managing Your Children"
+msgstr ""
+
+#: .\tinySteps\templates\children\list.html:112
+msgid "In this section, you can:"
+msgstr ""
+
+#: .\tinySteps\templates\children\list.html:114
+msgid "Add information about your children"
+msgstr ""
+
+#: .\tinySteps\templates\children\list.html:115
+msgid "Track important milestones in their development"
+msgstr ""
+
+#: .\tinySteps\templates\children\list.html:116
+msgid "Keep a record of vaccinations and health check-ups"
+msgstr ""
+
+#: .\tinySteps\templates\children\list.html:117
+msgid "Manage their schedules and appointments"
+msgstr ""
+
+#: .\tinySteps\templates\children\list.html:119
+msgid ""
+"Each child's profile gives you access to their detailed information and "
+"helps you track their growth journey."
+msgstr ""
+
+#: .\tinySteps\templates\contact\form.html:5
+msgid "TINY STEPS - CONTACT US"
+msgstr ""
+
+#: .\tinySteps\templates\contact\form.html:12
+msgid "CONTACT US"
+msgstr ""
+
+#: .\tinySteps\templates\contact\form.html:14
+msgid "Fill out the form below to request more information"
+msgstr ""
+
+#: .\tinySteps\templates\contact\form.html:27
+msgid "Contact Us Form"
+msgstr ""
+
+#: .\tinySteps\templates\contact\form.html:35
+msgid "Submit information request"
+msgstr ""
+
+#: .\tinySteps\templates\contact\form.html:36
+msgid "SUBMIT"
+msgstr ""
+
+#: .\tinySteps\templates\forum\index.html:5
+msgid "TINY STEPS - PARENTS FORUM"
+msgstr ""
+
+#: .\tinySteps\templates\forum\index.html:12
+#: .\tinySteps\templates\partials\footer.html:22
+#: .\tinySteps\templates\partials\navigation.html:16
+msgid "PARENTS FORUM"
+msgstr ""
+
+#: .\tinySteps\templates\forum\index.html:13
+msgid "Connect with other parents, share your experiences, and ask questions"
+msgstr ""
+
+#: .\tinySteps\templates\forum\index.html:22
+msgid "Create a new post"
+msgstr ""
+
+#: .\tinySteps\templates\forum\index.html:23
+msgid "New Post"
+msgstr ""
+
+#: .\tinySteps\templates\forum\index.html:26
+#: .\tinySteps\templates\forum\index.html:27
+#: .\tinySteps\templates\forum\index.html:28
+msgid "Login to create a post"
+msgstr ""
+
+#: .\tinySteps\templates\forum\index.html:33
+msgid "Search forum posts"
+msgstr ""
+
+#: .\tinySteps\templates\forum\index.html:34
+msgid "Search posts"
+msgstr ""
+
+#: .\tinySteps\templates\forum\index.html:35
+msgid "Search"
+msgstr ""
+
+#: .\tinySteps\templates\forum\index.html:43
+msgid "Forum Categories"
+msgstr ""
+
+#: .\tinySteps\templates\forum\index.html:64
+msgid "Filter posts by category"
+msgstr ""
+
+#: .\tinySteps\templates\forum\index.html:66
+msgid "All Posts"
+msgstr ""
+
+#: .\tinySteps\templates\forum\index.html:75
+msgid "Sleep"
+msgstr ""
+
+#: .\tinySteps\templates\forum\index.html:85
+msgid "Health"
+msgstr ""
+
+#: .\tinySteps\templates\forum\index.html:90
+msgid "Behavior"
+msgstr ""
+
+#: .\tinySteps\templates\forum\index.html:95
+msgid "Advice"
+msgstr ""
+
+#: .\tinySteps\templates\forum\index.html:105
+msgid "Recent Discussions"
+msgstr ""
+
+#: .\tinySteps\templates\forum\index.html:130
+#, python-format
+msgid "Posted by <span class=\"fw-bold\">%(username)s</span>"
+msgstr ""
+
+#: .\tinySteps\templates\forum\index.html:142
+msgid "comments"
+msgstr ""
+
+#: .\tinySteps\templates\forum\index.html:147
+#: .\tinySteps\templates\forum\posts\detail.html:62
+msgid "likes"
+msgstr ""
+
+#: .\tinySteps\templates\forum\index.html:156
+msgid "Forum post pagination"
+msgstr ""
+
+#: .\tinySteps\templates\forum\index.html:160
+msgid "First page"
+msgstr ""
+
+#: .\tinySteps\templates\forum\index.html:161
+msgid "First"
+msgstr ""
+
+#: .\tinySteps\templates\forum\index.html:165
+msgid "Previous page"
+msgstr ""
+
+#: .\tinySteps\templates\forum\index.html:166
+msgid "Previous"
+msgstr ""
+
+#: .\tinySteps\templates\forum\index.html:173
+#, python-format
+msgid "Page %(current)s of %(total)s"
+msgstr ""
+
+#: .\tinySteps\templates\forum\index.html:179
+msgid "Next page"
+msgstr ""
+
+#: .\tinySteps\templates\forum\index.html:180
+msgid "Next"
+msgstr ""
+
+#: .\tinySteps\templates\forum\index.html:184
+msgid "Last page"
+msgstr ""
+
+#: .\tinySteps\templates\forum\index.html:185
+msgid "Last"
+msgstr ""
+
+#: .\tinySteps\templates\forum\index.html:194
+msgid "Loading..."
+msgstr ""
+
+#: .\tinySteps\templates\forum\index.html:196
+msgid "Loading forum posts..."
+msgstr ""
+
+#: .\tinySteps\templates\forum\index.html:206
+msgid "Forum Guidelines"
+msgstr ""
+
+#: .\tinySteps\templates\forum\index.html:210
+msgid ""
+"\n"
+"                            <li>Be respectful to other community members</"
+"li>\n"
+"                            <li>Avoid sharing personal information about "
+"yourself or your children</li>\n"
+"                            <li>Use appropriate tags to help others find "
+"relevant discussions</li>\n"
+"                            <li>Share your experiences but remember that "
+"each child is unique</li>\n"
+"                            <li>Medical advice should always be sought from "
+"healthcare professionals</li>\n"
+"                            "
+msgstr ""
+
+#: .\tinySteps\templates\forum\posts\create.html:7
+msgid "TINY STEPS - Start a New Discussion"
+msgstr ""
+
+#: .\tinySteps\templates\forum\posts\create.html:15
+msgid "Start a New Discussion"
+msgstr ""
+
+#: .\tinySteps\templates\forum\posts\create.html:16
+msgid "Share your parenting experiences or questions with other parents"
+msgstr ""
+
+#: .\tinySteps\templates\forum\posts\create.html:29
+msgid "New discussion form"
+msgstr ""
+
+#: .\tinySteps\templates\forum\posts\create.html:33
+#: .\tinySteps\templates\forum\posts\edit.html:34
+msgid "Discussion Title"
+msgstr ""
+
+#: .\tinySteps\templates\forum\posts\create.html:38
+#: .\tinySteps\templates\forum\posts\edit.html:39
+msgid "Choose a clear, specific title for your discussion (100 characters max)"
+msgstr ""
+
+#: .\tinySteps\templates\forum\posts\create.html:42
+#: .\tinySteps\templates\forum\posts\edit.html:44
+msgid "Your Message"
+msgstr ""
+
+#: .\tinySteps\templates\forum\posts\create.html:47
+#: .\tinySteps\templates\forum\posts\edit.html:49
+msgid "Share your experience, question, or advice (2000 characters max)"
+msgstr ""
+
+#: .\tinySteps\templates\forum\posts\create.html:51
+msgid "Create new discussion"
+msgstr ""
+
+#: .\tinySteps\templates\forum\posts\create.html:52
+msgid "CREATE DISCUSSION"
+msgstr ""
+
+#: .\tinySteps\templates\forum\posts\create.html:60
+msgid "Return to forums list"
+msgstr ""
+
+#: .\tinySteps\templates\forum\posts\create.html:61
+msgid "Back to Forums"
+msgstr ""
+
+#: .\tinySteps\templates\forum\posts\delete.html:6
+msgid "TINY STEPS - Delete Discussion"
+msgstr ""
+
+#: .\tinySteps\templates\forum\posts\delete.html:16
+msgid "Delete Discussion"
+msgstr ""
+
+#: .\tinySteps\templates\forum\posts\delete.html:22
+msgid "Warning:"
+msgstr ""
+
+#: .\tinySteps\templates\forum\posts\delete.html:24
+msgid ""
+"This action cannot be undone. All comments on this post will also be deleted."
+msgstr ""
+
+#: .\tinySteps\templates\forum\posts\delete.html:27
+msgid "Are you sure you want to delete the following discussion?"
+msgstr ""
+
+#: .\tinySteps\templates\forum\posts\delete.html:37
+#: .\tinySteps\templates\forum\posts\detail.html:136
+#, python-format
+msgid "Posted on %(date)s"
+msgstr ""
+
+#: .\tinySteps\templates\forum\posts\delete.html:46
+msgid "Cancel deletion and return to post"
+msgstr ""
+
+#: .\tinySteps\templates\forum\posts\delete.html:49
+msgid "Permanently delete this discussion"
+msgstr ""
+
+#: .\tinySteps\templates\forum\posts\detail.html:5
+#: .\tinySteps\templates\partials\footer.html:20
+msgid "Parents Forum"
+msgstr ""
+
+#: .\tinySteps\templates\forum\posts\detail.html:28
+msgid "Post actions"
+msgstr ""
+
+#: .\tinySteps\templates\forum\posts\detail.html:40
+msgid "Edit this post"
+msgstr ""
+
+#: .\tinySteps\templates\forum\posts\detail.html:43
+msgid "Delete this post"
+msgstr ""
+
+#: .\tinySteps\templates\forum\posts\detail.html:56
+msgid "Posted by:"
+msgstr ""
+
+#: .\tinySteps\templates\forum\posts\detail.html:59
+msgid "Like this post"
+msgstr ""
+
+#: .\tinySteps\templates\forum\posts\detail.html:79
+#, python-format
+msgid "Comment (%(counter)s)"
+msgid_plural "Comments (%(counter)s)"
+msgstr[0] ""
+msgstr[1] ""
+
+#: .\tinySteps\templates\forum\posts\detail.html:100
+msgid "No comments yet. Be the first to comment!"
+msgstr ""
+
+#: .\tinySteps\templates\forum\posts\detail.html:107
+msgid "Add a Comment"
+msgstr ""
+
+#: .\tinySteps\templates\forum\posts\detail.html:111
+msgid "Comment form for this post"
+msgstr ""
+
+#: .\tinySteps\templates\forum\posts\detail.html:114
+msgid "Your comment"
+msgstr ""
+
+#: .\tinySteps\templates\forum\posts\detail.html:118
+msgid "Post Comment"
+msgstr ""
+
+#: .\tinySteps\templates\forum\posts\detail.html:127
+msgid "Related Posts"
+msgstr ""
+
+#: .\tinySteps\templates\forum\posts\detail.html:143
+msgid "No related discussions found."
+msgstr ""
+
+#: .\tinySteps\templates\forum\posts\detail.html:152
+msgid "Back to the Parents Forum"
+msgstr ""
+
+#: .\tinySteps\templates\forum\posts\edit.html:7
+msgid "TINY STEPS - Edit Discussion"
+msgstr ""
+
+#: .\tinySteps\templates\forum\posts\edit.html:15
+msgid "Edit Discussion"
+msgstr ""
+
+#: .\tinySteps\templates\forum\posts\edit.html:16
+msgid "Update your post details below"
+msgstr ""
+
+#: .\tinySteps\templates\forum\posts\edit.html:29
+msgid "Edit discussion form"
+msgstr ""
+
+#: .\tinySteps\templates\forum\posts\edit.html:53
+msgid "Cancel editing and return to post"
+msgstr ""
+
+#: .\tinySteps\templates\forum\posts\edit.html:56
+msgid "Save changes to discussion"
+msgstr ""
+
+#: .\tinySteps\templates\guides\index.html:6
+msgid "TINY STEPS - GUIDES"
+msgstr ""
+
+#: .\tinySteps\templates\guides\index.html:14
+#: .\tinySteps\templates\partials\footer.html:28
+#: .\tinySteps\templates\partials\navigation.html:22
+msgid "GUIDES"
+msgstr ""
+
+#: .\tinySteps\templates\guides\index.html:15
+#: .\tinySteps\templates\guides\parents\list.html:15
+msgid "Find advice and recommendations for new parents"
+msgstr ""
+
+#: .\tinySteps\templates\guides\index.html:21
+msgid "Guide categories"
+msgstr ""
+
+#: .\tinySteps\templates\guides\index.html:27
+msgid ""
+"Discover the best nutrition practices for your child's healthy development"
+msgstr ""
+
+#: .\tinySteps\templates\guides\index.html:28
+msgid "Explore all nutrition guides"
+msgstr ""
+
+#: .\tinySteps\templates\guides\index.html:28
+msgid "Explore Nutrition Guides"
+msgstr ""
+
+#: .\tinySteps\templates\guides\index.html:35
+#: .\tinySteps\templates\guides\index.html:73
+#: .\tinySteps\templates\guides\parents\detail.html:15
+msgid "Parents Guides"
+msgstr ""
+
+#: .\tinySteps\templates\guides\index.html:36
+msgid "Essential information and tips for first-time parents"
+msgstr ""
+
+#: .\tinySteps\templates\guides\index.html:37
+msgid "Explore all parent guides"
+msgstr ""
+
+#: .\tinySteps\templates\guides\index.html:37
+msgid "Explore Parent Guides"
+msgstr ""
+
+#: .\tinySteps\templates\guides\index.html:52
+#: .\tinySteps\templates\guides\index.html:79
+#, python-format
+msgid "Illustration for %(title)s"
+msgstr ""
+
+#: .\tinySteps\templates\guides\index.html:58
+#: .\tinySteps\templates\guides\index.html:85
+#, python-format
+msgid "Read more about %(title)s"
+msgstr ""
+
+#: .\tinySteps\templates\guides\index.html:59
+#: .\tinySteps\templates\guides\index.html:86
+msgid "Read More"
+msgstr ""
+
+#: .\tinySteps\templates\guides\index.html:65
+#: .\tinySteps\templates\guides\nutrition\list.html:46
+msgid "There aren't any nutrition guides available at this moment!"
+msgstr ""
+
+#: .\tinySteps\templates\guides\index.html:92
+#: .\tinySteps\templates\guides\parents\list.html:46
+msgid "There aren't any parents guides available at this moment!"
+msgstr ""
+
+#: .\tinySteps\templates\guides\nutrition\detail.html:6
+msgid "NUTRITION GUIDE"
+msgstr ""
+
+#: .\tinySteps\templates\guides\nutrition\detail.html:27
+#, python-format
+msgid "Illustration for %(title)s nutrition guide"
+msgstr ""
+
+#: .\tinySteps\templates\guides\nutrition\detail.html:31
+#: .\tinySteps\templates\guides\parents\detail.html:31
+#, python-format
+msgid "Published: %(date)s"
+msgstr ""
+
+#: .\tinySteps\templates\guides\nutrition\detail.html:38
+#: .\tinySteps\templates\guides\parents\detail.html:38
+msgid "Categories:"
+msgstr ""
+
+#: .\tinySteps\templates\guides\nutrition\detail.html:51
+msgid "Return to nutrition guides list"
+msgstr ""
+
+#: .\tinySteps\templates\guides\nutrition\detail.html:51
+#: .\tinySteps\templates\guides\parents\detail.html:51
+msgid "Return to the list"
+msgstr ""
+
+#: .\tinySteps\templates\guides\nutrition\list.html:6
+msgid "NUTRITION GUIDES - TINY STEPS"
+msgstr ""
+
+#: .\tinySteps\templates\guides\nutrition\list.html:14
+msgid "NUTRITION GUIDES"
+msgstr ""
+
+#: .\tinySteps\templates\guides\nutrition\list.html:15
+msgid "Find tips and recommendations for healthy eating"
+msgstr ""
+
+#: .\tinySteps\templates\guides\nutrition\list.html:20
+msgid "Available Nutrition Guides"
+msgstr ""
+
+#: .\tinySteps\templates\guides\nutrition\list.html:28
+#: .\tinySteps\templates\guides\parents\list.html:28
+#, python-format
+msgid "Visual representation for %(title)s guide"
+msgstr ""
+
+#: .\tinySteps\templates\guides\nutrition\list.html:31
+msgid "Default nutrition guide illustration"
+msgstr ""
+
+#: .\tinySteps\templates\guides\nutrition\list.html:39
+#: .\tinySteps\templates\guides\parents\list.html:39
+#, python-format
+msgid "Show details for %(title)s"
+msgstr ""
+
+#: .\tinySteps\templates\guides\nutrition\list.html:39
+#: .\tinySteps\templates\guides\parents\list.html:39
+msgid "Show guide"
+msgstr ""
+
+#: .\tinySteps\templates\guides\nutrition\list.html:54
+#: .\tinySteps\templates\guides\parents\list.html:54
+msgid "Return to guides page"
+msgstr ""
+
+#: .\tinySteps\templates\guides\nutrition\list.html:55
+#: .\tinySteps\templates\guides\parents\list.html:55
+msgid "Back to Guides"
+msgstr ""
+
+#: .\tinySteps\templates\guides\parents\detail.html:27
+#, python-format
+msgid "Illustration for %(title)s parenting guide"
+msgstr ""
+
+#: .\tinySteps\templates\guides\parents\detail.html:51
+msgid "Return to parents guides list"
+msgstr ""
+
+#: .\tinySteps\templates\guides\parents\list.html:6
+msgid "PARENTS GUIDES - TINY STEPS"
+msgstr ""
+
+#: .\tinySteps\templates\guides\parents\list.html:14
+msgid "PARENTS GUIDES"
+msgstr ""
+
+#: .\tinySteps\templates\guides\parents\list.html:20
+msgid "Available Parents Guides"
+msgstr ""
+
+#: .\tinySteps\templates\guides\parents\list.html:31
+msgid "Default parenting guide illustration"
+msgstr ""
+
+#: .\tinySteps\templates\pages\404.html:5
+msgid "TINY STEPS - PAGE NOT FOUND"
+msgstr ""
+
+#: .\tinySteps\templates\pages\404.html:12
+msgid "Page Not Found"
+msgstr ""
+
+#: .\tinySteps\templates\pages\404.html:15
+msgid ""
+"Error 404 - The page you're looking for doesn't exist or has been moved!"
+msgstr ""
+
+#: .\tinySteps\templates\pages\404.html:18
+msgid "Lost baby illustration"
+msgstr ""
+
+#: .\tinySteps\templates\pages\404.html:21
+msgid ""
+"Sometimes even tiny steps can lead in the wrong direction! Let's get you "
+"back on track!"
+msgstr ""
+
+#: .\tinySteps\templates\pages\404.html:26
+msgid "Go to Home Page"
+msgstr ""
+
+#: .\tinySteps\templates\pages\404.html:29
+msgid "Visit Parents Forum"
+msgstr ""
+
+#: .\tinySteps\templates\pages\404.html:32
+msgid "Browse Guides"
+msgstr ""
+
+#: .\tinySteps\templates\pages\about.html:6
+msgid "TINY STEPS - ABOUT US"
+msgstr ""
+
+#: .\tinySteps\templates\pages\about.html:13
+msgid "ABOUT TINY STEPS"
+msgstr ""
+
+#: .\tinySteps\templates\pages\about.html:14
+msgid "Learn more about our company, mission, and vision"
+msgstr ""
+
+#: .\tinySteps\templates\pages\about.html:20
+msgid "Overview"
+msgstr ""
+
+#: .\tinySteps\templates\pages\about.html:22
+msgid ""
+"<p> Tiny Steps is an app designed to support first-time parents by providing "
+"essential tools for organizing and managing their baby's care. It offers "
+"personalized recommendations, a smart scheduling system for medical "
+"appointments and vaccinations, and expert-verified guidance on nutrition and "
+"child development. With an intuitive interface and a supportive community, "
+"TinySteps helps parents navigate their child's early years with confidence "
+"and ease. </p>"
+msgstr ""
+
+#: .\tinySteps\templates\pages\about.html:33
+msgid "Parents using the Tiny Steps app with their baby"
+msgstr ""
+
+#: .\tinySteps\templates\pages\about.html:39
+msgid "OUR COMPANY"
+msgstr ""
+
+#: .\tinySteps\templates\pages\about.html:42
+msgid ""
+"<p> At Tiny Steps, we are committed to making parenting easier and more "
+"accessible. Our team is passionate about providing first-time parents with "
+"the tools they need to confidently navigate their child's early years. By "
+"combining technology with expert knowledge, we create intuitive solutions "
+"that help parents organize their baby's care, track key milestones, and stay "
+"informed. </p>"
+msgstr ""
+
+#: .\tinySteps\templates\pages\about.html:55
+msgid "OUR MISSION"
+msgstr ""
+
+#: .\tinySteps\templates\pages\about.html:58
+msgid ""
+"<p> Our mission is to support parents in their journey by offering a "
+"comprehensive, user-friendly app that centralizes essential childcare "
+"resources. Through personalized recommendations, scheduling tools, and "
+"reliable information, we strive to empower parents with knowledge and "
+"confidence, ensuring their baby's well-being and development. </p>"
+msgstr ""
+
+#: .\tinySteps\templates\pages\about.html:68
+msgid ""
+"A parent tracking their baby's development milestones on the Tiny Steps app"
+msgstr ""
+
+#: .\tinySteps\templates\pages\about.html:74
+msgid "OUR VISION"
+msgstr ""
+
+#: .\tinySteps\templates\pages\about.html:77
+msgid ""
+"<p> We envision a world where every parent feels supported and well-equipped "
+"to provide the best care for their child. TinySteps aims to become the go-to "
+"digital companion for new parents, fostering a community that shares "
+"experiences, learns together, and grows with their children. </p>"
+msgstr ""
+
+#: .\tinySteps\templates\pages\index.html:6
+msgid "TINY STEPS - EVERY STEP MATTERS"
+msgstr ""
+
+#: .\tinySteps\templates\pages\index.html:13
+msgid "Welcome to Tiny Steps"
+msgstr ""
+
+#: .\tinySteps\templates\pages\index.html:14
+msgid "(Every step matters)"
+msgstr ""
+
+#: .\tinySteps\templates\pages\index.html:20
+msgid "About Tiny Steps"
+msgstr ""
+
+#: .\tinySteps\templates\pages\index.html:23
+msgid ""
+"\n"
+"                Tiny Steps is an app designed for first-time parents, "
+"launched in 2025, that offers the best tools to \n"
+"                support your parenting journey. We provide the most "
+"intuitive features and the most reliable information \n"
+"                to make caring for your baby an easy and enjoyable "
+"experience.\n"
+"                "
+msgstr ""
+
+#: .\tinySteps\templates\pages\index.html:31
+msgid "A parent using the Tiny Steps app with their baby"
+msgstr ""
+
+#: .\tinySteps\templates\pages\index.html:38
+msgid "Our Features"
+msgstr ""
+
+#: .\tinySteps\templates\pages\index.html:41
+msgid ""
+"\n"
+"                With personalized recommendations, smart scheduling, and "
+"expert guidance, we ensure that you \n"
+"                have everything you need at your fingertips. We are the best "
+"option for navigating your child's \n"
+"                early years with confidence and peace of mind.\n"
+"                "
+msgstr ""
+
+#: .\tinySteps\templates\pages\index.html:49
+msgid "Screenshot of Tiny Steps app features"
+msgstr ""
+
+#: .\tinySteps\templates\pages\index.html:56
+msgid "What Parents Say"
+msgstr ""
+
+#: .\tinySteps\templates\pages\index.html:59
+msgid ""
+"\n"
+"                Parents from around the world trust Tiny Steps to help them "
+"through their parenting journey.\n"
+"                Our community shares their success stories and how our app "
+"has made a difference in their lives.\n"
+"                "
+msgstr ""
+
+#: .\tinySteps\templates\pages\index.html:66
+msgid "Happy parents using the Tiny Steps application"
+msgstr ""
+
+#: .\tinySteps\templates\pages\index.html:73
+msgid "Get Started Today"
+msgstr ""
+
+#: .\tinySteps\templates\pages\index.html:76
+msgid ""
+"\n"
+"                Join thousands of parents who are already benefiting from "
+"Tiny Steps. Download our app\n"
+"                today and start your journey toward confident parenting with "
+"expert guidance at every step.\n"
+"                "
+msgstr ""
+
+#: .\tinySteps\templates\pages\index.html:83
+msgid "Mobile devices showing the Tiny Steps app download page"
+msgstr ""
+
+#: .\tinySteps\templates\partials\footer.html:5
+msgid "Footer Navigation"
+msgstr ""
+
+#: .\tinySteps\templates\partials\footer.html:10
+msgid "HOME"
+msgstr ""
+
+#: .\tinySteps\templates\partials\footer.html:32
+msgid "Contact"
+msgstr ""
+
+#: .\tinySteps\templates\partials\footer.html:34
+#: .\tinySteps\templates\partials\navigation.html:28
+msgid "CONTACT"
+msgstr ""
+
+#: .\tinySteps\templates\partials\footer.html:38
+msgid "About Us"
+msgstr ""
+
+#: .\tinySteps\templates\partials\footer.html:40
+#: .\tinySteps\templates\partials\navigation.html:34
+msgid "ABOUT US"
+msgstr ""
+
+#: .\tinySteps\templates\partials\footer.html:49
+msgid "© 2025 TinySteps. All rights reserved."
+msgstr ""
+
+#: .\tinySteps\templates\partials\footer.html:52
+msgid "Made by VSXR - Visit GitHub profile"
+msgstr ""
+
+#: .\tinySteps\templates\partials\footer.html:52
+msgid "- MADE BY VSXR -"
+msgstr ""
+
+#: .\tinySteps\templates\partials\header.html:5
+msgid "Main Navigation"
+msgstr ""
+
+#: .\tinySteps\templates\partials\header.html:10
+msgid "Tiny Steps Logo"
+msgstr ""
+
+#: .\tinySteps\templates\partials\header.html:12
+msgid "Tiny Steps Home"
+msgstr ""
+
+#: .\tinySteps\templates\partials\header.html:12
+msgid "Tiny Steps"
+msgstr ""
+
+#: .\tinySteps\templates\partials\header.html:18
+msgid "Toggle navigation menu"
+msgstr ""
+
+#: .\tinySteps\templates\partials\language_selector.html:6
+msgid "Select language"
+msgstr ""
+
+#: .\tinySteps\templates\partials\navigation.html:8
+msgid "Navigate to your children section"
+msgstr ""
+
+#: .\tinySteps\templates\partials\navigation.html:14
+msgid "Navigate to parents forum"
+msgstr ""
+
+#: .\tinySteps\templates\partials\navigation.html:20
+msgid "Navigate to guides"
+msgstr ""
+
+#: .\tinySteps\templates\partials\navigation.html:26
+msgid "Navigate to contact page"
+msgstr ""
+
+#: .\tinySteps\templates\partials\navigation.html:32
+msgid "Navigate to about us page"
+msgstr ""
+
+#: .\tinySteps\templates\partials\navigation.html:43
+msgid "View your profile"
+msgstr ""
+
+#: .\tinySteps\templates\partials\navigation.html:45
+#, python-format
+msgid "%(username)s"
+msgstr ""
+
+#: .\tinySteps\templates\partials\navigation.html:59
+msgid "Login to your account"
+msgstr ""
+
+#: .\tinySteps\templates\partials\navigation.html:65
+msgid "Create a new account"
+msgstr ""
+
+#: .\tinySteps\views.py:72
+msgid "Login successful!"
+msgstr ""
+
+#: .\tinySteps\views.py:76
+msgid "Usuario o contraseña incorrectos. ¿No tienes cuenta? Regístrate ahora."
+msgstr ""
+
+#: .\tinySteps\views.py:88
+msgid "You have been successfully logged out!"
+msgstr ""
+
+#: .\tinySteps\views.py:99
+msgid "Registration successful!"
+msgstr ""
+
+#: .\tinySteps\views.py:135
+msgid "Your password has been updated successfully! You can now log in."
+msgstr ""
+
+#: .\tinySteps\views.py:161
+msgid "Child added successfully!"
+msgstr ""
+
+#: .\tinySteps\views.py:172
+msgid "Child removed successfully!"
+msgstr ""
+
+#: .\tinySteps\views.py:201 .\tinySteps\views.py:222
+msgid "Child information updated successfully!"
+msgstr ""
+
+#: .\tinySteps\views.py:241
+msgid "Milestone added!"
+msgstr ""
+
+#: .\tinySteps\views.py:506
+msgid "Post created successfully!"
+msgstr ""
+
+#: .\tinySteps\views.py:509 .\tinySteps\views.py:529
+msgid "Please fill all required fields"
+msgstr ""
+
+#: .\tinySteps\views.py:526
+msgid "Post updated successfully!"
+msgstr ""
+
+#: .\tinySteps\views.py:533
+msgid "You don't have permission to edit this post"
+msgstr ""
+
+#: .\tinySteps\views.py:543
+msgid "Post deleted successfully!"
+msgstr ""
+
+#: .\tinySteps\views.py:548
+msgid "You don't have permission to delete this post"
+msgstr ""
+
+#: .\tinySteps\views.py:566
+msgid "Comment added successfully!"
+msgstr ""
+
+#: .\tinySteps\views.py:568
+msgid "Please enter a comment."
+msgstr ""
+
+#: .\tinySteps\views.py:580
+msgid "Invalid content type"
+msgstr ""
+
+#: .\tinySteps\views.py:590
+msgid "Comentario añadido correctamente."
+msgstr ""
+
+#: .\tinySteps\views.py:643
+msgid "An error occurred processing your request"
+msgstr ""
+
+#: .\tinySteps\views.py:680
+#, python-format
+msgid ""
+"Thank you, %(name)s! Your request has been sent successfully. Check your "
+"email for more information!"
+msgstr ""
+
+#: .\tinySteps\views.py:685
+msgid "Request Received - Tiny Steps"
+msgstr ""
+
+#: .\tinySteps\views.py:706
+msgid "your content"
+msgstr ""
+
+#: .\tinySteps\views.py:709
+#, python-brace-format
+msgid "New comment on {0}"
+msgstr ""
+
+#: .\tinySteps\views.py:710
+#, python-brace-format
+msgid "{0} commented: \"{1}...\""
+msgstr ""

@@ -1,15 +1,16 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load i18n %}
 
-{% block title %}TINY STEPS - YOUR CHILDREN{% endblock %}
+{% block title %}{% trans "TINY STEPS - YOUR CHILDREN" %}{% endblock %}
 
 {% block main_contents %}
     <main id="main-content">
         <div class="container mt-4">
             <div class="row mb-4">
                 <div class="col">
-                    <h2>YOUR CHILDREN</h2>
-                    <p class="lead text-center">Manage your children's information and track their development</p>
+                    <h2>{% trans "YOUR CHILDREN" %}</h2>
+                    <p class="lead text-center">{% trans "Manage your children's information and track their development" %}</p>
                 </div>
             </div>
 
@@ -27,15 +28,15 @@
             <!-- Add Child Button -->
             <div class="row mb-4">
                 <div class="col text-end">
-                    <a href="{% url 'add_child' %}" class="btn btn-primary" aria-label="Add a new child">
-                        <i class="fa-solid fa-plus" aria-hidden="true"></i> Add Child
+                    <a href="{% url 'add_child' %}" class="btn btn-primary" aria-label="{% trans 'Add a new child' %}">
+                        <i class="fa-solid fa-plus" aria-hidden="true"></i> {% trans "Add Child" %}
                     </a>
                 </div>
             </div>
 
             <!-- Children List -->
             <section aria-labelledby="children-list-heading">
-                <h3 id="children-list-heading" class="visually-hidden">Your Children List</h3>
+                <h3 id="children-list-heading" class="visually-hidden">{% trans "Your Children List" %}</h3>
                 <div class="row">
                     {% if children %}
                         {% for child in children %}
@@ -44,45 +45,45 @@
                                     <div class="card-body">
                                         <div class="d-flex justify-content-between align-items-center mb-3">
                                             <h4 class="card-title mb-0">{{ child.name }}</h4>
-                                            <span class="badge bg-primary">{{ child.age }} months</span>
+                                            <span class="badge bg-primary">{% blocktrans %}{{ child.age }} months{% endblocktrans %}</span>
                                         </div>
                                         <p class="card-text">{{ child.desc|truncatechars:100 }}</p>
                                         <div class="mt-3">
-                                            <p class="mb-1"><strong>Gender:</strong> {{ child.gender }}</p>
+                                            <p class="mb-1"><strong>{% trans "Gender:" %}</strong> {{ child.gender }}</p>
                                         </div>
                                     </div>
                                     <div class="card-footer bg-transparent border-0">
                                         <div class="d-flex justify-content-between align-items-center">
                                             <a href="{% url 'child_details' child.id %}" class="btn btn-outline-primary" 
-                                                aria-label="View details for {{ child.name }}">
-                                                <i class="fa-solid fa-eye" aria-hidden="true"></i> View Details
+                                                aria-label="{% blocktrans with name=child.name %}View details for {{ name }}{% endblocktrans %}">
+                                                <i class="fa-solid fa-eye" aria-hidden="true"></i> {% trans "View Details" %}
                                             </a>
                                             <div class="dropdown">
                                                 <button class="btn btn-outline-secondary dropdown-toggle" type="button" 
                                                         id="childActions{{ child.id }}" data-bs-toggle="dropdown" 
-                                                        aria-expanded="false" aria-label="More options for {{ child.name }}">
-                                                    Actions
+                                                        aria-expanded="false" aria-label="{% blocktrans with name=child.name %}More options for {{ name }}{% endblocktrans %}">
+                                                    {% trans "Actions" %}
                                                 </button>
                                                 <ul class="dropdown-menu" aria-labelledby="childActions{{ child.id }}">
                                                     <li>
                                                         <a class="dropdown-item" href="{% url 'child_update' child.id %}">
-                                                            <i class="fa-solid fa-pen-to-square" aria-hidden="true"></i> Edit
+                                                            <i class="fa-solid fa-pen-to-square" aria-hidden="true"></i> {% trans "Edit" %}
                                                         </a>
                                                     </li>
                                                     <li>
                                                         <a class="dropdown-item" href="{% url 'child_calendar' child.id %}">
-                                                            <i class="fa-solid fa-calendar" aria-hidden="true"></i> Calendar
+                                                            <i class="fa-solid fa-calendar" aria-hidden="true"></i> {% trans "Calendar" %}
                                                         </a>
                                                     </li>
                                                     <li>
                                                         <a class="dropdown-item" href="{% url 'child_vaccine_card' child.id %}">
-                                                            <i class="fa-solid fa-syringe" aria-hidden="true"></i> Vaccine Card
+                                                            <i class="fa-solid fa-syringe" aria-hidden="true"></i> {% trans "Vaccine Card" %}
                                                         </a>
                                                     </li>
                                                     <li><hr class="dropdown-divider"></li>
                                                     <li>
                                                         <a class="dropdown-item text-danger" href="{% url 'child_delete' child.id %}">
-                                                            <i class="fa-solid fa-trash" aria-hidden="true"></i> Delete
+                                                            <i class="fa-solid fa-trash" aria-hidden="true"></i> {% trans "Delete" %}
                                                         </a>
                                                     </li>
                                                 </ul>
@@ -96,7 +97,7 @@
                         <div class="col-12">
                             <div class="alert alert-info text-center p-4" role="status">
                                 <i class="fa-solid fa-circle-info me-2" aria-hidden="true"></i>
-                                You haven't added any children yet. Click the "Add Child" button to get started!
+                                {% blocktrans %}You haven't added any children yet. Click the "Add Child" button to get started!{% endblocktrans %}
                             </div>
                         </div>
                     {% endif %}
@@ -105,17 +106,17 @@
 
             <!-- Help Section -->
             <section aria-labelledby="help-section-heading" class="mt-5">
-                <h3 id="help-section-heading">Managing Your Children</h3>
+                <h3 id="help-section-heading">{% trans "Managing Your Children" %}</h3>
                 <div class="card mb-4">
                     <div class="card-body">
-                        <p>In this section, you can:</p>
+                        <p>{% trans "In this section, you can:" %}</p>
                         <ul>
-                            <li>Add information about your children</li>
-                            <li>Track important milestones in their development</li>
-                            <li>Keep a record of vaccinations and health check-ups</li>
-                            <li>Manage their schedules and appointments</li>
+                            <li>{% trans "Add information about your children" %}</li>
+                            <li>{% trans "Track important milestones in their development" %}</li>
+                            <li>{% trans "Keep a record of vaccinations and health check-ups" %}</li>
+                            <li>{% trans "Manage their schedules and appointments" %}</li>
                         </ul>
-                        <p class="mb-0">Each child's profile gives you access to their detailed information and helps you track their growth journey.</p>
+                        <p class="mb-0">{% blocktrans %}Each child's profile gives you access to their detailed information and helps you track their growth journey.{% endblocktrans %}</p>
                     </div>
                 </div>
             </section>

@@ -1,14 +1,17 @@
 {% extends 'base.html' %} {% load static %} 
-{% load crispy_forms_tags %} 
-{% block title %} TINY STEPS - CONTACT US {% endblock title %} 
+{% load crispy_forms_tags %}
+{% load i18n %}
+
+{% block title %}{% trans "TINY STEPS - CONTACT US" %}{% endblock title %} 
+
 {% block main_contents %}
     <main id="main-content">
         <div class="container mt-4 mb-5">
             <div class="row mb-4">
                 <div class="col">
-                    <h2 class="text-center">CONTACT US</h2>
+                    <h2 class="text-center">{% trans "CONTACT US" %}</h2>
                     <p class="lead text-center">
-                        Fill out the form below to request more information
+                        {% trans "Fill out the form below to request more information" %}
                     </p>
                 </div>
             </div>
@@ -21,7 +24,7 @@
 
                     <form method="post" action="{% url 'contact' %}" aria-labelledby="form-heading" novalidate>
                         <div class="form-group" aria-labelledby="form-heading">
-                            <span id="form-heading" class="visually-hidden">Contact Us Form</span>
+                            <span id="form-heading" class="visually-hidden">{% trans "Contact Us Form" %}</span>
                             {% csrf_token %}
 
                             <div class="card">
@@ -29,8 +32,8 @@
                                 {{ form|crispy }}
 
                                 <div class="d-grid mt-4">
-                                    <button type="submit" class="btn btn-primary" aria-label="Submit information request">
-                                    SUBMIT
+                                    <button type="submit" class="btn btn-primary" aria-label="{% trans "Submit information request" %}">
+                                    {% trans "SUBMIT" %}
                                     </button>
                                 </div>
                             </div>

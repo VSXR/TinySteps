@@ -169,6 +169,74 @@ class TinyStepsAPI {
     async createInfoRequest(data) {
         return this.fetchAPI('info-requests/', 'POST', data);
     }
+
+    // ====== USER API ======
+    async getUser() {
+        return this.fetchAPI('user/');
+    }
+
+    async updateUser(data) {
+        return this.fetchAPI('user/', 'PUT', data);
+    }
+
+    async changePassword(data) {
+        return this.fetchAPI('user/change_password/', 'POST', data);
+    }
+
+    async register(data) {
+        return this.fetchAPI('register/', 'POST', data);
+    }
+
+    async login(data) {
+        return this.fetchAPI('login/', 'POST', data);
+    }
+
+    // ====== VACCINE CARD API ======
+    async getVaccineCards(childId) {
+        return this.fetchAPI(`vaccine-cards/?child=${childId}`);
+    }
+    
+    async getVaccineCard(id) {
+        return this.fetchAPI(`vaccine-cards/${id}/`);
+    }
+    
+    async createVaccineCard(data) {
+        return this.fetchAPI('vaccine-cards/', 'POST', data);
+    }
+    
+    async updateVaccineCard(id, data) {
+        return this.fetchAPI(`vaccine-cards/${id}/`, 'PUT', data);
+    }
+    
+    async deleteVaccineCard(id) {
+        return this.fetchAPI(`vaccine-cards/${id}/`, 'DELETE');
+    }
+    
+    async getVaccines(vaccineCardId) {
+        return this.fetchAPI(`vaccine-cards/${vaccineCardId}/vaccines/`);
+    }
+    
+    async addVaccine(vaccineCardId, data) {
+        return this.fetchAPI(`vaccine-cards/${vaccineCardId}/add_vaccine/`, 'POST', data);
+    }
+    
+    // ====== CALENDAR API ======
+    async getCalendarEvents(childId) {
+        return this.fetchAPI(`calendar-events/?child=${childId}`);
+    }
+    
+    async createCalendarEvent(data) {
+        return this.fetchAPI('calendar-events/', 'POST', data);
+    }
+    
+    async updateCalendarEvent(id, data) {
+        return this.fetchAPI(`calendar-events/${id}/`, 'PUT', data);
+    }
+    
+    async deleteCalendarEvent(id) {
+        return this.fetchAPI(`calendar-events/${id}/`, 'DELETE');
+    }
+
 }
 
 // Export a singleton instance

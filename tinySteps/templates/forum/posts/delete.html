@@ -1,8 +1,9 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load i18n %}
 
 {% block title %}
-    TINY STEPS - Delete Discussion
+    {% trans "TINY STEPS - Delete Discussion" %}
 {% endblock title %}
 
 {% block main_contents %}
@@ -12,18 +13,18 @@
                 <div class="col-md-8 col-lg-6">
                     <div class="card border-danger">
                         <div class="card-header bg-danger text-white">
-                            <h1 class="h4 mb-0" id="delete-heading">Delete Discussion</h1>
+                            <h1 class="h4 mb-0" id="delete-heading">{% trans "Delete Discussion" %}</h1>
                         </div>
                         <div class="card-body">
                             <div class="alert alert-warning" role="alert">
                                 <span class="fw-bold">
                                     <i class="fa-solid fa-exclamation-triangle me-2" aria-hidden="true"></i>
-                                    Warning:
+                                    {% trans "Warning:" %}
                                 </span>
-                                This action cannot be undone. All comments on this post will also be deleted.
+                                {% trans "This action cannot be undone. All comments on this post will also be deleted." %}
                             </div>
                             
-                            <h2 class="h5 mb-3">Are you sure you want to delete the following discussion?</h2>
+                            <h2 class="h5 mb-3">{% trans "Are you sure you want to delete the following discussion?" %}</h2>
                             
                             <div class="card mb-4">
                                 <div class="card-header bg-light">
@@ -33,7 +34,7 @@
                                     <p class="card-text">{{ post.desc|truncatechars:150 }}</p>
                                     <p class="card-text mb-0">
                                         <small class="text-muted">
-                                            Posted on {{ post.created_at|date:"F j, Y" }}
+                                            {% blocktrans with date=post.created_at|date:"F j, Y" %}Posted on {{ date }}{% endblocktrans %}
                                         </small>
                                     </p>
                                 </div>
@@ -42,11 +43,11 @@
                             <form method="post">
                                 {% csrf_token %}
                                 <div class="d-flex justify-content-between">
-                                    <a href="{% url 'view_post' post.id %}" class="btn btn-outline-secondary" aria-label="Cancel deletion and return to post">
-                                        Cancel
+                                    <a href="{% url 'view_post' post.id %}" class="btn btn-outline-secondary" aria-label="{% trans 'Cancel deletion and return to post' %}">
+                                        {% trans "Cancel" %}
                                     </a>
-                                    <button type="submit" class="btn btn-danger" aria-label="Permanently delete this discussion">
-                                        Delete Permanently
+                                    <button type="submit" class="btn btn-danger" aria-label="{% trans 'Permanently delete this discussion' %}">
+                                        {% trans "Delete Permanently" %}
                                     </button>
                                 </div>
                             </form>

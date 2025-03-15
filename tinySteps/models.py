@@ -6,84 +6,78 @@ from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.urls import reverse
 from django.utils import timezone
-
+from django.utils.translation import gettext as _
 
 # ------------------------------------------
-# -- GENERIC COMMENT MODEL --
+# -- GENERIC MODELS --
 # ------------------------------------------
 class Comment_Model(models.Model):
-    # CAMPOS GENERICOS DE COMENTARIOS ENTRE FOROS Y GUIAS
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey('content_type', 'object_id')
     
-    # CAMPOS ESPECIFICOS DE LOS COMENTARIOS ENTRE FOROS Y GUIAS
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='all_comments')
-    text = models.TextField()
-    created_at = models.DateTimeField(auto_now_add=True)
+    text = models.TextField(_("Text"))
+    created_at = models.DateTimeField(_("Created at"), auto_now_add=True)
     
     class Meta:
         ordering = ['-created_at']
         indexes = [
             models.Index(fields=['content_type', 'object_id']),
         ]
+        verbose_name = _("Comment")
+        verbose_name_plural = _("Comments")
     
     def __str__(self):
         truncated_text = (self.text[:30] + "...") if len(self.text) > 30 else self.text
         return f"{self.content_object} - {truncated_text}"
-# ------------------------------------------
 
-# ------------------------------------------
-# -- GENERIC LIKE MODEL --
-# ------------------------------------------
 class Like_Model(models.Model):
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey('content_type', 'object_id')
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(_("Created at"), auto_now_add=True)
 
     class Meta:
         unique_together = ('content_type', 'object_id', 'user')
-        verbose_name = "Like"
-        verbose_name_plural = "Likes"
+        verbose_name = _("Like")
+        verbose_name_plural = _("Likes")
     
     def __str__(self):
-        return f"{self.user.username} liked {self.content_object}"
-# ------------------------------------------
+        return _("%(username)s liked %(object)s") % {'username': self.user.username, 'object': self.content_object}
 
-# ------------------------------------------
-# -- NOTIFICATION MODELS --
-# ------------------------------------------
 class Notification_Model(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='notifications')
-    message = models.TextField()
-    created_at = models.DateTimeField(auto_now_add=True)
-    read = models.BooleanField(default=False)
+    message = models.TextField(_("Message"))
+    created_at = models.DateTimeField(_("Created at"), auto_now_add=True)
+    read = models.BooleanField(_("Read"), default=False)
     
     class Meta:
         ordering = ['-created_at']
+        verbose_name = _("Notification")
+        verbose_name_plural = _("Notifications")
         
     def __str__(self):
         return f"{self.user.username} - {self.message[:30]}..."
-# ------------------------------------------
 
 # ------------------------------------------
-# -- TODO: USER PROFILE MODEL --
+# -- USER RELATED MODELS --
 # ------------------------------------------
+# TODO: USER PROFILE MODEL
 
-
-# ------------------------------------------
-# -- PASSWORD RESET MODEL --
-# ------------------------------------------
 class PasswordReset_Model(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='password_reset_tokens')
     token = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    is_used = models.BooleanField(default=False)
+    created_at = models.DateTimeField(_("Created at"), auto_now_add=True)
+    is_used = models.BooleanField(_("Is used"), default=False)
+    
+    class Meta:
+        verbose_name = _("Password Reset Token")
+        verbose_name_plural = _("Password Reset Tokens")
     
     def __str__(self):
-        return f"Password reset token for {self.user.username}"
+        return _("Password reset token for %(username)s") % {'username': self.user.username}
     
     @property
     def is_expired(self):
@@ -92,27 +86,35 @@ class PasswordReset_Model(models.Model):
     
     def get_absolute_url(self):
         return reverse('password_reset_confirm', kwargs={'token': self.token})
-# ------------------------------------------
 
 # ------------------------------------------
-# -- CHILD MODELS --
+# -- CHILD RELATED MODELS --
 # ------------------------------------------
 class YourChild_Model(models.Model):
+    GENDER_CHOICES = [
+        ('M', _("Male")),
+        ('F', _("Female")),
+    ]
+    
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='children')
     
-    name = models.CharField(unique=True, null=False, blank=False, max_length=50)
-    second_name = models.CharField(max_length=50, null=True, blank=True)
+    name = models.CharField(_("Name"), unique=True, null=False, blank=False, max_length=50)
+    second_name = models.CharField(_("Second name"), max_length=50, null=True, blank=True)
     
-    birth_date = models.DateField(null=False, blank=False)
-    gender = models.CharField(max_length=1, null=False, blank=False)
-    age = models.IntegerField(null=False, blank=False)
+    birth_date = models.DateField(_("Birth date"), null=False, blank=False)
+    gender = models.CharField(_("Gender"), max_length=1, choices=GENDER_CHOICES, null=False, blank=False)
+    age = models.IntegerField(_("Age"), null=False, blank=False)
     
-    weight = models.FloatField(null=True, blank=True)
-    height = models.FloatField(null=True, blank=True)
+    weight = models.FloatField(_("Weight"), null=True, blank=True)
+    height = models.FloatField(_("Height"), null=True, blank=True)
     
-    desc = models.TextField(max_length=2000, null=True, blank=True)
-    image = models.ImageField(upload_to='child_photos/', null=True, blank=True)
-    image_url = models.URLField(max_length=200, null=True, blank=True) 
+    desc = models.TextField(_("Description"), max_length=2000, null=True, blank=True)
+    image = models.ImageField(_("Image"), upload_to='child_photos/', null=True, blank=True)
+    image_url = models.URLField(_("Image URL"), max_length=200, null=True, blank=True) 
+    
+    class Meta:
+        verbose_name = _("Child")
+        verbose_name_plural = _("Children")
     
     def __str__(self):
         return self.name
@@ -130,23 +132,92 @@ class YourChild_Model(models.Model):
             return f"{self.image_url}{cache_buster}"
         else:
             return f"/static/res/img/others/default_child.jpg{cache_buster}"
-    
+
 class Milestone_Model(models.Model):
     child = models.ForeignKey(YourChild_Model, on_delete=models.CASCADE, related_name='milestones')
-    title = models.CharField(max_length=100)
-    achieved_date = models.DateField()
-    description = models.TextField()
-    photo = models.ImageField(upload_to='milestone_photos/', blank=True, null=True)
-# ------------------------------------------
+    title = models.CharField(_("Title"), max_length=100)
+    achieved_date = models.DateField(_("Achieved date"))
+    description = models.TextField(_("Description"))
+    photo = models.ImageField(_("Photo"), upload_to='milestone_photos/', blank=True, null=True)
+    
+    class Meta:
+        verbose_name = _("Milestone")
+        verbose_name_plural = _("Milestones")
+
+class VaccineCard_Model(models.Model):
+    child = models.OneToOneField(YourChild_Model, on_delete=models.CASCADE, related_name='vaccine_card')
+    vaccines = GenericRelation('Vaccine_Model', related_query_name='vaccine_card')
+    
+    class Meta:
+        verbose_name = _("Vaccine Card")
+        verbose_name_plural = _("Vaccine Cards")
+    
+    def __str__(self):
+        return _("Vaccine card for %(name)s") % {'name': self.child.name}
+    
+    def get_absolute_url(self):
+        return reverse('vaccine_card', kwargs={'pk': self.child.pk})
+    
+class Vaccine_Model(models.Model):
+    vaccine_card = models.ForeignKey(VaccineCard_Model, on_delete=models.CASCADE, related_name='vaccines')
+    name = models.CharField(_("Name"), max_length=100)
+    date = models.DateField(_("Date"))
+    notes = models.TextField(_("Notes"), null=True, blank=True)
+    administered = models.BooleanField(_("Administered"), default=False)
+    next_dose_date = models.DateField(_("Next dose date"), null=True, blank=True)
+
+    class Meta:
+        verbose_name = _("Vaccine")
+        verbose_name_plural = _("Vaccines")
+
+    def __str__(self):
+        return f"{self.name} - {self.date}"
+
+class CalendarEvent_Model(models.Model):
+    TYPE_CHOICES = (
+        ('doctor', _("Medical Appointment")),
+        ('vaccine', _("Vaccine")),
+        ('milestone', _("Development Milestone")),
+        ('feeding', _("Feeding")),
+        ('other', _("Other")),
+    )
+    
+    child = models.ForeignKey(YourChild_Model, on_delete=models.CASCADE, related_name='events')
+    title = models.CharField(_("Title"), max_length=255)
+    type = models.CharField(_("Type"), max_length=20, choices=TYPE_CHOICES, default='other')
+    date = models.DateField(_("Date"))
+    time = models.TimeField(_("Time"), null=True, blank=True)
+    description = models.TextField(_("Description"), blank=True, null=True)
+    has_reminder = models.BooleanField(_("Has reminder"), default=False)
+    reminder_minutes = models.IntegerField(_("Reminder minutes"), null=True, blank=True)
+    created_at = models.DateTimeField(_("Created at"), auto_now_add=True)
+    updated_at = models.DateTimeField(_("Updated at"), auto_now=True)
+    
+    class Meta:
+        verbose_name = _("Calendar Event")
+        verbose_name_plural = _("Calendar Events")
+    
+    def get_event_color(self):
+        color_map = {
+            'doctor': '#4285F4',
+            'vaccine': '#EA4335',
+            'milestone': '#FBBC05',
+            'feeding': '#34A853',
+            'other': '#8f6ed5',
+        }
+        return color_map.get(self.type, '#8f6ed5')
+    
+    def __str__(self):
+        return f"{self.title} - {self.date}"
 
 # ------------------------------------------
-# -- PARENTS FORUM MODELS --
+# -- CONTENT MODELS --
 # ------------------------------------------
 class ParentsForum_Model(models.Model):
-    title = models.CharField(max_length=100, db_index=True)
-    created_at = models.DateTimeField(auto_now_add=True, db_index=True)
+    title = models.CharField(_("Title"), max_length=100, db_index=True)
+    created_at = models.DateTimeField(_("Created at"), auto_now_add=True, db_index=True)
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='forum_posts')
-    desc = models.TextField(max_length=2000, null=False, blank=False)
+    desc = models.TextField(_("Description"), max_length=2000, null=False, blank=False)
     comments = GenericRelation(Comment_Model, related_query_name='forum')
     likes = models.ManyToManyField(User, related_name='liked_posts', blank=True)
     
@@ -154,6 +225,8 @@ class ParentsForum_Model(models.Model):
         indexes = [
             models.Index(fields=['created_at', 'title']),
         ]
+        verbose_name = _("Parents Forum Post")
+        verbose_name_plural = _("Parents Forum Posts")
     
     @property
     def likes_count(self):
@@ -165,25 +238,24 @@ class ParentsForum_Model(models.Model):
 
     def get_absolute_url(self):
         return reverse('view_post', kwargs={'post_id': self.pk})
-# ------------------------------------------
 
-# ------------------------------------------
-# -- GUIDES MODELS (USA HERENCIA) --
-# ------------------------------------------
 class Guides_Model(models.Model):
-    title = models.CharField(max_length=100)
-    created_at = models.DateTimeField(auto_now_add=True)
-    author = models.CharField(max_length=100, null=False, blank=False)
-    desc = models.TextField(max_length=2000, null=False, blank=False)
-    image_url = models.CharField(max_length=200, default='images/others/default.jpg')
-    
     GUIDE_TYPE_CHOICES = (
-        ('parent', 'Parent Guide'),
-        ('nutrition', 'Nutrition Guide'),
+        ('parent', _("Parent Guide")),
+        ('nutrition', _("Nutrition Guide")),
     )
-    guide_type = models.CharField(max_length=20, choices=GUIDE_TYPE_CHOICES, default='parent')
     
+    title = models.CharField(_("Title"), max_length=100)
+    created_at = models.DateTimeField(_("Created at"), auto_now_add=True)
+    author = models.CharField(_("Author"), max_length=100, null=False, blank=False)
+    desc = models.TextField(_("Description"), max_length=2000, null=False, blank=False)
+    image_url = models.CharField(_("Image URL"), max_length=200, default='images/others/default.jpg')
+    guide_type = models.CharField(_("Guide type"), max_length=20, choices=GUIDE_TYPE_CHOICES, default='parent')
     comments = GenericRelation(Comment_Model, related_query_name='guide')
+    
+    class Meta:
+        verbose_name = _("Guide")
+        verbose_name_plural = _("Guides")
     
     def __str__(self):
         truncated_desc = (self.desc[:30] + "...") if len(self.desc) > 30 else self.desc
@@ -196,11 +268,11 @@ class Guides_Model(models.Model):
             return reverse('nutrition_guide_details', kwargs={'pk': self.pk})
         return reverse('guide_details', kwargs={'pk': self.pk})
 
-# MODELOS PROXY PARA FILTRAR LOS GUIDES POR TIPO
-# ------------------------------------------
 class ParentsGuides_Model(Guides_Model):
     class Meta:
         proxy = True
+        verbose_name = _("Parent Guide")
+        verbose_name_plural = _("Parent Guides")
         
     def save(self, *args, **kwargs):
         self.guide_type = 'parent'
@@ -213,6 +285,8 @@ class ParentsGuides_Model(Guides_Model):
 class NutritionGuides_Model(Guides_Model):
     class Meta:
         proxy = True
+        verbose_name = _("Nutrition Guide")
+        verbose_name_plural = _("Nutrition Guides")
         
     def save(self, *args, **kwargs):
         self.guide_type = 'nutrition'
@@ -221,19 +295,22 @@ class NutritionGuides_Model(Guides_Model):
     @classmethod
     def get_queryset(cls):
         return Guides_Model.objects.filter(guide_type='nutrition')
-# ------------------------------------------
 
 # ------------------------------------------
-# -- INFO REQUEST MODELS --
+# -- UTILITY MODELS --
 # ------------------------------------------
-class InfoRequest_Model(models.Model):
-    name = models.CharField(max_length=100)
-    email = models.EmailField()
-    message = models.TextField()
+class Contact_Model(models.Model):
+    name = models.CharField(_("Name"), max_length=100)
+    email = models.EmailField(_("Email"))
+    message = models.TextField(_("Message"))
+    created_at = models.DateTimeField(_("Created at"), default=timezone.now)
+    
+    class Meta:
+        verbose_name = _("Contact Request")
+        verbose_name_plural = _("Contact Requests")
     
     def __str__(self):
-        return f"{self.name}, your info request has been submitted correctly!"
+        return _("%(name)s, your info request has been submitted correctly!") % {'name': self.name}
     
     def get_absolute_url(self):
         return reverse('contact')
-# ------------------------------------------

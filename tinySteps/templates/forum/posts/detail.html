@@ -1,7 +1,8 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load i18n %}
 
-{% block title %}{{ post.title }} - Parents Forum{% endblock %}
+{% block title %}{{ post.title }} - {% trans "Parents Forum" %}{% endblock %}
 
 {% block main_contents %}
     {% csrf_token %}
@@ -24,23 +25,23 @@
                                 <div class="dropdown d-md-none">
                                     <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                         <i class="fa-solid fa-ellipsis-vertical" aria-hidden="true"></i>
-                                        <span class="visually-hidden">Post actions</span>
+                                        <span class="visually-hidden">{% trans "Post actions" %}</span>
                                     </button>
                                     <ul class="dropdown-menu dropdown-menu-end">
                                         <li><a class="dropdown-item" href="{% url 'edit_post' post.id %}">
-                                            <i class="fa-solid fa-edit" aria-hidden="true"></i> Edit
+                                            <i class="fa-solid fa-edit" aria-hidden="true"></i> {% trans "Edit" %}
                                         </a></li>
                                         <li><a class="dropdown-item text-danger" href="{% url 'delete_post' post.id %}">
-                                            <i class="fa-solid fa-trash" aria-hidden="true"></i> Delete
+                                            <i class="fa-solid fa-trash" aria-hidden="true"></i> {% trans "Delete" %}
                                         </a></li>
                                     </ul>
                                 </div>
                                 <div class="d-none d-md-flex gap-2">
-                                    <a href="{% url 'edit_post' post.id %}" class="btn btn-sm btn-outline-primary" aria-label="Edit this post">
-                                        <i class="fa-solid fa-edit" aria-hidden="true"></i> Edit
+                                    <a href="{% url 'edit_post' post.id %}" class="btn btn-sm btn-outline-primary" aria-label="{% trans 'Edit this post' %}">
+                                        <i class="fa-solid fa-edit" aria-hidden="true"></i> {% trans "Edit" %}
                                     </a>
-                                    <a href="{% url 'delete_post' post.id %}" class="btn btn-sm btn-outline-danger" aria-label="Delete this post">
-                                        <i class="fa-solid fa-trash" aria-hidden="true"></i> Delete
+                                    <a href="{% url 'delete_post' post.id %}" class="btn btn-sm btn-outline-danger" aria-label="{% trans 'Delete this post' %}">
+                                        <i class="fa-solid fa-trash" aria-hidden="true"></i> {% trans "Delete" %}
                                     </a>
                                 </div>
                             </div>
@@ -52,13 +53,13 @@
                     <!-- Post metadata -->
                     <div class="mb-3 d-flex flex-column flex-sm-row justify-content-between gap-2">
                         <div class="post-author">
-                            <span class="fw-bold">Posted by:</span> {{ post.author.username }}
+                            <span class="fw-bold">{% trans "Posted by:" %}</span> {{ post.author.username }}
                         </div>
                         <div class="post-date d-flex align-items-center gap-2">
-                            <button id="like-button" class="btn btn-outline-primary btn-sm like-button {% if user_liked %}liked{% endif %}" aria-label="Like this post" aria-pressed="{% if user_liked %}true{% else %}false{% endif %}">
+                            <button id="like-button" class="btn btn-outline-primary btn-sm like-button {% if user_liked %}liked{% endif %}" aria-label="{% trans 'Like this post' %}" aria-pressed="{% if user_liked %}true{% else %}false{% endif %}">
                                 <i class="fa-solid fa-heart" aria-hidden="true"></i>
                                 <span id="like-count" class="like-count">{{ post.likes.count }}</span>
-                                <span class="visually-hidden">likes</span>
+                                <span class="visually-hidden">{% trans "likes" %}</span>
                             </button>
                             <time datetime="{{ post.created_at|date:'Y-m-d' }}" class="text-muted small ms-auto">
                                 {{ post.created_at|date:"F j, Y" }}
@@ -75,7 +76,7 @@
 
             <!-- Comments section -->
             <section aria-labelledby="comments-heading" id="comments">
-                <h2 id="comments-heading">Comments ({{ post.comments.count }})</h2>
+                <h2 id="comments-heading">{% blocktrans count counter=post.comments.count %}Comment ({{ counter }}){% plural %}Comments ({{ counter }}){% endblocktrans %}</h2>
                 
                 {% if post.comments.all %}
                     <div class="comment-list">
@@ -96,25 +97,25 @@
                         {% endfor %}
                     </div>
                 {% else %}
-                    <p class="text-center my-4">No comments yet. Be the first to comment!</p>
+                    <p class="text-center my-4">{% trans "No comments yet. Be the first to comment!" %}</p>
                 {% endif %}
                 
                 <!-- Comment form -->
                 {% if user.is_authenticated %}
                     <div class="card mt-4">
                         <div class="card-header">
-                            <h3 class="fs-5 mb-0">Add a Comment</h3>
+                            <h3 class="fs-5 mb-0">{% trans "Add a Comment" %}</h3>
                         </div>
                         <div class="card-body">
                             <form method="post" action="{% url 'add_post_comment' post.id %}" aria-labelledby="comment-form-heading">
-                                <span id="comment-form-heading" class="visually-hidden">Comment form for this post</span>
+                                <span id="comment-form-heading" class="visually-hidden">{% trans "Comment form for this post" %}</span>
                                 {% csrf_token %}
                                 <div class="mb-3">
-                                    <label for="comment-content" class="form-label">Your comment</label>
+                                    <label for="comment-content" class="form-label">{% trans "Your comment" %}</label>
                                     <textarea id="comment-content" name="content" rows="3" 
                                             class="form-control" required aria-required="true"></textarea>
                                 </div>
-                                <button type="submit" class="btn btn-primary">Post Comment</button>
+                                <button type="submit" class="btn btn-primary">{% trans "Post Comment" %}</button>
                             </form>
                         </div>
                     </div>
@@ -123,7 +124,7 @@
 
             <!-- Related posts section -->
             <section aria-labelledby="related-posts-heading" class="mt-5">
-                <h2 id="related-posts-heading" class="mb-3">Related Posts</h2>
+                <h2 id="related-posts-heading" class="mb-3">{% trans "Related Posts" %}</h2>
                 <div class="row">
                     {% for related_post in related_posts %}
                         <div class="col-md-6 mb-4">
@@ -132,14 +133,14 @@
                                     <h3 class="h5"><a href="{% url 'view_post' related_post.id %}">{{ related_post.title }}</a></h3>
                                     <p class="card-text small">{{ related_post.desc|truncatechars:100 }}</p>
                                     <div class="small text-muted">
-                                        Posted on {{ related_post.created_at|date:"F j, Y" }}
+                                        {% blocktrans with date=related_post.created_at|date:"F j, Y" %}Posted on {{ date }}{% endblocktrans %}
                                     </div>
                                 </div>
                             </div>
                         </div>
                     {% empty %}
                         <div class="col-12">
-                            <p class="text-center">No related discussions found.</p>
+                            <p class="text-center">{% trans "No related discussions found." %}</p>
                         </div>
                     {% endfor %}
                 </div>
@@ -148,7 +149,7 @@
             <!-- Back to forum link -->
             <div class="mt-4 mb-5">
                 <a href="{% url 'parents_forum' %}" class="btn btn-outline-primary">
-                    <i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Back to the Parents Forum
+                    <i class="fa-solid fa-arrow-left" aria-hidden="true"></i> {% trans "Back to the Parents Forum" %}
                 </a>
             </div>
         </div>

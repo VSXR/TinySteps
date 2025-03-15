@@ -1,77 +1,86 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load i18n %}
 
 {% block title %}
-    TINY STEPS - EVERY STEP MATTERS
+    {% trans "TINY STEPS - EVERY STEP MATTERS" %}
 {% endblock %}
 
 {% block main_contents %}
     <section class="container mt-4" aria-labelledby="welcome-heading">
         <div class="row mb-4">
             <div class="col">
-                <h1 id="welcome-heading" class="text-center">Welcome to Tiny Steps</h1>
-                <span class="sr-only">(Every step matters)</span>
+                <h1 id="welcome-heading" class="text-center">{% trans "Welcome to Tiny Steps" %}</h1>
+                <span class="sr-only">{% trans "(Every step matters)" %}</span>
             </div>
         </div>
     </section>
 
     <section aria-labelledby="about-section">
-        <h2 id="about-section" class="visually-hidden">About Tiny Steps</h2>
+        <h2 id="about-section" class="visually-hidden">{% trans "About Tiny Steps" %}</h2>
         <div class="specific-paragraphs">
             <p class="text-center">
+                {% blocktrans %}
                 Tiny Steps is an app designed for first-time parents, launched in 2025, that offers the best tools to 
                 support your parenting journey. We provide the most intuitive features and the most reliable information 
                 to make caring for your baby an easy and enjoyable experience.
+                {% endblocktrans %}
             </p>
             <div class="image-container">
                 <img src="{% static 'res/img/logo/tinySteps-logo.png' %}" class="imgWeb-logo" 
-                     alt="A parent using the Tiny Steps app with their baby" 
+                     alt="{% trans 'A parent using the Tiny Steps app with their baby' %}" 
                      loading="lazy">
             </div>
         </div>
     </section>
     
     <section aria-labelledby="features-section">
-        <h2 id="features-section" class="visually-hidden">Our Features</h2>
+        <h2 id="features-section" class="visually-hidden">{% trans "Our Features" %}</h2>
         <div class="specific-paragraphs">
             <p class="text-center">
+                {% blocktrans %}
                 With personalized recommendations, smart scheduling, and expert guidance, we ensure that you 
                 have everything you need at your fingertips. We are the best option for navigating your child's 
                 early years with confidence and peace of mind.
+                {% endblocktrans %}
             </p>
             <div class="image-container">
                 <img src="{% static 'res/img/others/default.jpg' %}" class="imgWeb" 
-                     alt="Screenshot of Tiny Steps app features" 
+                     alt="{% trans 'Screenshot of Tiny Steps app features' %}" 
                      loading="lazy">
             </div>
         </div>
     </section>
     
     <section aria-labelledby="testimonials-section">
-        <h2 id="testimonials-section">What Parents Say</h2>
+        <h2 id="testimonials-section">{% trans "What Parents Say" %}</h2>
         <div class="specific-paragraphs">
             <p class="text-center">
+                {% blocktrans %}
                 Parents from around the world trust Tiny Steps to help them through their parenting journey.
                 Our community shares their success stories and how our app has made a difference in their lives.
+                {% endblocktrans %}
             </p>
             <div class="image-container">
                 <img src="{% static 'res/img/others/default.jpg' %}" class="imgWeb" 
-                     alt="Happy parents using the Tiny Steps application" 
+                     alt="{% trans 'Happy parents using the Tiny Steps application' %}" 
                      loading="lazy">
             </div>
         </div>
     </section>
     
     <section aria-labelledby="get-started-section">
-        <h2 id="get-started-section">Get Started Today</h2>
+        <h2 id="get-started-section">{% trans "Get Started Today" %}</h2>
         <div class="specific-paragraphs">
             <p class="text-center">
+                {% blocktrans %}
                 Join thousands of parents who are already benefiting from Tiny Steps. Download our app
                 today and start your journey toward confident parenting with expert guidance at every step.
+                {% endblocktrans %}
             </p>
             <div class="image-container">
                 <img src="{% static 'res/img/others/default.jpg' %}" class="imgWeb" 
-                     alt="Mobile devices showing the Tiny Steps app download page" 
+                     alt="{% trans 'Mobile devices showing the Tiny Steps app download page' %}" 
                      loading="lazy">
             </div>
         </div>

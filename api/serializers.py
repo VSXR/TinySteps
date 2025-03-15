@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
 
+
 from tinySteps.models import (
     YourChild_Model, 
     Milestone_Model, 
@@ -8,11 +9,14 @@ from tinySteps.models import (
     Guides_Model,
     Comment_Model,
     Notification_Model,
-    InfoRequest_Model
+    Contact_Model,
+    Vaccine_Model,
+    VaccineCard_Model,
+    CalendarEvent_Model,
 )
 
 ###########################################################################
-# USUARIOS
+# USER SERIALIZERS
 ###########################################################################
 class User_Serializer(serializers.ModelSerializer):
     class Meta:
@@ -21,7 +25,7 @@ class User_Serializer(serializers.ModelSerializer):
         read_only_fields = ['id']
 
 ###########################################################################
-# NIÑOS Y HITOS DE DESARROLLO
+# CHILD AND DEVELOPMENT SERIALIZERS
 ###########################################################################
 class YourChild_Serializer(serializers.ModelSerializer):
     class Meta:
@@ -36,7 +40,7 @@ class Milestone_Serializer(serializers.ModelSerializer):
         read_only_fields = ['id']
 
 ###########################################################################
-# FOROS Y COMENTARIOS
+# COMMUNICATION SERIALIZERS
 ###########################################################################
 class Comment_Serializer(serializers.ModelSerializer):
     author_name = serializers.SerializerMethodField()
@@ -68,8 +72,20 @@ class ParentsForum_Serializer(serializers.ModelSerializer):
     def get_likes_count(self, obj):
         return obj.likes.count()
 
+class Contact_Serializer(serializers.ModelSerializer):
+    class Meta:
+        model = Contact_Model
+        fields = ['id', 'name', 'email', 'phone', 'message', 'created_at']
+        read_only_fields = ['id', 'created_at']
+
+class Notification_Serializer(serializers.ModelSerializer):
+    class Meta:
+        model = Notification_Model
+        fields = ['id', 'title', 'message', 'read', 'created_at']
+        read_only_fields = ['id', 'created_at']
+
 ###########################################################################
-# GUÍAS PARA PADRES Y NUTRICIÓN
+# EDUCATIONAL CONTENT SERIALIZERS
 ###########################################################################
 class ParentsGuide_Serializer(serializers.ModelSerializer):
     comments_count = serializers.SerializerMethodField()
@@ -77,6 +93,7 @@ class ParentsGuide_Serializer(serializers.ModelSerializer):
     class Meta:
         model = Guides_Model
         fields = ['id', 'title', 'desc', 'image_url', 'created_at', 'comments_count']
+        read_only_fields = ['id', 'created_at']
         
     def get_comments_count(self, obj):
         return obj.comments.count()
@@ -87,24 +104,47 @@ class NutritionGuide_Serializer(serializers.ModelSerializer):
     class Meta:
         model = Guides_Model
         fields = ['id', 'title', 'desc', 'image_url', 'created_at', 'comments_count']
+        read_only_fields = ['id', 'created_at']
         
     def get_comments_count(self, obj):
         return obj.comments.count()
 
 ###########################################################################
-# NOTIFICACIONES
+# HEALTH AND MEDICAL SERIALIZERS
 ###########################################################################
-class Notification_Serializer(serializers.ModelSerializer):
+class Vaccine_Serializer(serializers.ModelSerializer):
     class Meta:
-        model = Notification_Model
-        fields = ['id', 'title', 'message', 'read', 'created_at']
-        read_only_fields = ['id', 'created_at']
+        model = Vaccine_Model
+        fields = ['id', 'name', 'date', 'notes', 'administered', 'next_dose_date']
+        read_only_fields = ['id']
+
+class VaccineCard_Serializer(serializers.ModelSerializer):
+    vaccines = Vaccine_Serializer(many=True, read_only=True)
+    
+    class Meta:
+        model = VaccineCard_Model
+        fields = ['id', 'child', 'created_at', 'updated_at', 'vaccines']
+        read_only_fields = ['id', 'created_at', 'updated_at']
 
 ###########################################################################
-# SOLICITUDES DE INFORMACIÓN
+# PLANNING SERIALIZERS
 ###########################################################################
-class InfoRequest_Serializer(serializers.ModelSerializer):
+class CalendarEvent_Serializer(serializers.ModelSerializer):
+    event_color = serializers.SerializerMethodField()
+    
     class Meta:
-        model = InfoRequest_Model
-        fields = ['id', 'name', 'email', 'message', 'created_at']
-        read_only_fields = ['id', 'created_at']
+        model = CalendarEvent_Model
+        fields = ['id', 'child', 'title', 'type', 'date', 'time', 'description', 
+                  'has_reminder', 'reminder_minutes', 'created_at', 'updated_at',
+                  'event_color']
+        read_only_fields = ['id', 'created_at', 'updated_at']
+    
+    def get_event_color(self, obj):
+        color_map = {
+            'doctor': '#4285F4',    # Azul
+            'vaccine': '#EA4335',   # Rojo
+            'milestone': '#FBBC05', # Amarillo
+            'feeding': '#34A853',   # Verde
+            'other': '#8f6ed5',     # Morado
+        }
+        return color_map.get(obj.type, '#8f6ed5')

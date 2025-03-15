@@ -2,7 +2,8 @@ import os
 import sys
 from pathlib import Path
 from django.contrib.messages import constants as messages
-from rest_framework.views import APIView, Response, status, exceptions
+from django.utils.translation import gettext_lazy as _
+from rest_framework.views import exception_handler
 
 # ---------------------------------------------------------------
 # CONFIGURACIONES BÁSICAS
@@ -30,10 +31,31 @@ CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
+# ----------------------------------------------------------------
+# CONFIGURACIÓN PARA INTERNALIZACIÓN
+# ----------------------------------------------------------------
+# https://docs.djangoproject.com/en/3.2/topics/i18n/
+# https://dev.to/doridoro/adding-translation-to-django-portfolio-project-4g42
+
+LANGUAGE_CODE = 'en-us'
+TIME_ZONE = 'Europe/Madrid'
+USE_TZ = True
+USE_I18N = True
+USE_L10N = True
+
+LANGUAGES = [
+    ('en', _('English')),
+    ('es', _('Spanish')),
+]
+
+LOCALE_PATHS = [
+    os.path.join(BASE_DIR, 'locale'),
+]
+# ---------------------------------------------------------------
+
 # ---------------------------------------------------------------
 # APLICACIONES Y MIDDLEWARE
 # ---------------------------------------------------------------
-# Aplicaciones instaladas
 INSTALLED_APPS = [
     # Aplicaciones Django predeterminadas
     'django.contrib.admin',
@@ -63,6 +85,7 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',  # CSRF Middleware
     'django.contrib.auth.middleware.AuthenticationMiddleware',

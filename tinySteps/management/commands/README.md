@@ -41,3 +41,24 @@ Run the command from your project root directory:
 ```bash
 python manage.py generate_babies_list --username=nombre_del_usuario_existente --count=5
 ```
+
+# Send Reminder Command
+
+## Basic Usage
+
+Run the command from your project root directory:
+
+```bash
+python manage.py send_reminder
+```
+
+# Generate Baby Milestones Command
+
+## Basic Usage
+
+Run the command from your project root directory:
+
+```bash
+python manage.py generate_baby_milestones
+```
+

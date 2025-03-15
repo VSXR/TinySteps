@@ -1,8 +1,9 @@
 {% extends 'base.html' %}
 {% load static %}
 {% load crispy_forms_tags %}
+{% load i18n %}
 
-{% block title %}TINY STEPS - LOGIN{% endblock %}
+{% block title %}{% trans "TINY STEPS - LOGIN" %}{% endblock %}
 
 {% block main_contents %}
     <main id="main-content">
@@ -11,7 +12,7 @@
                 <div class="col-md-6">
                     <div class="card">
                         <div class="card-header">
-                            <h1 class="text-center fs-4">LOGIN</h1>
+                            <h1 class="text-center fs-4">{% trans "LOGIN" %}</h1>
                         </div>
                         <div class="card-body">
                             {% if messages %}
@@ -19,26 +20,34 @@
                             {% endif %}
                             
                             <form method="post" novalidate aria-labelledby="login-heading">
-                                <span id="login-heading" class="visually-hidden">Account login form</span>
+                                <span id="login-heading" class="visually-hidden">{% trans "Account login form" %}</span>
                                 {% csrf_token %}
                                 <div class="mb-3">
-                                    <label for="username" class="form-label">Username</label>
+                                    <label for="username" class="form-label">{% trans "Username" %}</label>
                                     <input type="text" name="username" id="username" class="form-control" 
                                         aria-required="true" autocomplete="username" required>
                                 </div>
                                 <div class="mb-3">
-                                    <label for="password" class="form-label">Password</label>
+                                    <label for="password" class="form-label">{% trans "Password" %}</label>
                                     <input type="password" name="password" id="password" class="form-control" 
                                            aria-required="true" autocomplete="current-password" required>
                                 </div>
                                 <div class="d-grid">
-                                    <button type="submit" class="btn btn-primary">Login</button>
+                                    <button type="submit" class="btn btn-primary">{% trans "Login" %}</button>
                                 </div>
                             </form>
                             
                             <div class="text-center mt-3">
-                                <p>Don't have an account? <a href="{% url 'register' %}" aria-label="Register for a new account">Register here</a></p>
-                                <p>Forgot your password? <a href="{% url 'password_reset' %}" aria-label="Reset your password">Reset password here</a></p>
+                                {% url 'register' as register_url %}
+                                {% url 'password_reset' as password_reset_url %}
+                                
+                                {% blocktrans %}
+                                <p>Don't have an account? <a href="{{ register_url }}" aria-label="Register for a new account">Register here</a></p>
+                                {% endblocktrans %}
+                                
+                                {% blocktrans %}
+                                <p>Forgot your password? <a href="{{ password_reset_url }}" aria-label="Reset your password">Reset password here</a></p>
+                                {% endblocktrans %}
                             </div>
                         </div>
                     </div>

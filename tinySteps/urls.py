@@ -1,9 +1,10 @@
 from django.conf import settings
 from django.conf.urls.static import static
+from django.conf.urls.i18n import i18n_patterns
 from django.contrib.auth import views as auth_views
 from django.http import Http404, HttpResponseNotFound
 from django.shortcuts import render
-from django.urls import path
+from django.urls import path, include
 from . import views
 
 def favicon_view(request):
@@ -15,57 +16,57 @@ def page_404(request):
 def test_404(request):
     return render(request, '404.html')
 
+# Main site URLs
 urlpatterns = [
-    # RUTA PARA LA PAGINA PRINCIPAL
-    path('', views.index, name='index'), # FUNCIONA
+    # HOME
+    path('', views.index, name='index'),
 
-    # RUTA PARA YOUR CHILDREN
+    # USER MANAGEMENT
+    path('login/', views.Login_View.as_view(), name='login'),
+    path('register/', views.Register_View.as_view(), name='register'),
+    path('logout/', views.Logout_View.as_view(), name='logout'),
+    path('profile/', views.profile, name='profile'),
+    path('password/reset/', views.password_reset, name='password_reset'),
+
+    # CHILDREN MANAGEMENT
     path('your-children/', views.your_children, name='your_children'),
-    path('your-children/<int:pk>', views.your_child, name='child_details'),
+    path('your-children/<int:pk>/', views.your_child, name='child_details'),
     path('your-children/<int:child_id>/add-milestone/', views.child_milestone, name='child_milestone'),    
-    
     path('your-children/add/', views.YourChild_Add_View.as_view(), name='add_child'),
     path('your-children/<int:pk>/update/', views.YourChild_UpdateDetails_View.as_view(), name='child_update'),
     path('your-children/<int:pk>/delete/', views.YourChild_Delete_View.as_view(), name='child_delete'),
-
     path('your-children/<int:pk>/needs/calendar/', views.YourChild_Calendar_View.as_view(), name='child_calendar'),
     path('your-children/<int:pk>/needs/vaccine-card/', views.YourChild_VaccineCard_View.as_view(), name='child_vaccine_card'),
     
-    # RUTA PARA PARENTS FORUM
-    path('parents_forum/', views.parents_forum_page, name='parents_forum'),
-    path('parents_forum/search/', views.search_posts, name='search_posts'),
-    path('parents_forum/posts/add/', views.add_post, name='add_post'),
-    path('parents_forum/posts/<int:post_id>/', views.view_post, name='view_post'),
-    path('parents_forum/posts/<int:post_id>/edit/', views.edit_post, name='edit_post'),
-    path('parents_forum/posts/<int:post_id>/delete/', views.delete_post, name='delete_post'),
-    path('parents_forum/posts/<int:post_id>/comment/', views.add_post_comment, name='add_post_comment'),
-    path('parents_forum/posts/<int:post_id>/like/', views.forum_post_like_toggle, name='forum_post_like_toggle'),
+    # FORUM
+    path('parents-forum/', views.parents_forum_page, name='parents_forum'),
+    path('parents-forum/search/', views.parents_forum_page, name='search_posts'),    path('parents-forum/posts/add/', views.add_post, name='add_post'),
+    path('parents-forum/posts/<int:post_id>/', views.view_post, name='view_post'),
+    path('parents-forum/posts/<int:post_id>/edit/', views.edit_post, name='edit_post'),
+    path('parents-forum/posts/<int:post_id>/delete/', views.delete_post, name='delete_post'),
+    path('parents-forum/posts/<int:post_id>/comment/', views.add_post_comment, name='add_post_comment'),
+    path('parents-forum/posts/<int:post_id>/like/', views.forum_post_like_toggle, name='forum_post_like_toggle'),
         
-    # RUTA PARA GUIDES (LAS GUIAS LAS ESCRIBE, ELIMINA Y EDITA EL ADMIN)
-    path('guides/', views.guides_page, name='guides'),    path('guides/parents-guides/', views.parents_guides_page, name='parents_guides'),
+    # GUIDES
+    path('guides/', views.guides_page, name='guides'),
+    path('guides/parents-guides/', views.parents_guides_page, name='parents_guides'),
     path('guides/parents-guides/<int:pk>/', views.parent_guide_details, name='parents_guide_details'),
     path('guides/nutrition-guides/', views.nutrition_guides_page, name='nutrition_guides'),
     path('guides/nutrition-guides/<int:pk>/', views.nutrition_guide_details, name='nutrition_guide_details'),
     
-    # RUTA PARA LA PAGINA DE CONTACTO
-    path('contact/', views.Contact_View.as_view(), name='contact'),  # FUNCIONA
+    # CONTACT & ABOUT
+    path('contact/', views.Contact_View.as_view(), name='contact'),
+    path('about/', views.about, name='about'),
 
-    # RUTA ABOUT
-    path('about/', views.about, name='about'), # FUNCIONA
-
-    # RUTAS PARA EL USUARIO
-    path('profile/', views.profile, name='profile'),    path('login/', views.Login_View.as_view(), name='login'), # FUNCIONA
-    path('register/', views.Register_View.as_view(), name='register'), # FUNCIONA
-    path('logout/', views.Logout_View.as_view(), name='logout'),    path('password/reset/', views.password_reset, name='password_reset'),
-    
-    # OTRAS RUTAS
-    path('favicon.ico', favicon_view), # FUNCIONA
-
+    # ERROR PAGES
     path('page-404/', views.page_not_found, name='page_404'),
     path('test-404/', page_404, name='test_404'),
+    path('favicon.ico', favicon_view),
+    
+    # Internationalization
+    path('i18n/', include('django.conf.urls.i18n')),
 ]
 
-# # ------------------------------------------
-
+# Static/media files configuration for development
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

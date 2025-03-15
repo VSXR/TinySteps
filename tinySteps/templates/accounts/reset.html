@@ -1,7 +1,8 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load i18n %}
 
-{% block title %}TINY STEPS - CHANGE PASSWORD{% endblock %}
+{% block title %}{% trans "TINY STEPS - CHANGE PASSWORD" %}{% endblock %}
 
 {% block main_contents %}
     <main id="main-content">
@@ -10,7 +11,7 @@
                 <div class="col-md-6">
                     <div class="card shadow">
                         <div class="card-header bg-light">
-                            <h2 class="text-center fs-4 mb-0">Change Password</h2>
+                            <h2 class="text-center fs-4 mb-0">{% trans "Change Password" %}</h2>
                         </div>
                         <div class="card-body">
                             {% if messages %}
@@ -63,7 +64,7 @@
                                         </div>
                                     {% endif %}
                                     <div class="form-text" id="password-help">
-                                        Make sure your password is at least 8 characters long and not too common.
+                                        {% trans "Make sure your password is at least 8 characters long and not too common." %}
                                     </div>
                                 </div>
                                 
@@ -81,13 +82,16 @@
                                 
                                 <div class="d-grid">
                                     <button type="submit" class="btn btn-primary">
-                                        <i class="fa-solid fa-key me-2" aria-hidden="true"></i>Change Password
+                                        <i class="fa-solid fa-key me-2" aria-hidden="true"></i>{% trans "Change Password" %}
                                     </button>
                                 </div>
                             </form>
                             
                             <div class="text-center mt-3">
-                                <p>Remember your password? <a href="{% url 'login' %}">Return to login</a></p>
+                                {% url 'login' as login_url %}
+                                {% blocktrans %}
+                                <p>Remember your password? <a href="{{ login_url }}">Return to login</a></p>
+                                {% endblocktrans %}
                             </div>
                         </div>
                     </div>

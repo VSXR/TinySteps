@@ -16,7 +16,7 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name="InfoRequest_Model",
+            name="Contact_Model",
             fields=[
                 (
                     "id",
