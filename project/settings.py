@@ -8,13 +8,10 @@ from rest_framework.views import exception_handler
 # ---------------------------------------------------------------
 # CONFIGURACIONES BÁSICAS
 # ---------------------------------------------------------------
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = "django-insecure-elp3%(#9&c9-(5xco05=oh7)7b%zda3j@3qt8@$#dajqhj@^+b"
 
-# SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True  # TRUE: FOR LOCAL HOST ONLY (CSS, IMGs AND MEDIA WILL APPEAR CORRECTLY!)
 
 # ---------------------------------------------------------------
@@ -26,32 +23,9 @@ CSRF_TRUSTED_ORIGINS = [
     'https://tinySteps-django.azurewebsites.net',  # URL de producción
 ]
 
-# Descomentar estas líneas en producción para mejorar la seguridad
 CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-
-# ----------------------------------------------------------------
-# CONFIGURACIÓN PARA INTERNALIZACIÓN
-# ----------------------------------------------------------------
-# https://docs.djangoproject.com/en/3.2/topics/i18n/
-# https://dev.to/doridoro/adding-translation-to-django-portfolio-project-4g42
-
-LANGUAGE_CODE = 'en-us'
-TIME_ZONE = 'Europe/Madrid'
-USE_TZ = True
-USE_I18N = True
-USE_L10N = True
-
-LANGUAGES = [
-    ('en', _('English')),
-    ('es', _('Spanish')),
-]
-
-LOCALE_PATHS = [
-    os.path.join(BASE_DIR, 'locale'),
-]
-# ---------------------------------------------------------------
 
 # ---------------------------------------------------------------
 # APLICACIONES Y MIDDLEWARE
@@ -147,6 +121,43 @@ else:
     }
 
 # ---------------------------------------------------------------
+# CONFIGURACIÓN DE INTERNACIONALIZACIÓN
+# ---------------------------------------------------------------
+# https://docs.djangoproject.com/en/5.1/topics/i18n/
+# https://docs.djangoproject.com/en/3.2/topics/i18n/
+# https://dev.to/doridoro/adding-translation-to-django-portfolio-project-4g42
+
+LANGUAGE_CODE = 'en-us'
+TIME_ZONE = 'Europe/Madrid'
+USE_I18N = True
+USE_L10N = True
+USE_TZ = True
+
+LANGUAGES = [
+    ('en', _('English')),
+    ('es', _('Spanish')),
+]
+
+LOCALE_PATHS = [
+    os.path.join(BASE_DIR, 'locale'),
+]
+
+# ---------------------------------------------------------------
+# CONFIGURACIÓN DE ARCHIVOS ESTÁTICOS Y MEDIA
+# ---------------------------------------------------------------
+# Rutas para archivos estáticos
+STATIC_URL = '/static/'
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'tinySteps', 'static'),
+]
+
+# Configuración de archivos de medios (separada de estáticos)
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+# ---------------------------------------------------------------
 # CONFIGURACIÓN DE AUTENTICACIÓN
 # ---------------------------------------------------------------
 # Password validation
@@ -168,50 +179,6 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 # ---------------------------------------------------------------
-# CONFIGURACIÓN DE INTERNACIONALIZACIÓN
-# ---------------------------------------------------------------
-# https://docs.djangoproject.com/en/5.1/topics/i18n/
-
-LANGUAGE_CODE = 'en-us'
-TIME_ZONE = 'UTC'
-USE_I18N = True
-USE_TZ = True
-
-# ---------------------------------------------------------------
-# CONFIGURACIÓN DE ARCHIVOS ESTÁTICOS Y MEDIA
-# ---------------------------------------------------------------
-# Rutas para archivos estáticos
-STATIC_URL = '/static/'
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-STATIC_ROOT = BASE_DIR / 'staticfiles'
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'tinySteps', 'static'),
-]
-
-# Configuración de archivos de medios (separada de estáticos)
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-
-# ---------------------------------------------------------------
-# OTRAS CONFIGURACIONES
-# ---------------------------------------------------------------
-# Default primary key field type
-# https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-# ---------------------------------------------------------------
-# CONFIGURACIÓN DE CORREO ELECTRÓNICO
-# ---------------------------------------------------------------
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'c4relecloud@gmail.com'
-EMAIL_HOST_PASSWORD = 'mnvp swyl hjgr pdyl'
-DEFAULT_FROM_EMAIL = 'c4relecloud@gmail.com'
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-
-# ---------------------------------------------------------------
 # CONFIGURACIÓN DE REST FRAMEWORK
 # ---------------------------------------------------------------
 REST_FRAMEWORK = {
@@ -226,3 +193,30 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 10,
     'EXCEPTION_HANDLER': 'api.exceptions.custom_exception_handler'
 }
+
+# ---------------------------------------------------------------
+# EXTERNAL APIS
+# ---------------------------------------------------------------
+EDAMAM_APP_ID = 'dd63e92c'
+EDAMAM_APP_KEY = '58c1318bf68b536cd04b07be47f3693c'
+NEWS_API_KEY = '2ea41d5b4b114a5c808b9108a90e0e2d'
+CURRENTS_API_KEY = 'VxLJ2ZsRmjdMjVNKVNqMe0Amde-fHlNJSNYA_pfaLJ7GmjHN'
+
+# ---------------------------------------------------------------
+# CONFIGURACIÓN DE CORREO ELECTRÓNICO
+# ---------------------------------------------------------------
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'c4relecloud@gmail.com'
+EMAIL_HOST_PASSWORD = 'mnvp swyl hjgr pdyl'
+DEFAULT_FROM_EMAIL = 'c4relecloud@gmail.com'
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+# ---------------------------------------------------------------
+# OTRAS CONFIGURACIONES
+# ---------------------------------------------------------------
+# Default primary key field type
+# https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

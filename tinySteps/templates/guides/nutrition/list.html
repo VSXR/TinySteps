@@ -16,8 +16,8 @@
                 </div>
             </div>
 
-            <section aria-labelledby="nutrition-guides-content">
-                <h3 id="nutrition-guides-content" class="visually-hidden">{% trans "Available Nutrition Guides" %}</h3>
+            <section aria-labelledby="nutrition_guides-content">
+                <h3 id="nutrition_guides-content" class="visually-hidden">{% trans "Available Nutrition Guides" %}</h3>
                 <div class="row">
                     {% if nutrition_guides %}
                         {% for guide in nutrition_guides %}
@@ -35,7 +35,7 @@
                                         <p class="card-text">{{ guide.description|truncatechars:120 }}</p>
                                     </div>
                                     <div class="card-footer bg-transparent border-0 text-end">
-                                        <a href="{% url 'nutrition_guide_details' %}" class="btn btn-primary mb-4" 
+                                        <a href="{% url 'nutrition_guide_details' guide.id %}" class="btn btn-primary mb-4" 
                                            aria-label="{% blocktrans with title=guide.title %}Show details for {{ title }}{% endblocktrans %}">{% trans "Show guide" %}</a>
                                     </div>
                                 </article>
@@ -49,6 +49,94 @@
                 </div>
             </section>
 
+            <!-- External Nutrition Articles Button -->
+            <div class="text-center my-4">
+                <a href="{% url 'nutrition_articles' %}" class="btn btn-outline-info">
+                    <i class="bi bi-journal-text me-2"></i>{% trans "Browse External Nutrition Articles" %}
+                </a>
+            </div>
+
+            <!-- Nutrition Analyzer Feature Box -->
+            <section aria-labelledby="nutrition-analyzer-heading" class="mt-5">
+                <div class="card border-primary mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <h3 id="nutrition-analyzer-heading" class="h4 mb-0">{% trans "Baby Food Nutrition Analyzer" %}</h3>
+                    </div>
+                    <div class="card-body">
+                        <p>{% trans "Analyze the nutritional content of baby foods and ingredients. Enter any food item to get detailed nutrition information." %}</p>
+                        
+                        <form method="GET" action="{% url 'nutrition_analyzer' %}" class="mb-3">
+                            <div class="input-group">
+                                <input type="text" name="ingredient" class="form-control" 
+                                    placeholder="{% trans 'e.g., 100g pureed carrots' %}" required>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="bi bi-search me-1"></i> {% trans "Analyze" %}
+                                </button>
+                            </div>
+                        </form>
+                        
+                        <p class="small text-muted mb-2">{% trans "Popular baby ingredients to analyze:" %}</p>
+                        <div class="d-flex flex-wrap gap-2">
+                            {% for ingredient in popular_ingredients %}
+                            <a href="{% url 'nutrition_analyzer' %}?ingredient={{ ingredient|urlencode }}" class="badge bg-light text-dark text-decoration-none">
+                                {{ ingredient }}
+                            </a>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Quick Nutrition Result (if there are any!) -->
+            {% if nutrition_result and 'totalNutrients' in nutrition_result %}
+            <section aria-labelledby="quick-result-heading" class="mb-4">
+                <div class="card border-success">
+                    <div class="card-header bg-success text-white">
+                        <h3 id="quick-result-heading" class="h5 mb-0">{% trans "Result for" %} "{{ ingredient }}"</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-6 col-md-3 text-center mb-3">
+                                <div class="h6">{% trans "Calories" %}</div>
+                                <div class="display-6">{{ nutrition_result.calories|floatformat:0 }}</div>
+                                <div class="small text-muted">kcal</div>
+                            </div>
+                            
+                            {% if 'PROCNT' in nutrition_result.totalNutrients %}
+                            <div class="col-6 col-md-3 text-center mb-3">
+                                <div class="h6">{% trans "Protein" %}</div>
+                                <div class="display-6">{{ nutrition_result.totalNutrients.PROCNT.quantity|floatformat:1 }}</div>
+                                <div class="small text-muted">{{ nutrition_result.totalNutrients.PROCNT.unit }}</div>
+                            </div>
+                            {% endif %}
+                            
+                            {% if 'FAT' in nutrition_result.totalNutrients %}
+                            <div class="col-6 col-md-3 text-center mb-3">
+                                <div class="h6">{% trans "Fat" %}</div>
+                                <div class="display-6">{{ nutrition_result.totalNutrients.FAT.quantity|floatformat:1 }}</div>
+                                <div class="small text-muted">{{ nutrition_result.totalNutrients.FAT.unit }}</div>
+                            </div>
+                            {% endif %}
+                            
+                            {% if 'CHOCDF' in nutrition_result.totalNutrients %}
+                            <div class="col-6 col-md-3 text-center mb-3">
+                                <div class="h6">{% trans "Carbs" %}</div>
+                                <div class="display-6">{{ nutrition_result.totalNutrients.CHOCDF.quantity|floatformat:1 }}</div>
+                                <div class="small text-muted">{{ nutrition_result.totalNutrients.CHOCDF.unit }}</div>
+                            </div>
+                            {% endif %}
+                        </div>
+                        <div class="text-center mt-2">
+                            <a href="{% url 'nutrition_analyzer' %}?ingredient={{ ingredient|urlencode }}" class="btn btn-sm btn-success">
+                                {% trans "View Detailed Analysis" %}
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            {% endif %}
+            
+            <!-- Back to Guides Button -->
             <div class="row mt-5 mb-4">
                 <div class="col text-center">
                     <a href="{% url 'guides' %}" class="btn btn-primary" aria-label="{% trans "Return to guides page" %}">

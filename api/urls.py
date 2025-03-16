@@ -15,7 +15,7 @@ router.register(r'milestones', views.Milestone_ViewSet, basename='milestone')
 router.register(r'forums', views.ParentsForum_ViewSet, basename='forum')
 router.register(r'comments', views.Comment_ViewSet, basename='comment')
 router.register(r'parents-guides', views.ParentsGuide_ViewSet, basename='parents-guide')
-router.register(r'nutrition-guides', views.NutritionGuide_ViewSet, basename='nutrition-guide')
+router.register(r'nutrition_guides', views.NutritionGuide_ViewSet, basename='nutrition-guide')
 router.register(r'notifications', views.Notification_ViewSet, basename='notification')
 router.register(r'info-requests', views.Contact_ViewSet, basename='info-request')
 
@@ -32,7 +32,7 @@ forum_router.register(r'comments', views.ForumComment_ViewSet, basename='forum-c
 parents_guide_router = routers.NestedSimpleRouter(router, r'parents-guides', lookup='guide')
 parents_guide_router.register(r'comments', views.GuideComment_ViewSet, basename='parents-guide-comment')
 
-nutrition_guide_router = routers.NestedSimpleRouter(router, r'nutrition-guides', lookup='guide')
+nutrition_guide_router = routers.NestedSimpleRouter(router, r'nutrition_guides', lookup='guide')
 nutrition_guide_router.register(r'comments', views.GuideComment_ViewSet, basename='nutrition-guide-comment')
 
 urlpatterns = [

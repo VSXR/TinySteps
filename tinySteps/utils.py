@@ -9,10 +9,11 @@ def create_event_reminders():
     today = datetime.now().date()
     tomorrow = today + timedelta(days=1)
     
-    # Finds events scheduled for tomorrow that have reminders enabled
+    # Get all events scheduled for tomorrow with reminders set
+    # and that have not been notified for the same day
     events = CalendarEvent_Model.objects.filter(
         date=tomorrow,
-        has_reminder=True  # Change 'reminder' to 'has_reminder'
+        has_reminder=True 
     )
     
     # Create notifications for each event and checks if a notification

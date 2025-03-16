@@ -7,80 +7,193 @@
 {% endblock %}
 
 {% block main_contents %}
-    <div class="container mt-4">
-        <div class="row mb-4">
-            <div class="col">
-                <h1>{% trans "ABOUT TINY STEPS" %}</h1>
-                <p class="lead text-center">{% trans "Learn more about our company, mission, and vision" %}</p>
-            </div>
-        </div>
-    </div>
-
-    <section aria-labelledby="overview-section">
-        <h2 id="overview-section" class="visually-hidden">{% trans "Overview" %}</h2>
-        <div class="specific-paragraphs">
-            {% blocktrans trimmed %}
-            <p>
-                Tiny Steps is an app designed to support first-time parents by providing essential tools for organizing and 
-                managing their baby's care. It offers personalized recommendations, a smart scheduling system for medical 
-                appointments and vaccinations, and expert-verified guidance on nutrition and child development. 
-                With an intuitive interface and a supportive community, TinySteps helps parents navigate their child's early 
-                years with confidence and ease.
-            </p>
-            {% endblocktrans %}
-            <div class="image-container">
-                <img src="{% static 'res/img/others/default.jpg' %}" class="imgWeb" 
-                     alt="{% trans 'Parents using the Tiny Steps app with their baby' %}" loading="lazy">
-            </div>
-        </div>
-    </section>
-    
-    <section aria-labelledby="company-section">
-        <h2 id="company-section">{% trans "OUR COMPANY" %}</h2>
-        <hr aria-hidden="true">
-        <div class="specific-paragraphs">
-            {% blocktrans trimmed %}
-            <p>
-                At Tiny Steps, we are committed to making parenting easier and more accessible. Our team is 
-                passionate about providing first-time parents with the tools they need to confidently 
-                navigate their child's early years. By combining technology with expert knowledge, we create
-                intuitive solutions that help parents organize their baby's care, track key milestones, and
-                stay informed.
-            </p>
-            {% endblocktrans %}
-        </div>
-    </section>
-    
-    <section aria-labelledby="mission-section">
-        <h2 id="mission-section">{% trans "OUR MISSION" %}</h2>
-        <hr aria-hidden="true">
-        <div class="specific-paragraphs">
-            {% blocktrans trimmed %}
-            <p>
-                Our mission is to support parents in their journey by offering a comprehensive, user-friendly app 
-                that centralizes essential childcare resources. Through personalized recommendations, scheduling tools, 
-                and reliable information, we strive to empower parents with knowledge and confidence, ensuring their baby's 
-                well-being and development.
-            </p>
-            {% endblocktrans %}
-            <div class="image-container">
-                <img src="{% static 'res/img/others/default.jpg' %}" class="imgWeb" 
-                     alt="{% trans "A parent tracking their baby's development milestones on the Tiny Steps app" %}" loading="lazy">
+    <!-- Hero Section -->
+    <section class="about-hero py-5 bg-light rounded-3 mb-5" role="region" aria-labelledby="hero-heading">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6 col-md-12 mb-4 mb-lg-0">
+                    <h1 id="hero-heading" class="display-4 fw-bold mb-3">{% trans "Our Story" %}</h1>
+                    <p class="lead">
+                        {% blocktrans %}
+                        We're on a mission to transform the parenting journey with innovative tools that provide guidance, 
+                        support, and confidence to parents everywhere.
+                        {% endblocktrans %}
+                    </p>
+                    <a href="{% url 'register' %}" class="btn btn-primary btn-lg px-4 mt-3" role="button">
+                        {% trans "Join Our Community" %}
+                    </a>
+                </div>
+                <div class="col-lg-6 col-md-12 text-center">
+                    <img src="{% static 'res/img/others/default.jpg' %}" class="img-fluid rounded-3 shadow" 
+                         alt="{% trans 'Happy family using TinySteps app' %}" width="450">
+                </div>
             </div>
         </div>
     </section>
 
-    <section aria-labelledby="vision-section">
-        <h2 id="vision-section">{% trans "OUR VISION" %}</h2>
-        <hr aria-hidden="true">
-        <div class="specific-paragraphs">
-            {% blocktrans trimmed %}
-            <p>
-                We envision a world where every parent feels supported and well-equipped to provide the best care for their child. 
-                TinySteps aims to become the go-to digital companion for new parents, fostering a community that shares experiences, 
-                learns together, and grows with their children.
-            </p>
-            {% endblocktrans %}
+    <!-- Company Overview -->
+    <section class="about-overview py-5 mb-5" role="region" aria-labelledby="who-we-are-heading">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6 col-md-12 order-lg-2 mb-4 mb-lg-0">
+                    <div class="p-0 p-lg-4">
+                        <h2 id="who-we-are-heading" class="mb-4">{% trans "Who We Are" %}</h2>
+                        <p class="mb-4">
+                            {% blocktrans trimmed %}
+                            Tiny Steps is an app designed to support first-time parents by providing essential tools for organizing and 
+                            managing their baby's care. It offers personalized recommendations, a smart scheduling system for medical 
+                            appointments and vaccinations, and expert-verified guidance on nutrition and child development.
+                            {% endblocktrans %}
+                        </p>
+                        <p>
+                            {% blocktrans trimmed %}
+                            With an intuitive interface and a supportive community, TinySteps helps parents navigate their child's early 
+                            years with confidence and ease.
+                            {% endblocktrans %}
+                        </p>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-12 order-lg-1">
+                    <img src="{% static 'res/img/others/default.jpg' %}" class="img-fluid rounded-3 shadow" 
+                         alt="{% trans 'Parents using the Tiny Steps app with their baby' %}">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Our Values -->
+    <section class="our-values py-5 bg-light rounded-3 mb-5" role="region" aria-labelledby="values-heading">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 id="values-heading" class="mb-3">{% trans "Our Core Values" %}</h2>
+                <p class="lead">{% trans "The principles that guide everything we do" %}</p>
+            </div>
+            
+            <div class="row g-4">
+                <div class="col-lg-4 col-md-6 col-sm-12">
+                    <div class="card h-100 border-0 shadow-sm" role="article">
+                        <div class="card-body text-center p-4">
+                            <div class="value-icon mb-3">
+                                <i class="fa-solid fa-heart fa-3x text-primary" aria-hidden="true"></i>
+                            </div>
+                            <h3 class="h5 card-title">{% trans "Compassion" %}</h3>
+                            <p class="card-text">{% trans "We understand the challenges of parenting and design our tools with empathy and care." %}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 col-sm-12">
+                    <div class="card h-100 border-0 shadow-sm" role="article">
+                        <div class="card-body text-center p-4">
+                            <div class="value-icon mb-3">
+                                <i class="fa-solid fa-lightbulb fa-3x text-primary" aria-hidden="true"></i>
+                            </div>
+                            <h3 class="h5 card-title">{% trans "Innovation" %}</h3>
+                            <p class="card-text">{% trans "We continuously improve our platform with the latest research and technology to serve parents better." %}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 col-sm-12 mx-auto">
+                    <div class="card h-100 border-0 shadow-sm" role="article">
+                        <div class="card-body text-center p-4">
+                            <div class="value-icon mb-3">
+                                <i class="fa-solid fa-users fa-3x text-primary" aria-hidden="true"></i>
+                            </div>
+                            <h3 class="h5 card-title">{% trans "Community" %}</h3>
+                            <p class="card-text">{% trans "We build connections between parents, creating a supportive environment where families can learn and grow together." %}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Mission & Vision -->
+    <section class="mission-vision py-5 mb-5" role="region" aria-label="{% trans 'Mission and Vision' %}">
+        <div class="container">
+            <div class="row gy-5">
+                <div class="col-lg-6 col-md-12">
+                    <div class="mission-card p-4 h-100 rounded-3 shadow bg-primary text-white">
+                        <h2 id="mission-heading" class="mb-4">{% trans "Our Mission" %}</h2>
+                        <p class="mb-4">
+                            {% blocktrans trimmed %}
+                            Our mission is to support parents in their journey by offering a comprehensive, user-friendly app 
+                            that centralizes essential childcare resources. Through personalized recommendations, scheduling tools, 
+                            and reliable information, we strive to empower parents with knowledge and confidence, ensuring their baby's 
+                            well-being and development.
+                            {% endblocktrans %}
+                        </p>
+                        <div class="text-center mt-4">
+                            <i class="fa-solid fa-bullseye fa-4x opacity-25" aria-hidden="true"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-12">
+                    <div class="vision-card p-4 h-100 rounded-3 shadow bg-secondary text-white">
+                        <h2 id="vision-heading" class="mb-4">{% trans "Our Vision" %}</h2>
+                        <p class="mb-4">
+                            {% blocktrans trimmed %}
+                            We envision a world where every parent feels supported and well-equipped to provide the best care for their child. 
+                            TinySteps aims to become the go-to digital companion for new parents, fostering a community that shares experiences, 
+                            learns together, and grows with their children.
+                            {% endblocktrans %}
+                        </p>
+                        <div class="text-center mt-4">
+                            <i class="fa-solid fa-binoculars fa-4x opacity-25" aria-hidden="true"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Impact Numbers -->
+    <section class="impact-numbers py-5 bg-light rounded-3 mb-5" role="region" aria-labelledby="impact-heading">
+        <div class="container">
+            <h2 id="impact-heading" class="text-center mb-5">{% trans "Our Impact" %}</h2>
+            <div class="row text-center g-4">
+                <div class="col-md-4 col-sm-12">
+                    <div class="stat-card p-4" role="figure" aria-label="{% trans 'Over 10,000 Happy Parents' %}">
+                        <div class="stat-number display-4 fw-bold text-primary mb-2">10K+</div>
+                        <div class="stat-label">{% trans "Happy Parents" %}</div>
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-12">
+                    <div class="stat-card p-4" role="figure" aria-label="{% trans 'Over 500 Expert Articles' %}">
+                        <div class="stat-number display-4 fw-bold text-primary mb-2">500+</div>
+                        <div class="stat-label">{% trans "Expert Articles" %}</div>
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-12">
+                    <div class="stat-card p-4" role="figure" aria-label="{% trans 'Available in over 15 Countries' %}">
+                        <div class="stat-number display-4 fw-bold text-primary mb-2">15+</div>
+                        <div class="stat-label">{% trans "Countries" %}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Join Us CTA -->
+    <section class="cta-section py-5 bg-primary text-white rounded-3 mb-5" role="region" aria-labelledby="cta-heading">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-10 text-center">
+                    <h2 id="cta-heading" class="mb-3">{% trans "Join Our Growing Community" %}</h2>
+                    <p class="lead mb-4">
+                        {% blocktrans %}
+                        Be part of our journey to make parenting easier, more informed, and more connected.
+                        {% endblocktrans %}
+                    </p>
+                    <div class="d-flex flex-column flex-sm-row justify-content-center gap-3">
+                        <a href="{% url 'register' %}" class="btn btn-light btn-lg mb-2 mb-sm-0" role="button">
+                            {% trans "Get Started Today" %}
+                        </a>
+                        <a href="{% url 'contact' %}" class="btn btn-outline-light btn-lg" role="button">
+                            {% trans "Contact Us" %}
+                        </a>
+                    </div>
+                </div>
+            </div>
         </div>
     </section>
 {% endblock main_contents %}

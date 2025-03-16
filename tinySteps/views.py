@@ -1,4 +1,4 @@
-import logging
+import logging, pytz
 from datetime import datetime, timedelta, date
 from django.conf import settings
 from django.contrib import messages
@@ -43,13 +43,39 @@ from .models import (
     CalendarEvent_Model,
     VaccineCard_Model,
     Vaccine_Model,
+    ExternalNutritionData_Model,
+    ExternalArticle_Model,
+)
+
+# EXTERNAL SERVICES FOR APIs INTEGRATIONs
+from .services import (
+    EdamamService,
+    NewsAPIService,
+    CurrentsAPI,
 )
 
 # -----------------------------------------------
 # -- GENERAL VIEWS
 # -----------------------------------------------
 def index(request):
-    return render(request, 'pages/index.html')
+    """Home page view"""
+    latest_posts = ParentsForum_Model.objects.order_by('-created_at')[:5]
+    
+    nutrition_guides = Guides_Model.objects.filter(guide_type='nutrition').order_by('-created_at')[:5]
+    parent_guides = Guides_Model.objects.filter(guide_type='parent').order_by('-created_at')[:5]
+    
+    nutrition_articles = ExternalArticle_Model.objects.filter(category='nutrition').order_by('-published_at')[:3]
+    parenting_articles = ExternalArticle_Model.objects.filter(category='parenting').order_by('-published_at')[:3]
+    
+    context = {
+        'latest_posts': latest_posts,
+        'nutrition_guides': nutrition_guides,
+        'parent_guides': parent_guides,
+        'nutrition_articles': nutrition_articles,
+        'parenting_articles': parenting_articles,
+    }
+    
+    return render(request, 'pages/index.html', context)
 
 def about(request):
     return render(request, 'pages/about.html')
@@ -647,28 +673,364 @@ def like_toggle(request, content_type_id, object_id):
 # -- GUIDES VIEWS
 # -----------------------------------------------
 def guides_page(request):
-    parent_guides = Guides_Model.objects.filter(guide_type='parent')[:4]
-    nutrition_guides = Guides_Model.objects.filter(guide_type='nutrition')[:4]
-    return render(request, 'guides/index.html', {
-        'parent_guides': parent_guides,
-        'nutrition_guides': nutrition_guides
-    })
+    """Main guides page that shows both types of guides and external articles"""
+    nutrition_guides = Guides_Model.objects.filter(guide_type='nutrition').order_by('-created_at')[:5]
+    parent_guides = Guides_Model.objects.filter(guide_type='parent').order_by('-created_at')[:5]
+    nutrition_guides = Guides_Model.objects.filter(guide_type='nutrition').order_by('-created_at')[:5]
+    parent_guides = Guides_Model.objects.filter(guide_type='parent').order_by('-created_at')[:5]
 
+    context = {
+        'nutrition_guides': nutrition_guides,
+        'parent_guides': parent_guides,
+        'nutrition_articles': nutrition_articles,
+        'parenting_articles': parenting_articles,
+    }
+    
+    return render(request, 'guides/index.html', context)
+
+# -----------------------------------------------
+# -- PARENT GUIDES VIEWS
+# -----------------------------------------------
 def parents_guides_page(request):
     parents_guides = Guides_Model.objects.filter(guide_type='parent')
-    return render(request, 'guides/parents/list.html', {'parents_guides': parents_guides})
+    
+    latest_articles = ExternalArticle_Model.objects.filter(
+        category='parenting'
+    ).order_by('-published_at')[:3]
+    
+    if not latest_articles.exists() or (timezone.now() - latest_articles.first().created_at).days > 1:
+        service = NewsAPIService()
+        articles_data = service.get_parenting_articles(page_size=5)
+        
+        if articles_data and 'articles' in articles_data:
+            for article in articles_data['articles']:
+                try:
+                    published_date = datetime.strptime(
+                        article['publishedAt'], "%Y-%m-%dT%H:%M:%SZ"
+                    ).replace(tzinfo=pytz.UTC)
+                    
+                    ExternalArticle_Model.objects.update_or_create(
+                        url=article['url'],
+                        defaults={
+                            'title': article['title'],
+                            'source_name': article['source']['name'],
+                            'author': article.get('author'),
+                            'description': article.get('description', ''),
+                            'image_url': article.get('urlToImage'),
+                            'published_at': published_date,
+                            'category': 'parenting'
+                        }
+                    )
+                except Exception as e:
+                    logger = logging.getLogger(__name__)
+                    logger.error(f"Error processing article: {e}")
+                    continue
+            
+            latest_articles = ExternalArticle_Model.objects.filter(
+                category='parenting'
+            ).order_by('-published_at')[:3]
+    
+    return render(request, 'guides/parents/list.html', {
+        'parents_guides': parents_guides,
+        'latest_articles': latest_articles
+    })
 
 def parent_guide_details(request, pk):
     guide = get_object_or_404(Guides_Model, pk=pk, guide_type='parent')
     return render(request, 'guides/parents/detail.html', {'parent_guide': guide})
 
+def parenting_articles(request):
+    """View for displaying parenting articles from external API"""
+    page = int(request.GET.get('page', 1))
+    
+    topic = request.GET.get('topic', '')
+    query = "parenting OR babies OR child development"
+    
+    if topic:
+        query += f" AND {topic}"
+    
+    articles_query = ExternalArticle_Model.objects.filter(category='parenting')
+    
+    if topic:
+        articles_query = articles_query.filter(
+            Q(title__icontains=topic) | Q(description__icontains=topic)
+        )
+    
+    refresh = request.GET.get('refresh')
+    if (not articles_query.exists() or refresh) and request.user.is_staff:
+        service = NewsAPIService()
+        articles_data = service.get_parenting_articles(query=query, page=1, page_size=20)
+        
+        if articles_data and 'articles' in articles_data:
+            for article in articles_data['articles']:
+                try:
+                    published_date = datetime.strptime(
+                        article['publishedAt'], "%Y-%m-%dT%H:%M:%SZ"
+                    ).replace(tzinfo=pytz.UTC)
+                    
+                    ExternalArticle_Model.objects.update_or_create(
+                        url=article['url'],
+                        defaults={
+                            'title': article['title'],
+                            'source_name': article['source']['name'],
+                            'author': article.get('author'),
+                            'description': article.get('description', ''),
+                            'image_url': article.get('urlToImage'),
+                            'published_at': published_date,
+                            'category': 'parenting'
+                        }
+                    )
+                except Exception as e:
+                    logger = logging.getLogger(__name__)
+                    logger.error(f"Error processing article: {e}")
+                    continue
+    
+    articles_query = articles_query.order_by('-published_at')
+    paginator = Paginator(articles_query, 10)
+    
+    try:
+        articles_page = paginator.page(page)
+    except (PageNotAnInteger, EmptyPage):
+        articles_page = paginator.page(1)
+    
+    recent_articles = ExternalArticle_Model.objects.filter(
+        category='parenting'
+    ).exclude(
+        id__in=[a.id for a in articles_page] if articles_page else []
+    ).order_by('-published_at')[:5]
+    
+    related_guides = Guides_Model.objects.filter(guide_type='parent')[:3]
+    
+    return render(request, 'guides/parents/articles.html', {
+        'articles': articles_page,
+        'topic': topic,
+        'recent_articles': recent_articles,
+        'related_guides': related_guides
+    })
+
+def parenting_article_details(request, article_id):
+    article = get_object_or_404(ExternalArticle_Model, id=article_id, category='parenting')
+    
+    related_articles = ExternalArticle_Model.objects.filter(
+        category='parenting'
+    ).exclude(
+        id=article_id
+    ).order_by('-published_at')[:3]
+    
+    related_guides = Guides_Model.objects.filter(guide_type='parent')[:3]
+    
+    return render(request, 'guides/parents/article_detail.html', {
+        'article': article,
+        'related_articles': related_articles,
+        'related_guides': related_guides
+    })
+
+@login_required
+def parenting_news(request):
+    news_service = NewsAPIService()
+    currents_service = CurrentsAPI()
+    
+    parenting_articles = news_service.get_parenting_articles(force_refresh=True)
+    first_time_news = currents_service.get_first_time_parent_news(force_refresh=True)
+    
+    sleep_articles = news_service.get_parenting_articles_by_topic('sleep', force_refresh=True)
+    development_news = currents_service.get_news_by_topic('development', force_refresh=True)
+    
+    context = {
+        'parenting_articles': parenting_articles.get('articles', []) if parenting_articles else [],
+        'first_time_news': first_time_news.get('news', []) if first_time_news else [],
+        'sleep_articles': sleep_articles.get('articles', []) if sleep_articles else [],
+        'development_news': development_news.get('news', []) if development_news else []
+    }
+    
+    return render(request, 'guides/parents/articles.html', context)
+
+# -----------------------------------------------
+# -- NUTRITION GUIDES VIEWS
+# -----------------------------------------------
 def nutrition_guides_page(request):
     nutrition_guides = Guides_Model.objects.filter(guide_type='nutrition')
-    return render(request, 'guides/nutrition/list.html', {'nutrition_guides': nutrition_guides})
+    
+    nutrition_result = None
+    ingredient = request.GET.get('ingredient', '')
+    
+    if ingredient:
+        try:
+            cached_data = ExternalNutritionData_Model.objects.get(ingredient=ingredient)
+            nutrition_result = cached_data.data
+        except ExternalNutritionData_Model.DoesNotExist:
+            service = EdamamService()
+            nutrition_result = service.get_nutrition_data(ingredient)
+            
+            if nutrition_result and 'totalNutrients' in nutrition_result:
+                ExternalNutritionData_Model.objects.create(
+                    ingredient=ingredient,
+                    data=nutrition_result
+                )
+    
+    return render(request, 'guides/nutrition/list.html', {
+        'nutrition_guides': nutrition_guides,
+        'nutrition_result': nutrition_result,
+        'ingredient': ingredient
+    })
 
 def nutrition_guide_details(request, pk):
     guide = get_object_or_404(Guides_Model, pk=pk, guide_type='nutrition')
     return render(request, 'guides/nutrition/detail.html', {'nutrition_guide': guide})
+
+def nutrition_articles(request):
+    """View for displaying nutrition articles from external API"""
+    page = int(request.GET.get('page', 1))
+    
+    # Get baby age if user is logged in and has child data
+    baby_age = None
+    if request.user.is_authenticated:
+        try:
+            child = request.user.children.filter(is_active=True).first()
+            if child:
+                # Calculate age in months
+                today = datetime.now().date()
+                baby_age = (today.year - child.birth_date.year) * 12 + (today.month - child.birth_date.month)
+        except:
+            pass
+    
+    # Enhanced query based on baby age
+    topic = request.GET.get('topic', '')
+    
+    # Define age-specific base queries
+    if baby_age is not None:
+        if baby_age < 6:
+            base_query = "\"newborn nutrition\" OR \"infant formula\" OR \"breastfeeding\" OR \"first-time parents\""
+        elif 6 <= baby_age <= 12:
+            base_query = "\"starting solids\" OR \"baby first foods\" OR \"infant nutrition\" OR \"baby purees\""
+        else:
+            base_query = "\"toddler nutrition\" OR \"baby finger foods\" OR \"child diet\" OR \"baby meal planning\""
+    else:
+        base_query = "\"baby nutrition\" OR \"infant food\" OR \"child diet\" OR \"baby feeding\""
+    
+    query = base_query
+    if topic:
+        query += f" AND {topic}"
+    
+    articles_query = ExternalArticle_Model.objects.filter(category='nutrition')
+    
+    if topic:
+        articles_query = articles_query.filter(
+            Q(title__icontains=topic) | Q(description__icontains=topic)
+        )
+    
+    refresh = request.GET.get('refresh')
+    if (not articles_query.exists() or refresh) and request.user.is_staff:
+        service = NewsAPIService()
+        articles_data = service.get_nutrition_articles(query=query, page=1, page_size=20)
+        
+        if articles_data and 'articles' in articles_data:
+            for article in articles_data['articles']:
+                try:
+                    published_date = datetime.strptime(
+                        article['publishedAt'], "%Y-%m-%dT%H:%M:%SZ"
+                    ).replace(tzinfo=pytz.UTC)
+                    
+                    ExternalArticle_Model.objects.update_or_create(
+                        url=article['url'],
+                        defaults={
+                            'title': article['title'],
+                            'source_name': article['source']['name'],
+                            'author': article.get('author'),
+                            'description': article.get('description', ''),
+                            'image_url': article.get('urlToImage'),
+                            'published_at': published_date,
+                            'category': 'nutrition',
+                            'meta_data': {'baby_age': baby_age} if baby_age else {}
+                        }
+                    )
+                except Exception as e:
+                    logger = logging.getLogger(__name__)
+                    logger.error(f"Error processing article: {e}")
+                    continue
+    
+    # Rest of your function remains the same
+    articles_query = articles_query.order_by('-published_at')
+    paginator = Paginator(articles_query, 10)
+    
+    try:
+        articles_page = paginator.page(page)
+    except (PageNotAnInteger, EmptyPage):
+        articles_page = paginator.page(1)
+    
+    recent_articles = ExternalArticle_Model.objects.filter(
+        category='nutrition'
+    ).exclude(
+        id__in=[a.id for a in articles_page] if articles_page else []
+    ).order_by('-published_at')[:5]
+    
+    related_guides = Guides_Model.objects.filter(guide_type='nutrition')[:3]
+    
+    return render(request, 'guides/nutrition/articles.html', {
+        'articles': articles_page,
+        'topic': topic,
+        'recent_articles': recent_articles,
+        'related_guides': related_guides,
+        'baby_age': baby_age  # Pass to template for customized display
+    })
+
+def nutrition_article_details(request, article_id):
+    """View details for a specific nutrition article"""
+    article = get_object_or_404(ExternalArticle_Model, id=article_id, category='nutrition')
+    
+    related_articles = ExternalArticle_Model.objects.filter(
+        category='nutrition'
+    ).exclude(
+        id=article_id
+    ).order_by('-published_at')[:3]
+    
+    related_guides = Guides_Model.objects.filter(guide_type='nutrition')[:3]
+    
+    return render(request, 'guides/nutrition/article_detail.html', {
+        'article': article,
+        'related_articles': related_articles,
+        'related_guides': related_guides
+    })
+
+def nutrition_analyzer(request):
+    result = None
+    ingredient = request.GET.get('ingredient', '')
+    
+    if ingredient:
+        baby_age = 6  # Default age in months if we can't get it from user data
+        if request.user.is_authenticated:
+            try:
+                child = request.user.children.filter(is_active=True).first()
+                if child:
+                    # Calculate age in months
+                    today = datetime.now().date()
+                    baby_age = (today.year - child.birth_date.year) * 12 + (today.month - child.birth_date.month)
+            except:
+                pass
+        
+        # Try to get cached data first
+        try:
+            cached_data = ExternalNutritionData_Model.objects.get(
+                ingredient=ingredient, 
+                meta_data__contains={'baby_age': baby_age}
+            )
+            result = cached_data.data
+        except (ExternalNutritionData_Model.DoesNotExist, Exception):
+            edamam_service = EdamamService()
+            result = edamam_service.get_baby_food_nutrition(ingredient, baby_age)
+            
+            # Cache the result if valid
+            if result and 'totalNutrients' in result:
+                ExternalNutritionData_Model.objects.create(
+                    ingredient=ingredient,
+                    data=result,
+                    meta_data={'baby_age': baby_age}
+                )
+    
+    return render(request, 'guides/nutrition/analyzer.html', {
+        'result': result,
+        'ingredient': ingredient,
+    })
 
 # -----------------------------------------------
 # -- CONTACT VIEWS
@@ -712,3 +1074,4 @@ def notify_post_author_of_new_comment(sender, instance, created, **kwargs):
                 [post_author.email],
                 fail_silently=True,
             )
+

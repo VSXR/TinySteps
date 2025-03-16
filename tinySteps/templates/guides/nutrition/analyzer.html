@@ -1,0 +1,111 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block title %}{% trans "Baby Food Nutrition Analyzer" %} - TINY STEPS{% endblock %}
+
+{% block main_contents %}
+<section class="container my-4">
+    <h1 class="mb-4">{% trans "Baby Food Nutrition Analyzer" %}</h1>
+    
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <p class="text-muted mb-4">
+                {% trans "Enter a baby food ingredient or recipe to get detailed nutritional information." %}
+            </p>
+            
+            <form method="GET" action="{% url 'nutrition_analyzer' %}" class="mb-4">
+                <div class="input-group">
+                    <input type="text" name="ingredient" class="form-control" 
+                           value="{{ ingredient }}" placeholder="{% trans 'e.g., 100g pureed carrots' %}" required>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-search me-2"></i>{% trans "Analyze" %}
+                    </button>
+                </div>
+            </form>
+            
+            {% if result and 'totalNutrients' in result %}
+                <h2 class="h4">{% trans "Nutrition Facts for" %} "{{ ingredient }}"</h2>
+                
+                <div class="row mt-4">
+                    <div class="col-md-6">
+                        <div class="card bg-light">
+                            <div class="card-body">
+                                <h3 class="h5 card-title">{% trans "Basic Information" %}</h3>
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        {% trans "Calories" %}
+                                        <span class="badge bg-primary rounded-pill">
+                                            {{ result.calories|floatformat:0 }} kcal
+                                        </span>
+                                    </li>
+                                    {% if 'FAT' in result.totalNutrients %}
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        {% trans "Fat" %}
+                                        <span class="badge bg-info rounded-pill">
+                                            {{ result.totalNutrients.FAT.quantity|floatformat:1 }} {{ result.totalNutrients.FAT.unit }}
+                                        </span>
+                                    </li>
+                                    {% endif %}
+                                    {% if 'PROCNT' in result.totalNutrients %}
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        {% trans "Protein" %}
+                                        <span class="badge bg-success rounded-pill">
+                                            {{ result.totalNutrients.PROCNT.quantity|floatformat:1 }} {{ result.totalNutrients.PROCNT.unit }}
+                                        </span>
+                                    </li>
+                                    {% endif %}
+                                    {% if 'CHOCDF' in result.totalNutrients %}
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        {% trans "Carbohydrates" %}
+                                        <span class="badge bg-warning text-dark rounded-pill">
+                                            {{ result.totalNutrients.CHOCDF.quantity|floatformat:1 }} {{ result.totalNutrients.CHOCDF.unit }}
+                                        </span>
+                                    </li>
+                                    {% endif %}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="card bg-light">
+                            <div class="card-body">
+                                <h3 class="h5 card-title">{% trans "Vitamins & Minerals" %}</h3>
+                                <ul class="list-group list-group-flush">
+                                    {% for key, nutrient in result.totalNutrients.items %}
+                                        {% if key in 'VITA_RAE,VITC,CA,FE' %}
+                                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                                            {{ nutrient.label }}
+                                            <span class="badge bg-secondary rounded-pill">
+                                                {{ nutrient.quantity|floatformat:1 }} {{ nutrient.unit }}
+                                            </span>
+                                        </li>
+                                        {% endif %}
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-4">
+                    <h3 class="h5">{% trans "Is This Good for Babies?" %}</h3>
+                    <p class="text-muted">
+                        {% trans "This analysis provides general nutritional information. Always consult with a pediatrician or nutritionist for specific dietary recommendations for your baby." %}
+                    </p>
+                </div>
+            {% elif result %}
+                <div class="alert alert-warning">
+                    {% trans "We couldn't find complete nutritional information for this ingredient. Please try with a more specific description." %}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    
+    <div class="mt-4">
+        <a href="{% url 'nutrition_guides' %}" class="btn btn-outline-primary">
+            <i class="bi bi-arrow-left me-2"></i>{% trans "Back to Nutrition Guides" %}
+        </a>
+    </div>
+</section>
+{% endblock main_contents %}

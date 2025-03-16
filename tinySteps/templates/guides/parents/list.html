@@ -15,6 +15,44 @@
                     <p class="lead text-center">{% trans "Find advice and recommendations for new parents" %}</p>
                 </div>
             </div>
+            
+            <!-- Latest Articles Card -->
+            <div class="card bg-light mb-4 shadow-sm">
+                <div class="card-body">
+                    <div class="text-center my-4">
+                        <a href="{% url 'parenting_articles' %}" class="btn btn-outline-info">
+                            <i class="bi bi-journal-text me-2"></i>{% trans "Browse External Parenting Articles" %}
+                        </a>
+                    </div>
+                    
+                    {% if latest_articles %}
+                        <div class="row">
+                            {% for article in latest_articles %}
+                                <div class="col-md-4">
+                                    <div class="card mb-3">
+                                        {% if article.image_url %}
+                                            <img src="{{ article.image_url }}" class="card-img-top" 
+                                                 alt="{{ article.title }}" style="height: 120px; object-fit: cover;">
+                                        {% else %}
+                                            <div class="bg-secondary text-white p-4 text-center">
+                                                <i class="bi bi-journal-text fs-3"></i>
+                                            </div>
+                                        {% endif %}
+                                        <div class="card-body">
+                                            <h5 class="card-title small">{{ article.title|truncatechars:60 }}</h5>
+                                            <p class="text-muted small mb-2">{{ article.source_name }}</p>
+                                            <a href="{{ article.url }}" target="_blank" class="stretched-link" 
+                                               aria-label="{% blocktrans with title=article.title %}Read article: {{ title }}{% endblocktrans %}"></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-center text-muted my-3">{% trans "No articles available at the moment." %}</p>
+                    {% endif %}
+                </div>
+            </div>
 
             <section aria-labelledby="parents-guides-content">
                 <h3 id="parents-guides-content" class="visually-hidden">{% trans "Available Parents Guides" %}</h3>
@@ -35,7 +73,7 @@
                                         <p class="card-text">{{ guide.description|truncatechars:120 }}</p>
                                     </div>
                                     <div class="card-footer bg-transparent border-0 text-end">
-                                        <a href="{% url 'nutrition_guide_details' guide.id %}" class="btn btn-primary mb-4" 
+                                        <a href="{% url 'parent_guide_details' guide.id %}" class="btn btn-primary mb-4" 
                                         aria-label="{% blocktrans with title=guide.title %}Show details for {{ title }}{% endblocktrans %}">{% trans "Show guide" %}</a>
                                     </div>
                                 </article>
@@ -48,7 +86,53 @@
                     {% endif %}
                 </div>
             </section>
+
+            <!-- Latest Parenting Articles Section -->
+            <section aria-labelledby="latest-articles-heading" class="mt-5">
+                <div class="card border-primary mb-4">
+                    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                        <h3 id="latest-articles-heading" class="h4 mb-0">{% trans "Latest Parenting Articles" %}</h3>
+                        <a href="{% url 'parenting_articles' %}" class="btn btn-sm btn-light">{% trans "View All" %}</a>
+                    </div>
+                    <div class="card-body">
+                        <p>{% trans "Stay updated with the latest parenting advice and tips from around the web." %}</p>
+                        
+                        {% if latest_articles %}
+                            <div class="row">
+                                {% for article in latest_articles %}
+                                    <div class="col-md-4 mb-3">
+                                        <div class="card h-100 shadow-sm">
+                                            {% if article.image_url %}
+                                                <img src="{{ article.image_url }}" alt="{{ article.title }}" class="card-img-top" 
+                                                    style="height: 140px; object-fit: cover;">
+                                            {% else %}
+                                                <div class="card-img-top bg-light text-center py-4" style="height: 140px;">
+                                                    <i class="bi bi-journal-text display-4 text-muted"></i>
+                                                </div>
+                                            {% endif %}
+                                            <div class="card-body">
+                                                <h4 class="card-title h6">{{ article.title|truncatechars:60 }}</h4>
+                                                <p class="card-text small text-muted">
+                                                    {{ article.source_name }} | {{ article.published_at|date:"M d, Y" }}
+                                                </p>
+                                            </div>
+                                            <div class="card-footer bg-white">
+                                                <a href="{{ article.url }}" target="_blank" rel="noopener" class="btn btn-sm btn-outline-primary d-block">
+                                                    {% trans "Read Article" %}
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <p class="text-center py-3">{% trans "No articles available at the moment. Please check back later." %}</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </section>
             
+            <!-- Back to Guides Button -->
             <div class="row mt-5 mb-4">
                 <div class="col text-center">
                     <a href="{% url 'guides' %}" class="btn btn-primary" aria-label="{% trans "Return to guides page" %}">

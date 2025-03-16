@@ -47,8 +47,15 @@
                     {% endif %}
                 </div>
             </article>
-            <a href="{% url 'parents_guides' %}" class="btn btn-primary mb-4" 
-               aria-label="{% trans "Return to parents guides list" %}">{% trans "Return to the list" %}</a>
+            
+            <!-- Back to Guides Button -->
+            <div class="row mt-5 mb-4">
+                <div class="col text-center">
+                    <a href="{% url 'guides' %}" class="btn btn-primary" aria-label="{% trans "Return to guides page" %}">
+                        {% trans "Back to Guides" %}
+                    </a>
+                </div>
+            </div>
         </div>
     </main>
 {% endblock main_contents %}

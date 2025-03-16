@@ -7,93 +7,306 @@
 {% endblock %}
 
 {% block main_contents %}
-    <main id="main-content">
-        <div class="container mt-4">
-            <div class="row mb-4">
-                <div class="col">
-                    <h2 class="page-title">{% trans "GUIDES" %}</h2>
-                    <p class="lead text-center">{% trans "Find advice and recommendations for new parents" %}</p>
+<main id="main-content">
+    <div class="container mt-4">
+        <div class="row mb-4">
+            <div class="col">
+                <h2 class="page-title">{% trans "GUIDES" %}</h2>
+                <p class="lead text-center">
+                    {% trans "Find advice and recommendations for new parents" %}
+                </p>
+            </div>
+        </div>
+    </div>
+
+    {% if request.user.is_authenticated and baby_age %}
+    <div class="container mb-4">
+        <div class="alert alert-info d-flex align-items-center" role="alert">
+            <i class="fa-solid fa-baby fa-2x me-3" aria-hidden="true"></i>
+            <div>
+                <strong>{% trans "Personalized Content" %}</strong>
+                {% if baby_age < 6 %}
+                    <p class="mb-0">{% trans "Showing content for newborns (0-6 months)" %}</p>
+                {% elif baby_age < 12 %}
+                    <p class="mb-0">{% trans "Showing content for infants (6-12 months)" %}</p>
+                {% else %}
+                    <p class="mb-0">{% trans "Showing content for toddlers (12+ months)" %}</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Topic Navigation -->
+    <div class="container mb-4 text-center">
+        <div class="row justify-content-center">
+            <div class="col-12">
+                <div class="topic-filters text-center">
+                    <h3 class="h5 mb-1">{% trans "Quick Filters" %}</h3>
+                    <p class="mb-3">{% trans "Chose a category to see more specific guides:" %}</p>
+                    <div class="d-flex flex-wrap justify-content-center gap-2">
+                        <a href="{% url 'parenting_articles' %}?topic=newborn"
+                        class="badge rounded-pill bg-primary text-decoration-none px-3 py-2">
+                            {% trans "Newborn Care" %}
+                        </a>
+                        <a href="{% url 'parenting_articles' %}?topic=sleep"
+                        class="badge rounded-pill bg-primary text-decoration-none px-3 py-2">
+                            {% trans "Sleep Tips" %}
+                        </a>
+                        <a href="{% url 'parenting_articles' %}?topic=development"
+                        class="badge rounded-pill bg-primary text-decoration-none px-3 py-2">
+                            {% trans "Development" %}
+                        </a>
+                        <a href="{% url 'nutrition_articles' %}?topic=solids"
+                        class="badge rounded-pill bg-success text-decoration-none px-3 py-2">
+                            {% trans "Starting Solids" %}
+                        </a>
+                        <a href="{% url 'parenting_articles' %}?topic=first_time"
+                        class="badge rounded-pill bg-primary text-decoration-none px-3 py-2">
+                            {% trans "First-Time Parents" %}
+                        </a>
+                        <a href="{% url 'nutrition_articles' %}?topic=breastfeeding"
+                        class="badge rounded-pill bg-success text-decoration-none px-3 py-2">
+                            {% trans "Breastfeeding" %}
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="container my-5">
-            <!-- Guide Category Navigation (2 cards) -->
-            <nav aria-label="{% trans 'Guide categories' %}" class="mb-4">
-                <ul class="row list-unstyled mb-5">
-                    <li class="col-12 col-md-6 mb-4 mb-md-0">
-                        <div class="card featured-card nutrition-featured h-100">
-                            <div class="card-body text-center d-flex flex-column">
-                                <h2 class="card-title">{% trans "Nutrition Guides" %}</h2>
-                                <p class="card-text flex-grow-1">{% trans "Discover the best nutrition practices for your child's healthy development" %}</p>
-                                <a href="{% url 'nutrition_guides' %}" class="btn btn-primary" aria-label="{% trans 'Explore all nutrition guides' %}">{% trans "Explore Nutrition Guides" %}</a>
-                            </div>
-                        </div>
-                    </li>
-                    <li class="col-12 col-md-6">
-                        <div class="card featured-card parenting-featured h-100">
-                            <div class="card-body text-center d-flex flex-column">
-                                <h2 class="card-title">{% trans "Parents Guides" %}</h2>
-                                <p class="card-text flex-grow-1">{% trans "Essential information and tips for first-time parents" %}</p>
-                                <a href="{% url 'parents_guides' %}" class="btn btn-primary" aria-label="{% trans 'Explore all parent guides' %}">{% trans "Explore Parent Guides" %}</a>
-                            </div>
-                        </div>
-                    </li>
-                </ul>
-            </nav>
+    </div>
 
-            <!-- Nutrition Guides Section -->
-            <section aria-labelledby="nutrition-guides-heading">
-                <h2 id="nutrition-guides-heading" class="section-title mb-4">{% trans "Nutrition Guides" %}</h2>
-                <div class="row mb-5">
-                    {% for guide in nutrition_guides %}
-                        <div class="col-6 col-md-3 mb-4">
-                            <article class="card guide-card h-100">
-                                <img src="{% static guide.image_url %}" class="card-img-top" 
-                                     alt="{% blocktrans with title=guide.title %}Illustration for {{ title }}{% endblocktrans %}" 
-                                     style="height: 160px; object-fit: cover;">
-                                <div class="card-body d-flex flex-column">
-                                    <h3 class="card-title">{{ guide.title }}</h3>
-                                    <p class="card-text flex-grow-1">{{ guide.desc }}</p>
-                                    <a href="{% url 'nutrition_guide_details' guide.id %}" 
-                                       aria-label="{% blocktrans with title=guide.title %}Read more about {{ title }}{% endblocktrans %}" 
-                                       class="mt-auto">{% trans "Read More" %}</a>
-                                </div>
-                            </article>
+<!-- External Articles Section -->
+    <section class="container mt-4">
+        <div class="row justify-content-center">
+            <!-- Parenting Articles Column -->
+            <div class="col-md-5 mb-4">
+                <div class="card border-info text-center">
+                    <div class="card-header bg-info text-white">
+                        <h2 class="h4 mb-0">{% trans "Latest Parenting Articles" %}</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="text-center mb-4 mt-5">
+                            <a href="{% url 'parenting_articles' %}" class="btn btn-outline-info">
+                                {% trans "View All Parenting Articles" %}
+                            </a>
                         </div>
-                    {% empty %}
-                        <div class="col-12">
-                            <p class="text-center" role="status">{% trans "There aren't any nutrition guides available at this moment!" %}</p>
-                        </div>
-                    {% endfor %}
-                </div>
-            </section>
 
-            <!-- Parent Guides Section -->
-            <section aria-labelledby="parent-guides-heading">
-                <h2 id="parent-guides-heading" class="section-title mb-4">{% trans "Parents Guides" %}</h2>
-                <div class="row">
-                    {% for guide in parent_guides %}
-                        <div class="col-6 col-md-3 mb-4">
-                            <article class="card guide-card h-100">
-                                <img src="{% static guide.image_url %}" class="card-img-top" 
-                                     alt="{% blocktrans with title=guide.title %}Illustration for {{ title }}{% endblocktrans %}" 
-                                     style="height: 160px; object-fit: cover;">
-                                <div class="card-body d-flex flex-column">
-                                    <h3 class="card-title">{{ guide.title }}</h3>
-                                    <p class="card-text flex-grow-1">{{ guide.desc }}</p>
-                                    <a href="{% url 'parents_guide_details' guide.id %}" 
-                                       aria-label="{% blocktrans with title=guide.title %}Read more about {{ title }}{% endblocktrans %}" 
-                                       class="mt-auto">{% trans "Read More" %}</a>
+                        <!-- Article list -->
+                        <div class="list-group text-center">
+                            {% for article in parent_articles %}
+                            <a href="{{ article.url }}"
+                            class="list-group-item list-group-item-action"
+                            target="_blank">
+                                <!-- Article header and date -->
+                                <div class="d-flex w-100 justify-content-between align-items-center">
+                                    <h5 class="mb-1 mx-auto">
+                                        {{ article.title|truncatechars:70 }}
+                                    </h5>
+                                    <small>
+                                        {{ article.published_at|date:"M d" }}
+                                    </small>
                                 </div>
-                            </article>
+                                <small class="text-muted">{{ article.source_name }}</small>
+
+                                {% if article.meta_data.baby_age or request.user.is_authenticated and baby_age %}
+                                    {% with article_age=article.meta_data.baby_age|default:baby_age %}
+                                        {% if article_age < 6 %}
+                                            <span class="badge rounded-pill bg-info">
+                                                {% trans "0-6 months" %}
+                                            </span>
+                                        {% elif article_age < 12 %}
+                                            <span class="badge rounded-pill bg-success">
+                                                {% trans "6-12 months" %}
+                                            </span>
+                                        {% else %}
+                                            <span class="badge rounded-pill bg-warning text-dark">
+                                                {% trans "12+ months" %}
+                                            </span>
+                                        {% endif %}
+                                    {% endwith %}
+                                {% endif %}
+                            </a>
+                            {% endfor %}
                         </div>
-                    {% empty %}
-                        <div class="col-12">
-                            <p class="text-center" role="status">{% trans "There aren't any parents guides available at this moment!" %}</p>
-                        </div>
-                    {% endfor %}
+                    </div>
                 </div>
-            </section>
+            </div>
+
+            <!-- Nutrition Articles Column -->
+            <div class="col-md-5 mb-4">
+                <div class="card border-success text-center">
+                    <div class="card-header bg-success text-white">
+                        <h2 class="h4 mb-0">{% trans "Latest Nutrition Articles" %}</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="text-center mb-4 mt-5">
+                            <a href="{% url 'nutrition_articles' %}" class="btn btn-outline-success">
+                                {% trans "View All Nutrition Articles" %}
+                            </a>
+                        </div>
+
+                        <!-- Article list -->
+                        <div class="list-group text-center">
+                            {% for article in nutrition_articles %}
+                            <a href="{{ article.url }}" class="list-group-item list-group-item-action" target="_blank">
+                                <div class="d-flex w-100 justify-content-between align-items-center">
+                                    <h5 class="mb-1 mx-auto">
+                                        {{ article.title|truncatechars:70 }}
+                                    </h5>
+                                    <small>
+                                        {{ article.published_at|date:"M d" }}
+                                    </small>
+                                </div>
+                                <small class="text-muted">{{ article.source_name }}</small>
+
+                                {% if article.meta_data.baby_age or request.user.is_authenticated and baby_age %}
+                                    {% with article_age=article.meta_data.baby_age|default:baby_age %}
+                                        {% if article_age < 6 %}
+                                            <span class="badge rounded-pill bg-info">
+                                                {% trans "0-6 months" %}
+                                            </span>
+                                        {% elif article_age < 12 %}
+                                            <span class="badge rounded-pill bg-success">
+                                                {% trans "6-12 months" %}
+                                            </span>
+                                        {% else %}
+                                            <span class="badge rounded-pill bg-warning text-dark">
+                                                {% trans "12+ months" %}
+                                            </span>
+                                        {% endif %}
+                                    {% endwith %}
+                                {% endif %}
+                            </a>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-    </main>
+    </section>
+
+    <!-- Age-Specific Recommendations -->
+    {% if request.user.is_authenticated and baby_age %}
+    <section class="container mt-5">
+        <div class="card border-primary mb-4">
+            <div class="card-header bg-primary text-white">
+                <h2 class="h4 mb-0">{% trans "Recommended for Your Child" %}</h2>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    {% if baby_age < 6 %}
+                    <!-- Newborn specific recommendations -->
+                    <div class="col-md-6">
+                        <h3 class="h5">{% trans "Nutrition" %}</h3>
+                        <ul class="list-group mb-3">
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <a href="{% url 'nutrition_articles' %}?topic=breastfeeding">{% trans "Breastfeeding Tips" %}</a>
+                                <span class="badge bg-primary rounded-pill">
+                                    <i class="fa-solid fa-star" aria-hidden="true"></i>
+                                </span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <a href="{% url 'nutrition_articles' %}?topic=formula">{% trans "Formula Feeding Guide" %}</a>
+                                <span class="badge bg-primary rounded-pill">
+                                    <i class="fa-solid fa-star" aria-hidden="true"></i>
+                                </span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <h3 class="h5">{% trans "Parenting" %}</h3>
+                        <ul class="list-group mb-3">
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <a href="{% url 'parenting_articles' %}?topic=newborn">{% trans "Newborn Essentials" %}</a>
+                                <span class="badge bg-primary rounded-pill">
+                                    <i class="fa-solid fa-star" aria-hidden="true"></i>
+                                </span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <a href="{% url 'parenting_articles' %}?topic=sleep">{% trans "Sleep Patterns for Newborns" %}</a>
+                                <span class="badge bg-primary rounded-pill">
+                                    <i class="fa-solid fa-star" aria-hidden="true"></i>
+                                </span>
+                            </li>
+                        </ul>
+                    </div>
+                    {% elif baby_age < 12 %}
+                    <!-- 6-12 months specific recommendations -->
+                    <div class="col-md-6">
+                        <h3 class="h5">{% trans "Nutrition" %}</h3>
+                        <ul class="list-group mb-3">
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <a href="{% url 'nutrition_articles' %}?topic=solids">{% trans "Starting Solid Foods" %}</a>
+                                <span class="badge bg-primary rounded-pill">
+                                    <i class="fa-solid fa-star" aria-hidden="true"></i>
+                                </span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <a href="{% url 'nutrition_articles' %}?topic=recipes">{% trans "Baby Food Recipes" %}</a>
+                                <span class="badge bg-primary rounded-pill">
+                                    <i class="fa-solid fa-star" aria-hidden="true"></i>
+                                </span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <h3 class="h5">{% trans "Parenting" %}</h3>
+                        <ul class="list-group mb-3">
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <a href="{% url 'parenting_articles' %}?topic=development">{% trans "Development Milestones" %}</a>
+                                <span class="badge bg-primary rounded-pill">
+                                    <i class="fa-solid fa-star" aria-hidden="true"></i>
+                                </span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <a href="{% url 'parenting_articles' %}?topic=routines">{% trans "Establishing Routines" %}</a>
+                                <span class="badge bg-primary rounded-pill">
+                                    <i class="fa-solid fa-star" aria-hidden="true"></i>
+                                </span>
+                            </li>
+                        </ul>
+                    </div>
+                    {% else %}
+                    <!-- 12+ months specific recommendations -->
+                    <div class="col-md-6">
+                        <h3 class="h5">{% trans "Nutrition" %}</h3>
+                        <ul class="list-group mb-3">
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <a href="{% url 'nutrition_articles' %}?topic=toddler">{% trans "Toddler Nutrition" %}</a>
+                                <span class="badge bg-primary rounded-pill">
+                                    <i class="fa-solid fa-star" aria-hidden="true"></i>
+                                </span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <a href="{% url 'nutrition_articles' %}?topic=mealtime">{% trans "Managing Mealtime Challenges" %}</a>
+                                <span class="badge bg-primary rounded-pill">
+                                    <i class="fa-solid fa-star" aria-hidden="true"></i>
+                                </span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <h3 class="h5">{% trans "Parenting" %}</h3>
+                        <ul class="list-group mb-3">
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <a href="{% url 'parenting_articles' %}?topic=discipline">{% trans "Positive Discipline" %}</a>
+                                <span class="badge bg-primary rounded-pill">
+                                    <i class="fa-solid fa-star" aria-hidden="true"></i>
+                                </span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <a href="{% url 'parenting_articles' %}?topic=development">{% trans "Language Development" %}</a>
+                                <span class="badge bg-primary rounded-pill">
+                                    <i class="fa-solid fa-star" aria-hidden="true"></i>
+                                </span>
+                            </li>
+                        </ul>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </section>
+    {% endif %}
+</main>
 {% endblock main_contents %}

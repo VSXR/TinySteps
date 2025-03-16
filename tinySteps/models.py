@@ -7,6 +7,7 @@ from django.db import models
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import gettext as _
+from .services import NewsAPIService, CurrentsAPI
 
 # ------------------------------------------
 # -- GENERIC MODELS --
@@ -314,3 +315,63 @@ class Contact_Model(models.Model):
     
     def get_absolute_url(self):
         return reverse('contact')
+    
+# ------------------------------------------
+# -- EXTERNAL APIs MODELS --
+# ------------------------------------------
+class ExternalArticle_Model(models.Model):
+    title = models.CharField(_("Title"), max_length=255)
+    source_name = models.CharField(_("Source Name"), max_length=100)
+    author = models.CharField(_("Author"), max_length=100, null=True, blank=True)
+    description = models.TextField(_("Description"), null=True, blank=True)
+    url = models.URLField(_("URL"))
+    image_url = models.URLField(_("Image URL"), null=True, blank=True)
+    published_at = models.DateTimeField(_("Published At"))
+    category = models.CharField(_("Category"), max_length=50, choices=[
+        ('parenting', _('Parenting')),
+        ('nutrition', _('Nutrition'))
+    ])
+    content = models.TextField(_("Content"), null=True, blank=True)
+    created_at = models.DateTimeField(_("Created at"), auto_now_add=True)
+    
+    class Meta:
+        verbose_name = _("External Article")
+        verbose_name_plural = _("External Articles")
+        ordering = ['-published_at']
+    
+    def __str__(self):
+        return self.title
+    
+    @classmethod
+    def update_from_apis(cls, topic=None):
+        news_service = NewsAPIService()
+        currents_service = CurrentsAPI()
+        
+        if topic:
+            articles = news_service.get_parenting_articles_by_topic(topic, force_refresh=True)
+            news = currents_service.get_news_by_topic(topic, force_refresh=True)
+        else:
+            articles = news_service.get_parenting_articles(force_refresh=True)
+            news = currents_service.get_first_time_parent_news(force_refresh=True)
+        
+        if articles:
+            cls._update_articles(articles)
+
+        if news:
+            cls._update_news(news)
+        
+        return True
+
+class ExternalNutritionData_Model(models.Model):
+    ingredient = models.CharField(_("Ingredient"), max_length=200)
+    data = models.JSONField(_("Nutrition Data"))
+    created_at = models.DateTimeField(_("Created at"), auto_now_add=True)
+    updated_at = models.DateTimeField(_("Updated at"), auto_now=True)
+    
+    class Meta:
+        verbose_name = _("External Nutrition Data")
+        verbose_name_plural = _("External Nutrition Data")
+        unique_together = ('ingredient',)
+    
+    def __str__(self):
+        return f"Nutrition data for {self.ingredient}"

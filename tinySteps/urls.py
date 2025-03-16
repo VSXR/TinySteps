@@ -10,17 +10,12 @@ from . import views
 def favicon_view(request):
     return HttpResponseNotFound("Favicon no encontrado")
 
-def page_404(request):
-    raise Http404(request, '404.html', status=404)
-
-def test_404(request):
-    return render(request, '404.html')
-
 # Main site URLs
 urlpatterns = [
     # HOME
     path('', views.index, name='index'),
-
+    path('about/', views.about, name='about'),
+    
     # USER MANAGEMENT
     path('login/', views.Login_View.as_view(), name='login'),
     path('register/', views.Register_View.as_view(), name='register'),
@@ -40,7 +35,8 @@ urlpatterns = [
     
     # FORUM
     path('parents-forum/', views.parents_forum_page, name='parents_forum'),
-    path('parents-forum/search/', views.parents_forum_page, name='search_posts'),    path('parents-forum/posts/add/', views.add_post, name='add_post'),
+    path('parents-forum/search/', views.parents_forum_page, name='search_posts'),
+    path('parents-forum/posts/add/', views.add_post, name='add_post'),
     path('parents-forum/posts/<int:post_id>/', views.view_post, name='view_post'),
     path('parents-forum/posts/<int:post_id>/edit/', views.edit_post, name='edit_post'),
     path('parents-forum/posts/<int:post_id>/delete/', views.delete_post, name='delete_post'),
@@ -49,21 +45,28 @@ urlpatterns = [
         
     # GUIDES
     path('guides/', views.guides_page, name='guides'),
-    path('guides/parents-guides/', views.parents_guides_page, name='parents_guides'),
-    path('guides/parents-guides/<int:pk>/', views.parent_guide_details, name='parents_guide_details'),
-    path('guides/nutrition-guides/', views.nutrition_guides_page, name='nutrition_guides'),
-    path('guides/nutrition-guides/<int:pk>/', views.nutrition_guide_details, name='nutrition_guide_details'),
     
-    # CONTACT & ABOUT
-    path('contact/', views.Contact_View.as_view(), name='contact'),
-    path('about/', views.about, name='about'),
+    # Parents Guides
+    path('guides/parents/articles/', views.parenting_articles, name='parenting_articles'),
+    path('guides/parents/articles/<int:article_id>/', views.parenting_article_details, name='parenting_article_details'),
+    path('guides/parents/', views.parents_guides_page, name='parents_guides'),
+    path('guides/parents/<int:pk>/', views.parent_guide_details, name='parents_guide_details'),
 
+    # Nutrition Guides
+    path('guides/nutrition/analyzer/', views.nutrition_analyzer, name='nutrition_analyzer'),
+    path('guides/nutrition/articles/', views.nutrition_articles, name='nutrition_articles'),
+    path('guides/nutrition/articles/<int:article_id>/', views.nutrition_article_details, name='nutrition_article_details'),
+    path('guides/nutrition/', views.nutrition_guides_page, name='nutrition_guides'),  # URL más general al final
+    path('guides/nutrition/<int:pk>/', views.nutrition_guide_details, name='nutrition_guide_details'),
+
+    # CONTACT
+    path('contact/', views.Contact_View.as_view(), name='contact'),
+    
     # ERROR PAGES
     path('page-404/', views.page_not_found, name='page_404'),
-    path('test-404/', page_404, name='test_404'),
     path('favicon.ico', favicon_view),
     
-    # Internationalization
+    # INTERNATIONALIZATION
     path('i18n/', include('django.conf.urls.i18n')),
 ]
 
