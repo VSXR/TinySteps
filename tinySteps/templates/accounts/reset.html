@@ -33,7 +33,7 @@
                                     <label for="{{ form.username.id_for_label }}" class="form-label">{{ form.username.label }}</label>
                                     {{ form.username }}
                                     {% if form.username.errors %}
-                                        <div class="invalid-feedback d-block" id="username-errors">
+                                        <div class="invalid-feedback d-block">
                                             {% for error in form.username.errors %}
                                                 {{ error }}
                                             {% endfor %}
@@ -45,7 +45,7 @@
                                     <label for="{{ form.email.id_for_label }}" class="form-label">{{ form.email.label }}</label>
                                     {{ form.email }}
                                     {% if form.email.errors %}
-                                        <div class="invalid-feedback d-block" id="email-errors">
+                                        <div class="invalid-feedback d-block">
                                             {% for error in form.email.errors %}
                                                 {{ error }}
                                             {% endfor %}
@@ -57,13 +57,13 @@
                                     <label for="{{ form.new_password1.id_for_label }}" class="form-label">{{ form.new_password1.label }}</label>
                                     {{ form.new_password1 }}
                                     {% if form.new_password1.errors %}
-                                        <div class="invalid-feedback d-block" id="password1-errors">
+                                        <div class="invalid-feedback d-block">
                                             {% for error in form.new_password1.errors %}
                                                 {{ error }}
                                             {% endfor %}
                                         </div>
                                     {% endif %}
-                                    <div class="form-text" id="password-help">
+                                    <div class="form-text">
                                         {% trans "Make sure your password is at least 8 characters long and not too common." %}
                                     </div>
                                 </div>
@@ -72,7 +72,7 @@
                                     <label for="{{ form.new_password2.id_for_label }}" class="form-label">{{ form.new_password2.label }}</label>
                                     {{ form.new_password2 }}
                                     {% if form.new_password2.errors %}
-                                        <div class="invalid-feedback d-block" id="password2-errors">
+                                        <div class="invalid-feedback d-block">
                                             {% for error in form.new_password2.errors %}
                                                 {{ error }}
                                             {% endfor %}

@@ -65,7 +65,29 @@ class Notification_Model(models.Model):
 # ------------------------------------------
 # -- USER RELATED MODELS --
 # ------------------------------------------
-# TODO: USER PROFILE MODEL
+class Profile_Model(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
+    bio = models.TextField(_("Bio"), max_length=2000, null=True, blank=True)
+    image = models.ImageField(_("Image"), upload_to='profile_photos/', null=True, blank=True)
+    image_url = models.URLField(_("Image URL"), max_length=200, null=True, blank=True)
+    
+    class Meta:
+        verbose_name = _("Profile")
+        verbose_name_plural = _("Profiles")
+    
+    def __str__(self):
+        return self.user.username
+    
+    @property
+    def get_image(self):
+        cache_buster = f"?v={int(time.time())}"
+        
+        if self.image and hasattr(self.image, 'url'):
+            return f"{self.image.url}{cache_buster}"
+        elif self.image_url:
+            return f"{self.image_url}{cache_buster}"
+        else:
+            return f"/static/res/img/others/default_profile.jpg{cache_buster}"
 
 class PasswordReset_Model(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='password_reset_tokens')
@@ -87,7 +109,7 @@ class PasswordReset_Model(models.Model):
     
     def get_absolute_url(self):
         return reverse('password_reset_confirm', kwargs={'token': self.token})
-
+    
 # ------------------------------------------
 # -- CHILD RELATED MODELS --
 # ------------------------------------------

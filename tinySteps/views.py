@@ -50,6 +50,7 @@ from .models import (
     ExternalNutritionData_Model,
     ExternalArticle_Model,
     ConnectionError_Model,
+    PasswordReset_Model,
 )
 
 # EXTERNAL SERVICES FOR APIs INTEGRATIONs
@@ -165,23 +166,57 @@ def page_not_found(request, exception=None):
 class Login_View(auth_views.LoginView):
     template_name = 'accounts/login.html'
     redirect_authenticated_user = True
+    success_message = _("Login successful! Welcome back.")
     
     def get_success_url(self):
         return reverse_lazy('index')
     
-    def form_valid(self, form):
-        response = super().form_valid(form)
-        messages.success(self.request, _("Login successful!"))
-        return response
-    
-    def form_invalid(self, form):
-        messages.error(self.request, _("Usuario o contraseña incorrectos. ¿No tienes cuenta? Regístrate ahora."))
-        return super().form_invalid(form)
-    
     def get(self, request, *args, **kwargs):
         if request.user.is_authenticated:
             return redirect('index')
-        return super().get(request, *args, **kwargs)
+            
+        try:
+            return super().get(request, *args, **kwargs)
+        except DatabaseError as e:
+            logger.error(f"Database error on login page: {str(e)}")
+            messages.error(request, _("We're experiencing technical difficulties. Please try again later."))
+            return database_error_view(request)
+        except Exception as e:
+            logger.error(f"Unexpected error on login page: {str(e)}")
+            messages.error(request, _("An unexpected error occurred. Please try again."))
+            return render(request, 'errors/errors.html', {
+                'error_message': _("Server error during login process."),
+                'error_code': 'LOGIN'
+            }, status=500)
+    
+    @method_decorator(sensitive_post_parameters('password'))
+    def post(self, request, *args, **kwargs):
+        try:
+            form = self.get_form()
+            if form.is_valid():
+                return self.form_valid(form)
+            else:
+                return self.form_invalid(form)
+        except DatabaseError as e:
+            logger.error(f"Database error during login: {str(e)}")
+            messages.error(request, _("We're experiencing database issues. Please try again later."))
+            return database_error_view(request)
+        except Exception as e:
+            logger.error(f"Unexpected error during login: {str(e)}")
+            messages.error(request, _("Login failed due to a server error. Please try again."))
+            return render(request, 'errors/errors.html', {
+                'error_message': _("Server error during login process."),
+                'error_code': 'LOGP'
+            }, status=500)
+    
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        messages.success(self.request, self.success_message)
+        return response
+    
+    def form_invalid(self, form):
+        messages.error(self.request, _("Incorrect username or password. Please try again or create a new account."))
+        return super().form_invalid(form)
 
 class Logout_View(auth_views.LogoutView):
     next_page = 'index'
@@ -262,18 +297,36 @@ def password_reset(request):
         form = PasswordReset_Form(request.POST)
         if form.is_valid():
             username = form.cleaned_data['username']
-            user = User.objects.get(username=username)
+            email = form.cleaned_data['email']
+            new_password1 = form.cleaned_data['new_password1']
             
-            password = form.cleaned_data['new_password1']
-            user.set_password(password)
-            user.save()
-            
-            messages.success(request, _("Your password has been updated successfully! You can now log in."))
-            return redirect('login')
+            try:
+                user = User.objects.get(username=username)
+                if user.email != email:
+                    messages.error(request, _("The email does not correspond to the indicated user."))
+                    return render(request, 'accounts/reset.html', {'form': form})
+                
+                user.set_password(new_password1)
+                user.save()
+                
+                PasswordReset_Model.objects.create(
+                    user=user,
+                    is_used=True
+                )
+                
+                messages.success(request, _("Password changed successfully! You can now log in with your new password."))
+                return redirect('login')
+                
+            except User.DoesNotExist:
+                messages.error(request, _("User not found."))
+                return render(request, 'accounts/reset.html', {'form': form})
+            except Exception as e:
+                messages.error(request, _("An error occurred. Please try again."))
+                return render(request, 'accounts/reset.html', {'form': form})
     else:
         form = PasswordReset_Form()
     
-    return render(request, 'accounts/user_password/reset_password.html', {'form': form})
+    return render(request, 'accounts/reset.html', {'form': form})
 
 # -----------------------------------------------
 # -- CHILDREN VIEWS
