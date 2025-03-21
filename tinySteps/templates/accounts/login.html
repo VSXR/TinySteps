@@ -7,47 +7,60 @@
 
 {% block main_contents %}
     <main id="main-content">
-        <div class="container mt-5 mb-5">
+        <div class="container py-4 px-3">
             <div class="row justify-content-center">
-                <div class="col-md-6">
-                    <div class="card">
-                        <div class="card-header">
-                            <h1 class="text-center fs-4">{% trans "LOGIN" %}</h1>
+                <div class="col-lg-6 col-md-8 col-sm-10">
+                    <div class="card shadow-sm border-0 rounded-3">
+                        <div class="card-header py-3">
+                            <h2 class="text-center fs-4 mb-0" id="login-heading">{% trans "LOGIN" %}</h2>
                         </div>
-                        <div class="card-body">
+                        <div class="card-body p-4">
                             {% if messages %}
-                                {% include 'partials/messages.html' %}
+                                <div role="alert" aria-live="polite">
+                                    {% include 'partials/messages.html' %}
+                                </div>
                             {% endif %}
                             
                             <form method="post" novalidate aria-labelledby="login-heading">
-                                <span id="login-heading" class="visually-hidden">{% trans "Account login form" %}</span>
                                 {% csrf_token %}
                                 <div class="mb-3">
-                                    <label for="username" class="form-label">{% trans "Username" %}</label>
-                                    <input type="text" name="username" id="username" class="form-control" 
-                                        aria-required="true" autocomplete="username" required>
+                                    <label for="username" class="form-label fw-bold">{% trans "Username" %}</label>
+                                    <input type="text" name="username" id="username" class="form-control form-control-lg" 
+                                        aria-required="true" autocomplete="username" required
+                                        aria-describedby="username-help">
+                                    <div id="username-help" class="form-text">{% trans "Enter your account username" %}</div>
                                 </div>
-                                <div class="mb-3">
-                                    <label for="password" class="form-label">{% trans "Password" %}</label>
-                                    <input type="password" name="password" id="password" class="form-control" 
-                                           aria-required="true" autocomplete="current-password" required>
+                                <div class="mb-4">
+                                    <label for="password" class="form-label fw-bold">{% trans "Password" %}</label>
+                                    <input type="password" name="password" id="password" class="form-control form-control-lg" 
+                                           aria-required="true" autocomplete="current-password" required
+                                           aria-describedby="password-help">
+                                    <div id="password-help" class="form-text">{% trans "Enter your account password" %}</div>
                                 </div>
-                                <div class="d-grid">
-                                    <button type="submit" class="btn btn-primary">{% trans "Login" %}</button>
+                                <div class="d-grid gap-2">
+                                    <button type="submit" class="btn btn-primary btn-lg" aria-label="{% trans 'Log in to your account' %}">
+                                        {% trans "Login" %}
+                                    </button>
                                 </div>
                             </form>
                             
-                            <div class="text-center mt-3">
+                            <div class="text-center mt-4">
                                 {% url 'register' as register_url %}
                                 {% url 'password_reset' as password_reset_url %}
                                 
-                                {% blocktrans %}
-                                <p>Don't have an account? <a href="{{ register_url }}" aria-label="Register for a new account">Register here</a></p>
-                                {% endblocktrans %}
+                                <div class="mb-2">
+                                    {% blocktrans %}
+                                    <p>Don't have an account? <a href="{{ register_url }}" class="link-primary" 
+                                        aria-label="Register for a new account">Register here</a></p>
+                                    {% endblocktrans %}
+                                </div>
                                 
-                                {% blocktrans %}
-                                <p>Forgot your password? <a href="{{ password_reset_url }}" aria-label="Reset your password">Reset password here</a></p>
-                                {% endblocktrans %}
+                                <div>
+                                    {% blocktrans %}
+                                    <p>Forgot your password? <a href="{{ password_reset_url }}" class="link-primary" 
+                                        aria-label="Reset your password">Reset password here</a></p>
+                                    {% endblocktrans %}
+                                </div>
                             </div>
                         </div>
                     </div>

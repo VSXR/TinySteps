@@ -24,10 +24,10 @@
                             <div class="col-md-4 mb-4">
                                 <article class="card h-100 shadow-sm">
                                     {% if guide.image %}
-                                        <img src="{{ guide.image.url }}" class="card-img-top" 
+                                        <img src="{{ guide.image.url }}" class="card-img-top" loading="lazy"
                                              alt="{% blocktrans with title=guide.title %}Visual representation for {{ title }} guide{% endblocktrans %}">
                                     {% else %}
-                                        <img src="{% static 'img/others/default.jpg' %}" class="card-img-top" 
+                                        <img src="{% static 'img/others/default.jpg' %}" class="card-img-top" loading="lazy"
                                              alt="{% trans "Default nutrition guide illustration" %}">
                                     {% endif %}
                                     <div class="card-body">

@@ -1,4 +1,6 @@
-import logging, pytz
+import logging
+import pytz
+import traceback
 from datetime import datetime, timedelta, date
 from django.conf import settings
 from django.contrib import messages
@@ -11,7 +13,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.messages.views import SuccessMessageMixin
 from django.core.mail import send_mail
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
-from django.db import models
+from django.db import models, DatabaseError
 from django.db.models import Q, Prefetch
 from django.db.models.signals import post_save
 from django.dispatch import receiver
@@ -20,8 +22,10 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy
 from django.utils import timezone
+from django.utils.decorators import method_decorator
 from django.utils.translation import gettext as _
 from django.views import View, generic
+from django.views.decorators.debug import sensitive_post_parameters
 from django.views.generic.edit import CreateView
 
 from .forms import (
@@ -45,6 +49,7 @@ from .models import (
     Vaccine_Model,
     ExternalNutritionData_Model,
     ExternalArticle_Model,
+    ConnectionError_Model,
 )
 
 # EXTERNAL SERVICES FOR APIs INTEGRATIONs
@@ -53,6 +58,77 @@ from .services import (
     NewsAPIService,
     CurrentsAPI,
 )
+
+logger = logging.getLogger(__name__)
+
+# -----------------------------------------------
+# -- ERROR HANDLERS
+# -----------------------------------------------
+# Handler para error 400 (Bad Request)
+def custom_error_400(request, exception=None):
+    return render(request, 'errors/errors.html', {
+        'error_message': _('Bad request. The server could not understand your request.'),
+        'error_code': 400
+    }, status=400)
+
+# Handler para error 403 (Forbidden)
+def custom_error_403(request, exception=None):
+    return render(request, 'errors/errors.html', {
+        'error_message': _('Access forbidden. You do not have permission to access this resource.'),
+        'error_code': 403
+    }, status=403)
+
+# Handler para error 404 (Not Found)
+def custom_error_404(request, exception=None):
+    return render(request, 'errors/errors.html', {
+        'error_message': _('Page not found. The requested page does not exist.'),
+        'error_code': 404
+    }, status=404)
+
+# Handler para error 500 (Server Error)
+def custom_error_500(request):
+    error_id = None
+    try:
+        # Intenta registrar el error en la base de datos para seguimiento
+        error_id = ConnectionError_Model.objects.create(
+            error_type="ServerError500",
+            path=request.path,
+            method=request.method,
+            client_ip=request.META.get('REMOTE_ADDR', 'unknown'),
+            user=request.user.username if request.user.is_authenticated else 'anonymous',
+            user_agent=request.META.get('HTTP_USER_AGENT', 'unknown'),
+            traceback=traceback.format_exc()
+        ).id
+    except Exception as e:
+        # Si falla al registrar, simplemente lo logueamos
+        logger.error(f"Error al registrar el error 500: {str(e)}")
+    
+    return render(request, 'errors/errors.html', {
+        'error_message': _('Server error. We apologize for the inconvenience.'),
+        'error_code': f"500-{error_id}" if error_id else "500"
+    }, status=500)
+
+# Función útil para errores de base de datos
+def database_error_view(request, error_message=None):
+    error_id = None
+    try:
+        # Registrar el error para seguimiento
+        error_id = ConnectionError_Model.objects.create(
+            error_type="DatabaseError",
+            path=request.path,
+            method=request.method,
+            client_ip=request.META.get('REMOTE_ADDR', 'unknown'),
+            user=request.user.username if request.user.is_authenticated else 'anonymous',
+            user_agent=request.META.get('HTTP_USER_AGENT', 'unknown'),
+            traceback=traceback.format_exc()
+        ).id
+    except Exception as e:
+        logger.error(f"Error al registrar el error de base de datos: {str(e)}")
+    
+    return render(request, 'errors/errors.html', {
+        'error_message': error_message or _('Database connection error. Please try again later.'),
+        'error_code': f"DB-{error_id}" if error_id else "DB"
+    }, status=503)  # Service Unavailable
 
 # -----------------------------------------------
 # -- GENERAL VIEWS
@@ -80,7 +156,7 @@ def index(request):
 def about(request):
     return render(request, 'pages/about.html')
 
-def page_not_found(request, exception):
+def page_not_found(request, exception=None):
     return render(request, 'pages/404.html', status=404)
 
 # -----------------------------------------------
@@ -114,21 +190,55 @@ class Logout_View(auth_views.LogoutView):
         messages.success(request, _('You have been successfully logged out!'))
         return super().dispatch(request, *args, **kwargs)
 
-class Register_View(CreateView):
-    form_class = CustomUserCreation_Form
+class Register_View(SuccessMessageMixin, CreateView):
     template_name = 'accounts/register.html'
+    form_class = CustomUserCreation_Form
     success_url = reverse_lazy('index')
+    success_message = _("Account created successfully! You are now logged in.")
     
-    def form_valid(self, form):
-        user = form.save()
-        login(self.request, user)
-        messages.success(self.request, _("Registration successful!"))
-        return super().form_valid(form)
-    
-    def get(self, request, *args, **kwargs):
+    def get(self, request, *_, **__):
         if request.user.is_authenticated:
             return redirect('index')
-        return super().get(request, *args, **kwargs)
+            
+        try:
+            form = self.form_class()
+            return render(request, self.template_name, {'form': form})
+        except DatabaseError as e:
+            logger.error(f"Database error on registration page: {str(e)}")
+            messages.error(request, _("We're experiencing technical difficulties. Please try again later."))
+            return database_error_view(request)
+        except Exception as e:
+            # Registrar cualquier otro error
+            logger.error(f"Unexpected error on registration page: {str(e)}")
+            messages.error(request, _("An unexpected error occurred. Please try again."))
+            return render(request, 'errors/errors.html', {
+                'error_message': _("Server error during registration process."),
+                'error_code': 'REGE'
+            }, status=500)
+    
+    @method_decorator(sensitive_post_parameters('password1', 'password2'))
+    def post(self, request, *_, **__):
+        try:
+            form = self.form_class(request.POST)
+            if form.is_valid():
+                user = form.save()
+                login(request, user)
+                messages.success(request, self.success_message)
+                return redirect(self.success_url)
+            return render(request, self.template_name, {'form': form})
+        except DatabaseError as e:
+            # Manejar errores de base de datos correctamente
+            logger.error(f"Database error during registration: {str(e)}")
+            messages.error(request, _("We're experiencing database issues. Please try again later."))
+            return database_error_view(request)
+        except Exception as e:
+            # Registrar cualquier otro error
+            logger.error(f"Unexpected error during registration: {str(e)}")
+            messages.error(request, _("Registration failed due to a server error. Please try again."))
+            return render(request, 'errors/errors.html', {
+                'error_message': _("Server error during registration process."),
+                'error_code': 'REGP'
+            }, status=500)
 
 # -----------------------------------------------
 # -- USER PROFILE VIEWS
@@ -206,11 +316,11 @@ class YourChild_Delete_View(LoginRequiredMixin, SuccessMessageMixin, generic.Del
         return super().get_queryset().filter(user=self.request.user)
     
     def get_object(self, queryset=None):
-        obj = super().get_object()
+        obj = super().get_object(queryset)
         if not obj.user == self.request.user:
             raise Http404
         return obj
-    
+        
     def child_has_events(self):
         return CalendarEvent_Model.objects.filter(child=self.get_object()).exists()
     
@@ -235,7 +345,7 @@ class YourChild_UpdateDetails_View(LoginRequiredMixin, SuccessMessageMixin, gene
         return super().get_queryset().filter(user=self.request.user)
     
     def get_object(self, queryset=None):
-        obj = super().get_object()
+        obj = super().get_object(queryset)
         if not obj.user == self.request.user:
             raise Http404
         return obj
@@ -312,8 +422,7 @@ def child_vaccine_card(request, child_id):
     child = get_object_or_404(YourChild_Model, id=child_id, user=request.user)
     
     # Obtener o crear la cartilla de vacunación
-    vaccine_card, created = VaccineCard_Model.objects.get_or_create(child=child)
-    
+    vaccine_card, _ = VaccineCard_Model.objects.get_or_create(child=child)
     # Obtener todas las vacunas
     vaccines = Vaccine_Model.objects.filter(vaccine_card=vaccine_card).order_by('next_dose_date', 'date')
     
@@ -396,15 +505,14 @@ class YourChild_VaccineCard_View(LoginRequiredMixin, generic.DetailView):
         return super().get_queryset().filter(user=self.request.user)
     
     def get_object(self, queryset=None):
-        obj = super().get_object()
+        obj = super().get_object(queryset)
         if not obj.user == self.request.user:
             raise Http404
         return obj
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        vaccine_card, created = VaccineCard_Model.objects.get_or_create(child=self.object)
-        context['vaccine_card'] = vaccine_card
+        vaccine_card, _ = VaccineCard_Model.objects.get_or_create(child=self.object)
         
         vaccines = Vaccine_Model.objects.filter(vaccine_card=vaccine_card).order_by('next_dose_date', 'date')
         context['vaccines'] = vaccines
@@ -504,18 +612,44 @@ def search_posts(request):
     return redirect(redirect_url)
 
 def view_post(request, post_id):
-    post = get_object_or_404(ParentsForum_Model, id=post_id)
-    related_posts = ParentsForum_Model.objects.filter(author=post.author).exclude(id=post_id)[:4]
-    
-    user_liked = False
-    if request.user.is_authenticated:
-        user_liked = post.likes.filter(id=request.user.id).exists()
-    
-    return render(request, 'forum/posts/detail.html', {
-        'post': post,
-        'related_posts': related_posts,
-        'user_liked': user_liked
-    })
+    try:
+        post = get_object_or_404(ParentsForum_Model, id=post_id)
+        related_posts = ParentsForum_Model.objects.filter(author=post.author).exclude(id=post_id)[:4]
+        
+        content_type = ContentType.objects.get_for_model(ParentsForum_Model)
+        comments = Comment_Model.objects.filter(
+            content_type=content_type,
+            object_id=post_id
+        ).select_related('author').order_by('created_at')
+        
+        user_liked = False
+        if request.user.is_authenticated:
+            user_liked = Like_Model.objects.filter(
+                content_type=content_type,
+                object_id=post_id,
+                user=request.user
+            ).exists()
+        
+        # Count likes
+        likes_count = Like_Model.objects.filter(
+            content_type=content_type,
+            object_id=post_id
+        ).count()
+        
+        return render(request, 'forum/posts/detail.html', {
+            'post': post,
+            'related_posts': related_posts,
+            'user_liked': user_liked,
+            'comments': comments,
+            'comments_count': comments.count(),
+            'likes_count': likes_count
+        })
+    except Exception as e:
+        logger.error(f"Error en view_post {post_id}: {str(e)}")
+        return render(request, 'errors/errors.html', {
+            'error_message': _("Error al mostrar el post. Nuestro equipo ha sido notificado."),
+            'error_code': f"POST-{post_id}"
+        }, status=500)
 
 @login_required
 def add_post(request):
@@ -579,22 +713,50 @@ def delete_post(request, post_id):
 # -----------------------------------------------
 @login_required
 def add_post_comment(request, post_id):
-    post = get_object_or_404(ParentsForum_Model, id=post_id)
-    
     if request.method == 'POST':
-        content = request.POST.get('content')
-        if content:
-            Comment_Model.objects.create(
-                content_object=post,
+        try:
+            post = ParentsForum_Model.objects.get(id=post_id)
+            content = request.POST.get('content')
+            
+            if not content:
+                if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                    return JsonResponse({'success': False, 'error': 'Comment content is required'})
+                messages.error(request, _("Comment content is required"))
+                return redirect('view_post', post_id=post_id)
+            
+            content_type = ContentType.objects.get_for_model(ParentsForum_Model)
+            comment = Comment_Model.objects.create(
+                content_type=content_type,
+                object_id=post_id,
                 author=request.user,
                 text=content
             )
+            
+            # We check if this is an AJAX request
+            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                return JsonResponse({
+                    'success': True,
+                    'comment_id': comment.id
+                })
+            
+            # For regular form submissions, we redirect back to the post
             messages.success(request, _("Comment added successfully!"))
-        else:
-            messages.error(request, _("Please enter a comment."))
+            return redirect('view_post', post_id=post_id)
+            
+        except ParentsForum_Model.DoesNotExist:
+            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                return JsonResponse({'success': False, 'error': 'Post not found'}, status=404)
+            messages.error(request, _("Post not found"))
+            return redirect('parents_forum')
+            
+        except Exception as e:
+            print(f"Error adding comment: {str(e)}")
+            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                return JsonResponse({'success': False, 'error': 'An error occurred'}, status=500)
+            messages.error(request, _("An error occurred while adding your comment"))
+            return redirect('view_post', post_id=post_id)
     
-    return redirect('view_post', post_id=post.id)
-
+    return redirect('view_post', post_id=post_id)
 def add_comment(request, model_type, pk):
     if model_type == 'forum':
         obj = get_object_or_404(ParentsForum_Model, pk=pk)
@@ -676,8 +838,9 @@ def guides_page(request):
     """Main guides page that shows both types of guides and external articles"""
     nutrition_guides = Guides_Model.objects.filter(guide_type='nutrition').order_by('-created_at')[:5]
     parent_guides = Guides_Model.objects.filter(guide_type='parent').order_by('-created_at')[:5]
-    nutrition_guides = Guides_Model.objects.filter(guide_type='nutrition').order_by('-created_at')[:5]
-    parent_guides = Guides_Model.objects.filter(guide_type='parent').order_by('-created_at')[:5]
+    
+    nutrition_articles = ExternalArticle_Model.objects.filter(category='nutrition').order_by('-published_at')[:3]
+    parenting_articles = ExternalArticle_Model.objects.filter(category='parenting').order_by('-published_at')[:3]
 
     context = {
         'nutrition_guides': nutrition_guides,
@@ -832,7 +995,6 @@ def parenting_news(request):
     
     parenting_articles = news_service.get_parenting_articles(force_refresh=True)
     first_time_news = currents_service.get_first_time_parent_news(force_refresh=True)
-    
     sleep_articles = news_service.get_parenting_articles_by_topic('sleep', force_refresh=True)
     development_news = currents_service.get_news_by_topic('development', force_refresh=True)
     
@@ -881,8 +1043,6 @@ def nutrition_guide_details(request, pk):
 def nutrition_articles(request):
     """View for displaying nutrition articles from external API"""
     page = int(request.GET.get('page', 1))
-    
-    # Get baby age if user is logged in and has child data
     baby_age = None
     if request.user.is_authenticated:
         try:
@@ -894,10 +1054,7 @@ def nutrition_articles(request):
         except:
             pass
     
-    # Enhanced query based on baby age
     topic = request.GET.get('topic', '')
-    
-    # Define age-specific base queries
     if baby_age is not None:
         if baby_age < 6:
             base_query = "\"newborn nutrition\" OR \"infant formula\" OR \"breastfeeding\" OR \"first-time parents\""
@@ -949,7 +1106,6 @@ def nutrition_articles(request):
                     logger.error(f"Error processing article: {e}")
                     continue
     
-    # Rest of your function remains the same
     articles_query = articles_query.order_by('-published_at')
     paginator = Paginator(articles_query, 10)
     
@@ -1008,7 +1164,6 @@ def nutrition_analyzer(request):
             except:
                 pass
         
-        # Try to get cached data first
         try:
             cached_data = ExternalNutritionData_Model.objects.get(
                 ingredient=ingredient, 
@@ -1074,4 +1229,3 @@ def notify_post_author_of_new_comment(sender, instance, created, **kwargs):
                 [post_author.email],
                 fail_silently=True,
             )
-

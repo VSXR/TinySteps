@@ -19,13 +19,15 @@
                         support, and confidence to parents everywhere.
                         {% endblocktrans %}
                     </p>
-                    <a href="{% url 'register' %}" class="btn btn-primary btn-lg px-4 mt-3" role="button">
-                        {% trans "Join Our Community" %}
-                    </a>
+                    <div class="text-center mt-4">
+                        <a href="{% url 'register' %}" class="btn btn-primary btn-lg px-4" role="button">
+                            {% trans "Join Our Community" %}
+                        </a>
+                    </div>
                 </div>
                 <div class="col-lg-6 col-md-12 text-center">
                     <img src="{% static 'res/img/others/default.jpg' %}" class="img-fluid rounded-3 shadow" 
-                         alt="{% trans 'Happy family using TinySteps app' %}" width="450">
+                         alt="{% trans 'Happy family using TinySteps app' %}" loading="lazy" width="450">
                 </div>
             </div>
         </div>
@@ -55,7 +57,7 @@
                 </div>
                 <div class="col-lg-6 col-md-12 order-lg-1">
                     <img src="{% static 'res/img/others/default.jpg' %}" class="img-fluid rounded-3 shadow" 
-                         alt="{% trans 'Parents using the Tiny Steps app with their baby' %}">
+                         alt="{% trans 'Parents using the Tiny Steps app with their baby' %}" loading="lazy">
                 </div>
             </div>
         </div>

@@ -43,7 +43,7 @@
                                     <div class="d-flex align-items-center {% if child_item.id == yourchild_model.id %}bg-light rounded p-2{% endif %}">
                                         <div class="flex-shrink-0 me-2">
                                             <img src="{{ child_item.image_url }}" alt="{{ child_item.name }}" 
-                                                class="rounded-circle" width="40" height="40" style="object-fit: cover;">
+                                                class="rounded-circle" loading="lazy" width="40" height="40" style="object-fit: cover;">
                                         </div>
                                         <div>
                                             <h4 class="fs-6 mb-0">
@@ -76,7 +76,7 @@
                             <div class="d-flex align-items-center mb-4">
                                 <div class="flex-shrink-0 me-3">
                                     <img src="{{ yourchild_model.image_url }}" alt="{{ yourchild_model.name }}" 
-                                         class="rounded-circle" style="width: 64px; height: 64px; object-fit: cover;">
+                                         class="rounded-circle" loading="lazy" style="width: 64px; height: 64px; object-fit: cover;">
                                 </div>
                                 <div>
                                     <h3 class="fs-5 mb-0">{{ yourchild_model.name }}</h3>

@@ -40,7 +40,7 @@
                             <!-- Imagen del niño usando get_image -->
                             <div class="mb-3">
                                 <img src="{{ child.get_image }}" alt="{{ child.name }}" 
-                                     class="rounded-circle img-thumbnail" style="width: 150px; height: 150px; object-fit: cover;">
+                                     class="rounded-circle img-thumbnail" loading="lazy" style="width: 150px; height: 150px; object-fit: cover;">
                             </div>
                             
                             <h2 class="fs-4">{{ child.name }} {% if child.second_name %}{{ child.second_name }}{% endif %}</h2>

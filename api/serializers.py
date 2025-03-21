@@ -1,7 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
 
-
 from tinySteps.models import (
     YourChild_Model, 
     Milestone_Model, 

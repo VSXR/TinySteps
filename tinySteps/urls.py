@@ -1,11 +1,38 @@
 from django.conf import settings
 from django.conf.urls.static import static
-from django.conf.urls.i18n import i18n_patterns
-from django.contrib.auth import views as auth_views
-from django.http import Http404, HttpResponseNotFound
-from django.shortcuts import render
+from django.http import HttpResponseNotFound
 from django.urls import path, include
 from . import views
+import time
+from django.db import connections
+from django.http import JsonResponse, HttpResponse
+
+# -----------------------------------------------
+# -- TESTING VIEWS (FOR DEVELOPMENT)
+# -----------------------------------------------
+def db_connection_test(request):
+    start_time = time.time()
+    try:
+        # Testing for the database connectivity (error 500 if fails!)
+        with connections['default'].cursor() as cursor:
+            cursor.execute('SELECT 1')
+            result = cursor.fetchone()[0]
+        
+        response_time = time.time() - start_time
+        return JsonResponse({
+            'status': 'success',
+            'message': 'Database connection successful',
+            'response_time': f'{response_time:.4f}s',
+            'result': result
+        })
+    except Exception as e:
+        response_time = time.time() - start_time
+        return JsonResponse({
+            'status': 'error',
+            'message': str(e),
+            'response_time': f'{response_time:.4f}s',
+            'error_type': type(e).__name__,
+        }, status=500)
 
 def favicon_view(request):
     return HttpResponseNotFound("Favicon no encontrado")
@@ -68,6 +95,9 @@ urlpatterns = [
     
     # INTERNATIONALIZATION
     path('i18n/', include('django.conf.urls.i18n')),
+
+    # TESTING
+    path('db-test/', db_connection_test, name='db_test'),
 ]
 
 # Static/media files configuration for development

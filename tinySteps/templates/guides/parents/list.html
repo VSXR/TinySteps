@@ -31,8 +31,8 @@
                                 <div class="col-md-4">
                                     <div class="card mb-3">
                                         {% if article.image_url %}
-                                            <img src="{{ article.image_url }}" class="card-img-top" 
-                                                 alt="{{ article.title }}" style="height: 120px; object-fit: cover;">
+                                            <img src="{{ article.image_url }}" class="card-img-top" loading="lazy"
+                                                 alt="{{ article.title }}" loading="lazy" style="height: 120px; object-fit: cover;">
                                         {% else %}
                                             <div class="bg-secondary text-white p-4 text-center">
                                                 <i class="bi bi-journal-text fs-3"></i>
@@ -62,10 +62,10 @@
                             <div class="col-md-4 mb-4">
                                 <article class="card h-100 shadow-sm">
                                     {% if guide.image %}
-                                        <img src="{{ guide.image.url }}" class="card-img-top" 
+                                        <img src="{{ guide.image.url }}" class="card-img-top" loading="lazy"
                                              alt="{% blocktrans with title=guide.title %}Visual representation for {{ title }} guide{% endblocktrans %}">
                                     {% else %}
-                                        <img src="{% static 'img/others/default.jpg' %}" class="card-img-top" 
+                                        <img src="{% static 'img/others/default.jpg' %}" class="card-img-top" loading="lazy"
                                              alt="{% trans "Default parenting guide illustration" %}">
                                     {% endif %}
                                     <div class="card-body">
@@ -103,7 +103,7 @@
                                     <div class="col-md-4 mb-3">
                                         <div class="card h-100 shadow-sm">
                                             {% if article.image_url %}
-                                                <img src="{{ article.image_url }}" alt="{{ article.title }}" class="card-img-top" 
+                                                <img src="{{ article.image_url }}" alt="{{ article.title }}" class="card-img-top" loading="lazy"
                                                     style="height: 140px; object-fit: cover;">
                                             {% else %}
                                                 <div class="card-img-top bg-light text-center py-4" style="height: 140px;">

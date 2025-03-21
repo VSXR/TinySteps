@@ -28,12 +28,16 @@
                                         <span class="visually-hidden">{% trans "Post actions" %}</span>
                                     </button>
                                     <ul class="dropdown-menu dropdown-menu-end">
-                                        <li><a class="dropdown-item" href="{% url 'edit_post' post.id %}">
-                                            <i class="fa-solid fa-edit" aria-hidden="true"></i> {% trans "Edit" %}
-                                        </a></li>
-                                        <li><a class="dropdown-item text-danger" href="{% url 'delete_post' post.id %}">
-                                            <i class="fa-solid fa-trash" aria-hidden="true"></i> {% trans "Delete" %}
-                                        </a></li>
+                                        <li>
+                                            <a class="dropdown-item" href="{% url 'edit_post' post.id %}">
+                                                <i class="fa-solid fa-edit" aria-hidden="true"></i> {% trans "Edit" %}
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item text-danger" href="{% url 'delete_post' post.id %}">
+                                                <i class="fa-solid fa-trash" aria-hidden="true"></i> {% trans "Delete" %}
+                                            </a>
+                                        </li>
                                     </ul>
                                 </div>
                                 <div class="d-none d-md-flex gap-2">
@@ -48,7 +52,7 @@
                         {% endif %}
                     </div>
                 </div>
-                
+
                 <div class="card-body">
                     <!-- Post metadata -->
                     <div class="mb-3 d-flex flex-column flex-sm-row justify-content-between gap-2">
@@ -58,7 +62,7 @@
                         <div class="post-date d-flex align-items-center gap-2">
                             <button id="like-button" class="btn btn-outline-primary btn-sm like-button {% if user_liked %}liked{% endif %}" aria-label="{% trans 'Like this post' %}" aria-pressed="{% if user_liked %}true{% else %}false{% endif %}">
                                 <i class="fa-solid fa-heart" aria-hidden="true"></i>
-                                <span id="like-count" class="like-count">{{ post.likes.count }}</span>
+                                <span id="like-count" class="like-count">{{ likes_count }}</span>
                                 <span class="visually-hidden">{% trans "likes" %}</span>
                             </button>
                             <time datetime="{{ post.created_at|date:'Y-m-d' }}" class="text-muted small ms-auto">
@@ -68,19 +72,19 @@
                     </div>
 
                     <!-- Post content -->
-                    <div class="post-content mb-4">
-                        {{ post.desc|safe|linebreaks }}
-                    </div>
+                    <div class="post-content mb-4">{{ post.desc|safe|linebreaks }}</div>
                 </div>
             </article>
 
             <!-- Comments section -->
             <section aria-labelledby="comments-heading" id="comments">
-                <h2 id="comments-heading">{% blocktrans count counter=post.comments.count %}Comment ({{ counter }}){% plural %}Comments ({{ counter }}){% endblocktrans %}</h2>
-                
-                {% if post.comments.all %}
+                <h2 id="comments-heading">
+                    {% blocktrans count counter=post.comments_count %}Comment ({{ counter }}){% plural %}Comments ({{ counter }}){% endblocktrans %}
+                </h2>
+
+                {% if comments %}
                     <div class="comment-list">
-                        {% for comment in post.comments.all %}
+                        {% for comment in comments %}
                             <div class="card mb-3" id="comment-{{ comment.id }}">
                                 <div class="card-body">
                                     <div class="d-flex justify-content-between mb-2">
@@ -99,53 +103,32 @@
                 {% else %}
                     <p class="text-center my-4">{% trans "No comments yet. Be the first to comment!" %}</p>
                 {% endif %}
-                
-                <!-- Comment form -->
-                {% if user.is_authenticated %}
-                    <div class="card mt-4">
-                        <div class="card-header">
-                            <h3 class="fs-5 mb-0">{% trans "Add a Comment" %}</h3>
-                        </div>
-                        <div class="card-body">
-                            <form method="post" action="{% url 'add_post_comment' post.id %}" aria-labelledby="comment-form-heading">
-                                <span id="comment-form-heading" class="visually-hidden">{% trans "Comment form for this post" %}</span>
-                                {% csrf_token %}
-                                <div class="mb-3">
-                                    <label for="comment-content" class="form-label">{% trans "Your comment" %}</label>
-                                    <textarea id="comment-content" name="content" rows="3" 
-                                            class="form-control" required aria-required="true"></textarea>
-                                </div>
-                                <button type="submit" class="btn btn-primary">{% trans "Post Comment" %}</button>
-                            </form>
-                        </div>
-                    </div>
-                {% endif %}
-            </section>
 
-            <!-- Related posts section -->
-            <section aria-labelledby="related-posts-heading" class="mt-5">
-                <h2 id="related-posts-heading" class="mb-3">{% trans "Related Posts" %}</h2>
-                <div class="row">
-                    {% for related_post in related_posts %}
-                        <div class="col-md-6 mb-4">
-                            <div class="card h-100">
-                                <div class="card-body">
-                                    <h3 class="h5"><a href="{% url 'view_post' related_post.id %}">{{ related_post.title }}</a></h3>
-                                    <p class="card-text small">{{ related_post.desc|truncatechars:100 }}</p>
-                                    <div class="small text-muted">
-                                        {% blocktrans with date=related_post.created_at|date:"F j, Y" %}Posted on {{ date }}{% endblocktrans %}
-                                    </div>
+                <div class="card mt-4 mb-4">
+                    <div class="card-header">
+                        <h3 class="card-title h5 mb-0">{% trans "Add Your Comment" %}</h3>
+                    </div>
+                    <div class="card-body">
+                        {% if user.is_authenticated %}
+                            <form id="comment-form" method="post" action="{% url 'add_post_comment' post.id %}">
+                                {% csrf_token %}
+                                <div class="form-group mb-3">
+                                    <label for="comment-content" class="form-label">{% trans "Your comment" %}</label>
+                                    <textarea id="comment-content" name="content" class="form-control" rows="3" required></textarea>
                                 </div>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-paper-plane me-2"></i>{% trans "Post Comment" %}
+                                </button>
+                            </form>
+                        {% else %}
+                            <div class="alert alert-info mb-0">
+                                {% trans "Please" %} <a href="{% url 'login' %}?next={{ request.path }}">{% trans "log in" %}</a> {% trans "to leave a comment." %}
                             </div>
-                        </div>
-                    {% empty %}
-                        <div class="col-12">
-                            <p class="text-center">{% trans "No related discussions found." %}</p>
-                        </div>
-                    {% endfor %}
+                        {% endif %}
+                    </div>
                 </div>
             </section>
-            
+
             <!-- Back to forum link -->
             <div class="mt-4 mb-5">
                 <a href="{% url 'parents_forum' %}" class="btn btn-outline-primary">
@@ -158,5 +141,5 @@
 
 {% block extra_js %}
     {{ block.super }}
-    <script src="{% static 'res/javascript/view_post.js' %}"></script>
+    <script src="{% static 'res/javascript/pages/post-page.js' %}" type="module"></script>
 {% endblock %}

@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.utils.html import format_html
 from . import models
 
-# Modelos de Usuario y Niños
+# User and Children Models
 @admin.register(models.YourChild_Model)
 class YourChildAdmin(admin.ModelAdmin):
     list_display = ('name', 'birth_date', 'age', 'gender', 'user')
@@ -20,7 +20,7 @@ class YourChildAdmin(admin.ModelAdmin):
         }),
     )
 
-# Modelos relacionados con desarrollo y actividades del niño
+# Child Development Models
 @admin.register(models.Milestone_Model)
 class MilestoneAdmin(admin.ModelAdmin):
     list_display = ('title', 'child', 'achieved_date')
@@ -31,12 +31,12 @@ class MilestoneAdmin(admin.ModelAdmin):
 
 @admin.register(models.CalendarEvent_Model)
 class CalendarEventAdmin(admin.ModelAdmin):
-    list_display = ('title', 'child', 'type', 'date', 'time', 'has_reminder')  # Change 'reminder' to 'has_reminder'
-    list_filter = ('type', 'date', 'has_reminder')  # Change 'reminder' to 'has_reminder'
+    list_display = ('title', 'child', 'type', 'date', 'time', 'has_reminder')
+    list_filter = ('type', 'date', 'has_reminder')
     search_fields = ('title', 'description', 'child__name')
     date_hierarchy = 'date'
     
-# Modelos de contenido
+# Content Models
 @admin.register(models.Guides_Model)
 class GuidesAdmin(admin.ModelAdmin):
     list_display = ('title', 'guide_type', 'created_at', 'get_comments_count')
@@ -70,7 +70,7 @@ class ParentsForumAdmin(admin.ModelAdmin):
         return obj.comments.count()
     get_comments_count.short_description = 'Comentarios'
 
-# Modelos de interacción
+# Interaction Models
 @admin.register(models.Comment_Model)
 class CommentAdmin(admin.ModelAdmin):
     list_display = ('author', 'text_preview', 'content_type', 'created_at')
@@ -82,7 +82,7 @@ class CommentAdmin(admin.ModelAdmin):
         return obj.text[:50] + '...' if len(obj.text) > 50 else obj.text
     text_preview.short_description = 'Comentario'
 
-# Modelos de sistema
+# System Models
 @admin.register(models.Notification_Model)
 class NotificationAdmin(admin.ModelAdmin):
     list_display = ('user', 'message_preview', 'read', 'created_at')
@@ -96,10 +96,18 @@ class NotificationAdmin(admin.ModelAdmin):
     message_preview.short_description = 'Mensaje'
 
 @admin.register(models.Contact_Model)
-class InfoRequestAdmin(admin.ModelAdmin):
+class ContactAdmin(admin.ModelAdmin):
     list_display = ('name', 'email', 'message_preview')
     search_fields = ('name', 'email', 'message')
     
     def message_preview(self, obj):
         return obj.message[:50] + '...' if len(obj.message) > 50 else obj.message
     message_preview.short_description = 'Mensaje'
+
+@admin.register(models.ConnectionError_Model)
+class ConnectionErrorAdmin(admin.ModelAdmin):
+    list_display = ('error_type', 'path', 'client_ip', 'user', 'timestamp')
+    list_filter = ('error_type', 'timestamp')
+    search_fields = ('path', 'client_ip', 'user')
+    readonly_fields = ('error_type', 'path', 'method', 'client_ip', 'user', 
+                      'user_agent', 'timestamp', 'traceback')

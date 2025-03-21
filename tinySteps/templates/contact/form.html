@@ -1,4 +1,5 @@
-{% extends 'base.html' %} {% load static %} 
+{% extends 'base.html' %} 
+{% load static %} 
 {% load crispy_forms_tags %}
 {% load i18n %}
 
@@ -6,39 +7,68 @@
 
 {% block main_contents %}
     <main id="main-content">
-        <div class="container mt-4 mb-5">
+        <div class="container my-5">
             <div class="row mb-4">
                 <div class="col">
-                    <h2 class="text-center">{% trans "CONTACT US" %}</h2>
-                    <p class="lead text-center">
-                        {% trans "Fill out the form below to request more information" %}
+                    <h2 class="text-center fw-bold" id="page-heading">{% trans "CONTACT US" %}</h2>
+                    <p class="lead text-center text-muted" id="page-description">
+                        {% trans "We'd love to hear from you! Fill out the form below and we'll get back to you soon." %}
                     </p>
+                    <hr class="my-4 w-50 mx-auto">
                 </div>
             </div>
 
             <div class="row justify-content-center">
-                <div class="col-md-8">
+                <div class="col-lg-6 col-md-8">
                     {% if messages %}
                         {% include 'partials/messages.html' %}
                     {% endif %}
 
-                    <form method="post" action="{% url 'contact' %}" aria-labelledby="form-heading" novalidate>
-                        <div class="form-group" aria-labelledby="form-heading">
-                            <span id="form-heading" class="visually-hidden">{% trans "Contact Us Form" %}</span>
-                            {% csrf_token %}
-
-                            <div class="card">
-                                <div class="card-body">
+                    <div class="card shadow-sm border-0 rounded-3 h-100" role="region" aria-labelledby="form-section-heading">
+                        <div class="card-header bg-light py-3">
+                            <h5 class="card-title mb-0 text-center" id="form-section-heading">{% trans "Get in Touch" %}</h5>
+                        </div>
+                        <div class="card-body p-4">
+                            <form method="post" action="{% url 'contact' %}" aria-labelledby="form-heading" novalidate>
+                                {% csrf_token %}
+                                <span id="form-heading" class="visually-hidden">{% trans "Contact Us Form" %}</span>
+                                
                                 {{ form|crispy }}
 
                                 <div class="d-grid mt-4">
-                                    <button type="submit" class="btn btn-primary" aria-label="{% trans "Submit information request" %}">
-                                    {% trans "SUBMIT" %}
+                                    <button type="submit" class="btn btn-primary btn-lg rounded-pill" aria-label="{% trans "Submit information request" %}">
+                                        <i class="fas fa-paper-plane me-2" aria-hidden="true"></i>{% trans "SUBMIT" %}
                                     </button>
                                 </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4 mt-4 mt-lg-0">
+                    <div class="card shadow-sm border-0 rounded-3 h-100" role="region" aria-labelledby="info-section-heading">
+                        <div class="card-header bg-light py-3">
+                            <h5 class="card-title mb-0 text-center" id="info-section-heading">{% trans "Our Information" %}</h5>
+                        </div>
+                        <div class="card-body p-4">
+                            <div class="mb-4">
+                                <h6 class="fw-bold text-primary" id="address-heading"><i class="fas fa-map-marker-alt me-2" aria-hidden="true"></i>{% trans "Address" %}</h6>
+                                <p class="text-muted ms-4" aria-labelledby="address-heading">123 Tiny Steps Lane<br>Kidsville, TS 12345</p>
+                            </div>
+                            <div class="mb-4">
+                                <h6 class="fw-bold text-primary" id="phone-heading"><i class="fas fa-phone me-2" aria-hidden="true"></i>{% trans "Phone" %}</h6>
+                                <p class="text-muted ms-4" aria-labelledby="phone-heading">(123) 456-7890</p>
+                            </div>
+                            <div class="mb-4">
+                                <h6 class="fw-bold text-primary" id="email-heading"><i class="fas fa-envelope me-2" aria-hidden="true"></i>{% trans "Email" %}</h6>
+                                <p class="text-muted ms-4" aria-labelledby="email-heading">c4relecloud@gmail.com</p>
+                            </div>
+                            <div class="mb-0">
+                                <h6 class="fw-bold text-primary" id="hours-heading"><i class="fas fa-clock me-2" aria-hidden="true"></i>{% trans "Hours" %}</h6>
+                                <p class="text-muted ms-4" aria-labelledby="hours-heading">Monday-Friday: 9AM-5PM<br>Saturday-Sunday: Closed</p>
                             </div>
                         </div>
-                    </form>
+                    </div>
                 </div>
             </div>
         </div>

@@ -43,12 +43,19 @@ urlpatterns = [
     path('', include(nutrition_guide_router.urls)),
     path('auth/', include('rest_framework.urls')),
 
-    path('children/<int:child_pk>/upcoming/', 
-         views.ChildCalendarEvents_ViewSet.as_view({'get': 'upcoming_events'}), 
-         name='child-upcoming-events'),
-    
     # Custom views
     path('me/', views.CurrentUser_View.as_view(), name='current-user'),
     path('my-children/', views.CurrentUserChildren_View.as_view(), name='current-user-children'),
     path('search/', views.Search_View.as_view(), name='search'),
+
+    # Additional calendar endpoints (for updating event dates)
+    path('children/<int:child_pk>/upcoming-events/', 
+         views.ChildCalendarEvents_ViewSet.as_view({'get': 'upcoming_events'}), 
+         name='child-upcoming-events'),
+    path('children/<int:child_pk>/event-stats/', 
+         views.ChildCalendarEvents_ViewSet.as_view({'get': 'event_stats'}), 
+         name='child-event-stats'),
+    path('events/<int:pk>/update-date/', 
+         views.CalendarEvent_ViewSet.as_view({'post': 'update_date'}), 
+         name='event-update-date'),
 ]

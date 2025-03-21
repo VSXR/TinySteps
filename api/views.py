@@ -5,7 +5,7 @@ from rest_framework.views import APIView
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
-from django.db.models import Q
+from django.db.models import Q, Count
 from datetime import date, timedelta
 
 from .serializers import (
@@ -22,7 +22,6 @@ from .serializers import (
     Vaccine_Serializer,
     CalendarEvent_Serializer,
 )
-
 from tinySteps.models import (
     YourChild_Model,
     Milestone_Model,
@@ -44,7 +43,7 @@ class IsOwnerOrReadOnly(permissions.BasePermission):
     Custom permission to allow owners or admins to edit objects
     """
     def has_object_permission(self, request, view, obj):
-        # Read permissions are allowed to any request
+        # Read permissions para cualquier request
         if request.method in permissions.SAFE_METHODS:
             return True
 
@@ -77,8 +76,7 @@ class IsAdminOrOwnerOrReadOnly(permissions.BasePermission):
         # Permitir POST a usuarios autenticados y administradores
         if request.method == 'POST':
             return request.user.is_authenticated
-            
-        # Para otros métodos (PUT, PATCH, DELETE), comprobar permisos a nivel de objeto
+        
         return True
     
     def has_object_permission(self, request, view, obj):
@@ -273,7 +271,6 @@ class Comment_ViewSet(viewsets.ModelViewSet):
     
     @action(detail=False, methods=['post'])
     def create_for_content(self, request):
-        """Create comment for any content type"""
         if not request.user.is_authenticated:
             return Response({'error': 'Authentication required'}, 
                            status=status.HTTP_401_UNAUTHORIZED)
@@ -457,14 +454,25 @@ class ChildCalendarEvents_ViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
     
     def get_queryset(self):
-        child_id = self.kwargs['child_pk']  # Changed from child_id to child_pk
-        return CalendarEvent_Model.objects.filter(child_id=child_id, child__user=self.request.user)
+        child_pk = self.kwargs['child_pk']
+        # Opcionalmente filtrar por fechas si se proporcionan en query params
+        start_date = self.request.query_params.get('start')
+        end_date = self.request.query_params.get('end')
+        
+        queryset = CalendarEvent_Model.objects.filter(child_id=child_pk, child__user=self.request.user)
+        
+        if start_date:
+            queryset = queryset.filter(date__gte=start_date)
+        if end_date:
+            queryset = queryset.filter(date__lte=end_date)
+            
+        return queryset.order_by('date', 'time')
     
     def perform_create(self, serializer):
-        child_id = self.kwargs['child_pk']  # Changed from child_id to child_pk
-        child = get_object_or_404(YourChild_Model, id=child_id, user=self.request.user)
+        child_pk = self.kwargs['child_pk']
+        child = get_object_or_404(YourChild_Model, id=child_pk, user=self.request.user)
         serializer.save(child=child)
-
+    
     @action(detail=False, methods=['get'])
     def upcoming_events(self, request, child_pk=None):
         """Obtiene los próximos eventos y recordatorios para un niño"""
@@ -500,6 +508,43 @@ class ChildCalendarEvents_ViewSet(viewsets.ModelViewSet):
             'reminders': reminders_serializer.data,
             'stats': event_stats
         })
+    
+    @action(detail=False, methods=['get'])
+    def event_stats(self, request, child_pk=None):
+        """Devuelve estadísticas de eventos para el panel de control"""
+        child = get_object_or_404(YourChild_Model, id=child_pk, user=request.user)
+        
+        # Obtener recuento de eventos por tipo
+        event_counts = CalendarEvent_Model.objects.filter(child=child)\
+            .values('type')\
+            .annotate(count=Count('id'))
+        
+        # Convertir a diccionario para fácil acceso
+        stats = {
+            'doctor': 0,
+            'vaccine': 0,
+            'milestone': 0,
+            'feeding': 0,
+            'other': 0,
+            'total': 0
+        }
+        
+        for item in event_counts:
+            stats[item['type']] = item['count']
+        
+        # Calcular total
+        stats['total'] = sum(stats.values())
+        
+        # Eventos próximos (para información adicional)
+        today = date.today()
+        upcoming_count = CalendarEvent_Model.objects.filter(
+            child=child, 
+            date__gte=today
+        ).count()
+        
+        stats['upcoming'] = upcoming_count
+        
+        return Response(stats)
 
 class CalendarEvent_ViewSet(viewsets.ModelViewSet):
     """
@@ -512,19 +557,51 @@ class CalendarEvent_ViewSet(viewsets.ModelViewSet):
         """Devuelve los eventos a los que tiene acceso el usuario actual"""
         return CalendarEvent_Model.objects.filter(child__user=self.request.user)
     
-    @action(detail=False, methods=['get'])
-    def child_events(self, request, child_id=None):
-        """Obtiene los eventos de un niño específico"""
-        try:
-            child = YourChild_Model.objects.get(id=child_id, user=request.user)
-        except YourChild_Model.DoesNotExist:
-            return Response(
-                {"error": "El niño no existe o no tienes permiso para acceder"},
-                status=status.HTTP_404_NOT_FOUND
-            )
+    def retrieve(self, request, pk=None):
+        """Obtener un evento específico"""
+        event = get_object_or_404(self.get_queryset(), pk=pk)
+        serializer = self.get_serializer(event)
+        return Response(serializer.data)
+    
+    def update(self, request, pk=None):
+        """Actualizar un evento existente"""
+        event = get_object_or_404(self.get_queryset(), pk=pk)
+        serializer = self.get_serializer(event, data=request.data, partial=True)
+        
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def destroy(self, request, pk=None):
+        """Eliminar un evento"""
+        event = get_object_or_404(self.get_queryset(), pk=pk)
+        event.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+    
+    @action(detail=True, methods=['post'])
+    def update_date(self, request, pk=None):
+        """
+        Actualiza solo la fecha/hora de un evento (para drag & drop en calendario)
+        """
+        event = get_object_or_404(self.get_queryset(), pk=pk)
+        
+        # Extraer los datos de la solicitud
+        new_date = request.data.get('date')
+        new_time = request.data.get('time')
+        all_day = request.data.get('allDay', False)
+        
+        if new_date:
+            event.date = new_date
             
-        events = CalendarEvent_Model.objects.filter(child=child).order_by('date', 'time')
-        serializer = self.get_serializer(events, many=True)
+        if not all_day and new_time:
+            event.time = new_time
+        elif all_day:
+            event.time = None
+            
+        event.save()
+        serializer = self.get_serializer(event)
         return Response(serializer.data)
     
     def perform_create(self, serializer):

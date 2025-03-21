@@ -77,7 +77,16 @@
 
     <!-- Main content: Calendar and Sidebar -->
     <div class="row">
-        <div class="col-lg-8">
+        <!-- Left sidebar with mini-calendar -->
+        <div class="col-lg-3">
+            <div class="mini-calendar-container bg-white p-3 rounded shadow-sm mb-4">
+                <h3 class="h5 mb-3">{% trans "Quick Navigate" %}</h3>
+                <div id="mini-calendar"></div>
+            </div>
+        </div>
+        
+        <!-- Main calendar -->
+        <div class="col-lg-6">
             <div class="calendar-container bg-white p-3 rounded shadow-sm mb-4">
                 <div id="calendar" aria-label="{% trans 'Calendar for' %} {{ child.name }}" role="application"></div>
                 <div id="calendar-loading" class="d-none text-center mt-3">
@@ -88,8 +97,8 @@
             </div>
         </div>
 
-        <!-- Sidebar column -->
-        <div class="col-lg-4">
+        <!-- Right sidebar column -->
+        <div class="col-lg-3">
             <div class="event-form-container bg-white p-3 rounded shadow-sm mb-4">
                 <h2 id="form-title" class="h4 mb-3 text-primary">{% trans "Add Event" %}</h2>
                 <form id="event-form">
@@ -265,7 +274,7 @@
             </div>
             <div class="card-body">
                 <div id="mobile-event-details">
-                    <!-- Event details will be populated here -->
+                    {% comment %} en proceso {% endcomment %}
                 </div>
                 <div class="d-flex justify-content-between mt-3">
                     <button class="btn btn-sm btn-danger delete-mobile-event">

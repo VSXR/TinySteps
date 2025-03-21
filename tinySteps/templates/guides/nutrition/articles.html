@@ -52,7 +52,7 @@
                             <div class="col">
                                 <div class="card h-100 shadow-sm">
                                     {% if article.image_url %}
-                                        <img src="{{ article.image_url }}" class="card-img-top" alt="{{ article.title }}" 
+                                        <img src="{{ article.image_url }}" class="card-img-top" alt="{{ article.title }}" loading="lazy"
                                              style="height: 180px; object-fit: cover;">
                                     {% else %}
                                         <div class="bg-light text-center py-5">

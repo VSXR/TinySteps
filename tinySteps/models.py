@@ -233,6 +233,18 @@ class ParentsForum_Model(models.Model):
     def likes_count(self):
         return self.likes.count()
     
+    @property
+    def comments_count(self):
+        return self.comments.count()
+
+    @property
+    def likes_count(self):
+        content_type = ContentType.objects.get_for_model(self.__class__)
+        return Like_Model.objects.filter(
+            content_type=content_type,
+            object_id=self.id
+        ).count()
+    
     def __str__(self):
         truncated_desc = (self.desc[:30] + "...") if len(self.desc) > 30 else self.desc
         return f"{self.title} - {truncated_desc}"
@@ -375,3 +387,27 @@ class ExternalNutritionData_Model(models.Model):
     
     def __str__(self):
         return f"Nutrition data for {self.ingredient}"
+    
+
+
+# ------------------------------------------
+# -- LOGGING MODEL (FOR ADMIN) --
+# ------------------------------------------
+class ConnectionError_Model(models.Model):
+    error_type = models.CharField(max_length=100)
+    path = models.CharField(max_length=255)
+    method = models.CharField(max_length=10)
+    client_ip = models.GenericIPAddressField(null=True)
+    user = models.CharField(max_length=150, blank=True)
+    user_agent = models.TextField(blank=True)
+    timestamp = models.DateTimeField(auto_now_add=True)
+    traceback = models.TextField(blank=True)
+
+    class Meta:
+        ordering = ['-timestamp']
+        verbose_name = "Connection Error"
+        verbose_name_plural = "Connection Errors"
+        
+    def __str__(self):
+        return f"{self.error_type} at {self.timestamp}"
+    

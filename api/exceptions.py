@@ -17,10 +17,8 @@ from rest_framework.exceptions import (
     Throttled,
 )
 
-# Configuración de logger
 logger = logging.getLogger('api_exceptions')
 
-# Custom API exceptions
 class ChildNotFound(NotFound):
     default_detail = "El niño no fue encontrado o no tienes permiso para acceder a él."
 
@@ -149,7 +147,7 @@ def custom_exception_handler(exc, context):
             error_data['message'] = response.data.get('detail', str(exc))
             error_data['type'] = 'api_error'
         
-        # En modo debug, agregar información adicional
+        # DEBUG MODE: agrega información adicional
         if settings.DEBUG:
             error_data['debug'] = {
                 'exception_class': exc.__class__.__name__,
@@ -158,7 +156,6 @@ def custom_exception_handler(exc, context):
             
         response.data = error_data
     else:
-        # Manejo de errores no manejados por DRF
         if isinstance(exc, DjangoValidationError):
             response = handle_django_validation_error(exc)
         elif isinstance(exc, IntegrityError):

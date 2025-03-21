@@ -94,7 +94,7 @@
                                     {% if form.instance.image %}
                                         <div class="mt-2">
                                             <p class="small">{% trans "Current photo:" %}</p>
-                                            <img src="{{ form.instance.get_image }}" alt="{{ form.instance.name }}" style="max-width: 100px;" class="img-thumbnail">
+                                            <img src="{{ form.instance.get_image }}" alt="{{ form.instance.name }}" style="max-width: 100px;" class="img-thumbnail" loading="lazy">
                                         </div>
                                     {% endif %}
                                 </div>

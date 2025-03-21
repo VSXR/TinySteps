@@ -1,23 +1,23 @@
-import os
-import sys
+import os, socket
 from pathlib import Path
-from django.contrib.messages import constants as messages
+from dotenv import load_dotenv
 from django.utils.translation import gettext_lazy as _
-from rest_framework.views import exception_handler
+
+load_dotenv()
 
 # ---------------------------------------------------------------
 # CONFIGURACIONES BÁSICAS
 # ---------------------------------------------------------------
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = "django-insecure-elp3%(#9&c9-(5xco05=oh7)7b%zda3j@3qt8@$#dajqhj@^+b"
+SECRET_KEY = os.environ.get('SECRET_KEY')
 
-DEBUG = True  # TRUE: FOR LOCAL HOST ONLY (CSS, IMGs AND MEDIA WILL APPEAR CORRECTLY!)
+DEBUG = os.environ.get('DEBUG', 'False').lower() == 'true'
 
 # ---------------------------------------------------------------
 # CONFIGURACIONES DE SEGURIDAD
 # ---------------------------------------------------------------
-ALLOWED_HOSTS = ['tinySteps-django.azurewebsites.net', '127.0.0.1', 'localhost']
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '').split(',') if not DEBUG else ['*']
 
 CSRF_TRUSTED_ORIGINS = [
     'https://tinySteps-django.azurewebsites.net',  # URL de producción
@@ -65,6 +65,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'tinySteps.middleware.broken_pipe_handler.BrokenPipeHandlerMiddleware',
 ]
 
 # ---------------------------------------------------------------
@@ -95,8 +96,18 @@ WSGI_APPLICATION = "project.wsgi.application"
 # ---------------------------------------------------------------
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-# CONFIGURACION PARA BASE DE DATOS EN LOCAL
-if DEBUG:
+db_host = os.environ.get('DB_HOST')
+can_connect_to_db = False
+
+if db_host:
+    try:
+        socket.gethostbyname(db_host)
+        can_connect_to_db = True
+    except socket.gaierror:
+        can_connect_to_db = False
+
+if DEBUG or not can_connect_to_db:
+    # DEVELOPMENT DATABASE CONFIGURATION
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
@@ -104,15 +115,15 @@ if DEBUG:
         }
     }
 else:
-    # PERO SI SE HACE DEPLOY, SE ACTIVA LA CONFIGURACION PARA BASE DE DATOS EN AZURE
+    # PRODUCTION DATABASE CONFIGURATION
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
-            'NAME': 'djangoDB-prod',
-            'HOST': 'tinySteps-proy2-db.postgres.database.azure.com',
-            'USER': 'djangoAdmin',
-            'PASSWORD': 'jango123A',
-            'PORT': '5432',
+            'NAME': os.environ.get('DB_NAME'),
+            'USER': os.environ.get('DB_USER'),
+            'PASSWORD': os.environ.get('DB_PASSWORD'),
+            'HOST': db_host,
+            'PORT': os.environ.get('DB_PORT'),
             'OPTIONS': {
                 'sslmode': 'require',
                 'sslrootcert': 'Microsoft RSA Root Certificate Authority 2017.crt',
@@ -145,13 +156,26 @@ LOCALE_PATHS = [
 # ---------------------------------------------------------------
 # CONFIGURACIÓN DE ARCHIVOS ESTÁTICOS Y MEDIA
 # ---------------------------------------------------------------
-# Rutas para archivos estáticos
+# Static files (CSS, JavaScript, Images)
 STATIC_URL = '/static/'
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'tinySteps', 'static'),
 ]
+
+# Static files finders
+STATICFILES_FINDERS = [
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+]
+
+# Static files storage configuration
+if DEBUG:
+    # Development configuration
+    WHITENOISE_MAX_AGE = 31536000  # 1 year in seconds (for caching static files)
+else:
+    # Production configuration
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Configuración de archivos de medios (separada de estáticos)
 MEDIA_URL = '/media/'
@@ -197,22 +221,26 @@ REST_FRAMEWORK = {
 # ---------------------------------------------------------------
 # EXTERNAL APIS
 # ---------------------------------------------------------------
-EDAMAM_APP_ID = 'dd63e92c'
-EDAMAM_APP_KEY = '58c1318bf68b536cd04b07be47f3693c'
-NEWS_API_KEY = '2ea41d5b4b114a5c808b9108a90e0e2d'
-CURRENTS_API_KEY = 'VxLJ2ZsRmjdMjVNKVNqMe0Amde-fHlNJSNYA_pfaLJ7GmjHN'
+EDAMAM_APP_ID = os.environ.get('EDAMAM_APP_ID')
+EDAMAM_APP_KEY = os.environ.get('EDAMAM_APP_KEY')
+NEWS_API_KEY = os.environ.get('NEWS_API_KEY')
+CURRENTS_API_KEY = os.environ.get('CURRENTS_API_KEY')
 
 # ---------------------------------------------------------------
 # CONFIGURACIÓN DE CORREO ELECTRÓNICO
 # ---------------------------------------------------------------
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'c4relecloud@gmail.com'
-EMAIL_HOST_PASSWORD = 'mnvp swyl hjgr pdyl'
-DEFAULT_FROM_EMAIL = 'c4relecloud@gmail.com'
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+if DEBUG:
+    # Development mode - print emails to console
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+else:
+    # Production mode - send real emails
+    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+    EMAIL_HOST = os.environ.get('EMAIL_HOST')
+    EMAIL_PORT = os.environ.get('EMAIL_PORT')
+    EMAIL_USE_TLS = True
+    EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
+    EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
+    DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL')
 
 # ---------------------------------------------------------------
 # OTRAS CONFIGURACIONES
@@ -220,3 +248,38 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+# ---------------------------------------------------------------
+# CONFIGURACIÓN DEL LOGGING
+# ---------------------------------------------------------------
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'file': {
+            'level': 'WARNING',
+            'class': 'logging.FileHandler',
+            'filename': os.path.join(BASE_DIR, 'connection_errors.log'),
+            'formatter': 'verbose',
+        },
+        'console': {
+            'level': 'WARNING',
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose',
+        },
+    },
+    'loggers': {
+        'connection_errors': {
+            'handlers': ['file', 'console'],
+            'level': 'WARNING',
+            'propagate': True,
+        },
+    },
+}
