@@ -243,18 +243,18 @@ CURRENTS_API_KEY = os.environ.get('CURRENTS_API_KEY')
 # ---------------------------------------------------------------
 # EMAIL CONFIGURATION
 # ---------------------------------------------------------------
-if DEBUG:
-    # Development mode - print emails to console
-    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-else:
-    # Production mode - send real emails
-    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-    EMAIL_HOST = os.environ.get('EMAIL_HOST')
-    EMAIL_PORT = int(os.environ.get('EMAIL_PORT', 587))
-    EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', 'True').lower() == 'true'
-    EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
-    EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
-    DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL')
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+
+EMAIL_HOST = os.environ.get('EMAIL_HOST', 'smtp.gmail.com')
+EMAIL_PORT = int(os.environ.get('EMAIL_PORT', 587))
+EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', 'True').lower() == 'true'
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', 'your-email@gmail.com')  # Replace with your email
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', 'your-app-password')  # Replace with your app password
+DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'Tiny Steps <your-email@gmail.com>')
+
+# Uncomment this line if you want to fall back to console in development!
+# if DEBUG:
+#     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 # ---------------------------------------------------------------
 # MISCELLANEOUS SETTINGS
@@ -304,7 +304,6 @@ LOGGING = {
             'format': '[{levelname}] {message}',
             'style': '{',
         },
-        # Add this new formatter for cleaner console output
         'clean_console': {
             '()': ColoredFormatter,  # Use our custom formatter
             'format': '{levelname} {message}',

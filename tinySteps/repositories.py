@@ -21,7 +21,7 @@ class Guide_Repository:
         ).exclude(id=guide.id).order_by('-created_at')[:limit]
 
 class Article_Repository:
-    """Repository class for articles implementing the Dependency Inversion Principle"""
+    """Repository class for articles"""
     
     @staticmethod
     def get_articles_by_category(category, limit=None):
