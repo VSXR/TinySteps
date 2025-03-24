@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% trans "Reject Guide Confirmation" %}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>{% trans "Reject Guide Confirmation" %}</h1>
+    
+    <div class="alert alert-warning">
+        <p>{% trans "Are you sure you want to reject the following guide?" %}</p>
+        <p><strong>{{ guide.title }}</strong></p>
+    </div>
+    
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="rejection_reason">{% trans "Rejection Reason" %}:</label>
+            <textarea id="rejection_reason" name="rejection_reason" class="form-control" rows="4" required></textarea>
+            <small class="form-text text-muted">{% trans "This reason will be sent to the author" %}</small>
+        </div>
+        
+        <div class="form-actions mt-4">
+            <button type="submit" class="btn btn-danger">{% trans "Confirm Rejection" %}</button>
+            <a href="{{ cancel_url }}" class="btn btn-secondary">{% trans "Cancel" %}</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

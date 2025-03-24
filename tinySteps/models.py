@@ -7,60 +7,7 @@ from django.db import models
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import gettext as _
-from .services import NewsAPIService, CurrentsAPI
-
-# ------------------------------------------
-# -- GENERIC MODELS --
-# ------------------------------------------
-class Comment_Model(models.Model):
-    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
-    object_id = models.PositiveIntegerField()
-    content_object = GenericForeignKey('content_type', 'object_id')
-    
-    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='all_comments')
-    text = models.TextField(_("Text"))
-    created_at = models.DateTimeField(_("Created at"), auto_now_add=True)
-    
-    class Meta:
-        ordering = ['-created_at']
-        indexes = [
-            models.Index(fields=['content_type', 'object_id']),
-        ]
-        verbose_name = _("Comment")
-        verbose_name_plural = _("Comments")
-    
-    def __str__(self):
-        truncated_text = (self.text[:30] + "...") if len(self.text) > 30 else self.text
-        return f"{self.content_object} - {truncated_text}"
-
-class Like_Model(models.Model):
-    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
-    object_id = models.PositiveIntegerField()
-    content_object = GenericForeignKey('content_type', 'object_id')
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    created_at = models.DateTimeField(_("Created at"), auto_now_add=True)
-
-    class Meta:
-        unique_together = ('content_type', 'object_id', 'user')
-        verbose_name = _("Like")
-        verbose_name_plural = _("Likes")
-    
-    def __str__(self):
-        return _("%(username)s liked %(object)s") % {'username': self.user.username, 'object': self.content_object}
-
-class Notification_Model(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='notifications')
-    message = models.TextField(_("Message"))
-    created_at = models.DateTimeField(_("Created at"), auto_now_add=True)
-    read = models.BooleanField(_("Read"), default=False)
-    
-    class Meta:
-        ordering = ['-created_at']
-        verbose_name = _("Notification")
-        verbose_name_plural = _("Notifications")
-        
-    def __str__(self):
-        return f"{self.user.username} - {self.message[:30]}..."
+from django.utils.text import slugify
 
 # ------------------------------------------
 # -- USER RELATED MODELS --
@@ -109,7 +56,7 @@ class PasswordReset_Model(models.Model):
     
     def get_absolute_url(self):
         return reverse('password_reset_confirm', kwargs={'token': self.token})
-    
+
 # ------------------------------------------
 # -- CHILD RELATED MODELS --
 # ------------------------------------------
@@ -234,14 +181,341 @@ class CalendarEvent_Model(models.Model):
         return f"{self.title} - {self.date}"
 
 # ------------------------------------------
-# -- CONTENT MODELS --
+# -- GENERIC MODELS --
 # ------------------------------------------
-class ParentsForum_Model(models.Model):
+class Comment_Model(models.Model):
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey('content_type', 'object_id')
+    
+    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='all_comments')
+    text = models.TextField(_("Text"))
+    created_at = models.DateTimeField(_("Created at"), auto_now_add=True)
+    
+    class Meta:
+        ordering = ['-created_at']
+        indexes = [
+            models.Index(fields=['content_type', 'object_id']),
+        ]
+        verbose_name = _("Comment")
+        verbose_name_plural = _("Comments")
+    
+    def __str__(self):
+        truncated_text = (self.text[:30] + "...") if len(self.text) > 30 else self.text
+        return f"{self.content_object} - {truncated_text}"
+
+class Like_Model(models.Model):
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey('content_type', 'object_id')
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(_("Created at"), auto_now_add=True)
+
+    class Meta:
+        unique_together = ('content_type', 'object_id', 'user')
+        verbose_name = _("Like")
+        verbose_name_plural = _("Likes")
+    
+    def __str__(self):
+        return _("%(username)s liked %(object)s") % {'username': self.user.username, 'object': self.content_object}
+
+
+class CommentableMixin:
+    """Mixin for models that can receive comments - supports DIP"""
+    
+    @property
+    def comments_count(self):
+        """Get the number of comments for this object"""
+        from django.contrib.contenttypes.models import ContentType
+        content_type = ContentType.objects.get_for_model(self.__class__)
+        return Comment_Model.objects.filter(
+            content_type=content_type,
+            object_id=self.id
+        ).count()
+    
+    def add_comment(self, user, text):
+        """Add a comment to this object"""
+        from django.contrib.contenttypes.models import ContentType
+        content_type = ContentType.objects.get_for_model(self.__class__)
+        comment = Comment_Model.objects.create(
+            content_type=content_type,
+            object_id=self.id,
+            author=user,
+            text=text
+        )
+        return comment
+
+class LikeableMixin:
+    """Mixin for models that can be liked - supports DIP"""
+    
+    @property
+    def likes_count(self):
+        """Get the number of likes for this object"""
+        from django.contrib.contenttypes.models import ContentType
+        content_type = ContentType.objects.get_for_model(self.__class__)
+        return Like_Model.objects.filter(
+            content_type=content_type,
+            object_id=self.id
+        ).count()
+    
+    def toggle_like(self, user):
+        """Toggle like status for this object"""
+        from django.contrib.contenttypes.models import ContentType
+        content_type = ContentType.objects.get_for_model(self.__class__)
+        like, created = Like_Model.objects.get_or_create(
+            content_type=content_type,
+            object_id=self.id,
+            user=user
+        )
+        if not created:
+            like.delete()
+            return False
+        return True
+
+
+
+# ------------------------------------------
+# -- GUIDES MODELS --
+# ------------------------------------------
+class Guide_Interface(models.Model):
+    """Abstract base class for the Guide interface class following ISP"""
+    
+    class Meta:
+        abstract = True  # ABSTRACT CLASS FOR GUIDES!
+    
+    def get_related_content(self):
+        """Get content related to this guide"""
+        raise NotImplementedError("Subclasses must implement this method")
+    
+    @classmethod
+    def get_latest(cls, count=5):
+        """Get latest guides of this type"""
+        raise NotImplementedError("Subclasses must implement this method")
+    
+    @classmethod
+    def get_related_articles(cls):
+        """Get related external articles for this guide type"""
+        raise NotImplementedError("Subclasses must implement this method")
+    
+class Guides_Model(Guide_Interface, CommentableMixin):
+    GUIDE_TYPE_CHOICES = (
+        ('parent', _("Parent Guide")),
+        ('nutrition', _("Nutrition Guide")),
+    )
+    STATUS_CHOICES = (
+        ('pending', _("Pending Approval")),
+        ('approved', _("Approved")),
+        ('rejected', _("Rejected")),
+    )
+    PREDEFINED_TAGS = {
+        'parent': ['parenting', 'childcare', 'education'],
+        'nutrition': ['diet', 'health', 'recipes']
+    }
+    
+    title = models.CharField(_("Title"), max_length=100)
+    slug = models.SlugField(
+        _("Slug"),
+        unique=True,
+        blank=True,
+        help_text=_("SEO-friendly URL; auto-generated if empty.")
+    )
+    desc = models.TextField(_("Description"), max_length=2000)
+    image = models.ImageField(
+        _("Image"),
+        upload_to='guide_images/',
+        null=True,
+        blank=True,
+        help_text=_("Upload an image for the guide.")
+    )
+    tags = models.TextField(
+        _("Tags"),
+        null=True,
+        blank=True,
+        help_text=_("Comma-separated tags for the guide.")
+    )
+    guide_type = models.CharField(_("Guide type"), max_length=20, choices=GUIDE_TYPE_CHOICES, default='parent')
+    status = models.CharField(_("Status"), max_length=20, choices=STATUS_CHOICES, default='pending')
+    created_at = models.DateTimeField(_("Created at"), auto_now_add=True)
+    published_at = models.DateTimeField(
+        _("Published at"), null=True, blank=True,
+        help_text=_("Set this field when the guide is published.")
+    )
+    approved_at = models.DateTimeField(_("Approved at"), null=True, blank=True)
+    rejection_reason = models.TextField(_("Rejection Reason"), max_length=500, null=True, blank=True)
+    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='guides')
+    comments = GenericRelation('Comment_Model', related_query_name='guide')
+
+    def __str__(self):
+        return self.title
+    
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.title)
+        super().save(*args, **kwargs)
+
+    def get_absolute_url(self):
+        return reverse(f'{self.guide_type}_guide_details', kwargs={'pk': self.pk})
+        
+    @property
+    def predefined_tags(self):
+        return self.PREDEFINED_TAGS.get(self.guide_type, [])
+    
+    def set_tags(self, tags):
+        """Set tags for the guide as a comma-separated string!"""
+        if isinstance(tags, list):
+            self.tags = ','.join([tag.strip() for tag in tags if tag.strip()])
+        elif isinstance(tags, str):
+            self.tags = ','.join([tag.strip() for tag in tags.split(',') if tag.strip()])
+        else:
+            self.tags = None
+        self.save()
+
+    @classmethod
+    def create_from_form(cls, form, guide_type, user):
+        """ Create a new guide from a form """
+        guide = cls(
+            title=form.cleaned_data['title'],
+            desc=form.cleaned_data['desc'],
+            image=form.cleaned_data.get('image'),
+            author=user,
+            guide_type=guide_type,
+            slug=f"{slugify(form.cleaned_data['title'])}-{int(time.time())}"
+        )
+        
+        guide.save()
+        
+        # Handle tags from the form
+        tags_text = form.cleaned_data.get('tags', '')
+        if tags_text:
+            guide.set_tags(tags_text)
+            
+        return guide
+
+class BaseGuide_Manager(models.Manager):
+    """
+    Base manager for guide models implementing the Liskov Substitution Principle
+    This manager provides common functionality for managing guide objects,
+    such as filtering approved guides. It serves as a foundation for more
+    specific guide managers like ParentGuides_Manager and NutritionGuides_Manager
+    """
+
+    def get_approved(self):
+        return self.filter(status='approved')
+
+class ParentGuides_Manager(BaseGuide_Manager):
+    """Manager for parent guides"""
+    def get_queryset(self):
+        return super().get_queryset().filter(guide_type='parent')
+
+class ParentsGuides_Model(Guides_Model):
+    objects = ParentGuides_Manager()
+    
+    class Meta:
+        proxy = True
+        verbose_name = _("Parent Guide")
+        verbose_name_plural = _("Parent Guides")
+    
+    def save(self, *args, **kwargs):
+        self.guide_type = 'parent'
+        super().save(*args, **kwargs)
+    
+    # USES THE EXTERNAL ARTICLES DATA!
+    def get_related_content(self):
+        """Get content related to this guide"""
+        return {
+            'guides': ParentsGuides_Model.objects.filter(
+                status='approved'
+            ).exclude(pk=self.pk)[:3],
+            'articles': ExternalArticle_Model.objects.filter(
+                category='parenting'
+            ).order_by('-published_at')[:3]
+        }
+
+    @classmethod
+    def get_latest(cls, count=5):
+        """Get latest parent guides"""
+        return cls.objects.filter(
+            guide_type='parent',
+            status='approved'
+        ).order_by('-created_at')[:count]
+    
+    @classmethod
+    def get_related_articles(cls):
+        """Get related external articles for parent guides"""
+        return ExternalArticle_Model.objects.filter(
+            category='parenting'
+        ).order_by('-published_at')[:3]
+
+class NutritionGuides_Manager(BaseGuide_Manager):
+    """Manager for nutrition guides"""
+    def get_queryset(self):
+        return super().get_queryset().filter(guide_type='nutrition')
+      
+class NutritionGuides_Model(Guides_Model):
+    """Proxy model for nutrition guides implementing the Interface Segregation Principle"""
+    objects = NutritionGuides_Manager()
+    
+    class Meta:
+        proxy = True
+        verbose_name = _("Nutrition Guide")
+        verbose_name_plural = _("Nutrition Guides")
+    
+    def save(self, *args, **kwargs):
+        self.guide_type = 'nutrition'
+        super().save(*args, **kwargs)
+
+    # USES THE EXTERNAL NUTRITION DATA!
+    def get_related_content(self):
+        """Get content related to this guide"""
+        return {
+            'guides': NutritionGuides_Model.objects.filter(
+                status='approved'
+            ).exclude(pk=self.pk)[:3],
+            'articles': ExternalArticle_Model.objects.filter(
+                category='nutrition'
+            ).order_by('-published_at')[:3]
+        }
+    
+    @classmethod
+    def get_latest(cls, count=5):
+        """Get latest nutrition guides"""
+        return cls.objects.filter(
+            guide_type='nutrition',
+            status='approved'
+        ).order_by('-created_at')[:count]
+    
+    @classmethod
+    def get_related_articles(cls):
+        """Get related external articles for nutrition guides"""
+        return ExternalArticle_Model.objects.filter(
+            category='nutrition'
+        ).order_by('-published_at')[:3]
+    
+    
+# ------------------------------------------
+# -- FORUM MODELS --
+# ------------------------------------------
+class ParentsForum_Model(models.Model, CommentableMixin, LikeableMixin):
+    CATEGORY_CHOICES = [
+        ('advice', _('Advice')),
+        ('feeding', _('Feeding')),
+        ('sleep', _('Sleep')),
+        ('health', _('Health')),
+        ('development', _('Development')),
+        ('care', _('Baby Care')),
+    ]
+
     title = models.CharField(_("Title"), max_length=100, db_index=True)
     created_at = models.DateTimeField(_("Created at"), auto_now_add=True, db_index=True)
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='forum_posts')
     desc = models.TextField(_("Description"), max_length=2000, null=False, blank=False)
-    comments = GenericRelation(Comment_Model, related_query_name='forum')
+    category = models.CharField(
+        _("Category"),
+        max_length=20,
+        choices=CATEGORY_CHOICES,
+        default='advice'
+    )
+    comments = GenericRelation('Comment_Model', related_query_name='forum')
     likes = models.ManyToManyField(User, related_name='liked_posts', blank=True)
     
     class Meta:
@@ -251,21 +525,6 @@ class ParentsForum_Model(models.Model):
         verbose_name = _("Parents Forum Post")
         verbose_name_plural = _("Parents Forum Posts")
     
-    @property
-    def likes_count(self):
-        return self.likes.count()
-    
-    @property
-    def comments_count(self):
-        return self.comments.count()
-
-    @property
-    def likes_count(self):
-        content_type = ContentType.objects.get_for_model(self.__class__)
-        return Like_Model.objects.filter(
-            content_type=content_type,
-            object_id=self.id
-        ).count()
     
     def __str__(self):
         truncated_desc = (self.desc[:30] + "...") if len(self.desc) > 30 else self.desc
@@ -274,65 +533,26 @@ class ParentsForum_Model(models.Model):
     def get_absolute_url(self):
         return reverse('view_post', kwargs={'post_id': self.pk})
 
-class Guides_Model(models.Model):
-    GUIDE_TYPE_CHOICES = (
-        ('parent', _("Parent Guide")),
-        ('nutrition', _("Nutrition Guide")),
-    )
-    
-    title = models.CharField(_("Title"), max_length=100)
-    created_at = models.DateTimeField(_("Created at"), auto_now_add=True)
-    author = models.CharField(_("Author"), max_length=100, null=False, blank=False)
-    desc = models.TextField(_("Description"), max_length=2000, null=False, blank=False)
-    image_url = models.CharField(_("Image URL"), max_length=200, default='images/others/default.jpg')
-    guide_type = models.CharField(_("Guide type"), max_length=20, choices=GUIDE_TYPE_CHOICES, default='parent')
-    comments = GenericRelation(Comment_Model, related_query_name='guide')
-    
-    class Meta:
-        verbose_name = _("Guide")
-        verbose_name_plural = _("Guides")
-    
-    def __str__(self):
-        truncated_desc = (self.desc[:30] + "...") if len(self.desc) > 30 else self.desc
-        return f"{self.title} - {truncated_desc}"
-    
-    def get_absolute_url(self):
-        if self.guide_type == 'parent':
-            return reverse('parents_guide_details', kwargs={'pk': self.pk})
-        elif self.guide_type == 'nutrition':
-            return reverse('nutrition_guide_details', kwargs={'pk': self.pk})
-        return reverse('guide_details', kwargs={'pk': self.pk})
-
-class ParentsGuides_Model(Guides_Model):
-    class Meta:
-        proxy = True
-        verbose_name = _("Parent Guide")
-        verbose_name_plural = _("Parent Guides")
-        
-    def save(self, *args, **kwargs):
-        self.guide_type = 'parent'
-        super().save(*args, **kwargs)
-    
-    @classmethod
-    def get_queryset(cls):
-        return Guides_Model.objects.filter(guide_type='parent')
-        
-class NutritionGuides_Model(Guides_Model):
-    class Meta:
-        proxy = True
-        verbose_name = _("Nutrition Guide")
-        verbose_name_plural = _("Nutrition Guides")
-        
-    def save(self, *args, **kwargs):
-        self.guide_type = 'nutrition'
-        super().save(*args, **kwargs)
-    
-    @classmethod
-    def get_queryset(cls):
-        return Guides_Model.objects.filter(guide_type='nutrition')
 
 # ------------------------------------------
-# -- UTILITY MODELS --
+# -- NOTIFICATION MODEL --
+# ------------------------------------------
+class Notification_Model(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='notifications')
+    message = models.TextField(_("Message"))
+    created_at = models.DateTimeField(_("Created at"), auto_now_add=True)
+    read = models.BooleanField(_("Read"), default=False)
+    
+    class Meta:
+        ordering = ['-created_at']
+        verbose_name = _("Notification")
+        verbose_name_plural = _("Notifications")
+        
+    def __str__(self):
+        return f"{self.user.username} - {self.message[:30]}..."
+
+# ------------------------------------------
+# -- CONTACT MODEL --
 # ------------------------------------------
 class Contact_Model(models.Model):
     name = models.CharField(_("Name"), max_length=100)
@@ -349,7 +569,31 @@ class Contact_Model(models.Model):
     
     def get_absolute_url(self):
         return reverse('contact')
-    
+
+# ------------------------------------------
+# -- LOGGING MODEL (FOR ADMIN) --
+# ------------------------------------------
+class ConnectionError_Model(models.Model):
+    error_type = models.CharField(max_length=100)
+    path = models.CharField(max_length=255)
+    method = models.CharField(max_length=10)
+    client_ip = models.GenericIPAddressField(null=True)
+    user = models.CharField(max_length=150, blank=True)
+    user_agent = models.TextField(blank=True)
+    timestamp = models.DateTimeField(auto_now_add=True)
+    traceback = models.TextField(blank=True)
+
+    class Meta:
+        ordering = ['-timestamp']
+        verbose_name = "Connection Error"
+        verbose_name_plural = "Connection Errors"
+        
+    def __str__(self):
+        return f"{self.error_type} at {self.timestamp}"
+
+
+
+
 # ------------------------------------------
 # -- EXTERNAL APIs MODELS --
 # ------------------------------------------
@@ -376,26 +620,6 @@ class ExternalArticle_Model(models.Model):
     def __str__(self):
         return self.title
     
-    @classmethod
-    def update_from_apis(cls, topic=None):
-        news_service = NewsAPIService()
-        currents_service = CurrentsAPI()
-        
-        if topic:
-            articles = news_service.get_parenting_articles_by_topic(topic, force_refresh=True)
-            news = currents_service.get_news_by_topic(topic, force_refresh=True)
-        else:
-            articles = news_service.get_parenting_articles(force_refresh=True)
-            news = currents_service.get_first_time_parent_news(force_refresh=True)
-        
-        if articles:
-            cls._update_articles(articles)
-
-        if news:
-            cls._update_news(news)
-        
-        return True
-
 class ExternalNutritionData_Model(models.Model):
     ingredient = models.CharField(_("Ingredient"), max_length=200)
     data = models.JSONField(_("Nutrition Data"))
@@ -409,27 +633,4 @@ class ExternalNutritionData_Model(models.Model):
     
     def __str__(self):
         return f"Nutrition data for {self.ingredient}"
-    
 
-
-# ------------------------------------------
-# -- LOGGING MODEL (FOR ADMIN) --
-# ------------------------------------------
-class ConnectionError_Model(models.Model):
-    error_type = models.CharField(max_length=100)
-    path = models.CharField(max_length=255)
-    method = models.CharField(max_length=10)
-    client_ip = models.GenericIPAddressField(null=True)
-    user = models.CharField(max_length=150, blank=True)
-    user_agent = models.TextField(blank=True)
-    timestamp = models.DateTimeField(auto_now_add=True)
-    traceback = models.TextField(blank=True)
-
-    class Meta:
-        ordering = ['-timestamp']
-        verbose_name = "Connection Error"
-        verbose_name_plural = "Connection Errors"
-        
-    def __str__(self):
-        return f"{self.error_type} at {self.timestamp}"
-    

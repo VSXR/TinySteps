@@ -3,58 +3,113 @@
 {% load i18n %}
 
 {% block title %}
-    {{ nutrition_guide.title }} - {% trans "NUTRITION GUIDE" %}
+{{ guide.title }} - {% trans "TINY STEPS" %}
 {% endblock %}
 
 {% block main_contents %}
-    <main id="main-content">
-        <div class="container mt-4">
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="{% url 'index' %}">{% trans "Home" %}</a></li>
-                    <li class="breadcrumb-item"><a href="{% url 'nutrition_guides' %}">{% trans "Nutrition Guides" %}</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">{{ nutrition_guide.title }}</li>
-                </ol>
-            </nav>
-            
-            <article class="card mb-4">
-                <div class="card-header">
-                    <h2>{{ nutrition_guide.title }}</h2>
-                </div>
-                <div class="card-body">
-                    {% if nutrition_guide.image %}
-                        <img src="{{ nutrition_guide.image.url }}" 
-                             alt="{% blocktrans with title=nutrition_guide.title %}Illustration for {{ title }} nutrition guide{% endblocktrans %}" 
-                             class="img-fluid mb-3" loading="lazy">
-                    {% endif %}
-                    
-                    <p class="text-muted">{% blocktrans with date=nutrition_guide.created_at|date:"d/m/Y" %}Published: {{ date }}{% endblocktrans %}</p>
-                    <div class="guide-content">
-                        {{ nutrition_guide.content|safe }}
-                    </div>
-                    
-                    {% if nutrition_guide.tags.all %}
-                        <div class="mt-3" aria-labelledby="categories-heading">
-                            <h3 id="categories-heading" class="h6 d-inline">{% trans "Categories:" %}</h3>
-                            <ul class="list-inline d-inline">
-                                {% for tag in nutrition_guide.tags.all %}
-                                    <li class="list-inline-item">
-                                        <span class="badge bg-secondary">{{ tag.name }}</span>
-                                    </li>
-                                {% endfor %}
-                            </ul>
+<main id="main-content">
+    <div class="container my-4">
+        {% include 'guides/components/breadcrumbs.html' with is_detail=True guide=guide %}
+        
+        <div class="row">
+            <!-- Main content column -->
+            <div class="col-lg-8">
+                <article class="card shadow-sm mb-4">
+                    <div class="card-body p-4">
+                        <h1 class="card-title mb-3">{{ guide.title }}</h1>
+                        
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <div class="meta text-muted">
+                                <span><i class="fa-solid fa-user me-1"></i> {{ guide.author.username }}</span>
+                                <span class="ms-3"><i class="fa-solid fa-calendar me-1"></i> {{ guide.approved_at|date:"F d, Y" }}</span>
+                            </div>
+                            <span class="badge bg-{% if section_type == 'nutrition' %}success{% else %}primary{% endif %}">
+                                {% if section_type == 'nutrition' %}
+                                    {% trans "Nutrition" %}
+                                {% else %}
+                                    {% trans "Parenting" %}
+                                {% endif %}
+                            </span>
                         </div>
-                    {% endif %}
-                </div>
-            </article>
-            <!-- Back to Guides Button -->
-            <div class="row mt-5 mb-4">
-                <div class="col text-center">
-                    <a href="{% url 'guides' %}" class="btn btn-primary" aria-label="{% trans "Return to guides page" %}">
-                        {% trans "Back to Guides" %}
-                    </a>
-                </div>
+                        
+                        {% if guide.image_url %}
+                            <img src="{{ guide.image_url }}" alt="{{ guide.title }}" class="img-fluid rounded mb-4">
+                        {% endif %}
+                        
+                        <div class="guide-content">
+                            {{ guide.desc|linebreaks }}
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Comments section -->
+                <section aria-labelledby="comments-heading" id="comments" class="mb-4">
+                    <div class="card shadow-sm">
+                        <div class="card-header bg-light">
+                            <h2 id="comments-heading" class="h5 mb-0">
+                                {% if comments %}
+                                    {% blocktrans count counter=comments.count %}Comment ({{ counter }}){% plural %}Comments ({{ counter }}){% endblocktrans %}
+                                {% else %}
+                                    {% trans "Comments" %}
+                                {% endif %}
+                            </h2>
+                        </div>
+                        <div class="card-body">
+                            {% if comments %}
+                                <div class="comment-list">
+                                    {% for comment in comments %}
+                                        <div class="card mb-3" id="comment-{{ comment.id }}">
+                                            <div class="card-body">
+                                                <div class="d-flex justify-content-between mb-2">
+                                                    <div>
+                                                        <strong>{{ comment.author.username }}</strong>
+                                                    </div>
+                                                    <time datetime="{{ comment.created_at|date:'Y-m-d' }}" class="text-muted">
+                                                        {{ comment.created_at|date:"M j, Y" }}
+                                                    </time>
+                                                </div>
+                                                <p>{{ comment.text }}</p>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                <p class="text-center my-4">{% trans "No comments yet. Be the first to comment!" %}</p>
+                            {% endif %}
+
+                            <div class="card mt-4">
+                                <div class="card-header">
+                                    <h3 class="card-title h5 mb-0">{% trans "Add Your Comment" %}</h3>
+                                </div>
+                                <div class="card-body">
+                                    {% if user.is_authenticated %}
+                                        <form id="comment-form" method="post" action="{% url 'add_comment' 'nutrition_guide' guide.id %}">
+                                            {% csrf_token %}
+                                            <div class="form-group mb-3">
+                                                <label for="comment-content" class="form-label">{% trans "Your comment" %}</label>
+                                                <textarea id="comment-content" name="content" class="form-control" rows="3" required></textarea>
+                                            </div>
+                                            <button type="submit" class="btn btn-success">
+                                                <i class="fas fa-paper-plane me-2"></i>{% trans "Post Comment" %}
+                                            </button>
+                                        </form>
+                                    {% else %}
+                                        <div class="alert alert-info mb-0">
+                                            {% trans "Please" %} <a href="{% url 'login' %}?next={{ request.path }}">{% trans "log in" %}</a> {% trans "to leave a comment." %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+            
+            <!-- Sidebar column -->
+            <div class="col-lg-4">
+                {% include 'guides/components/sidebar.html' with recent_guides=related_guides section_type=section_type %}
             </div>
         </div>
-    </main>
-{% endblock main_contents %}
+    </div>
+</main>
+{% endblock %}

@@ -73,6 +73,13 @@
 
                     <!-- Post content -->
                     <div class="post-content mb-4">{{ post.desc|safe|linebreaks }}</div>
+
+                    <!-- Post tags -->
+                    <div class="post-tags mt-3">
+                        <a href="{% url 'parents_forum' %}?category={{ post.category }}" class="badge bg-primary text-decoration-none">
+                            #{{ post.get_category_display }}
+                        </a>
+                    </div>
                 </div>
             </article>
 

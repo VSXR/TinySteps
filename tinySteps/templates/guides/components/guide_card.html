@@ -1,0 +1,37 @@
+{% load static %}
+{% load i18n %}
+
+<article class="card h-100 shadow-sm">
+    {% if guide.image %}
+        <img src="{{ guide.image.url }}" class="card-img-top" loading="lazy"
+             alt="{% blocktrans with title=guide.title %}Visual representation for {{ title }} guide{% endblocktrans %}">
+    {% else %}
+        <img src="{% static 'img/others/default.jpg' %}" class="card-img-top" loading="lazy"
+             alt="{% if guide.guide_type == 'nutrition' %}{% trans 'Default nutrition guide illustration' %}{% else %}{% trans 'Default parenting guide illustration' %}{% endif %}">
+    {% endif %}
+    <div class="card-body">
+        <h3 class="card-title h5">{{ guide.title }}</h3>
+        <p class="card-text">{{ guide.desc|truncatechars:120 }}</p>
+        
+        {% if guide.tags.all %}
+            <div class="mt-2">
+                {% for tag in guide.tags.all %}
+                    <span class="badge bg-secondary">{{ tag.name }}</span>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+    <div class="card-footer bg-transparent border-top-0 text-end">
+        {% if guide.guide_type == 'nutrition' %}
+            <a href="{% url 'nutrition_guide_details' guide.id %}" class="btn btn-success" 
+               aria-label="{% blocktrans with title=guide.title %}Show details for {{ title }}{% endblocktrans %}">
+               {% trans "Show guide" %}
+            </a>
+        {% else %}
+            <a href="{% url 'parent_guide_details' guide.id %}" class="btn btn-primary" 
+               aria-label="{% blocktrans with title=guide.title %}Show details for {{ title }}{% endblocktrans %}">
+               {% trans "Show guide" %}
+            </a>
+        {% endif %}
+    </div>
+</article>

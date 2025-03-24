@@ -1,16 +1,17 @@
 from django.core.management.base import BaseCommand
-from tinySteps.services import NewsAPIService, CurrentsAPI
+from tinySteps.services import NewsAPI_Service, CurrentsAPI_Service
 from tinySteps.models import ExternalArticle_Model
 from django.utils import timezone
 
 class Command(BaseCommand):
+    
     help = 'Updates news articles from external APIs'
     
     def handle(self, *args, **options):
         self.stdout.write('Updating news articles...')
         
-        news_service = NewsAPIService()
-        currents_service = CurrentsAPI()
+        news_service = NewsAPI_Service()
+        currents_service = CurrentsAPI_Service()
         articles = news_service.get_parenting_articles(force_refresh=True)
         news = currents_service.get_first_time_parent_news(force_refresh=True)
         

@@ -2,15 +2,16 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.http import HttpResponseNotFound
 from django.urls import path, include
-from . import views
 import time
 from django.db import connections
-from django.http import JsonResponse, HttpResponse
+from django.http import JsonResponse
+from . import views
+from .factories import GuideUrl_Factory
 
 # -----------------------------------------------
 # -- TESTING VIEWS (FOR DEVELOPMENT)
 # -----------------------------------------------
-def db_connection_test(request):
+def db_connection_test(_request):
     start_time = time.time()
     try:
         # Testing for the database connectivity (error 500 if fails!)
@@ -34,7 +35,7 @@ def db_connection_test(request):
             'error_type': type(e).__name__,
         }, status=500)
 
-def favicon_view(request):
+def favicon_view(_request):
     return HttpResponseNotFound("Favicon no encontrado")
 
 # Main site URLs
@@ -72,19 +73,17 @@ urlpatterns = [
         
     # GUIDES
     path('guides/', views.guides_page, name='guides'),
+    path('guides/my-guides/', views.my_guides, name='my_guides'),
+    path('guides/submit/', views.SubmitGuide_View.as_view(), name='submit_guide'),
     
-    # Parents Guides
-    path('guides/parents/articles/', views.parenting_articles, name='parenting_articles'),
-    path('guides/parents/articles/<int:article_id>/', views.parenting_article_details, name='parenting_article_details'),
-    path('guides/parents/', views.parents_guides_page, name='parents_guides'),
-    path('guides/parents/<int:pk>/', views.parent_guide_details, name='parents_guide_details'),
-
-    # Nutrition Guides
-    path('guides/nutrition/analyzer/', views.nutrition_analyzer, name='nutrition_analyzer'),
-    path('guides/nutrition/articles/', views.nutrition_articles, name='nutrition_articles'),
-    path('guides/nutrition/articles/<int:article_id>/', views.nutrition_article_details, name='nutrition_article_details'),
-    path('guides/nutrition/', views.nutrition_guides_page, name='nutrition_guides'),  # URL más general al final
-    path('guides/nutrition/<int:pk>/', views.nutrition_guide_details, name='nutrition_guide_details'),
+    # Review guides (admin only)
+    path('guides/review/', views.review_guides, name='review_guides'),
+    path('guides/approve/<int:pk>/', views.approve_guide, name='approve_guide'),
+    path('guides/reject/<int:pk>/', views.reject_guide, name='reject_guide'),
+    
+    # Guide sections (nutrition & parent)
+    *GuideUrl_Factory.create_urls('nutrition'),
+    *GuideUrl_Factory.create_urls('parent'),
 
     # CONTACT
     path('contact/', views.Contact_View.as_view(), name='contact'),

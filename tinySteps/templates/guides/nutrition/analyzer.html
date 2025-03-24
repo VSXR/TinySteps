@@ -1,11 +1,13 @@
 {% extends 'base.html' %}
 {% load i18n %}
+{% load custom_filters %}
 
 {% block title %}{% trans "Baby Food Nutrition Analyzer" %} - TINY STEPS{% endblock %}
 
 {% block main_contents %}
 <section class="container my-4">
     <h1 class="mb-4">{% trans "Baby Food Nutrition Analyzer" %}</h1>
+    {% include 'guides/components/breadcrumbs.html' with section_type='nutrition' is_articles=False is_detail=False custom_text='Nutrition Analyzer' %}
     
     <div class="card shadow-sm">
         <div class="card-body">
@@ -73,7 +75,7 @@
                                 <h3 class="h5 card-title">{% trans "Vitamins & Minerals" %}</h3>
                                 <ul class="list-group list-group-flush">
                                     {% for key, nutrient in result.totalNutrients.items %}
-                                        {% if key in 'VITA_RAE,VITC,CA,FE' %}
+                                        {% if key == 'VITA_RAE' or key == 'VITC' or key == 'CA' or key == 'FE' %}
                                         <li class="list-group-item d-flex justify-content-between align-items-center">
                                             {{ nutrient.label }}
                                             <span class="badge bg-secondary rounded-pill">

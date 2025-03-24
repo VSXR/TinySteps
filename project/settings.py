@@ -1,57 +1,80 @@
-import os, socket
+import os
+import socket
+import logging
 from pathlib import Path
 from dotenv import load_dotenv
 from django.utils.translation import gettext_lazy as _
+import colorama  
 
+colorama.init()
 load_dotenv()
 
 # ---------------------------------------------------------------
-# CONFIGURACIONES BÁSICAS
+# CORE SETTINGS
 # ---------------------------------------------------------------
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# SECURITY WARNING: don't run with debug turned on in production!
+DEBUG = True
+# DEBUG = os.environ.get('DEBUG', 'False').lower() == 'true'
+
 SECRET_KEY = os.environ.get('SECRET_KEY')
-
-DEBUG = os.environ.get('DEBUG', 'False').lower() == 'true'
+if not SECRET_KEY and not DEBUG:
+    raise ValueError("SECRET_KEY environment variable is required in production")
 
 # ---------------------------------------------------------------
-# CONFIGURACIONES DE SEGURIDAD
+# SECURITY SETTINGS
 # ---------------------------------------------------------------
-ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '').split(',') if not DEBUG else ['*']
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',') if not DEBUG else ['*']
 
 CSRF_TRUSTED_ORIGINS = [
-    'https://tinySteps-django.azurewebsites.net',  # URL de producción
+    'https://tinySteps-django.azurewebsites.net',  # Production URL
+    'http://localhost:8000',                        # Local development
 ]
 
-CSRF_COOKIE_SECURE = True
-SESSION_COOKIE_SECURE = True
+# Security settings for production
+if not DEBUG:
+    CSRF_COOKIE_SECURE = True
+    SESSION_COOKIE_SECURE = True
+    SECURE_SSL_REDIRECT = True
+    SECURE_HSTS_SECONDS = 31536000  # 1 year
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = True
+    SECURE_CONTENT_TYPE_NOSNIFF = True
+    SECURE_BROWSER_XSS_FILTER = True
+    X_FRAME_OPTIONS = 'DENY'
+
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 # ---------------------------------------------------------------
-# APLICACIONES Y MIDDLEWARE
+# APPLICATIONS AND MIDDLEWARE
 # ---------------------------------------------------------------
-INSTALLED_APPS = [
-    # Aplicaciones Django predeterminadas
+DJANGO_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+]
     
-    # Aplicaciones de terceros
+THIRD_PARTY_APPS = [
     'crispy_forms',
     'crispy_bootstrap4',
     'rest_framework',
     'rest_framework.authtoken',
     'whitenoise.runserver_nostatic',
+    'debug_toolbar',
+]
     
-    # Aplicaciones propias
+PROJECT_APPS = [
     'tinySteps.apps.TinyStepsConfig',
     'api.apps.ApiConfig',
 ]
 
-# Configuración de Crispy Forms
+INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + PROJECT_APPS
+
+# Crispy Forms Configuration
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 # Middleware
@@ -61,15 +84,18 @@ MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',  # CSRF Middleware
+    'django.middleware.csrf.CsrfViewMiddleware',  
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'tinySteps.middleware.broken_pipe_handler.BrokenPipeHandlerMiddleware',
 ]
 
+if DEBUG:
+    MIDDLEWARE.insert(0, 'debug_toolbar.middleware.DebugToolbarMiddleware')
+
 # ---------------------------------------------------------------
-# CONFIGURACIÓN DE URLS Y TEMPLATES
+# TEMPLATES AND URLS CONFIGURATION
 # ---------------------------------------------------------------
 ROOT_URLCONF = "project.urls"
 
@@ -92,10 +118,9 @@ TEMPLATES = [
 WSGI_APPLICATION = "project.wsgi.application"
 
 # ---------------------------------------------------------------
-# CONFIGURACIÓN DE BASES DE DATOS
+# DATABASE CONFIGURATION
 # ---------------------------------------------------------------
-# https://docs.djangoproject.com/en/5.1/ref/settings/#databases
-
+# Check if DB host is reachable
 db_host = os.environ.get('DB_HOST')
 can_connect_to_db = False
 
@@ -107,7 +132,7 @@ if db_host:
         can_connect_to_db = False
 
 if DEBUG or not can_connect_to_db:
-    # DEVELOPMENT DATABASE CONFIGURATION
+    # Development database (SQLite)
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
@@ -115,7 +140,7 @@ if DEBUG or not can_connect_to_db:
         }
     }
 else:
-    # PRODUCTION DATABASE CONFIGURATION
+    # Production database (PostgreSQL)
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
@@ -123,21 +148,18 @@ else:
             'USER': os.environ.get('DB_USER'),
             'PASSWORD': os.environ.get('DB_PASSWORD'),
             'HOST': db_host,
-            'PORT': os.environ.get('DB_PORT'),
+            'PORT': os.environ.get('DB_PORT', '5432'),
             'OPTIONS': {
                 'sslmode': 'require',
                 'sslrootcert': 'Microsoft RSA Root Certificate Authority 2017.crt',
-            }
+            },
+            'CONN_MAX_AGE': 60,  # Keep connections alive for 60 seconds
         }
     }
 
 # ---------------------------------------------------------------
-# CONFIGURACIÓN DE INTERNACIONALIZACIÓN
+# INTERNATIONALIZATION CONFIGURATION
 # ---------------------------------------------------------------
-# https://docs.djangoproject.com/en/5.1/topics/i18n/
-# https://docs.djangoproject.com/en/3.2/topics/i18n/
-# https://dev.to/doridoro/adding-translation-to-django-portfolio-project-4g42
-
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'Europe/Madrid'
 USE_I18N = True
@@ -150,60 +172,44 @@ LANGUAGES = [
 ]
 
 LOCALE_PATHS = [
-    os.path.join(BASE_DIR, 'locale'),
+    BASE_DIR / 'locale',
 ]
 
 # ---------------------------------------------------------------
-# CONFIGURACIÓN DE ARCHIVOS ESTÁTICOS Y MEDIA
+# STATIC FILES AND MEDIA CONFIGURATION
 # ---------------------------------------------------------------
-# Static files (CSS, JavaScript, Images)
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'tinySteps', 'static'),
+    BASE_DIR / 'tinySteps' / 'static',
 ]
 
-# Static files finders
 STATICFILES_FINDERS = [
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 ]
 
 # Static files storage configuration
-if DEBUG:
-    # Development configuration
-    WHITENOISE_MAX_AGE = 31536000  # 1 year in seconds (for caching static files)
-else:
-    # Production configuration
+if not DEBUG:
     STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+    WHITENOISE_MAX_AGE = 31536000  # 1 year in seconds
 
-# Configuración de archivos de medios (separada de estáticos)
+# Media files configuration
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_ROOT = BASE_DIR / 'media'
 
 # ---------------------------------------------------------------
-# CONFIGURACIÓN DE AUTENTICACIÓN
+# AUTHENTICATION CONFIGURATION
 # ---------------------------------------------------------------
-# Password validation
-# https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
-
 AUTH_PASSWORD_VALIDATORS = [
-    {
-        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
-    },
+    {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
+    {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
+    {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
+    {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
 
 # ---------------------------------------------------------------
-# CONFIGURACIÓN DE REST FRAMEWORK
+# REST FRAMEWORK CONFIGURATION
 # ---------------------------------------------------------------
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
@@ -215,7 +221,15 @@ REST_FRAMEWORK = {
     ],
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 10,
-    'EXCEPTION_HANDLER': 'api.exceptions.custom_exception_handler'
+    'EXCEPTION_HANDLER': 'api.exceptions.custom_exception_handler',
+    'DEFAULT_THROTTLE_CLASSES': [
+        'rest_framework.throttling.AnonRateThrottle',
+        'rest_framework.throttling.UserRateThrottle'
+    ],
+    'DEFAULT_THROTTLE_RATES': {
+        'anon': '100/day',
+        'user': '1000/day'
+    }
 }
 
 # ---------------------------------------------------------------
@@ -227,7 +241,7 @@ NEWS_API_KEY = os.environ.get('NEWS_API_KEY')
 CURRENTS_API_KEY = os.environ.get('CURRENTS_API_KEY')
 
 # ---------------------------------------------------------------
-# CONFIGURACIÓN DE CORREO ELECTRÓNICO
+# EMAIL CONFIGURATION
 # ---------------------------------------------------------------
 if DEBUG:
     # Development mode - print emails to console
@@ -236,50 +250,218 @@ else:
     # Production mode - send real emails
     EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
     EMAIL_HOST = os.environ.get('EMAIL_HOST')
-    EMAIL_PORT = os.environ.get('EMAIL_PORT')
-    EMAIL_USE_TLS = True
+    EMAIL_PORT = int(os.environ.get('EMAIL_PORT', 587))
+    EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', 'True').lower() == 'true'
     EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
     EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
     DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL')
 
 # ---------------------------------------------------------------
-# OTRAS CONFIGURACIONES
+# MISCELLANEOUS SETTINGS
 # ---------------------------------------------------------------
-# Default primary key field type
-# https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# ---------------------------------------------------------------
+# LOGGING CONFIGURATION
+# ---------------------------------------------------------------
+os.makedirs(BASE_DIR / 'logs', exist_ok=True)
 
-# ---------------------------------------------------------------
-# CONFIGURACIÓN DEL LOGGING
-# ---------------------------------------------------------------
+# Replace your existing ColoredFormatter with this enhanced version:
+class ColoredFormatter(logging.Formatter):
+    """Custom formatter that adds colors to log levels using colorama"""
+    COLORS = {
+        'DEBUG': colorama.Fore.CYAN,
+        'INFO': colorama.Fore.GREEN,
+        'WARNING': colorama.Fore.YELLOW,
+        'ERROR': colorama.Fore.RED,
+        'CRITICAL': colorama.Fore.RED + colorama.Style.BRIGHT,
+        'RESET': colorama.Style.RESET_ALL,
+    }
+    
+    def format(self, record):
+        levelname = record.levelname
+        message = super().format(record)
+        return f"{self.COLORS.get(levelname, '')}{message}{self.COLORS['RESET']}"
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
     'formatters': {
         'verbose': {
-            'format': '{levelname} {asctime} {module} {message}',
+            'format': '[{levelname}] {asctime} {name} {pathname}:{lineno} - {message}',
+            'style': '{',
+        },
+        'standard': {
+            'format': '[{levelname}] {asctime} {name}: {message}',
+            'style': '{',
+        },
+        'simple': {
+            'format': '[{levelname}] {name}: {message}',
+            'style': '{',
+        },
+        'colored': {
+            '()': 'django.utils.log.ServerFormatter',
+            'format': '[{levelname}] {message}',
+            'style': '{',
+        },
+        # Add this new formatter for cleaner console output
+        'clean_console': {
+            '()': ColoredFormatter,  # Use our custom formatter
+            'format': '{levelname} {message}',
             'style': '{',
         },
     },
+    'filters': {
+        'require_debug_true': {
+            '()': 'django.utils.log.RequireDebugTrue',
+        },
+        'require_debug_false': {
+            '()': 'django.utils.log.RequireDebugFalse',
+        },
+        'exclude_autoreload': {
+            '()': 'django.utils.log.CallbackFilter',
+            'callback': lambda record: 'autoreload' not in record.name,
+        },
+        'exclude_static_finder': {
+            '()': 'django.utils.log.CallbackFilter',
+            'callback': lambda record: 'staticfiles.finders' not in record.name,
+        },
+        'exclude_migrations': {
+            '()': 'django.utils.log.CallbackFilter',
+            'callback': lambda record: 'migrations' not in record.name,
+        },
+        'exclude_template_debug': {
+            '()': 'django.utils.log.CallbackFilter',
+            'callback': lambda record: 'Exception while resolving variable' not in record.getMessage() 
+                                      and 'template' not in record.name.lower(),
+        },
+    },
     'handlers': {
-        'file': {
-            'level': 'WARNING',
+        'console': {
+            'level': 'INFO',
+            'filters': ['require_debug_true', 'exclude_autoreload', 'exclude_static_finder', 
+                       'exclude_migrations', 'exclude_template_debug'],
+            'class': 'logging.StreamHandler',
+            'formatter': 'clean_console', 
+        },
+        'development': {
+            'level': 'DEBUG',
+            'filters': ['require_debug_true'],
             'class': 'logging.FileHandler',
-            'filename': os.path.join(BASE_DIR, 'connection_errors.log'),
+            'filename': BASE_DIR / 'logs' / 'development.log',
+            'formatter': 'standard',
+        },
+        'production': {
+            'level': 'ERROR',
+            'filters': ['require_debug_false'],
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': BASE_DIR / 'logs' / 'production.log',
+            'maxBytes': 10485760,  # 10MB
+            'backupCount': 10,
             'formatter': 'verbose',
         },
-        'console': {
-            'level': 'WARNING',
-            'class': 'logging.StreamHandler',
+        'sql': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': BASE_DIR / 'logs' / 'sql.log',
+            'formatter': 'standard',
+        },
+        'mail_admins': {
+            'level': 'ERROR',
+            'filters': ['require_debug_false'],
+            'class': 'django.utils.log.AdminEmailHandler',
             'formatter': 'verbose',
         },
     },
     'loggers': {
-        'connection_errors': {
-            'handlers': ['file', 'console'],
+        # Django's loggers
+        'django': {
+            'handlers': ['console', 'development', 'production'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+        'django.server': {
+            'handlers': ['console', 'development'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+        'django.request': {
+            'handlers': ['console', 'production', 'mail_admins'],
+            'level': 'ERROR',
+            'propagate': False,
+        },
+        'django.db.backends': {
+            'handlers': ['sql'],
+            'level': 'DEBUG' if DEBUG else 'INFO',
+            'propagate': False,
+        },
+        'django.utils.autoreload': {
             'level': 'WARNING',
-            'propagate': True,
+        },
+        'django.template': {
+            'handlers': ['development'],
+            'level': 'WARNING',
+            'propagate': False,
+        },
+        
+        # Your application loggers
+        'tinySteps': {
+            'handlers': ['console', 'development', 'production'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+        'api': {
+            'handlers': ['console', 'development', 'production'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+        
+        # Debug Toolbar logger
+        'debug_toolbar': {
+            'handlers': ['console'],
+            'level': 'WARNING',
+            'propagate': False,
         },
     },
 }
+
+
+
+
+# ---------------------------------------------------------------
+# DEBUG TOOLBAR CONFIGURATION
+# ---------------------------------------------------------------
+INTERNAL_IPS = ['127.0.0.1', 'localhost']
+
+if DEBUG:
+    for template in TEMPLATES:
+        template['OPTIONS']['context_processors'].append('django.template.context_processors.debug')
+
+DEBUG_TOOLBAR_CONFIG = {
+    'SHOW_TOOLBAR_CALLBACK': lambda request: DEBUG,
+    'ENABLE_STACKTRACES': True,
+}
+
+DEBUG_TOOLBAR_PANELS = [
+    'debug_toolbar.panels.versions.VersionsPanel',
+    'debug_toolbar.panels.timer.TimerPanel',
+    'debug_toolbar.panels.settings.SettingsPanel',
+    'debug_toolbar.panels.headers.HeadersPanel',
+    'debug_toolbar.panels.request.RequestPanel',
+    'debug_toolbar.panels.sql.SQLPanel',
+    'debug_toolbar.panels.staticfiles.StaticFilesPanel',
+    'debug_toolbar.panels.templates.TemplatesPanel',
+    'debug_toolbar.panels.cache.CachePanel',
+    'debug_toolbar.panels.signals.SignalsPanel',
+    'debug_toolbar.panels.logging.LoggingPanel',
+    'debug_toolbar.panels.redirects.RedirectsPanel',
+]
+
+if DEBUG:
+    LOGGING['handlers']['console']['level'] = 'DEBUG'
+    LOGGING['loggers']['django']['level'] = 'DEBUG'
+    LOGGING['loggers']['debug_toolbar'] = {
+        'handlers': ['console'],
+        'level': 'DEBUG',
+        'propagate': False,
+    }

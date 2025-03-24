@@ -2,8 +2,9 @@ from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from django.utils.translation import gettext as _
-from .models import Contact_Model, PasswordReset_Model, Milestone_Model, YourChild_Model
+from .models import Contact_Model, ParentsForum_Model, Milestone_Model, YourChild_Model, Guides_Model
 
+# Authentication Forms
 class CustomUserCreation_Form(UserCreationForm):
     email = forms.EmailField(
         required=True,
@@ -90,7 +91,7 @@ class PasswordReset_Form(forms.Form):
         
         return cleaned_data
 
-# Model Forms
+# Child Information Forms
 class YourChild_Form(forms.ModelForm):
     class Meta:
         model = YourChild_Model
@@ -143,6 +144,7 @@ class Milestone_Form(forms.ModelForm):
             'photo': _('Photo'),
         }
 
+# General Forms
 class Contact_Form(forms.ModelForm):
     class Meta:
         model = Contact_Model
@@ -155,3 +157,69 @@ class Contact_Form(forms.ModelForm):
             'email': _('Email'),
             'message': _('Message'),
         }
+
+# Parents Posts Forms
+class ForumPost_Form(forms.ModelForm):
+    class Meta:
+        model = ParentsForum_Model
+        fields = ['title', 'desc', 'category']
+        widgets = {
+            'title': forms.TextInput(attrs={'class': 'form-control', 'placeholder': _('Enter a title for your discussion')}),
+            'desc': forms.Textarea(attrs={'class': 'form-control', 'rows': 6, 'placeholder': _('Share your experience, question, or advice')}),
+            'category': forms.Select(attrs={'class': 'form-control'})
+        }
+        labels = {
+            'title': _('Discussion Title'),
+            'desc': _('Your Message'),
+            'category': _('Category / Hashtag')
+        }
+
+# Forms for Submmision Guides
+class GuideSubmission_Form(forms.ModelForm):
+    tags = forms.CharField(
+        required=False,
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': _('Add tags separated by commas (e.g., parenting, nutrition)')
+        }),
+        label=_('Tags')
+    )
+
+    image = forms.ImageField(
+        required=True,  # Image required
+        widget=forms.FileInput(attrs={
+            'class': 'form-control',
+            'accept': 'image/*'
+        }),
+        label=_('Upload Image')
+    )
+
+    class Meta:
+        model = Guides_Model
+        fields = ['title', 'desc', 'image']
+        widgets = {
+            'title': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': _('Enter a clear title for your guide')
+            }),
+            'desc': forms.Textarea(attrs={
+                'class': 'form-control',
+                'rows': 10,
+                'placeholder': _('Share your knowledge and experience')
+            }),
+        }
+        labels = {
+            'title': _('Title'),
+            'desc': _('Content'),
+            'image': _('Image'),
+        }
+
+
+class GuideRejection_Form(forms.Form):
+    rejection_reason = forms.CharField(
+        widget=forms.Textarea(attrs={'rows': 4}),
+        label=_("Rejection Reason"),
+        help_text=_("Please explain why this guide is being rejected. This will be sent to the author."),
+        required=True
+    )
+

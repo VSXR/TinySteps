@@ -1,0 +1,42 @@
+{% load static %}
+{% load i18n %}
+
+<div class="card h-100 shadow-sm">
+    {% if article.image_url %}
+        <img src="{{ article.image_url }}" class="card-img-top" alt="{{ article.title }}" loading="lazy"
+             style="height: 180px; object-fit: cover;">
+    {% else %}
+        <div class="bg-light text-center py-5">
+            <i class="bi bi-journal-text display-4 text-muted"></i>
+        </div>
+    {% endif %}
+    
+    <div class="card-body">
+        <h2 class="card-title h5">{{ article.title|truncatechars:60 }}</h2>
+        <p class="card-text text-muted small">
+            {{ article.source_name }} {% if article.author %} | {{ article.author }}{% endif %}
+        </p>
+        <p class="card-text">{{ article.description|truncatewords:20 }}</p>
+    </div>
+    
+    <div class="card-footer bg-white d-flex justify-content-between align-items-center">
+        <small class="text-muted">{{ article.published_at|date:"M d, Y" }}</small>
+        <div>
+            {% if section_type == 'nutrition' %}
+                <a href="{% url 'nutrition_article_details' article.id %}" class="btn btn-sm btn-outline-secondary me-1">
+                    {% trans "Details" %}
+                </a>
+                <a href="{{ article.url }}" class="btn btn-sm btn-outline-success" target="_blank" rel="noopener">
+                    {% trans "Read" %} <i class="bi bi-box-arrow-up-right ms-1"></i>
+                </a>
+            {% else %}
+                <a href="{% url 'parenting_article_details' article.id %}" class="btn btn-sm btn-outline-secondary me-1">
+                    {% trans "Details" %}
+                </a>
+                <a href="{{ article.url }}" class="btn btn-sm btn-outline-primary" target="_blank" rel="noopener">
+                    {% trans "Read" %} <i class="bi bi-box-arrow-up-right ms-1"></i>
+                </a>
+            {% endif %}
+        </div>
+    </div>
+</div>

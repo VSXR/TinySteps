@@ -48,6 +48,21 @@
                                             aria-describedby="desc-help">{{ post.desc }}</textarea>
                                     <div id="desc-help" class="form-text">{% trans "Share your experience, question, or advice (2000 characters max)" %}</div>
                                 </div>
+
+                                <div class="mb-3">
+                                    <label for="id_category" class="form-label">
+                                        {% trans "Category" %} <span class="text-danger" aria-hidden="true">*</span>
+                                        <span class="visually-hidden">{% trans "(required)" %}</span>
+                                    </label>
+                                    <select name="category" id="id_category" class="form-select" required aria-required="true">
+                                        {% for value, name in post_category_choices %}
+                                            <option value="{{ value }}" {% if post.category == value %}selected{% endif %}>{{ name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <div id="category-help" class="form-text">
+                                        {% trans "Choose a category to help others find your discussion" %}
+                                    </div>
+                                </div>
                                 
                                 <div class="d-flex justify-content-between mt-4">
                                     <a href="{% url 'view_post' post.id %}" class="btn btn-outline-secondary" aria-label="{% trans 'Cancel editing and return to post' %}">

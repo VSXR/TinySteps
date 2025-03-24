@@ -1,0 +1,60 @@
+{% extends 'guides/base/article_list_base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}
+    {% if section_type == 'nutrition' %}
+        {% trans "Nutrition Articles" %}
+    {% else %}
+        {% trans "Parenting Articles" %}
+    {% endif %} - TINY STEPS
+{% endblock %}
+
+{% block section_type %}{{ section_type }}{% endblock %}
+
+{% block additional_content %}
+<p class="lead mb-4">
+    {% if section_type == 'nutrition' %}
+        {% trans "Discover helpful nutrition articles for your baby's development." %}
+    {% else %}
+        {% trans "Discover helpful articles for new parents on child development, care practices, and more." %}
+    {% endif %}
+</p>
+
+{% if section_type == 'nutrition' %}
+    <a href="{% url 'nutrition_analyzer' %}" class="btn btn-outline-primary mb-4">
+        <i class="bi bi-calculator me-2"></i>{% trans "Baby Food Nutrition Analyzer" %}
+    </a>
+{% endif %}
+{% endblock additional_content %}
+
+{% block article_list %}
+<div class="row">
+    {% for article in articles %}
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100 shadow-sm">
+                {% if article.image %}
+                    <img src="{{ article.image.url }}" class="card-img-top" alt="{{ article.title }}">
+                {% else %}
+                    <div class="card-img-top bg-light text-center py-5">
+                        <i class="bi bi-journal-text display-4 text-muted"></i>
+                    </div>
+                {% endif %}
+                <div class="card-body">
+                    <h2 class="h5 card-title">{{ article.title }}</h2>
+                    <p class="card-text text-muted">{{ article.excerpt }}</p>
+                    {% if section_type == 'nutrition' %}
+                        <a href="{% url 'nutrition_article_details' article.id %}" class="btn btn-primary btn-sm">{% trans "Read more" %}</a>
+                    {% else %}
+                        <a href="{% url 'parenting_article_details' article.id %}" class="btn btn-primary btn-sm">{% trans "Read more" %}</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    {% empty %}
+        <div class="col-12">
+            <div class="alert alert-info">{% trans "No articles available yet." %}</div>
+        </div>
+    {% endfor %}
+</div>
+{% endblock article_list %}

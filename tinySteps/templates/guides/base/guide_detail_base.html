@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}
+    {% if section_type == 'nutrition' %}
+        {{ nutrition_guide.title }} - {% trans "NUTRITION GUIDE" %}
+    {% else %}
+        {{ parent_guide.title }} - {% trans "TINY STEPS" %}
+    {% endif %}
+{% endblock %}
+
+{% block main_contents %}
+    <main id="main-content">
+        <div class="container mt-4">
+            <!-- Breadcrumbs -->
+            {% include 'guides/components/breadcrumbs.html' with is_articles=False is_detail=True %}
+            
+            <article class="card mb-4">
+                <div class="card-header">
+                    <h2>
+                        {% if section_type == 'nutrition' %}
+                            {{ nutrition_guide.title }}
+                        {% else %}
+                            {{ parent_guide.title }}
+                        {% endif %}
+                    </h2>
+                </div>
+                <div class="card-body">
+                    {% if section_type == 'nutrition' and nutrition_guide.image %}
+                        <img src="{{ nutrition_guide.image.url }}" 
+                             alt="{% blocktrans with title=nutrition_guide.title %}Illustration for {{ title }} nutrition guide{% endblocktrans %}" 
+                             class="img-fluid mb-3" loading="lazy">
+                    {% elif parent_guide.image %}
+                        <img src="{{ parent_guide.image.url }}" 
+                             alt="{% blocktrans with title=parent_guide.title %}Illustration for {{ title }} parenting guide{% endblocktrans %}" 
+                             class="img-fluid mb-3" loading="lazy">
+                    {% endif %}
+                    
+                    <p class="text-muted">
+                        {% if section_type == 'nutrition' %}
+                            {% blocktrans with date=nutrition_guide.created_at|date:"d/m/Y" %}Published: {{ date }}{% endblocktrans %}
+                        {% else %}
+                            {% blocktrans with date=parent_guide.created_at|date:"d/m/Y" %}Published: {{ date }}{% endblocktrans %}
+                        {% endif %}
+                    </p>
+                    <div class="guide-content">
+                        {% if section_type == 'nutrition' %}
+                            {{ nutrition_guide.content|safe }}
+                        {% else %}
+                            {{ parent_guide.content|safe }}
+                        {% endif %}
+                    </div>
+                    
+                    {% if section_type == 'nutrition' and nutrition_guide.tags.all %}
+                        <div class="mt-3" aria-labelledby="categories-heading">
+                            <h3 id="categories-heading" class="h6 d-inline">{% trans "Categories:" %}</h3>
+                            <ul class="list-inline d-inline">
+                                {% for tag in nutrition_guide.tags.all %}
+                                    <li class="list-inline-item">
+                                        <span class="badge bg-secondary">{{ tag.name }}</span>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% elif parent_guide.tags.all %}
+                        <div class="mt-3" aria-labelledby="categories-heading">
+                            <h3 id="categories-heading" class="h6 d-inline">{% trans "Categories:" %}</h3>
+                            <ul class="list-inline d-inline">
+                                {% for tag in parent_guide.tags.all %}
+                                    <li class="list-inline-item">
+                                        <span class="badge bg-secondary">{{ tag.name }}</span>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% endif %}
+                </div>
+            </article>
+
+            {% block additional_content %}
+            
+            {% endblock additional_content %}
+
+            <!-- Back to Guides Button -->
+            <div class="row mt-5 mb-4">
+                <div class="col text-center">
+                    <a href="{% url 'guides' %}" class="btn btn-primary" aria-label="{% trans "Return to guides page" %}">
+                        {% trans "Back to Guides" %}
+                    </a>
+                </div>
+            </div>
+        </div>
+    </main>
+{% endblock main_contents %}

@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}
+    {% if section_type == 'nutrition' %}
+        {% trans "Nutrition Articles" %} - TINY STEPS
+    {% else %}
+        {% trans "Parenting Articles" %} - TINY STEPS
+    {% endif %}
+{% endblock %}
+
+{% block main_contents %}
+<main id="main-content">
+    <div class="container mt-4">
+        <!-- Breadcrumb Navigation -->
+        {% include 'guides/components/breadcrumbs.html' with is_articles=True is_detail=False %}
+        
+        <h1 class="mb-4">
+            {% if section_type == 'nutrition' %}
+                {% trans "Baby Nutrition Articles" %}
+            {% else %}
+                {% trans "Parenting Articles" %}
+            {% endif %}
+        </h1>
+        
+        <!-- Additional Content Block - Moved here for better positioning -->
+        {% block additional_content %}
+            <!-- This block allows child templates to insert content here -->
+        {% endblock additional_content %}
+        
+        <div class="card shadow-sm mb-4">
+            <div class="card-body">
+                <p class="text-muted">
+                    {% if section_type == 'nutrition' %}
+                        {% trans "Browse the latest articles on baby nutrition, feeding practices and healthy eating for infants." %}
+                    {% else %}
+                        {% trans "Browse the latest articles on parenting tips, child development and care practices." %}
+                    {% endif %}
+                </p>
+                
+                <form method="GET" action="{% if section_type == 'nutrition' %}{% url 'nutrition_articles' %}{% else %}{% url 'parenting_articles' %}{% endif %}" class="mb-4">
+                    <div class="input-group">
+                        <input type="text" name="topic" class="form-control" 
+                               value="{{ topic }}" placeholder="{% trans 'Search by topic' %}">
+                        <button type="submit" class="btn {% if section_type == 'nutrition' %}btn-success{% else %}btn-primary{% endif %}">
+                            <i class="bi bi-search me-2"></i>{% trans "Search Articles" %}
+                        </button>
+                    </div>
+                </form>
+                
+                {% if user.is_staff %}
+                <div class="text-end mb-3">
+                    <a href="{% if section_type == 'nutrition' %}{% url 'nutrition_articles' %}{% else %}{% url 'parenting_articles' %}{% endif %}?refresh=1" class="btn btn-sm btn-outline-secondary">
+                        <i class="bi bi-arrow-clockwise me-1"></i>{% trans "Refresh Articles" %}
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <div class="row">
+            <!-- Main content -->
+            <div class="col-lg-8">
+                {% block article_list %}
+                {% if articles %}
+                    <div class="row row-cols-1 row-cols-md-2 g-4">
+                        {% for article in articles %}
+                            <div class="col">
+                                {% include 'guides/components/article_card.html' with article=article %}
+                            </div>
+                        {% endfor %}
+                    </div>
+                    
+                    <!-- Pagination -->
+                    {% if articles.has_other_pages %}
+                        {% include 'guides/components/pagination.html' with page_obj=articles query_params=query_params %}
+                    {% endif %}
+                    
+                {% else %}
+                    <div class="alert alert-info text-center my-5">
+                        <i class="bi bi-info-circle me-2"></i>
+                        {% if topic %}
+                            {% trans "No articles found matching your search criteria. Please try with different keywords." %}
+                        {% else %}
+                            {% trans "No articles available at the moment. Please check back later." %}
+                        {% endif %}
+                    </div>
+                {% endif %}
+                {% endblock article_list %}
+            </div>
+            
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                {% include 'guides/components/sidebar.html' %}
+            </div>
+        </div>
+        
+        <!-- Back to Guides Button -->
+        <div class="row mt-5 mb-4">
+            <div class="col text-center">
+                <a href="{% url 'guides' %}" class="btn btn-primary" aria-label="{% trans "Return to guides page" %}">
+                    {% trans "Back to Guides" %}
+                </a>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock main_contents %}

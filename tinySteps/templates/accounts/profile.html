@@ -165,6 +165,9 @@
                             </div>
                             <div class="card-body">
                                 <div class="d-flex flex-column flex-sm-row flex-wrap gap-2 justify-content-center" aria-labelledby="account-actions-header">
+                                    <a href="{% url 'my_guides' %}" class="btn btn-outline-primary flex-fill" aria-label="{% trans 'View your submitted guides' %}">
+                                        <i class="fa-solid fa-book" aria-hidden="true"></i> {% trans "My Guides" %}
+                                    </a>
                                     <a href="{% url 'password_reset' %}" class="btn btn-outline-secondary flex-fill" aria-label="{% trans 'Change your password' %}">
                                         <i class="fa-solid fa-key" aria-hidden="true"></i> {% trans "Change Password" %}
                                     </a>

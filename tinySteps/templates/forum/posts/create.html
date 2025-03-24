@@ -59,6 +59,22 @@
                                         {% trans "Share your experience, question, or advice (2000 characters max)" %}
                                     </div>
                                 </div>
+
+                                <div class="mb-4">
+                                    <label for="id_category" class="form-label fw-medium">
+                                        {% trans "Category" %} <span class="text-danger" aria-hidden="true">*</span>
+                                        <span class="visually-hidden">{% trans "(required)" %}</span>
+                                    </label>
+                                    <select name="category" id="id_category" class="form-select" required aria-required="true">
+                                        <option value="" disabled selected>{% trans "Select a category" %}</option>
+                                        {% for value, name in post_category_choices %}
+                                            <option value="{{ value }}">{{ name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <div id="category-help" class="form-text">
+                                        {% trans "Choose a category to help others find your discussion" %}
+                                    </div>
+                                </div>
                                 
                                 <div class="d-grid gap-2 mt-4">
                                     <button type="submit" class="btn btn-primary py-2" aria-label="{% trans "Create new discussion" %}">

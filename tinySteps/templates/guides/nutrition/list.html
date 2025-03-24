@@ -1,149 +1,156 @@
-{% extends 'base.html' %}
+{% extends 'guides/base/guide_list_base.html' %}
 {% load static %}
 {% load i18n %}
 
-{% block title %}
-    {% trans "NUTRITION GUIDES - TINY STEPS" %}
-{% endblock %}
+{% block title %}{% trans "TINY STEPS - YOUR CHILDREN" %}{% endblock %}
 
 {% block main_contents %}
     <main id="main-content">
         <div class="container mt-4">
             <div class="row mb-4">
                 <div class="col">
-                    <h2>{% trans "NUTRITION GUIDES" %}</h2>
-                    <p class="lead text-center">{% trans "Find tips and recommendations for healthy eating" %}</p>
+                    <h2>{% trans "YOUR CHILDREN" %}</h2>
+                    <p class="lead text-center">{% trans "Manage your children's information and track their development" %}</p>
                 </div>
             </div>
 
-            <section aria-labelledby="nutrition_guides-content">
-                <h3 id="nutrition_guides-content" class="visually-hidden">{% trans "Available Nutrition Guides" %}</h3>
+            <!-- Messages Container -->
+            <div class="row">
+                <div class="col">
+                    <div id="messages-container" class="messages mb-3" role="alert" aria-live="polite">
+                        {% if messages %}
+                            {% include 'partials/messages.html' %}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Add Child Button -->
+            <div class="row mb-4">
+                <div class="col text-end">
+                    <a href="{% url 'add_child' %}" class="btn btn-primary" aria-label="{% trans 'Add a new child' %}">
+                        <i class="fa-solid fa-plus" aria-hidden="true"></i> {% trans "Add Child" %}
+                    </a>
+                </div>
+            </div>
+
+            <!-- Children List -->
+            <section aria-labelledby="children-list-heading">
+                <h3 id="children-list-heading" class="visually-hidden">{% trans "Your Children List" %}</h3>
                 <div class="row">
-                    {% if nutrition_guides %}
-                        {% for guide in nutrition_guides %}
-                            <div class="col-md-4 mb-4">
+                    {% if children %}
+                        {% for child in children %}
+                            <div class="col-md-6 col-lg-4 mb-4">
                                 <article class="card h-100 shadow-sm">
-                                    {% if guide.image %}
-                                        <img src="{{ guide.image.url }}" class="card-img-top" loading="lazy"
-                                             alt="{% blocktrans with title=guide.title %}Visual representation for {{ title }} guide{% endblocktrans %}">
-                                    {% else %}
-                                        <img src="{% static 'img/others/default.jpg' %}" class="card-img-top" loading="lazy"
-                                             alt="{% trans "Default nutrition guide illustration" %}">
-                                    {% endif %}
                                     <div class="card-body">
-                                        <h4 class="card-title">{{ guide.title }}</h4>
-                                        <p class="card-text">{{ guide.description|truncatechars:120 }}</p>
+                                        <div class="d-flex justify-content-between align-items-center mb-3">
+                                            <h4 class="card-title mb-0">{{ child.name }}</h4>
+                                            <span class="badge bg-primary">{% blocktrans %}{{ child.age }} months{% endblocktrans %}</span>
+                                        </div>
+                                        <p class="card-text">{{ child.desc|truncatechars:100 }}</p>
+                                        <div class="mt-3">
+                                            <p class="mb-1"><strong>{% trans "Gender:" %}</strong> {{ child.gender }}</p>
+                                        </div>
                                     </div>
-                                    <div class="card-footer bg-transparent border-0 text-end">
-                                        <a href="{% url 'nutrition_guide_details' guide.id %}" class="btn btn-primary mb-4" 
-                                           aria-label="{% blocktrans with title=guide.title %}Show details for {{ title }}{% endblocktrans %}">{% trans "Show guide" %}</a>
+                                    <div class="card-footer bg-transparent border-0">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <a href="{% url 'child_details' child.id %}" class="btn btn-outline-primary" 
+                                                aria-label="{% blocktrans with name=child.name %}View details for {{ name }}{% endblocktrans %}">
+                                                <i class="fa-solid fa-eye" aria-hidden="true"></i> {% trans "View Details" %}
+                                            </a>
+                                            <div class="dropdown">
+                                                <button class="btn btn-outline-secondary dropdown-toggle" type="button" 
+                                                        id="childActions{{ child.id }}" data-bs-toggle="dropdown" 
+                                                        aria-expanded="false" aria-label="{% blocktrans with name=child.name %}More options for {{ name }}{% endblocktrans %}">
+                                                    {% trans "Actions" %}
+                                                </button>
+                                                <ul class="dropdown-menu" aria-labelledby="childActions{{ child.id }}">
+                                                    <li>
+                                                        <a class="dropdown-item" href="{% url 'child_update' child.id %}">
+                                                            <i class="fa-solid fa-pen-to-square" aria-hidden="true"></i> {% trans "Edit" %}
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a class="dropdown-item" href="{% url 'child_calendar' child.id %}">
+                                                            <i class="fa-solid fa-calendar" aria-hidden="true"></i> {% trans "Calendar" %}
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a class="dropdown-item" href="{% url 'child_vaccine_card' child.id %}">
+                                                            <i class="fa-solid fa-syringe" aria-hidden="true"></i> {% trans "Vaccine Card" %}
+                                                        </a>
+                                                    </li>
+                                                    <li><hr class="dropdown-divider"></li>
+                                                    <li>
+                                                        <a class="dropdown-item text-danger" href="{% url 'child_delete' child.id %}">
+                                                            <i class="fa-solid fa-trash" aria-hidden="true"></i> {% trans "Delete" %}
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
                                     </div>
                                 </article>
                             </div>
                         {% endfor %}
                     {% else %}
-                        <div class="col-12 text-center py-5">
-                            <p class="text-center fs-5" role="status">{% trans "There aren't any nutrition guides available at this moment!" %}</p>
+                        <div class="col-12">
+                            <div class="alert alert-info text-center p-4" role="status">
+                                <i class="fa-solid fa-circle-info me-2" aria-hidden="true"></i>
+                                {% blocktrans %}You haven't added any children yet. Click the "Add Child" button to get started!{% endblocktrans %}
+                            </div>
                         </div>
                     {% endif %}
                 </div>
             </section>
 
-            <!-- External Nutrition Articles Button -->
-            <div class="text-center my-4">
-                <a href="{% url 'nutrition_articles' %}" class="btn btn-outline-info">
-                    <i class="bi bi-journal-text me-2"></i>{% trans "Browse External Nutrition Articles" %}
-                </a>
-            </div>
-
-            <!-- Nutrition Analyzer Feature Box -->
-            <section aria-labelledby="nutrition-analyzer-heading" class="mt-5">
-                <div class="card border-primary mb-4">
-                    <div class="card-header bg-primary text-white">
-                        <h3 id="nutrition-analyzer-heading" class="h4 mb-0">{% trans "Baby Food Nutrition Analyzer" %}</h3>
-                    </div>
+            <!-- Help Section -->
+            <section aria-labelledby="help-section-heading" class="mt-5">
+                <h3 id="help-section-heading">{% trans "Managing Your Children" %}</h3>
+                <div class="card mb-4">
                     <div class="card-body">
-                        <p>{% trans "Analyze the nutritional content of baby foods and ingredients. Enter any food item to get detailed nutrition information." %}</p>
-                        
-                        <form method="GET" action="{% url 'nutrition_analyzer' %}" class="mb-3">
-                            <div class="input-group">
-                                <input type="text" name="ingredient" class="form-control" 
-                                    placeholder="{% trans 'e.g., 100g pureed carrots' %}" required>
-                                <button type="submit" class="btn btn-primary">
-                                    <i class="bi bi-search me-1"></i> {% trans "Analyze" %}
-                                </button>
-                            </div>
-                        </form>
-                        
-                        <p class="small text-muted mb-2">{% trans "Popular baby ingredients to analyze:" %}</p>
-                        <div class="d-flex flex-wrap gap-2">
-                            {% for ingredient in popular_ingredients %}
-                            <a href="{% url 'nutrition_analyzer' %}?ingredient={{ ingredient|urlencode }}" class="badge bg-light text-dark text-decoration-none">
-                                {{ ingredient }}
-                            </a>
-                            {% endfor %}
-                        </div>
+                        <p>{% trans "In this section, you can:" %}</p>
+                        <ul>
+                            <li>{% trans "Add information about your children" %}</li>
+                            <li>{% trans "Track important milestones in their development" %}</li>
+                            <li>{% trans "Keep a record of vaccinations and health check-ups" %}</li>
+                            <li>{% trans "Manage their schedules and appointments" %}</li>
+                        </ul>
+                        <p class="mb-0">{% blocktrans %}Each child's profile gives you access to their detailed information and helps you track their growth journey.{% endblocktrans %}</p>
                     </div>
                 </div>
             </section>
-
-            <!-- Quick Nutrition Result (if there are any!) -->
-            {% if nutrition_result and 'totalNutrients' in nutrition_result %}
-            <section aria-labelledby="quick-result-heading" class="mb-4">
-                <div class="card border-success">
-                    <div class="card-header bg-success text-white">
-                        <h3 id="quick-result-heading" class="h5 mb-0">{% trans "Result for" %} "{{ ingredient }}"</h3>
-                    </div>
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-6 col-md-3 text-center mb-3">
-                                <div class="h6">{% trans "Calories" %}</div>
-                                <div class="display-6">{{ nutrition_result.calories|floatformat:0 }}</div>
-                                <div class="small text-muted">kcal</div>
-                            </div>
-                            
-                            {% if 'PROCNT' in nutrition_result.totalNutrients %}
-                            <div class="col-6 col-md-3 text-center mb-3">
-                                <div class="h6">{% trans "Protein" %}</div>
-                                <div class="display-6">{{ nutrition_result.totalNutrients.PROCNT.quantity|floatformat:1 }}</div>
-                                <div class="small text-muted">{{ nutrition_result.totalNutrients.PROCNT.unit }}</div>
-                            </div>
-                            {% endif %}
-                            
-                            {% if 'FAT' in nutrition_result.totalNutrients %}
-                            <div class="col-6 col-md-3 text-center mb-3">
-                                <div class="h6">{% trans "Fat" %}</div>
-                                <div class="display-6">{{ nutrition_result.totalNutrients.FAT.quantity|floatformat:1 }}</div>
-                                <div class="small text-muted">{{ nutrition_result.totalNutrients.FAT.unit }}</div>
-                            </div>
-                            {% endif %}
-                            
-                            {% if 'CHOCDF' in nutrition_result.totalNutrients %}
-                            <div class="col-6 col-md-3 text-center mb-3">
-                                <div class="h6">{% trans "Carbs" %}</div>
-                                <div class="display-6">{{ nutrition_result.totalNutrients.CHOCDF.quantity|floatformat:1 }}</div>
-                                <div class="small text-muted">{{ nutrition_result.totalNutrients.CHOCDF.unit }}</div>
-                            </div>
-                            {% endif %}
-                        </div>
-                        <div class="text-center mt-2">
-                            <a href="{% url 'nutrition_analyzer' %}?ingredient={{ ingredient|urlencode }}" class="btn btn-sm btn-success">
-                                {% trans "View Detailed Analysis" %}
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </section>
-            {% endif %}
-            
-            <!-- Back to Guides Button -->
-            <div class="row mt-5 mb-4">
-                <div class="col text-center">
-                    <a href="{% url 'guides' %}" class="btn btn-primary" aria-label="{% trans "Return to guides page" %}">
-                        {% trans "Back to Guides" %}
-                    </a>
-                </div>
-            </div>
         </div>
     </main>
 {% endblock main_contents %}
+
+{% block additional_content %}
+    <section aria-labelledby="additional-guides-heading" class="mt-5">
+        <h3 id="additional-guides-heading">{% trans "Additional Resources" %}</h3>
+        <div class="card mb-4">
+            <div class="card-body">
+                <p>{% trans "Find helpful resources for your parenting journey:" %}</p>
+                <div class="row row-cols-1 row-cols-md-2 g-4 mt-2">
+                    <div class="col">
+                        <div class="card h-100 border-primary">
+                            <div class="card-body">
+                                <h5 class="card-title">{% trans "Nutrition Guides" %}</h5>
+                                <p class="card-text">{% trans "Learn about healthy eating habits for your child at different ages." %}</p>
+                                <a href="{% url 'nutrition_guide' %}" class="btn btn-outline-primary">{% trans "View Guides" %}</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="card h-100 border-success">
+                            <div class="card-body">
+                                <h5 class="card-title">{% trans "Development Milestones" %}</h5>
+                                <p class="card-text">{% trans "Track your child's development and learn what to expect at each stage." %}</p>
+                                <a href="{% url 'milestones' %}" class="btn btn-outline-success">{% trans "View Milestones" %}</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

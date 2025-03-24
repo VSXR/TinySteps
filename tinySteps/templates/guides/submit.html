@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% load i18n %}
+
+{% block title %}
+    {% if guide_type == 'nutrition' %}
+        {% trans "Submit Nutrition Guide - TINY STEPS" %}
+    {% else %}
+        {% trans "Submit Parenting Guide - TINY STEPS" %}
+    {% endif %}
+{% endblock %}
+
+{% block main_contents %}
+    <main id="main-content">
+        <div class="container my-4 my-md-5">
+            <!-- Breadcrumb Navigation -->
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'index' %}">{% trans "Home" %}</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'guides' %}">{% trans "Guides" %}</a></li>
+                    {% if guide_type == 'nutrition' %}
+                        <li class="breadcrumb-item"><a href="{% url 'nutrition_guides' %}">{% trans "Nutrition Guides" %}</a></li>
+                    {% else %}
+                        <li class="breadcrumb-item"><a href="{% url 'parents_guides' %}">{% trans "Parents Guides" %}</a></li>
+                    {% endif %}
+                    <li class="breadcrumb-item active" aria-current="page">{% trans "Submit Guide" %}</li>
+                </ol>
+            </nav>
+            
+            <div class="row mb-4">
+                <div class="col-12 text-center">
+                    <h1 id="page-heading">
+                        {% if guide_type == 'nutrition' %}
+                            {% trans "Share Your Nutrition Knowledge" %}
+                        {% else %}
+                            {% trans "Share Your Parenting Advice" %}
+                        {% endif %}
+                    </h1>
+                    <p class="lead" id="page-description">
+                        {% if guide_type == 'nutrition' %}
+                            {% trans "Help other parents with your nutrition expertise" %}
+                        {% else %}
+                            {% trans "Share your parenting tips and experiences" %}
+                        {% endif %}
+                    </p>
+                    <hr class="my-4 w-50 mx-auto">
+                </div>
+            </div>
+            
+            <div class="row justify-content-center">
+                <div class="col-12 col-md-10 col-lg-8">
+                    {% if messages %}
+                        {% include 'partials/messages.html' %}
+                    {% endif %}
+
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <input type="hidden" name="guide_type" value="{{ guide_type }}">
+
+                    {% if form %}
+                        {{ form.non_field_errors }}
+                        
+                        <!-- Title Field -->
+                        <div class="form-group">
+                            {{ form.title.label_tag }}
+                            {{ form.title }}
+                            {{ form.title.errors }}
+                        </div>
+
+                        <!-- Description Field -->
+                        <div class="form-group">
+                            {{ form.desc.label_tag }}
+                            {{ form.desc }}
+                            {{ form.desc.errors }}
+                        </div>
+
+                        <!-- Tags Field -->
+                        <div class="form-group">
+                            {{ form.tags.label_tag }}
+                            {{ form.tags }}
+                            {{ form.tags.errors }}
+                        </div>
+
+                        <!-- Image Field -->
+                        <div class="form-group">
+                            {{ form.image.label_tag }}
+                            {{ form.image }}
+                            {{ form.image.errors }}
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="form-group text-center mt-4">
+                            <button type="submit" class="btn {% if guide_type == 'nutrition' %}btn-success{% else %}btn-primary{% endif %} btn-lg">
+                                {% trans "Submit Guide" %}
+                            </button>
+                        </div>
+                    {% else %}
+                        <div class="alert alert-danger">
+                            {% trans "There was a problem loading the form. Please try again later." %}
+                        </div>
+                    {% endif %}
+                </form>
+                </div>
+            </div>
+            
+            <!-- My Guides Link -->
+            <div class="row mt-5">
+                <div class="col text-center">
+                    <a href="{% url 'my_guides' %}" class="btn btn-outline-secondary">
+                        {% trans "View My Guides" %}
+                    </a>
+                </div>
+            </div>
+        </div>
+    </main>
+{% endblock main_contents %}

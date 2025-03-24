@@ -1,0 +1,45 @@
+{% load static %}
+{% load i18n %}
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'index' %}">{% trans "Home" %}</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'guides' %}">{% trans "Guides" %}</a></li>
+        
+        {% if section_type == 'nutrition' %}
+            {% if is_articles %}
+                <li class="breadcrumb-item"><a href="{% url 'nutrition_guides' %}">{% trans "Nutrition Guides" %}</a></li>
+                {% if is_detail %}
+                    <li class="breadcrumb-item"><a href="{% url 'nutrition_articles' %}">{% trans "Nutrition Articles" %}</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">{{ article.title|truncatechars:30 }}</li>
+                {% else %}
+                    <li class="breadcrumb-item active" aria-current="page">{% trans "Nutrition Articles" %}</li>
+                {% endif %}
+            {% else %}
+                {% if is_detail %}
+                    <li class="breadcrumb-item"><a href="{% url 'nutrition_guides' %}">{% trans "Nutrition Guides" %}</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">{{ nutrition_guide.title|truncatechars:30 }}</li>
+                {% else %}
+                    <li class="breadcrumb-item active" aria-current="page">{% trans "Nutrition Guides" %}</li>
+                {% endif %}
+            {% endif %}
+        {% else %}
+            {% if is_articles %}
+                <li class="breadcrumb-item"><a href="{% url 'parents_guides' %}">{% trans "Parents Guides" %}</a></li>
+                {% if is_detail %}
+                    <li class="breadcrumb-item"><a href="{% url 'parenting_articles' %}">{% trans "Parenting Articles" %}</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">{{ article.title|truncatechars:30 }}</li>
+                {% else %}
+                    <li class="breadcrumb-item active" aria-current="page">{% trans "Parenting Articles" %}</li>
+                {% endif %}
+            {% else %}
+                {% if is_detail %}
+                    <li class="breadcrumb-item"><a href="{% url 'parents_guides' %}">{% trans "Parents Guides" %}</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">{{ parent_guide.title|truncatechars:30 }}</li>
+                {% else %}
+                    <li class="breadcrumb-item active" aria-current="page">{% trans "Parents Guides" %}</li>
+                {% endif %}
+            {% endif %}
+        {% endif %}
+    </ol>
+</nav>
