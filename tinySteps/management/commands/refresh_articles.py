@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand
-from tinySteps.services import NewsAPI_Service, CurrentsAPI_Service
+from tinySteps.services.apis import NewsAPI_Service, CurrentsAPI_Service
 from tinySteps.models import ExternalArticle_Model
 from django.utils import timezone
 

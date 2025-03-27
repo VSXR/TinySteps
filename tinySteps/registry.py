@@ -1,8 +1,7 @@
 from django.apps import apps
-from django.utils.functional import LazyObject
 
 class GuideType_Registry:
-    """Registry for guide types implementing OCP"""
+    """Registry for guide types"""
     _registry = {}
     
     @classmethod
@@ -36,14 +35,19 @@ class GuideType_Registry:
     
     @classmethod
     def initialize(cls):
-        """Initialize the registry with default guide types"""
-        # Use lazy loading for models via apps.get_model
+        """Initialize the registry with default guide types
+        
+        WARNING: This method should be called only once, when the app is loaded!
+        Here we are registering the NutritionGuides_Model and ParentsGuides_Model
+        We use the NutritionGuide_Service and ParentGuide_Service to handle the
+        business logic for these models. Also, to avoid circular imports, we are
+        using the apps.get_model() method to get the model classes that has the 
+        purpose of getting the model classes from the tinySteps app so, we can
+        register them in the registry and use them in the views and services files.
+        """
         NutritionGuides_Model = apps.get_model('tinySteps', 'NutritionGuides_Model')
         ParentsGuides_Model = apps.get_model('tinySteps', 'ParentsGuides_Model')
         
-        # Import service classes here to avoid circular imports
         from .services import NutritionGuide_Service, ParentGuide_Service
-        
-        # Register guide types with their components
         cls.register('nutrition', NutritionGuides_Model, NutritionGuide_Service, 'guides/nutrition')
         cls.register('parent', ParentsGuides_Model, ParentGuide_Service, 'guides/parents')

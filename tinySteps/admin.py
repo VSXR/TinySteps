@@ -159,8 +159,9 @@ class ContactAdmin(admin.ModelAdmin):
 
 @admin.register(models.ConnectionError_Model)
 class ConnectionErrorAdmin(admin.ModelAdmin):
-    list_display = ('error_type', 'path', 'client_ip', 'user', 'timestamp')
-    list_filter = ('error_type', 'timestamp')
-    search_fields = ('path', 'client_ip', 'user')
+    list_display = ('error_type', 'path', 'method', 'client_ip', 'timestamp')
+    list_filter = ('error_type', 'method', 'timestamp')
+    search_fields = ('path', 'client_ip', 'user', 'traceback')
     readonly_fields = ('error_type', 'path', 'method', 'client_ip', 'user', 
                       'user_agent', 'timestamp', 'traceback')
+    date_hierarchy = 'timestamp'

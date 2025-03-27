@@ -6,5 +6,8 @@ class TinyStepsConfig(AppConfig):
     name = "tinySteps"
     
     def ready(self):
-        """Initialize the application"""
+        """Initialize the application
+        This method is called when the application is ready
+        so, we avoid circular imports by importing the registry here!
+        """
         GuideType_Registry.initialize()

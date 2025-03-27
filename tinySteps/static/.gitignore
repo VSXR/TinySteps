@@ -1,0 +1,5 @@
+dist/**/*
+!dist/.gitkeep
+!dist/js/.gitkeep
+!dist/css/.gitkeep
+!dist/img/.gitkeep

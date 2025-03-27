@@ -88,7 +88,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'tinySteps.middleware.broken_pipe_handler.BrokenPipeHandlerMiddleware',
+    'tinySteps.utils.middleware.error_handling.ErrorHandler_Middleware',
 ]
 
 if DEBUG:

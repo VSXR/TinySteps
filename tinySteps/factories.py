@@ -1,5 +1,5 @@
 from django.urls import path
-from .registry import GuideType_Registry
+from tinySteps.registry import GuideType_Registry
 
 class GuideService_Factory:
     @staticmethod
@@ -14,8 +14,7 @@ class GuideUrl_Factory:
     @staticmethod
     def create_urls(guide_type):
         """Create URL patterns for a guide section"""
-        # Import views here to avoid circular imports
-        from .views.guide_views import (
+        from tinySteps.views import (
             guide_list_view, guide_detail_view, 
             article_list_view, article_detail_view,
             nutrition_analyzer_view, nutrition_comparison_view, 
@@ -36,9 +35,9 @@ class GuideUrl_Factory:
         # Special cases for specific types
         if guide_type == 'nutrition':
             url_patterns.extend([
-                path('guides/nutrition/analyzer/', nutrition_analyzer_view, name='nutrition_analyzer'),
-                path('guides/nutrition/comparison/', nutrition_comparison_view, name='nutrition_comparison'),
-                path('guides/nutrition/save/', nutrition_save_view, name='nutrition_save'),
+                path(f'guides/{guide_type}/analyzer/', nutrition_analyzer_view, name=f'{guide_type}_analyzer'),
+                path(f'guides/{guide_type}/comparison/', nutrition_comparison_view, name=f'{guide_type}_comparison'),
+                path(f'guides/{guide_type}/save/', nutrition_save_view, name=f'{guide_type}_save'),
             ])
             
         return url_patterns
@@ -47,5 +46,5 @@ class ForumService_Factory:
     @staticmethod
     def create_service():
         """Create a forum service instance"""
-        from .services.forum_service import Forum_Service
+        from tinySteps.services import Forum_Service
         return Forum_Service()
