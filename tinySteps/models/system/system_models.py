@@ -15,7 +15,7 @@ class ConnectionError_Model(models.Model):
     error_type = models.CharField(max_length=20, choices=ERROR_TYPES)
     path = models.CharField(max_length=255)
     method = models.CharField(max_length=10)
-    client_ip = models.GenericIPAddressField()
+    client_ip = models.GenericIPAddressField(null=False, default='0.0.0.0')    
     user = models.CharField(max_length=150, blank=True, null=True)
     user_agent = models.TextField(blank=True, null=True)
     timestamp = models.DateTimeField(auto_now_add=True)
