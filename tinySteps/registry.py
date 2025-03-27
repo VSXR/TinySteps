@@ -51,3 +51,28 @@ class GuideType_Registry:
         from .services import NutritionGuide_Service, ParentGuide_Service
         cls.register('nutrition', NutritionGuides_Model, NutritionGuide_Service, 'guides/nutrition')
         cls.register('parent', ParentsGuides_Model, ParentGuide_Service, 'guides/parents')
+
+class FactoryRegistry:
+    """Registry for all factories in the application"""
+    _url_factories = {}
+    _service_factories = {}
+    
+    @classmethod
+    def register_url_factory(cls, key, factory_class):
+        """Register a URL factory"""
+        cls._url_factories[key] = factory_class
+        
+    @classmethod
+    def register_service_factory(cls, key, factory_class):
+        """Register a service factory"""
+        cls._service_factories[key] = factory_class
+        
+    @classmethod
+    def get_url_factory(cls, key):
+        """Get a URL factory by key"""
+        return cls._url_factories.get(key)
+        
+    @classmethod
+    def get_service_factory(cls, key):
+        """Get a service factory by key"""
+        return cls._service_factories.get(key)

@@ -25,3 +25,6 @@ class Contact_View(View):
             return redirect('contact')
         
         return render(request, 'contact/form.html', {'form': form})
+    
+def contact_success(request):
+    pass

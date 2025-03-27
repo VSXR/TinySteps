@@ -9,13 +9,10 @@ from tinySteps.services import Forum_Service
 def parents_forum_page(request):
     """Main forum page"""
     service = Forum_Service()
-    posts = service.get_recent_posts(limit=10)
-    popular_posts = service.get_popular_posts(limit=5)
+    posts = service.get_posts()
     
     context = {
         'posts': posts,
-        'popular_posts': popular_posts,
-        'categories': service.get_categories()
     }
     
     return render(request, 'forum/index.html', context)

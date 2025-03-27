@@ -30,6 +30,9 @@ from .guides.submission_views import SubmitGuide_View, submit_guide
 from .nutrition.analyzer_views import nutrition_analyzer_view, nutrition_save_view
 from .nutrition.comparison_views import nutrition_comparison_view
 
+# Comment Views
+from .comments.comment_views import add_comment, delete_comment, list_comments
+
 # Admin Views
 from .admin.admin_views import review_guides, approve_guide, reject_guide, admin_dashboard
 
@@ -62,6 +65,9 @@ __all__ = [
     # Nutrition views
     'nutrition_analyzer_view', 'nutrition_comparison_view', 'nutrition_save_view',
     
+    # Comment views
+    'add_comment', 'delete_comment', 'list_comments',
+
     # Admin views
     'review_guides', 'approve_guide', 'reject_guide', 'admin_dashboard',
     

@@ -32,6 +32,9 @@ views/
 ├── admin/                     # Admin functionality
 │   ├── __init__.py
 │   └── admin_views.py         # Administrative functions
+├── comments/                  # Comment functionality
+│   ├── __init__.py
+│   └── comment_views.py       # Comment views          
 └── contact/                   # Contact functionality
     ├── __init__.py
     └── contact_views.py       # Contact form

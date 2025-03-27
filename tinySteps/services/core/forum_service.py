@@ -76,17 +76,3 @@ class Forum_Service:
             post.likes.add(user)
             return True  # Liked
     
-    def get_related_posts(self, post_id, limit=3):
-        """Get related posts by category"""
-        post = self.get_post(post_id)
-        return ParentsForum_Model.objects.filter(
-            category=post.category
-        ).exclude(id=post_id).order_by('-created_at')[:limit]
-    
-    def get_post_stats(self, post_id):
-        """Get statistics for a post"""
-        post = self.get_post(post_id)
-        return {
-            'likes': post.likes.count(),
-            'comments': post.comments.count()
-        }

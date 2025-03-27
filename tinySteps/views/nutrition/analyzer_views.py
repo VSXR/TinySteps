@@ -39,3 +39,15 @@ def nutrition_save_view(request):
         messages.success(request, _("Added to your saved nutrition items!"))
     
     return redirect('nutrition_analyzer')
+
+@login_required
+def nutrition_history_view(request):
+    pass
+
+@login_required
+def nutrition_favorites_view(request):
+    pass
+
+@login_required
+def nutrition_recipe_view(request, recipe_id):
+    pass

@@ -8,14 +8,29 @@ class Guide_Repository(GenericRepository):
     def __init__(self):
         super().__init__(Guides_Model)
     
-    def get_guides_by_type(self, guide_type, count=None):
-        """Get guides by type with optional count limit"""
-        query = self.model.objects.filter(guide_type=guide_type).order_by('-created_at')
-        
+    def get_guides_by_type(self, guide_type, status=None, count=None, exclude_id=None):
+        """Get guides by type with optional filters"""
+        query = self.model.objects.filter(guide_type=guide_type)
+        if status:
+            query = query.filter(status=status)
+            
+        if exclude_id:
+            query = query.exclude(id=exclude_id)
+            
+        query = query.order_by('-created_at')
         if count:
             query = query[:count]
-            
+                
         return query
+    
+    def get_guide_details(self, guide_id, guide_type=None):
+        """Get detailed information for a specific guide"""
+        query = self.model.objects.filter(id=guide_id)
+        
+        if guide_type:
+            query = query.filter(guide_type=guide_type)
+            
+        return query.first()
     
     def get_related_guides(self, guide, limit=3):
         """Get related guides based on guide type"""
@@ -49,3 +64,5 @@ class Guide_Repository(GenericRepository):
             search_query &= Q(guide_type=guide_type)
         
         return self.model.objects.filter(search_query).order_by('-created_at')
+    
+    

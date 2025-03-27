@@ -92,3 +92,4 @@ def admin_dashboard(request):
     except Exception as e:
         from tinySteps.views.base.error_views import database_error_view
         return database_error_view(request, _("Error loading admin dashboard."))
+    

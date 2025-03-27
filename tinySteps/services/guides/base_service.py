@@ -1,7 +1,7 @@
-import time
 from django.contrib.contenttypes.models import ContentType
 from django.shortcuts import get_object_or_404
 from django.utils.text import slugify
+import time
 from tinySteps.repositories import Guide_Repository
 from tinySteps.models import Guides_Model, ExternalArticle_Model, Comment_Model, Guides_Model
 
@@ -62,6 +62,12 @@ class Guide_Service:
             content_type=content_type,
             object_id=guide_id
         ).select_related('author').order_by('-created_at')
+    
+    def get_user_guides(self, user):
+        """Get all guides created by a specific user"""
+        return Guides_Model.objects.filter(
+            author=user
+        ).order_by('-created_at')
     
     # Article operations
     def get_articles(self, limit=None):

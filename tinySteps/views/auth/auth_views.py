@@ -94,6 +94,20 @@ def profile(request):
     return render(request, 'accounts/profile.html', context)
 
 @login_required
+def edit_profile(request):
+    """Edit profile view"""
+    if request.method == 'POST':
+        form = CustomUserCreation_Form(request.POST, instance=request.user)
+        if form.is_valid():
+            form.save()
+            messages.success(request, _("Profile updated successfully!"))
+            return redirect('profile')
+    else:
+        form = CustomUserCreation_Form(instance=request.user)
+    
+    return render(request, 'accounts/edit_profile.html', {'form': form})
+
+@login_required
 def password_reset(request):
     """Password reset view"""
     if request.method == 'POST':

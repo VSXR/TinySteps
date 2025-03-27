@@ -83,7 +83,7 @@
                                 </div>
                                 <div class="card-body">
                                     {% if user.is_authenticated %}
-                                        <form id="comment-form" method="post" action="{% url 'add_comment' 'nutrition_guide' guide.id %}">
+                                        <form id="comment-form" method="post" action="{% url 'comments:add' 'nutrition_guide' guide.id %}">
                                             {% csrf_token %}
                                             <div class="form-group mb-3">
                                                 <label for="comment-content" class="form-label">{% trans "Your comment" %}</label>
