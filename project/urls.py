@@ -20,6 +20,11 @@ urlpatterns = debug_patterns + [
     path('api/', include('api.urls')), 
 ]
 
+if settings.DEBUG:
+    urlpatterns += [
+        path('rosetta/', include('rosetta.urls')),
+    ]
+
 # URLs CON prefijo de idioma (como /es/admin/, /en/contact/)
 urlpatterns += i18n_patterns(
     path('admin/', admin.site.urls),

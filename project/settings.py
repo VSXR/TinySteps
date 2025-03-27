@@ -1,4 +1,5 @@
 import os
+import sys
 import socket
 import logging
 from pathlib import Path
@@ -64,7 +65,7 @@ THIRD_PARTY_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'whitenoise.runserver_nostatic',
-    'debug_toolbar',
+    'rosetta',
 ]
     
 PROJECT_APPS = [
@@ -72,7 +73,14 @@ PROJECT_APPS = [
     'api.apps.ApiConfig',
 ]
 
-INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + PROJECT_APPS
+# Check if we are running tests
+RUNNING_TESTS = 'test' in sys.argv
+
+# Only include debug_toolbar when not running tests
+if DEBUG and not RUNNING_TESTS:
+    INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + ['debug_toolbar'] + PROJECT_APPS
+else:
+    INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + PROJECT_APPS
 
 # Crispy Forms Configuration
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
@@ -90,9 +98,6 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'tinySteps.utils.middleware.error_handling.ErrorHandler_Middleware',
 ]
-
-if DEBUG:
-    MIDDLEWARE.insert(0, 'debug_toolbar.middleware.DebugToolbarMiddleware')
 
 # ---------------------------------------------------------------
 # TEMPLATES AND URLS CONFIGURATION
@@ -120,7 +125,6 @@ WSGI_APPLICATION = "project.wsgi.application"
 # ---------------------------------------------------------------
 # DATABASE CONFIGURATION
 # ---------------------------------------------------------------
-# Check if DB host is reachable
 db_host = os.environ.get('DB_HOST')
 can_connect_to_db = False
 
@@ -266,7 +270,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # ---------------------------------------------------------------
 os.makedirs(BASE_DIR / 'logs', exist_ok=True)
 
-# Replace your existing ColoredFormatter with this enhanced version:
 class ColoredFormatter(logging.Formatter):
     """Custom formatter that adds colors to log levels using colorama"""
     COLORS = {
@@ -424,21 +427,25 @@ LOGGING = {
     },
 }
 
-
-
-
 # ---------------------------------------------------------------
-# DEBUG TOOLBAR CONFIGURATION
+# DJANGO DEBUG TOOLBAR CONFIGURATION
 # ---------------------------------------------------------------
 INTERNAL_IPS = ['127.0.0.1', 'localhost']
 
-if DEBUG:
+# Only add debug toolbar when DEBUG is True AND we're not running tests
+if DEBUG and not RUNNING_TESTS:
     for template in TEMPLATES:
         template['OPTIONS']['context_processors'].append('django.template.context_processors.debug')
 
+def show_toolbar(request):
+    """Show the debug toolbar only when DEBUG is True and not running tests"""
+    return DEBUG and not RUNNING_TESTS
+
 DEBUG_TOOLBAR_CONFIG = {
-    'SHOW_TOOLBAR_CALLBACK': lambda request: DEBUG,
+    'SHOW_TOOLBAR_CALLBACK': show_toolbar,
     'ENABLE_STACKTRACES': True,
+    'SHOW_COLLAPSED': True,
+    'IS_RUNNING_TESTS': RUNNING_TESTS,  # This informs debug toolbar about test status
 }
 
 DEBUG_TOOLBAR_PANELS = [
@@ -464,3 +471,8 @@ if DEBUG:
         'level': 'DEBUG',
         'propagate': False,
     }
+
+if DEBUG and not RUNNING_TESTS:
+    # Check if the middleware is already in the list
+    if 'debug_toolbar.middleware.DebugToolbarMiddleware' not in MIDDLEWARE:
+        MIDDLEWARE.insert(0, 'debug_toolbar.middleware.DebugToolbarMiddleware')
