@@ -1,54 +1,95 @@
-{% extends 'guides/base/guide_list_base.html' %}
+{% extends 'base.html' %}
 {% load static %}
 {% load i18n %}
 
-{% block section_type %}parent{% endblock %}
+{% block title %}{% trans "Parent Guides - Tiny Steps" %}{% endblock %}
 
-{% block additional_content %}
-    <!-- Additional content specific to parent guides -->
-    
-    <!-- Latest Parenting Articles Section -->
-    <section aria-labelledby="latest-articles-heading" class="mt-4">
-        <div class="card border-primary mb-4">
-            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-                <h3 id="latest-articles-heading" class="h4 mb-0">{% trans "Latest Parenting Articles" %}</h3>
-                <a href="{% url 'parenting_articles' %}" class="btn btn-sm btn-light">{% trans "View All" %}</a>
+{% block main_contents %}
+<main id="main-content" class="py-4">
+    <div class="container mt-4 mb-5">
+        <div class="row">
+            <!-- Sidebar Column -->
+            <div class="col-lg-3 col-md-4 mb-4">
+                {% include "guides/components/sidebar.html" with active_section="guides" active_page="parent_guides" %}
             </div>
-            <div class="card-body">
-                <p>{% trans "Stay updated with the latest parenting advice and tips from around the web." %}</p>
+            
+            <!-- Main Content Column -->
+            <div class="col-lg-9 col-md-8">
+                <!-- Usar componente page_header -->
+                {% include "guides/components/page_header.html" with 
+                    title="PARENT GUIDES" 
+                    subtitle="Expert advice on parenting, child development, and more" %}
                 
-                {% if latest_articles %}
-                    <div class="row">
-                        {% for article in latest_articles|slice:":3" %}
-                            <div class="col-md-4 mb-3">
-                                <div class="card h-100 shadow-sm">
-                                    {% if article.image_url %}
-                                        <img src="{{ article.image_url }}" alt="{{ article.title }}" class="card-img-top" loading="lazy"
-                                            style="height: 140px; object-fit: cover;">
-                                    {% else %}
-                                        <div class="card-img-top bg-light text-center py-4" style="height: 140px;">
-                                            <i class="bi bi-journal-text display-4 text-muted"></i>
-                                        </div>
-                                    {% endif %}
-                                    <div class="card-body">
-                                        <h4 class="card-title h6">{{ article.title|truncatechars:60 }}</h4>
-                                        <p class="card-text small text-muted">
-                                            {{ article.source_name }} | {{ article.published_at|date:"M d, Y" }}
-                                        </p>
-                                    </div>
-                                    <div class="card-footer bg-white">
-                                        <a href="{{ article.url }}" target="_blank" rel="noopener" class="btn btn-sm btn-outline-primary d-block">
-                                            {% trans "Read Article" %}
-                                        </a>
-                                    </div>
-                                </div>
+                <!-- Filtros de búsqueda -->
+                <div class="card shadow-sm mb-4">
+                    <div class="card-body p-3">
+                        <form method="get" class="row g-3 align-items-end">
+                            <div class="col-md-4">
+                                <label for="search" class="form-label">{% trans "Search" %}</label>
+                                <input type="text" class="form-control" id="search" name="search" 
+                                       value="{{ request.GET.search }}" placeholder="{% trans 'Keywords...' %}">
+                            </div>
+                            <div class="col-md-3">
+                                <label for="age_range" class="form-label">{% trans "Age Range" %}</label>
+                                <select class="form-select" id="age_range" name="age_range">
+                                    <option value="">{% trans "All Ages" %}</option>
+                                    <option value="0-6" {% if request.GET.age_range == '0-6' %}selected{% endif %}>0-6 {% trans "months" %}</option>
+                                    <option value="6-12" {% if request.GET.age_range == '6-12' %}selected{% endif %}>6-12 {% trans "months" %}</option>
+                                    <option value="12-24" {% if request.GET.age_range == '12-24' %}selected{% endif %}>1-2 {% trans "years" %}</option>
+                                    <option value="24+" {% if request.GET.age_range == '24+' %}selected{% endif %}>2+ {% trans "years" %}</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="sort" class="form-label">{% trans "Sort By" %}</label>
+                                <select class="form-select" id="sort" name="sort">
+                                    <option value="newest" {% if request.GET.sort == 'newest' %}selected{% endif %}>{% trans "Newest First" %}</option>
+                                    <option value="oldest" {% if request.GET.sort == 'oldest' %}selected{% endif %}>{% trans "Oldest First" %}</option>
+                                    <option value="popular" {% if request.GET.sort == 'popular' %}selected{% endif %}>{% trans "Most Popular" %}</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <button type="submit" class="btn btn-primary w-100">
+                                    <i class="fa-solid fa-search me-1"></i> {% trans "Filter" %}
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                
+                <!-- Resultados -->
+                {% if guides %}
+                    <div class="row g-4 mb-4">
+                        {% for guide in guides %}
+                            <div class="col-md-6">
+                                {% include "guides/components/guide_card.html" with guide=guide show_date=True %}
                             </div>
                         {% endfor %}
                     </div>
+                    
+                    <!-- Paginación -->
+                    {% include "guides/components/pagination.html" with page_obj=guides %}
                 {% else %}
-                    <p class="text-center py-3">{% trans "No articles available at the moment. Please check back later." %}</p>
+                    <div class="alert alert-info">
+                        <p class="mb-0">{% trans "No parent guides found matching your criteria." %}</p>
+                    </div>
                 {% endif %}
+                
+                <!-- Artículos recientes -->
+                {% if latest_articles %}
+                    <h2 class="h4 mt-5 mb-4">{% trans "Latest Articles" %}</h2>
+                    <div class="row g-4">
+                        {% for article in latest_articles %}
+                            <div class="col-md-4">
+                                {% include "guides/components/article_card.html" with article=article %}
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+                
+                <!-- Banner de contribución -->
+                {% include "guides/components/contribute_banner.html" %}
             </div>
         </div>
-    </section>
-{% endblock additional_content %}
+    </div>
+</main>
+{% endblock main_contents %}

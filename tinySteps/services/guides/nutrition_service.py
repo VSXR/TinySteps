@@ -50,7 +50,9 @@ class NutritionGuide_Service(Guide_Service):
                 error = "Please enter an ingredient to analyze."
         
         recent_guides = self.get_recent_guides(3)
-        saved_data = self.get_saved_nutrition_data(5)
+    
+        user = request.user if request.user.is_authenticated else None
+        saved_data = self.get_saved_nutrition_data(5, user=user)
         
         return {
             'results': results,
@@ -97,3 +99,21 @@ class NutritionGuide_Service(Guide_Service):
         return ExternalNutritionData_Model.objects.values_list(
             'ingredient', flat=True
         ).order_by('-created_at')[:limit]
+    
+    def get_saved_nutrition_data(self, limit=5, user=None):
+        """Get saved nutrition data for the user"""
+        query = ExternalNutritionData_Model.objects.order_by('-created_at')
+        
+        # Filter by user if provided
+        if user and user.is_authenticated:
+            query = query.filter(user=user)
+        
+        return query[:limit]
+    
+    def get_recent_guides(self, limit=3):
+        """Get recent nutrition guides"""
+        return self.repository.get_guides_by_type(
+            self.guide_type,
+            status='approved',
+            count=limit
+        )

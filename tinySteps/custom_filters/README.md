@@ -1,0 +1,1 @@
+The custom filters in this directory are used to extend the functionality of the TinySteps application. They are designed to be reusable and can be applied to various parts of the application as needed.

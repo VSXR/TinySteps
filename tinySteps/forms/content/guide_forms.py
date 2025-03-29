@@ -10,7 +10,8 @@ class GuideSubmission_Form(forms.ModelForm, FormControlMixin, TextareaMixin, Fil
     tags = forms.CharField(
         required=False,
         widget=forms.TextInput(attrs={
-            'placeholder': _('Add tags separated by commas (e.g., parenting, nutrition)')
+            'placeholder': _('Add tags separated by commas (e.g., parenting, nutrition)'),
+            'class': 'tag-hidden-input'
         }),
         label=_('Tags')
     )
@@ -37,6 +38,33 @@ class GuideSubmission_Form(forms.ModelForm, FormControlMixin, TextareaMixin, Fil
             'desc': _('Content'),
             'image': _('Image'),
         }
+    
+    def get_tag_categories(self, guide_type='parent'):
+        """Get predefined tag categories and options based on guide type"""
+        if guide_type == 'nutrition':
+            return {
+                'Age Group': [
+                    '0-6 months', '6-12 months', '1-3 years', '3-5 years'
+                ],
+                'Nutrition Type': [
+                    'Breastfeeding', 'Formula', 'Solid Foods', 'Allergies', 'Meal Planning'
+                ],
+                'Special Considerations': [
+                    'Vegan', 'Vegetarian', 'Gluten-Free', 'Dairy-Free'
+                ]
+            }
+        else:  # parent guides
+            return {
+                'Age Group': [
+                    'Newborn', 'Infant', 'Toddler', 'Preschooler'
+                ],
+                'Parenting Topics': [
+                    'Sleep', 'Potty Training', 'Discipline', 'Development', 'Routines'
+                ],
+                'Challenges': [
+                    'Tantrums', 'Picky Eating', 'Separation Anxiety', 'Screen Time'
+                ]
+            }
 
 class GuideRejection_Form(forms.Form, FormControlMixin, TextareaMixin):
     """Form for rejecting a guide submission"""

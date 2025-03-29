@@ -101,7 +101,7 @@ def delete_post(request, post_id):
     if request.method == 'POST':
         service.delete_post(post_id)
         messages.success(request, _("Your post has been deleted."))
-        return redirect('parents_forum')
+        return redirect('parent_forum')
     
     return render(request, 'forum/delete_post.html', {'post': post})
 
@@ -124,4 +124,4 @@ def forum_post_like_toggle(request, post_id):
     service.toggle_like(post_id, request.user)
     
     # Return to the previous page after toggling like (goes to forum home if no referer!)
-    return redirect(request.META.get('HTTP_REFERER', 'parents_forum'))
+    return redirect(request.META.get('HTTP_REFERER', 'parent_forum'))

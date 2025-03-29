@@ -13,48 +13,46 @@
 {% block section_type %}{{ section_type }}{% endblock %}
 
 {% block additional_content %}
-<p class="lead mb-4">
-    {% if section_type == 'nutrition' %}
-        {% trans "Discover helpful nutrition articles for your baby's development." %}
-    {% else %}
-        {% trans "Discover helpful articles for new parents on child development, care practices, and more." %}
-    {% endif %}
-</p>
-
-{% if section_type == 'nutrition' %}
-    <a href="{% url 'nutrition_analyzer' %}" class="btn btn-outline-primary mb-4">
-        <i class="bi bi-calculator me-2"></i>{% trans "Baby Food Nutrition Analyzer" %}
-    </a>
-{% endif %}
+<div class="row mb-4">
+    <div class="col-lg-8">
+        <p class="lead">
+            {% if section_type == 'nutrition' %}
+                {% trans "Discover helpful nutrition articles for your baby's development." %}
+            {% else %}
+                {% trans "Discover helpful articles for new parents on child development, care practices, and more." %}
+            {% endif %}
+        </p>
+    </div>
+    <div class="col-lg-4 text-lg-end mt-3 mt-lg-0">
+        {% if section_type == 'nutrition' %}
+            <a href="{% url 'nutrition_analyzer' %}" class="btn btn-outline-success" 
+               aria-label="{% trans 'Use the baby food nutrition analyzer tool' %}">
+                <i class="bi bi-calculator me-2" aria-hidden="true"></i>{% trans "Baby Food Nutrition Analyzer" %}
+            </a>
+        {% endif %}
+    </div>
+</div>
 {% endblock additional_content %}
 
 {% block article_list %}
-<div class="row">
+<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4" role="feed" aria-label="{% trans 'Articles list' %}">
     {% for article in articles %}
-        <div class="col-md-6 col-lg-4 mb-4">
-            <div class="card h-100 shadow-sm">
-                {% if article.image %}
-                    <img src="{{ article.image.url }}" class="card-img-top" alt="{{ article.title }}">
-                {% else %}
-                    <div class="card-img-top bg-light text-center py-5">
-                        <i class="bi bi-journal-text display-4 text-muted"></i>
-                    </div>
-                {% endif %}
-                <div class="card-body">
-                    <h2 class="h5 card-title">{{ article.title }}</h2>
-                    <p class="card-text text-muted">{{ article.excerpt }}</p>
-                    {% if section_type == 'nutrition' %}
-                        <a href="{% url 'nutrition_article_details' article.id %}" class="btn btn-primary btn-sm">{% trans "Read more" %}</a>
-                    {% else %}
-                        <a href="{% url 'parenting_article_details' article.id %}" class="btn btn-primary btn-sm">{% trans "Read more" %}</a>
-                    {% endif %}
-                </div>
-            </div>
+        <div class="col">
+            {% include "guides/components/article_card.html" with article=article %}
         </div>
     {% empty %}
         <div class="col-12">
-            <div class="alert alert-info">{% trans "No articles available yet." %}</div>
+            <div class="alert alert-info d-flex align-items-center">
+                <i class="bi bi-info-circle-fill me-3 fs-4" aria-hidden="true"></i>
+                <div>{% trans "No articles available yet. Please check back later." %}</div>
+            </div>
         </div>
     {% endfor %}
 </div>
+
+{% if articles.has_other_pages %}
+    <div class="mt-5">
+        {% include 'guides/components/pagination.html' with page_obj=articles query_params=query_params %}
+    </div>
+{% endif %}
 {% endblock article_list %}

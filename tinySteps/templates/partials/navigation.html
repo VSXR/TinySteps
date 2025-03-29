@@ -2,71 +2,107 @@
 {% load i18n %}
 
 <div class="navbar-collapse collapse" id="navbarSupportedContent">
-    <ul class="navbar-nav mb-2 mb-lg-0 me-auto">
-        <!-- Main Navigation Links -->
-        <li class="nav-item">
-            <a href="{% url 'your_children' %}" class="nav-link {% if request.resolver_match.url_name == 'your_children' %}active{% endif %}" aria-label="{% trans 'Navigate to your children section' %}">
-                <i class="fa-solid fa-baby" aria-hidden="true"></i>
-                <span class="nav-text">{% trans "YOUR CHILDREN" %}</span>
-            </a>
-        </li>
-        <li class="nav-item">
-            <a href="{% url 'parents_forum' %}" class="nav-link {% if request.resolver_match.url_name == 'parents_forum' %}active{% endif %}" aria-label="{% trans 'Navigate to parents forum' %}">
-                <i class="fa-solid fa-comments" aria-hidden="true"></i> 
-                <span class="nav-text">{% trans "PARENTS FORUM" %}</span>
-            </a>
-        </li>
-        <li class="nav-item">
-            <a href="{% url 'guides' %}" class="nav-link {% if 'guides' in request.path %}active{% endif %}" aria-label="{% trans 'Navigate to guides' %}">
-                <i class="fa-solid fa-book" aria-hidden="true"></i> 
-                <span class="nav-text">{% trans "GUIDES" %}</span>
-            </a>
-        </li>
-        <li class="nav-item">
-            <a href="{% url 'contact' %}" class="nav-link {% if request.resolver_match.url_name == 'contact' %}active{% endif %}" aria-label="{% trans 'Navigate to contact page' %}">
-                <i class="fa-solid fa-envelope" aria-hidden="true"></i> 
-                <span class="nav-text">{% trans "CONTACT" %}</span>
-            </a>
-        </li>
-        <li class="nav-item">
-            <a href="{% url 'about' %}" class="nav-link {% if request.resolver_match.url_name == 'about' %}active{% endif %}" aria-label="{% trans 'Navigate to about us page' %}">
-                <i class="fa-solid fa-users" aria-hidden="true"></i> 
-                <span class="nav-text">{% trans "ABOUT US" %}</span>
-            </a>
-        </li>
-    </ul>
+  <ul class="navbar-nav mb-2 mb-lg-0 me-auto">
+    <!-- Main Navigation Links -->
+    <li class="nav-item">
+      <a
+        href="{% url 'your_children' %}"
+        class="nav-link {% if request.resolver_match.url_name == 'your_children' %}active{% endif %}"
+        aria-label="{% trans 'Navigate to your children section' %}"
+      >
+        <i class="fa-solid fa-baby" aria-hidden="true"></i>
+        <span class="nav-text">{% trans "YOUR CHILDREN" %}</span>
+      </a>
+    </li>
+    <li class="nav-item">
+      <a
+        href="{% url 'parent_forum' %}"
+        class="nav-link {% if request.resolver_match.url_name == 'parent_forum' %}active{% endif %}"
+        aria-label="{% trans 'Navigate to parents forum' %}"
+      >
+        <i class="fa-solid fa-comments" aria-hidden="true"></i>
+        <span class="nav-text">{% trans "PARENTS FORUM" %}</span>
+      </a>
+    </li>
+    <li class="nav-item">
+      <a
+        href="{% url 'guides' %}"
+        class="nav-link {% if 'guides' in request.path %}active{% endif %}"
+        aria-label="{% trans 'Navigate to guides' %}"
+      >
+        <i class="fa-solid fa-book" aria-hidden="true"></i>
+        <span class="nav-text">{% trans "GUIDES" %}</span>
+      </a>
+    </li>
+    <li class="nav-item">
+      <a
+        href="{% url 'contact' %}"
+        class="nav-link {% if request.resolver_match.url_name == 'contact' %}active{% endif %}"
+        aria-label="{% trans 'Navigate to contact page' %}"
+      >
+        <i class="fa-solid fa-envelope" aria-hidden="true"></i>
+        <span class="nav-text">{% trans "CONTACT" %}</span>
+      </a>
+    </li>
+    <li class="nav-item">
+      <a
+        href="{% url 'about' %}"
+        class="nav-link {% if request.resolver_match.url_name == 'about' %}active{% endif %}"
+        aria-label="{% trans 'Navigate to about us page' %}"
+      >
+        <i class="fa-solid fa-users" aria-hidden="true"></i>
+        <span class="nav-text">{% trans "ABOUT US" %}</span>
+      </a>
+    </li>
+  </ul>
 
-    <!-- User Account Links -->
-    <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-        {% if user.is_authenticated %}
-            <li class="nav-item">
-                <a class="nav-link {% if request.resolver_match.url_name == 'profile' %}active{% endif %}" href="{% url 'profile' %}" aria-label="{% trans 'View your profile' %}">
-                    <i class="fa-solid fa-user" aria-hidden="true"></i> 
-                    <span class="nav-text">{% blocktrans with username=user.username %}{{ username }}{% endblocktrans %}</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <form method="post" action="{% url 'logout' %}">
-                    {% csrf_token %}
-                    <button type="submit" class="nav-link btn-logout {% if request.resolver_match.url_name == 'logout' %}active{% endif %}" aria-label="{% trans 'Logout' %}">
-                        <i class="fa-solid fa-right-from-bracket" aria-hidden="true"></i> 
-                        <span class="nav-text">{% trans "Logout" %}</span>
-                    </button>
-                </form>
-            </li>
-        {% else %}
-            <li class="nav-item">
-                <a class="nav-link {% if request.resolver_match.url_name == 'login' %}active{% endif %}" href="{% url 'login' %}" aria-label="{% trans 'Login to your account' %}">
-                    <i class="fa-solid fa-right-to-bracket" aria-hidden="true"></i> 
-                    <span class="nav-text">{% trans "Login" %}</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link {% if request.resolver_match.url_name == 'register' %}active{% endif %}" href="{% url 'register' %}" aria-label="{% trans 'Create a new account' %}">
-                    <i class="fa-solid fa-user-plus" aria-hidden="true"></i> 
-                    <span class="nav-text">{% trans "Register" %}</span>
-                </a>
-            </li>
-        {% endif %}
-    </ul>
+  <!-- User Account Links -->
+  <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+    {% if user.is_authenticated %}
+    <li class="nav-item">
+      <a
+        class="nav-link {% if request.resolver_match.url_name == 'profile' %}active{% endif %}"
+        href="{% url 'profile' %}"
+        aria-label="{% trans 'View your profile' %}"
+      >
+        <i class="fa-solid fa-user" aria-hidden="true"></i>
+        <span class="nav-text">{{ user.username }}</span>
+      </a>
+    </li>
+    <li class="nav-item">
+      <form method="post" action="{% url 'logout' %}">
+        {% csrf_token %}
+        <button
+          type="submit"
+          class="nav-link btn-logout {% if request.resolver_match.url_name == 'logout' %}active{% endif %}"
+          aria-label="{% trans 'Logout' %}"
+        >
+          <i class="fa-solid fa-right-from-bracket" aria-hidden="true"></i>
+          <span class="nav-text">{% trans "Logout" %}</span>
+        </button>
+      </form>
+    </li>
+    {% else %}
+    <li class="nav-item">
+      <a
+        class="nav-link {% if request.resolver_match.url_name == 'login' %}active{% endif %}"
+        href="{% url 'login' %}"
+        aria-label="{% trans 'Login to your account' %}"
+      >
+        <i class="fa-solid fa-right-to-bracket" aria-hidden="true"></i>
+        <span class="nav-text">{% trans "Login" %}</span>
+      </a>
+    </li>
+    <li class="nav-item">
+      <a
+        class="nav-link {% if request.resolver_match.url_name == 'register' %}active{% endif %}"
+        href="{% url 'register' %}"
+        aria-label="{% trans 'Create a new account' %}"
+      >
+        <i class="fa-solid fa-user-plus" aria-hidden="true"></i>
+        <span class="nav-text">{% trans "Register" %}</span>
+      </a>
+    </li>
+    {% endif %}
+  </ul>
 </div>

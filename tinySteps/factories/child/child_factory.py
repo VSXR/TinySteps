@@ -8,7 +8,7 @@ class ChildUrl_Factory:
         
         return [
             # Core child views
-            path('children/', core_views.your_children, name='children_list'),
+            path('children/', core_views.your_children, name='your_children'),
             path('children/<int:child_id>/', core_views.your_child, name='child_detail'),
             
             # Child forms

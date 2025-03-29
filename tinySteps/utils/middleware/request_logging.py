@@ -3,7 +3,7 @@ import time
 
 logger = logging.getLogger('request')
 
-class RequestLoggingMiddleware:
+class RequestLogging_Middleware:
     """Middleware to log request information and response time"""
     
     def __init__(self, get_response):

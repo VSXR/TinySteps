@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 {% load i18n %}
+{% load custom_filters %}
 
 {% block title %}{% trans "My Guides - TINY STEPS" %}{% endblock %}
 
@@ -8,13 +9,9 @@
 <main id="main-content">
     <div class="container my-4 my-md-5">
         <!-- Header Section -->
-        <div class="row mb-3 mb-lg-4">
-            <div class="col-12 text-center">
-                <h1 id="page-heading" class="fs-2 fs-md-1">{% trans "My Guides" %}</h1>
-                <p class="lead d-none d-sm-block" id="page-description">{% trans "View and manage the guides you have submitted" %}</p>
-                <hr class="my-3 my-md-4 w-75 w-md-50 mx-auto">
-            </div>
-        </div>
+        {% include "guides/components/page_header.html" with 
+            title="My Guides" 
+            subtitle="View and manage the guides you have submitted" %}
         
         <!-- Staff Admin Panel (Conditional) -->
         {% if is_staff %}
@@ -28,7 +25,7 @@
                         <div class="d-flex flex-column flex-md-row align-items-center justify-content-between">
                             <p class="mb-3 mb-md-0">{% trans "As staff, you can review all pending guides." %}</p>
                             <a href="{% url 'review_guides' %}" class="btn btn-primary">
-                                <i class="fa-solid fa-list-check me-1"></i> 
+                                <i class="fa-solid fa-list-check me-1" aria-hidden="true"></i> 
                                 {% trans "Review Panel" %}
                                 {% if pending_guides_count > 0 %}
                                     <span class="badge bg-danger ms-1">{{ pending_guides_count }}</span>
@@ -46,10 +43,10 @@
             <div class="col-12 d-flex justify-content-center">
                 <div class="d-flex flex-column flex-sm-row gap-2 gap-sm-0" role="group" aria-label="{% trans 'Submit guides' %}">
                     <a href="{% url 'submit_guide' %}?type=parent" class="btn btn-primary me-sm-2">
-                        <i class="fa-solid fa-plus me-2"></i>{% trans "Submit Parent Guide" %}
+                        <i class="fa-solid fa-plus me-2" aria-hidden="true"></i>{% trans "Submit Parent Guide" %}
                     </a>
                     <a href="{% url 'submit_guide' %}?type=nutrition" class="btn btn-success">
-                        <i class="fa-solid fa-plus me-2"></i>{% trans "Submit Nutrition Guide" %}
+                        <i class="fa-solid fa-plus me-2" aria-hidden="true"></i>{% trans "Submit Nutrition Guide" %}
                     </a>
                 </div>
             </div>
@@ -96,32 +93,20 @@
                                         <td>
                                             {% if guide.status == 'approved' %}
                                                 {% if guide.guide_type == 'parent' %}
-                                                    <a href="{% url 'parent_guide_detail' guide.id %}" class="btn btn-sm btn-outline-primary">
-                                                        <i class="fa-solid fa-eye me-1"></i> {% trans "View" %}
+                                                    <a href="{% url 'parent_guide_details' guide.id %}" class="btn btn-sm btn-outline-primary">
+                                                        <i class="fa-solid fa-eye me-1" aria-hidden="true"></i> {% trans "View" %}
                                                     </a>
                                                 {% else %}
-                                                    <a href="{% url 'nutrition_guide_detail' guide.id %}" class="btn btn-sm btn-outline-primary">
-                                                        <i class="fa-solid fa-eye me-1"></i> {% trans "View" %}
+                                                    <a href="{% url 'nutrition_guide_details' guide.id %}" class="btn btn-sm btn-outline-primary">
+                                                        <i class="fa-solid fa-eye me-1" aria-hidden="true"></i> {% trans "View" %}
                                                     </a>
                                                 {% endif %}
                                             {% elif guide.status == 'rejected' %}
                                                 <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#rejectReason{{ guide.id }}">
-                                                    <i class="fa-solid fa-circle-info me-1"></i> {% trans "Reason" %}
+                                                    <i class="fa-solid fa-circle-info me-1" aria-hidden="true"></i> {% trans "Reason" %}
                                                 </button>
                                             {% else %}
-                                                <span class="text-muted"><i class="fa-solid fa-hourglass-half me-1"></i> {% trans "Awaiting Review" %}</span>
-                                            {% endif %}
-                                            
-                                            {% if is_staff and guide.status == 'pending' %}
-                                                <div class="mt-2">
-                                                    <a href="{% url 'approve_guide' guide.id %}" class="btn btn-sm btn-success" 
-                                                    onclick="return confirm('{% trans "Are you sure you want to approve this guide?" %}')">
-                                                        <i class="fa-solid fa-check me-1"></i>{% trans "Approve" %}
-                                                    </a>
-                                                    <a href="{% url 'reject_guide' guide.id %}" class="btn btn-sm btn-danger">
-                                                        <i class="fa-solid fa-times me-1"></i>{% trans "Reject" %}
-                                                    </a>
-                                                </div>
+                                                <span class="text-muted"><i class="fa-solid fa-hourglass-half me-1" aria-hidden="true"></i> {% trans "Awaiting Review" %}</span>
                                             {% endif %}
                                         </td>
                                     </tr>
@@ -138,59 +123,12 @@
                 <div class="row g-3">
                     {% for guide in guides %}
                     <div class="col-12">
-                        <div class="card shadow-sm">
-                            <div class="card-header d-flex justify-content-between align-items-center">
-                                <h2 class="fs-5 mb-0">{{ guide.title }}</h2>
-                                {% if guide.guide_type == 'parent' %}
-                                    <span class="badge bg-primary">{% trans "Parent" %}</span>
-                                {% else %}
-                                    <span class="badge bg-success">{% trans "Nutrition" %}</span>
-                                {% endif %}
-                            </div>
-                            <div class="card-body">
-                                <div class="mb-2">
-                                    <small class="text-muted">{% trans "Submitted:" %} {{ guide.created_at|date:"d M Y" }}</small>
-                                </div>
-                                <div class="mb-3">
-                                    {% if guide.status == 'pending' %}
-                                        <span class="badge bg-warning text-dark">{% trans "Pending Review" %}</span>
-                                    {% elif guide.status == 'approved' %}
-                                        <span class="badge bg-success">{% trans "Approved" %}</span>
-                                    {% else %}
-                                        <span class="badge bg-danger">{% trans "Rejected" %}</span>
-                                    {% endif %}
-                                </div>
-                                <div class="d-flex flex-wrap gap-2">
-                                    {% if guide.status == 'approved' %}
-                                        {% if guide.guide_type == 'parent' %}
-                                            <a href="{% url 'parent_guide_detail' guide.id %}" class="btn btn-sm btn-outline-primary">
-                                                <i class="fa-solid fa-eye me-1"></i> {% trans "View" %}
-                                            </a>
-                                        {% else %}
-                                            <a href="{% url 'nutrition_guide_detail' guide.id %}" class="btn btn-sm btn-outline-primary">
-                                                <i class="fa-solid fa-eye me-1"></i> {% trans "View" %}
-                                            </a>
-                                        {% endif %}
-                                    {% elif guide.status == 'rejected' %}
-                                        <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#rejectReason{{ guide.id }}">
-                                            <i class="fa-solid fa-circle-info me-1"></i> {% trans "Reason" %}
-                                        </button>
-                                    {% else %}
-                                        <span class="text-muted"><i class="fa-solid fa-hourglass-half me-1"></i> {% trans "Awaiting Review" %}</span>
-                                    {% endif %}
-                                    
-                                    {% if is_staff and guide.status == 'pending' %}
-                                        <a href="{% url 'approve_guide' guide.id %}" class="btn btn-sm btn-success" 
-                                        onclick="return confirm('{% trans "Are you sure you want to approve this guide?" %}')">
-                                            <i class="fa-solid fa-check me-1"></i>{% trans "Approve" %}
-                                        </a>
-                                        <a href="{% url 'reject_guide' guide.id %}" class="btn btn-sm btn-danger">
-                                            <i class="fa-solid fa-times me-1"></i>{% trans "Reject" %}
-                                        </a>
-                                    {% endif %}
-                                </div>
-                            </div>
-                        </div>
+                        {% include "guides/components/guide_card.html" with 
+                            guide=guide 
+                            show_status=True 
+                            show_date=True 
+                            button_text="View"
+                            footer_border_top=True %}
                     </div>
                     {% endfor %}
                 </div>
@@ -214,7 +152,7 @@
                             <div class="modal-footer flex-column flex-sm-row">
                                 <button type="button" class="btn btn-secondary w-100 mb-2 mb-sm-0 w-sm-auto" data-bs-dismiss="modal">{% trans "Close" %}</button>
                                 <a href="{% url 'submit_guide' %}?type={{ guide.guide_type }}" class="btn btn-primary w-100 w-sm-auto">
-                                    <i class="fa-solid fa-pencil me-1"></i> {% trans "Submit New Guide" %}
+                                    <i class="fa-solid fa-pencil me-1" aria-hidden="true"></i> {% trans "Submit New Guide" %}
                                 </a>
                             </div>
                         </div>

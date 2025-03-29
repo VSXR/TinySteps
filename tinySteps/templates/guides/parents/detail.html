@@ -2,114 +2,116 @@
 {% load static %}
 {% load i18n %}
 
-{% block title %}
-{{ guide.title }} - {% trans "TINY STEPS" %}
-{% endblock %}
+{% block title %}{{ guide.title }} - {% trans "Parent Guide" %}{% endblock %}
 
 {% block main_contents %}
-<main id="main-content">
-    <div class="container my-4">
-        {% include 'guides/components/breadcrumbs.html' with is_detail=True guide=guide %}
-        
+<main id="main-content" class="py-4">
+    <div class="container mt-4 mb-5">
         <div class="row">
-            <!-- Main content column -->
-            <div class="col-lg-8">
-                <article class="card shadow-sm mb-4">
-                    <div class="card-body p-4">
-                        <h1 class="card-title mb-3">{{ guide.title }}</h1>
+            <!-- Sidebar Column -->
+            <div class="col-lg-3 col-md-4 mb-4">
+                {% include "guides/components/sidebar.html" with active_section="guides" active_page="parent_guides" %}
+            </div>
+            
+            <!-- Main Content Column -->
+            <div class="col-lg-9 col-md-8">
+                <!-- Breadcrumbs -->
+                {% include "guides/components/breadcrumbs.html" with 
+                    items=breadcrumbs current=guide.title %}
+                
+                <!-- Artículo principal -->
+                <article class="bg-white p-3 p-md-4 shadow-sm rounded">
+                    <!-- Cabecera -->
+                    <header class="mb-4">
+                        <h1 class="mb-3">{{ guide.title }}</h1>
                         
-                        <div class="d-flex justify-content-between align-items-center mb-4">
-                            <div class="meta text-muted">
-                                <span><i class="fa-solid fa-user me-1"></i> {{ guide.author.username }}</span>
-                                <span class="ms-3"><i class="fa-solid fa-calendar me-1"></i> {{ guide.approved_at|date:"F d, Y" }}</span>
-                            </div>
-                            <span class="badge bg-{% if section_type == 'nutrition' %}success{% else %}primary{% endif %}">
-                                {% if section_type == 'nutrition' %}
-                                    {% trans "Nutrition" %}
-                                {% else %}
-                                    {% trans "Parenting" %}
-                                {% endif %}
+                        <div class="d-flex flex-wrap align-items-center mb-3 gap-2">
+                            <span class="badge bg-primary">{% trans "Parent Guide" %}</span>
+                            
+                            {% if guide.age_range %}
+                            <span class="badge bg-secondary">
+                                {{ guide.age_range }}
+                            </span>
+                            {% endif %}
+                            
+                            <span class="text-muted ms-auto small">
+                                {% trans "Published:" %} {{ guide.created_at|date:"d M Y" }}
                             </span>
                         </div>
                         
-                        {% if guide.image_url %}
-                            <img src="{{ guide.image_url }}" alt="{{ guide.title }}" class="img-fluid rounded mb-4">
+                        {% if guide.author %}
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="avatar">
+                                <i class="fa-solid fa-user-circle fa-2x text-secondary"></i>
+                            </div>
+                            <div class="ms-2">
+                                <span class="text-muted small">{% trans "By" %}</span>
+                                <span class="fw-bold">{{ guide.author.get_full_name|default:guide.author.username }}</span>
+                            </div>
+                        </div>
                         {% endif %}
                         
-                        <div class="guide-content">
-                            {{ guide.desc|linebreaks }}
+                        {% if guide.image %}
+                        <div class="featured-image mb-4">
+                            <img src="{{ guide.image.url }}" alt="{{ guide.title }}" class="img-fluid rounded">
+                        </div>
+                        {% endif %}
+                    </header>
+                    
+                    <!-- Contenido -->
+                    <div class="guide-content mb-5">
+                        <div class="lead mb-4">{{ guide.desc }}</div>
+                        
+                        {{ guide.content|safe }}
+                    </div>
+                    
+                    <!-- Etiquetas -->
+                    {% if guide.tags %}
+                    <div class="mb-4">
+                        <h3 class="h5 mb-2">{% trans "Tags:" %}</h3>
+                        <div class="d-flex flex-wrap gap-2">
+                            {% for tag in guide.tags|split:"," %}
+                                <span class="badge bg-light text-dark">{{ tag|trim }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Acciones -->
+                    <div class="d-flex flex-wrap justify-content-between">
+                        <div>
+                            <a href="{% url 'parent_guides' %}" class="btn btn-outline-secondary">
+                                <i class="fa-solid fa-arrow-left me-1"></i> {% trans "Back to Guides" %}
+                            </a>
+                        </div>
+                        
+                        <div class="d-flex gap-2">
+                            <!-- Acciones sociales - opcionales -->
+                            <button class="btn btn-outline-primary" title="{% trans 'Share' %}">
+                                <i class="fa-solid fa-share-alt"></i>
+                            </button>
+                            <button class="btn btn-outline-danger" title="{% trans 'Save' %}">
+                                <i class="fa-solid fa-bookmark"></i>
+                            </button>
                         </div>
                     </div>
                 </article>
-
-                <!-- Comments section -->
-                <section aria-labelledby="comments-heading" id="comments" class="mb-4">
-                    <div class="card shadow-sm">
-                        <div class="card-header bg-light">
-                            <h2 id="comments-heading" class="h5 mb-0">
-                                {% if comments %}
-                                    {% blocktrans count counter=comments.count %}Comment ({{ counter }}){% plural %}Comments ({{ counter }}){% endblocktrans %}
-                                {% else %}
-                                    {% trans "Comments" %}
-                                {% endif %}
-                            </h2>
-                        </div>
-                        <div class="card-body">
-                            {% if comments %}
-                                <div class="comment-list">
-                                    {% for comment in comments %}
-                                        <div class="card mb-3" id="comment-{{ comment.id }}">
-                                            <div class="card-body">
-                                                <div class="d-flex justify-content-between mb-2">
-                                                    <div>
-                                                        <strong>{{ comment.author.username }}</strong>
-                                                    </div>
-                                                    <time datetime="{{ comment.created_at|date:'Y-m-d' }}" class="text-muted">
-                                                        {{ comment.created_at|date:"M j, Y" }}
-                                                    </time>
-                                                </div>
-                                                <p>{{ comment.text }}</p>
-                                            </div>
-                                        </div>
-                                    {% endfor %}
-                                </div>
-                            {% else %}
-                                <p class="text-center my-4">{% trans "No comments yet. Be the first to comment!" %}</p>
-                            {% endif %}
-
-                            <div class="card mt-4">
-                                <div class="card-header">
-                                    <h3 class="card-title h5 mb-0">{% trans "Add Your Comment" %}</h3>
-                                </div>
-                                <div class="card-body">
-                                    {% if user.is_authenticated %}
-                                        <form id="comment-form" method="post" action="{% url 'comments:add' 'parent_guide' guide.id %}">
-                                            {% csrf_token %}
-                                            <div class="form-group mb-3">
-                                                <label for="comment-content" class="form-label">{% trans "Your comment" %}</label>
-                                                <textarea id="comment-content" name="content" class="form-control" rows="3" required></textarea>
-                                            </div>
-                                            <button type="submit" class="btn btn-primary">
-                                                <i class="fas fa-paper-plane me-2"></i>{% trans "Post Comment" %}
-                                            </button>
-                                        </form>
-                                    {% else %}
-                                        <div class="alert alert-info mb-0">
-                                            {% trans "Please" %} <a href="{% url 'login' %}?next={{ request.path }}">{% trans "log in" %}</a> {% trans "to leave a comment." %}
-                                        </div>
-                                    {% endif %}
-                                </div>
+                
+                <!-- Guías relacionadas -->
+                {% if related_guides %}
+                <section class="mt-5">
+                    <h2 class="h4 mb-4">{% trans "Related Guides" %}</h2>
+                    <div class="row g-4">
+                        {% for related in related_guides %}
+                            <div class="col-md-6">
+                                {% include "guides/components/guide_card.html" with guide=related %}
                             </div>
-                        </div>
+                        {% endfor %}
                     </div>
                 </section>
-            </div>
-            
-            <!-- Sidebar column -->
-            <div class="col-lg-4">
-                {% include 'guides/components/sidebar.html' with recent_guides=related_guides section_type=section_type %}
+                {% endif %}
             </div>
         </div>
     </div>
 </main>
-{% endblock %}
+{% endblock main_contents %}

@@ -13,105 +13,176 @@
 
 {% block main_contents %}
     <main id="main-content">
-        <div class="container my-4 my-md-5">
+        <div class="container py-4 px-3">
             <!-- Breadcrumb Navigation -->
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="{% url 'index' %}">{% trans "Home" %}</a></li>
                     <li class="breadcrumb-item"><a href="{% url 'guides' %}">{% trans "Guides" %}</a></li>
+
+                    <!-- Type of guide -->
                     {% if guide_type == 'nutrition' %}
                         <li class="breadcrumb-item"><a href="{% url 'nutrition_guides' %}">{% trans "Nutrition Guides" %}</a></li>
                     {% else %}
-                        <li class="breadcrumb-item"><a href="{% url 'parents_guides' %}">{% trans "Parents Guides" %}</a></li>
+                        <li class="breadcrumb-item"><a href="{% url 'parent_guides' %}">{% trans "Parents Guides" %}</a></li>
                     {% endif %}
-                    <li class="breadcrumb-item active" aria-current="page">{% trans "Submit Guide" %}</li>
                 </ol>
             </nav>
             
-            <div class="row mb-4">
-                <div class="col-12 text-center">
-                    <h1 id="page-heading">
-                        {% if guide_type == 'nutrition' %}
-                            {% trans "Share Your Nutrition Knowledge" %}
-                        {% else %}
-                            {% trans "Share Your Parenting Advice" %}
-                        {% endif %}
-                    </h1>
-                    <p class="lead" id="page-description">
-                        {% if guide_type == 'nutrition' %}
-                            {% trans "Help other parents with your nutrition expertise" %}
-                        {% else %}
-                            {% trans "Share your parenting tips and experiences" %}
-                        {% endif %}
-                    </p>
-                    <hr class="my-4 w-50 mx-auto">
-                </div>
-            </div>
-            
             <div class="row justify-content-center">
-                <div class="col-12 col-md-10 col-lg-8">
-                    {% if messages %}
-                        {% include 'partials/messages.html' %}
-                    {% endif %}
+                <div class="col-lg-6 col-md-8 col-sm-10">
+                    <div class="card shadow-sm border-0 rounded-3">
+                        <div class="card-header py-3">
+                            <h2 class="text-center fs-4 mb-0" id="submit-heading">
+                                {% if guide_type == 'nutrition' %}
+                                    {% trans "Share Your Nutrition Knowledge" %}
+                                {% else %}
+                                    {% trans "Share Your Parenting Advice" %}
+                                {% endif %}
+                            </h2>
+                        </div>
+                        <div class="card-body p-4">
+                            {% if messages %}
+                                <div role="alert" aria-live="polite">
+                                    {% include 'partials/messages.html' %}
+                                </div>
+                            {% endif %}
 
-                <form method="post" enctype="multipart/form-data">
-                    {% csrf_token %}
-                    <input type="hidden" name="guide_type" value="{{ guide_type }}">
+                            <form method="post" enctype="multipart/form-data" novalidate aria-labelledby="submit-heading">
+                                {% csrf_token %}
+                                <input type="hidden" name="guide_type" value="{{ guide_type }}">
 
-                    {% if form %}
-                        {{ form.non_field_errors }}
+                                {% if form %}
+                                    {{ form.non_field_errors }}
+                                    
+                                    <!-- Title Field -->
+                                    <div class="mb-3">
+                                        <label for="{{ form.title.id_for_label }}" class="form-label fw-bold">{% trans "Title" %}</label>
+                                        <input type="text" name="{{ form.title.html_name }}" 
+                                               id="{{ form.title.id_for_label }}" 
+                                               class="form-control form-control-lg {% if form.title.errors %}is-invalid{% endif %}"
+                                               value="{{ form.title.value|default:'' }}" required>
+                                        {% if form.title.errors %}
+                                            <div class="invalid-feedback">
+                                                {% for error in form.title.errors %}{{ error }}{% endfor %}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+
+                                    <!-- Description Field -->
+                                    <div class="mb-3">
+                                        <label for="{{ form.desc.id_for_label }}" class="form-label fw-bold">{% trans "Description" %}</label>
+                                        <textarea name="{{ form.desc.html_name }}" 
+                                                  id="{{ form.desc.id_for_label }}" 
+                                                  class="form-control form-control-lg {% if form.desc.errors %}is-invalid{% endif %}"
+                                                  rows="6" required>{{ form.desc.value|default:'' }}</textarea>
+                                        {% if form.desc.errors %}
+                                            <div class="invalid-feedback">
+                                                {% for error in form.desc.errors %}{{ error }}{% endfor %}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+
+                                    <!-- Tags Accordion -->
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">{% trans "Select Tags" %}</label>
+                                        <input type="hidden" name="{{ form.tags.html_name }}" 
+                                                id="{{ form.tags.id_for_label }}" 
+                                                class="tag-hidden-input form-control {% if form.tags.errors %}is-invalid{% endif %}"
+                                                value="{{ form.tags.value|default:'' }}">
+                                        
+                                        <div class="accordion" id="tagsAccordion">
+                                            {% for category, tags in tag_categories.items %}
+                                            <div class="accordion-item">
+                                                <h2 class="accordion-header" id="heading{{ forloop.counter }}">
+                                                    <button class="accordion-button collapsed" type="button" 
+                                                            data-bs-toggle="collapse" 
+                                                            data-bs-target="#collapse{{ forloop.counter }}" 
+                                                            aria-expanded="false" 
+                                                            aria-controls="collapse{{ forloop.counter }}">
+                                                        {% trans category %}
+                                                    </button>
+                                                </h2>
+                                                <div id="collapse{{ forloop.counter }}" 
+                                                    class="accordion-collapse collapse" 
+                                                    aria-labelledby="heading{{ forloop.counter }}" 
+                                                    data-bs-parent="#tagsAccordion">
+                                                    <div class="accordion-body">
+                                                        {% for tag in tags %}
+                                                        <div class="form-check">
+                                                            <input class="form-check-input tag-checkbox" 
+                                                                type="checkbox" 
+                                                                value="{{ tag }}" 
+                                                                id="tag{{ forloop.parentloop.counter }}{{ forloop.counter }}">
+                                                            <label class="form-check-label" 
+                                                                for="tag{{ forloop.parentloop.counter }}{{ forloop.counter }}">
+                                                                {% trans tag %}
+                                                            </label>
+                                                        </div>
+                                                        {% endfor %}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            {% endfor %}
+                                        </div>
+                                        
+                                        <div class="mt-2 mb-3">
+                                            <div class="selected-tags" id="selectedTags">
+                                                <!-- Selected tags will appear here -->
+                                            </div>
+                                        </div>
+                                        {% if form.tags.errors %}
+                                            <div class="invalid-feedback d-block">
+                                                {% for error in form.tags.errors %}{{ error }}{% endfor %}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+
+                                    <!-- Image Field -->
+                                    <div class="mb-4">
+                                        <label for="{{ form.image.id_for_label }}" class="form-label fw-bold">{% trans "Image" %}</label>
+                                        <input type="file" name="{{ form.image.html_name }}" 
+                                               id="{{ form.image.id_for_label }}" 
+                                               class="form-control form-control-lg {% if form.image.errors %}is-invalid{% endif %}"
+                                               accept="image/*">
+                                        <div class="form-text">{% trans "Upload an image to accompany your guide" %}</div>
+                                        {% if form.image.errors %}
+                                            <div class="invalid-feedback">
+                                                {% for error in form.image.errors %}{{ error }}{% endfor %}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+
+                                    <!-- Submit Button -->
+                                    <div class="d-grid gap-2">
+                                        <button type="submit" class="btn {% if guide_type == 'nutrition' %}btn-success{% else %}btn-primary{% endif %} btn-lg">
+                                            <i class="fa-solid fa-paper-plane me-2" aria-hidden="true"></i>{% trans "Submit Guide" %}
+                                        </button>
+                                    </div>
+                                {% else %}
+                                    <div class="alert alert-danger">
+                                        {% trans "There was a problem loading the form. Please try again later." %}
+                                    </div>
+                                {% endif %}
+                            </form>
+                        </div>
                         
-                        <!-- Title Field -->
-                        <div class="form-group">
-                            {{ form.title.label_tag }}
-                            {{ form.title }}
-                            {{ form.title.errors }}
+                        <!-- View My Guides Button -->
+                        <div class="card-footer py-3 text-center bg-light">
+                            <a href="{% url 'my_guides' %}" class="btn btn-outline-secondary">
+                                <i class="fa-solid fa-list me-1" aria-hidden="true"></i>{% trans "View My Guides" %}
+                            </a>
                         </div>
-
-                        <!-- Description Field -->
-                        <div class="form-group">
-                            {{ form.desc.label_tag }}
-                            {{ form.desc }}
-                            {{ form.desc.errors }}
-                        </div>
-
-                        <!-- Tags Field -->
-                        <div class="form-group">
-                            {{ form.tags.label_tag }}
-                            {{ form.tags }}
-                            {{ form.tags.errors }}
-                        </div>
-
-                        <!-- Image Field -->
-                        <div class="form-group">
-                            {{ form.image.label_tag }}
-                            {{ form.image }}
-                            {{ form.image.errors }}
-                        </div>
-
-                        <!-- Submit Button -->
-                        <div class="form-group text-center mt-4">
-                            <button type="submit" class="btn {% if guide_type == 'nutrition' %}btn-success{% else %}btn-primary{% endif %} btn-lg">
-                                {% trans "Submit Guide" %}
-                            </button>
-                        </div>
-                    {% else %}
-                        <div class="alert alert-danger">
-                            {% trans "There was a problem loading the form. Please try again later." %}
-                        </div>
-                    {% endif %}
-                </form>
-                </div>
-            </div>
-            
-            <!-- My Guides Link -->
-            <div class="row mt-5">
-                <div class="col text-center">
-                    <a href="{% url 'my_guides' %}" class="btn btn-outline-secondary">
-                        {% trans "View My Guides" %}
-                    </a>
+                    </div>
                 </div>
             </div>
         </div>
     </main>
 {% endblock main_contents %}
+
+{% block extra_js %}
+<script type="module">
+    import { initTagAccordion } from '{% static "res/javascript/pages/guide-submission.js" %}';
+    document.addEventListener('DOMContentLoaded', initTagAccordion);
+</script>
+{% endblock %}

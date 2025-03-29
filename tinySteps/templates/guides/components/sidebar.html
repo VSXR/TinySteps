@@ -1,20 +1,23 @@
-{% load static %}
+{% load static %} 
 {% load i18n %}
 
 <!-- Sidebar Component -->
-<div class="sidebar-component">
+<aside class="sidebar-component" aria-label="{% trans 'Sidebar' %}">
     <!-- Related Guides Section -->
     {% if related_guides %}
     <div class="card mb-4 shadow-sm">
         <div class="card-header bg-light">
-            <h3 class="h5 mb-0">{% trans "Related Guides" %}</h3>
+            <h3 class="h5 mb-0" id="related-guides-heading">{% trans "Related Guides" %}</h3>
         </div>
         <div class="card-body p-0">
-            <ul class="list-group list-group-flush">
+            <ul class="list-group list-group-flush" aria-labelledby="related-guides-heading">
                 {% for guide in related_guides %}
                 <li class="list-group-item">
-                    <a href="{% if guide.guide_type == 'parent' %}{% url 'parent_guide_details' guide.id %}{% else %}{% url 'nutrition_guide_details' guide.id %}{% endif %}" 
-                       class="text-decoration-none">
+                    <a
+                        href="{% if guide.guide_type == 'parent' %}{% url 'parent_guide_details' guide.id %}{% else %}{% url 'nutrition_guide_details' guide.id %}{% endif %}"
+                        class="text-decoration-none"
+                        aria-label="{% trans 'View guide' %}: {{ guide.title }}"
+                    >
                         <h4 class="h6 mb-1">{{ guide.title }}</h4>
                     </a>
                     <p class="small text-muted mb-0">{{ guide.desc|truncatechars:65 }}</p>
@@ -24,9 +27,19 @@
         </div>
         <div class="card-footer bg-white text-center">
             {% if section_type == 'nutrition' %}
-                <a href="{% url 'nutrition_guides' %}" class="btn btn-sm btn-outline-success">{% trans "View All Nutrition Guides" %}</a>
+            <a
+                href="{% url 'nutrition_guides' %}"
+                class="btn btn-sm btn-outline-success"
+                aria-label="{% trans 'View all nutrition guides' %}"
+                >{% trans "View All Nutrition Guides" %}</a
+            >
             {% else %}
-                <a href="{% url 'parents_guides' %}" class="btn btn-sm btn-outline-primary">{% trans "View All Parent Guides" %}</a>
+            <a 
+                href="{% url 'parent_guides' %}" 
+                class="btn btn-sm btn-outline-primary"
+                aria-label="{% trans 'View all parent guides' %}"
+                >{% trans "View All Parent Guides" %}</a
+            >
             {% endif %}
         </div>
     </div>
@@ -35,19 +48,27 @@
     <!-- Tools Section -->
     <div class="card mb-4 shadow-sm">
         <div class="card-header bg-light">
-            <h3 class="h5 mb-0">{% trans "Helpful Tools" %}</h3>
+            <h3 class="h5 mb-0" id="tools-heading">{% trans "Helpful Tools" %}</h3>
         </div>
-        <div class="card-body">
+        <div class="card-body" aria-labelledby="tools-heading">
             {% if section_type == 'nutrition' %}
-                <p>{% trans "Analyze the nutritional content of baby foods" %}</p>
-                <a href="{% url 'nutrition_analyzer' %}" class="btn btn-success btn-sm d-block mb-3">
-                    <i class="bi bi-calculator me-1"></i> {% trans "Baby Food Analyzer" %}
-                </a>
+            <p>{% trans "Analyze the nutritional content of baby foods" %}</p>
+            <a
+                href="{% url 'nutrition_analyzer' %}"
+                class="btn btn-success btn-sm d-block mb-3"
+                aria-label="{% trans 'Go to baby food analyzer' %}"
+            >
+                <i class="bi bi-calculator me-1" aria-hidden="true"></i> {% trans "Baby Food Analyzer" %}
+            </a>
             {% endif %}
-            
+
             <p>{% trans "Track your baby's development and milestones" %}</p>
-            <a href="#" class="btn btn-primary btn-sm d-block">
-                <i class="bi bi-clipboard-check me-1"></i> {% trans "Track Milestones" %}
+            <a 
+                href="#" 
+                class="btn btn-primary btn-sm d-block"
+                aria-label="{% trans 'Go to milestone tracker' %}"
+            >
+                <i class="bi bi-clipboard-check me-1" aria-hidden="true"></i> {% trans "Track Milestones" %}
             </a>
         </div>
     </div>
@@ -56,16 +77,24 @@
     {% if recent_articles %}
     <div class="card mb-4 shadow-sm">
         <div class="card-header bg-light">
-            <h3 class="h5 mb-0">{% trans "Recommended Reading" %}</h3>
+            <h3 class="h5 mb-0" id="recommended-reading-heading">{% trans "Recommended Reading" %}</h3>
         </div>
         <div class="card-body p-0">
-            <ul class="list-group list-group-flush">
+            <ul class="list-group list-group-flush" aria-labelledby="recommended-reading-heading">
                 {% for article in recent_articles|slice:":3" %}
                 <li class="list-group-item">
                     <h4 class="h6 mb-1">{{ article.title|truncatechars:60 }}</h4>
-                    <p class="small text-muted mb-2">{{ article.source_name }} · {{ article.published_at|date:"M d" }}</p>
-                    <a href="{{ article.url }}" class="btn btn-sm btn-link p-0" target="_blank" rel="noopener">
-                        {% trans "Read" %} <i class="bi bi-arrow-right"></i>
+                    <p class="small text-muted mb-2">
+                        {{ article.source_name }} · {{ article.published_at|date:"M d" }}
+                    </p>
+                    <a
+                        href="{{ article.url }}"
+                        class="btn btn-sm btn-link p-0"
+                        target="_blank"
+                        rel="noopener"
+                        aria-label="{% trans 'Read article' %}: {{ article.title }}"
+                    >
+                        {% trans "Read" %} <i class="bi bi-arrow-right" aria-hidden="true"></i>
                     </a>
                 </li>
                 {% endfor %}
@@ -77,19 +106,29 @@
     <!-- Contribute Section -->
     <div class="card mb-4 shadow-sm">
         <div class="card-header bg-light">
-            <h3 class="h5 mb-0">{% trans "Share Your Knowledge" %}</h3>
+            <h3 class="h5 mb-0" id="contribute-heading">{% trans "Share Your Knowledge" %}</h3>
         </div>
-        <div class="card-body">
-            <p>{% trans "Help other parents by sharing your experiences and knowledge." %}</p>
+        <div class="card-body" aria-labelledby="contribute-heading">
+            <p>
+                {% trans "Help other parents by sharing your experiences and knowledge." %}
+            </p>
             {% if section_type == 'nutrition' %}
-                <a href="{% url 'submit_guide' %}?type=nutrition" class="btn btn-outline-success btn-sm d-block">
-                    <i class="bi bi-plus-circle me-1"></i> {% trans "Submit Nutrition Guide" %}
-                </a>
+            <a
+                href="{% url 'submit_guide' %}?type=nutrition"
+                class="btn btn-outline-success btn-sm d-block"
+                aria-label="{% trans 'Submit a nutrition guide' %}"
+            >
+                <i class="bi bi-plus-circle me-1" aria-hidden="true"></i> {% trans "Submit Nutrition Guide" %}
+            </a>
             {% else %}
-                <a href="{% url 'submit_guide' %}?type=parent" class="btn btn-outline-primary btn-sm d-block">
-                    <i class="bi bi-plus-circle me-1"></i> {% trans "Submit Parenting Guide" %}
-                </a>
+            <a
+                href="{% url 'submit_guide' %}?type=parent"
+                class="btn btn-outline-primary btn-sm d-block"
+                aria-label="{% trans 'Submit a parenting guide' %}"
+            >
+                <i class="bi bi-plus-circle me-1" aria-hidden="true"></i> {% trans "Submit Parenting Guide" %}
+            </a>
             {% endif %}
         </div>
     </div>
-</div>
+</aside>

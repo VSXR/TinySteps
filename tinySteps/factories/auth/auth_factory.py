@@ -12,5 +12,5 @@ class AuthUrl_Factory:
             path('accounts/register/', auth_views.Register_View.as_view(), name='register'),
             path('accounts/profile/', auth_views.profile, name='profile'),
             path('accounts/profile/edit/', auth_views.edit_profile, name='edit_profile'),
-            path('accounts/password/change/', auth_views.password_reset, name='change_password'),
+            path('accounts/password/change/', auth_views.password_reset, name='password_reset'),
         ]

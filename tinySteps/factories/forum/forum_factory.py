@@ -14,7 +14,7 @@ class ForumUrl_Factory:
         from tinySteps.views.forum import forum_views
         
         return [
-            path('forum/', forum_views.parents_forum_page, name='forum_home'),
+            path('forum/', forum_views.parents_forum_page, name='parent_forum'),
             path('forum/post/<int:post_id>/', forum_views.view_post, name='view_post'),
             path('forum/post/create/', forum_views.add_post, name='create_post'),
             path('forum/post/<int:post_id>/edit/', forum_views.edit_post, name='edit_post'),

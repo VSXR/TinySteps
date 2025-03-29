@@ -1,0 +1,9 @@
+{% load i18n %}
+
+{% include "guides/components/cta_banner.html" with 
+    title="Share Your Knowledge" 
+    message="Have parenting or nutrition tips that worked for you? Submit your own guide to help other parents." 
+    button_url=submit_guide_url|default:"/guides/submit/" 
+    button_text="Submit Guide" 
+    button_icon="fa-solid fa-pencil" 
+    button_class="btn-primary" %}

@@ -3,309 +3,252 @@
 {% load i18n %}
 
 {% block title %}
-    {% trans "Guides & Resources - TINY STEPS" %}
+    {% trans "Guides and Resources - Tiny Steps" %}
 {% endblock %}
 
 {% block main_contents %}
-<main id="main-content" class="py-4">
-    <div class="container mt-4 mb-5">
-        <div class="row mb-5">
-            <div class="col-lg-10 col-md-12 mx-auto">
-                <h1 class="page-title text-center mb-3" id="guides-title">{% trans "GUIDES" %}</h1>
-                <p class="lead text-center mb-4" aria-describedby="guides-title">
-                    {% trans "Find advice and recommendations for new parents" %}
-                </p>
-                <hr class="my-4 w-75 mx-auto">
-            </div>
-        </div>
-    </div>
-
-    {% if request.user.is_authenticated and baby_age %}
-    <div class="container mb-5">
-        <div class="alert alert-info d-flex flex-column flex-sm-row align-items-center p-4" role="status" aria-label="{% trans 'Personalized content notification' %}">
-            <i class="fa-solid fa-baby fa-2x me-sm-4 mb-3 mb-sm-0" aria-hidden="true"></i>
-            <div>
-                <h2 class="h5 mb-2">{% trans "Personalized Content" %}</h2>
-                {% if baby_age < 6 %}
-                    <p class="mb-0">{% trans "Showing content for newborns (0-6 months)" %}</p>
-                {% elif baby_age < 12 %}
-                    <p class="mb-0">{% trans "Showing content for infants (6-12 months)" %}</p>
-                {% else %}
-                    <p class="mb-0">{% trans "Showing content for toddlers (12+ months)" %}</p>
-                {% endif %}
-            </div>
-        </div>
-    </div>
-    {% endif %}
-
-    <!-- Guide Categories Section -->
-    <section class="container mb-5" aria-labelledby="guide-categories-heading">
-        <h2 id="guide-categories-heading" class="visually-hidden">{% trans "Guide Categories" %}</h2>
-        <div class="row justify-content-center">
-            <div class="col-lg-5 col-md-6 mb-4 px-md-3 px-lg-4">
-                <div class="card border-primary h-100 shadow-sm">
-                    <div class="card-header bg-primary text-white p-3">
-                        <h2 class="h4 mb-0 text-center">{% trans "Parenting Guides" %}</h2>
-                    </div>
-                    <div class="card-body text-center p-4">
-                        <p class="mb-4">{% trans "Advice and tips on raising your child, from sleep routines to discipline and development milestones." %}</p>
-                        {% url 'parents_guides' as parents_guides_url %}
-                        {% if parents_guides_url %}
-                        <a href="{{ parents_guides_url }}" class="btn btn-primary btn-lg">
-                            <i class="fa-solid fa-book-open me-2" aria-hidden="true"></i>{% trans "Browse Parenting Guides" %}
-                        </a>
-                        {% else %}
-                        <a href="#" class="btn btn-primary btn-lg">
-                            <i class="fa-solid fa-book-open me-2" aria-hidden="true"></i>{% trans "Browse Parenting Guides" %}
-                        </a>
-                        {% endif %}
-                    </div>
+<main id="main-content" role="main">
+    <!-- Hero Section -->
+    <section class="hero-section py-5 bg-light mb-5">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8 text-center">
+                    <h2 class="text-center fw-bold mb-3" id="page-heading">{% trans "Find Guidance for Every Step" %}</h2>
+                    <p class="lead text-center text-muted mb-4" id="page-description">
+                        {% trans "Expert advice and support for your parenting journey." %}
+                    </p>
+                    <hr class="my-4 w-50 mx-auto">
                 </div>
+            </div>
+        </div>
+    </section>
+    
+    <div class="container mb-5">
+        <div class="row">
+            <!-- Main Content Section -->
+            <div class="col-lg-8 order-1">
+                <!-- Personalized Content Alert -->
+                {% if request.user.is_authenticated and baby_age %}
+                    <section class="mb-4">
+                        <div class="personalized-banner">
+                            {% include "guides/components/personalized_alert.html" with baby_age=baby_age %}
+                            
+                            <!-- Personalized Recommendations -->
+                            <div class="mt-4">
+                                <h2 class="h4 mb-3">{% trans "Recommended For You" %}</h2>
+                                <div class="row row-cols-1 row-cols-md-2 g-4">
+                                    {% for guide in recommended_guides|slice:":2" %}
+                                        <div class="col">
+                                            {% include "guides/components/guide_card.html" with guide=guide show_author=True %}
+                                        </div>
+                                    {% empty %}
+                                        <div class="col-12">
+                                            <div class="alert alert-light">
+                                                {% trans "No personalized recommendations available yet." %}
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                {% endif %}
+                
+                <!-- Featured Guides Section -->
+                <section class="mb-5">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h2 class="h3 mb-0">{% trans "Featured Guides" %}</h2>
+                        <a href="{% url 'guides' %}" class="btn btn-sm btn-outline-primary">
+                            {% trans "View All" %} <i class="bi bi-arrow-right ms-1" aria-hidden="true"></i>
+                        </a>
+                    </div>
+                    
+                    <div class="row g-4">
+                        {% for guide in recent_guides|slice:":3" %}
+                            <div class="col-md-4">
+                                {% include "guides/components/guide_card.html" with guide=guide show_author=True %}
+                            </div>
+                        {% empty %}
+                            <div class="col-12">
+                                <div class="alert alert-info">
+                                    {% trans "No guides available yet. Check back soon!" %}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </section>
+                
+                <!-- Featured Articles Section -->
+                <section class="mb-5">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h2 class="h3 mb-0">{% trans "Latest Articles" %}</h2>
+                        <div>
+                            <a href="{% url 'nutrition_articles' %}" class="btn btn-sm btn-outline-success me-2">
+                                {% trans "Nutrition" %}
+                            </a>
+                            <a href="{% url 'parent_articles' %}" class="btn btn-sm btn-outline-primary">
+                                {% trans "Parenting" %}
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <div class="row g-4">
+                        {% for article in recent_articles|slice:":3" %}
+                            <div class="col-md-4">
+                                {% include "guides/components/article_card.html" with article=article %}
+                            </div>
+                        {% empty %}
+                            <div class="col-12">
+                                <div class="alert alert-info">
+                                    {% trans "No articles available yet. Check back soon!" %}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </section>
+                
+                <!-- Tools Section -->
+                <section>
+                    {% include "guides/components/featured_tools.html" %}
+                </section>
+
+                <!-- All Available Guides Section -->
+                <section class="mt-5">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-header bg-primary text-white">
+                            <h2 class="h4 mb-0">{% trans "All Available Guides" %}</h2>
+                        </div>
+                        <div class="card-body">
+                            <!-- Parent Guides -->
+                            <h3 class="h5 mb-3 border-bottom pb-2">{% trans "Parenting Guides" %}</h3>
+                            <div class="row g-4 mb-4">
+                                {% for guide in all_parent_guides %}
+                                    <div class="col-md-6 col-lg-4">
+                                        {% include "guides/components/guide_card.html" with guide=guide show_author=True %}
+                                    </div>
+                                {% empty %}
+                                    <div class="col-12">
+                                        <div class="alert alert-info">
+                                            {% trans "No parenting guides available yet." %}
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                            
+                            <!-- Nutrition Guides -->
+                            <h3 class="h5 mb-3 mt-4 border-bottom pb-2">{% trans "Nutrition Guides" %}</h3>
+                            <div class="row g-4">
+                                {% for guide in all_nutrition_guides %}
+                                    <div class="col-md-6 col-lg-4">
+                                        {% include "guides/components/guide_card.html" with guide=guide show_author=True %}
+                                    </div>
+                                {% empty %}
+                                    <div class="col-12">
+                                        <div class="alert alert-info">
+                                            {% trans "No nutrition guides available yet." %}
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </section>
             </div>
             
-            <div class="col-lg-5 col-md-6 mb-4 px-md-3 px-lg-4">
-                <div class="card border-success h-100 shadow-sm">
-                    <div class="card-header bg-success text-white p-3">
-                        <h2 class="h4 mb-0 text-center">{% trans "Nutrition Guides" %}</h2>
+            <!-- Sidebar Section -->
+            <div class="col-lg-4 order-2 mt-5 mt-lg-0">
+                <div class="sticky-lg-top" style="top: 2rem">
+                    <!-- Guide Categories -->
+                    <div class="card shadow-sm mb-4">
+                        <div class="card-header bg-light">
+                            <h2 class="h5 mb-0">{% trans "Guide Categories" %}</h2>
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="list-group list-group-flush">
+                                <a href="{% url 'nutrition_guides' %}" class="list-group-item list-group-item-action d-flex align-items-center">
+                                    <div class="category-icon me-3 bg-success bg-opacity-10">
+                                        <i class="bi bi-apple text-success" aria-hidden="true"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="h6 mb-0">{% trans "Nutrition Guides" %}</h3>
+                                        <small class="text-muted">{% trans "Feeding & meal planning" %}</small>
+                                    </div>
+                                    <i class="bi bi-chevron-right ms-auto" aria-hidden="true"></i>
+                                </a>
+                                <a href="{% url 'parent_guides' %}" class="list-group-item list-group-item-action d-flex align-items-center">
+                                    <div class="category-icon me-3 bg-primary bg-opacity-10">
+                                        <i class="bi bi-people text-primary" aria-hidden="true"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="h6 mb-0">{% trans "Parenting Guides" %}</h3>
+                                        <small class="text-muted">{% trans "Development & care" %}</small>
+                                    </div>
+                                    <i class="bi bi-chevron-right ms-auto" aria-hidden="true"></i>
+                                </a>
+                            </div>
+                        </div>
                     </div>
-                    <div class="card-body text-center p-4">
-                        <p class="mb-4">{% trans "Learn about baby nutrition, healthy eating habits, feeding schedules, and food introduction." %}</p>
-                        {% url 'nutrition_guides' as nutrition_guides_url %}
-                        {% if nutrition_guides_url %}
-                        <a href="{{ nutrition_guides_url }}" class="btn btn-success btn-lg">
-                            <i class="fa-solid fa-utensils me-2" aria-hidden="true"></i>{% trans "Browse Nutrition Guides" %}
-                        </a>
-                        {% else %}
-                        <a href="#" class="btn btn-success btn-lg">
-                            <i class="fa-solid fa-utensils me-2" aria-hidden="true"></i>{% trans "Browse Nutrition Guides" %}
-                        </a>
-                        {% endif %}
+                    
+                    <!-- Contribute Card -->
+                    <div class="card shadow-sm mb-4">
+                        <div class="card-body text-center p-4">
+                            <div class="mb-3">
+                                <span class="contribute-icon">
+                                    <i class="bi bi-pencil-square text-primary" aria-hidden="true"></i>
+                                </span>
+                            </div>
+                            <h3 class="h5 mb-3">{% trans "Share Your Knowledge" %}</h3>
+                            <p class="card-text small mb-3">{% trans "Have parenting tips that worked for you? Help other parents by sharing your experience." %}</p>
+                            <a href="{{ submit_guide_url|default:'/guides/submit/' }}" class="btn btn-primary">
+                                <i class="bi bi-plus-circle me-2" aria-hidden="true"></i>{% trans "Submit Guide" %}
+                            </a>
+                        </div>
                     </div>
+                    
+                    <!-- Quick Tools -->
+                    <div class="card shadow-sm mb-4">
+                        <div class="card-header bg-light">
+                            <h3 class="h5 mb-0">{% trans "Quick Access Tools" %}</h3>
+                        </div>
+                        <div class="card-body p-3">
+                            <div class="d-grid gap-2">
+                                <a href="{% url 'nutrition_analyzer' %}" class="btn btn-outline-success btn-sm d-flex align-items-center">
+                                    <i class="bi bi-calculator me-2" aria-hidden="true"></i>
+                                    <span>{% trans "Nutrition Analyzer" %}</span>
+                                </a>
+                                <a href="{% url 'nutrition_comparison' %}" class="btn btn-outline-success btn-sm d-flex align-items-center">
+                                    <i class="bi bi-bar-chart me-2" aria-hidden="true"></i>
+                                    <span>{% trans "Food Comparison" %}</span>
+                                </a>
+                                <a href="#" class="btn btn-outline-primary btn-sm d-flex align-items-center">
+                                    <i class="bi bi-clipboard-check me-2" aria-hidden="true"></i>
+                                    <span>{% trans "Milestone Tracker" %}</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Recent Activity (ONLY for logged in users) -->
+                    {% if request.user.is_authenticated %}
+                    <div class="card shadow-sm">
+                        <div class="card-header bg-light">
+                            <h3 class="h5 mb-0">{% trans "Your Activity" %}</h3>
+                        </div>
+                        <div class="card-body p-3">
+                            <a href="{% url 'my_guides' %}" class="btn btn-outline-secondary btn-sm d-flex align-items-center mb-2">
+                                <i class="bi bi-journal-text me-2" aria-hidden="true"></i>
+                                <span>{% trans "My Guides" %}</span>
+                            </a>
+                            <a href="#saved-guides" class="btn btn-outline-secondary btn-sm d-flex align-items-center">
+                                <i class="bi bi-bookmark me-2" aria-hidden="true"></i>
+                                <span>{% trans "Saved Guides" %}</span>
+                            </a>
+                        </div>
+                    </div>
+                    {% endif %}
                 </div>
             </div>
         </div>
-    </section>
-
-    <!-- Age-Specific Recommendations -->
-    {% if request.user.is_authenticated and baby_age %}
-        <section class="container my-5" aria-labelledby="recommendations-heading">
-            <div class="card border-primary">
-                <div class="card-header bg-primary text-white p-3" id="recommendations-heading">
-                    <h2 class="h4 mb-0 text-center">{% trans "Recommended for Your Child" %}</h2>
-                </div>
-                <div class="card-body p-4">
-                    <div class="row">
-                        {% if baby_age < 6 %}
-                        <!-- Newborn specific recommendations -->
-                        <div class="col-md-6 mb-4">
-                            {% url 'nutrition_articles' as nutrition_url %}
-                            {% url 'parenting_articles' as parenting_url %}
-                            
-                            <h3 class="h5 mb-3" id="nutrition-section-newborn">{% trans "Nutrition" %}</h3>
-                            <ul class="list-group mb-4" aria-labelledby="nutrition-section-newborn">
-                                <li class="list-group-item d-flex justify-content-between align-items-center p-3">
-                                    <a href="{% if nutrition_url %}{{ nutrition_url }}?topic=breastfeeding{% else %}#{% endif %}" class="text-decoration-none flex-grow-1">
-                                        {% trans "Breastfeeding Tips" %}
-                                    </a>
-                                    <span class="badge bg-primary rounded-pill ms-2" aria-hidden="true">
-                                        <i class="fa-solid fa-star"></i>
-                                    </span>
-                                </li>
-                                <li class="list-group-item d-flex justify-content-between align-items-center p-3 mt-2">
-                                    <a href="{% if nutrition_url %}{{ nutrition_url }}?topic=formula{% else %}#{% endif %}" class="text-decoration-none flex-grow-1">
-                                        {% trans "Formula Feeding Guide" %}
-                                    </a>
-                                    <span class="badge bg-primary rounded-pill ms-2" aria-hidden="true">
-                                        <i class="fa-solid fa-star"></i>
-                                    </span>
-                                </li>
-                            </ul>
-                        </div>
-                        <div class="col-md-6 mb-4">
-                            <h3 class="h5 mb-3" id="parenting-section-newborn">{% trans "Parenting" %}</h3>
-                            <ul class="list-group mb-4" aria-labelledby="parenting-section-newborn">
-                                <li class="list-group-item d-flex justify-content-between align-items-center p-3">
-                                    <a href="{% if parenting_url %}{{ parenting_url }}?topic=newborn{% else %}#{% endif %}" class="text-decoration-none flex-grow-1">
-                                        {% trans "Newborn Essentials" %}
-                                    </a>
-                                    <span class="badge bg-primary rounded-pill ms-2" aria-hidden="true">
-                                        <i class="fa-solid fa-star"></i>
-                                    </span>
-                                </li>
-                                <li class="list-group-item d-flex justify-content-between align-items-center p-3 mt-2">
-                                    <a href="{% if parenting_url %}{{ parenting_url }}?topic=sleep{% else %}#{% endif %}" class="text-decoration-none flex-grow-1">
-                                        {% trans "Sleep Patterns for Newborns" %}
-                                    </a>
-                                    <span class="badge bg-primary rounded-pill ms-2" aria-hidden="true">
-                                        <i class="fa-solid fa-star"></i>
-                                    </span>
-                                </li>
-                            </ul>
-                        </div>
-                        {% elif baby_age < 12 %}
-                        <!-- Safe URL access - same approach for all sections -->
-                        {% url 'nutrition_articles' as nutrition_url %}
-                        {% url 'parenting_articles' as parenting_url %}
-                        
-                        <!-- 6-12 months specific recommendations -->
-                        <div class="col-md-6 mb-4">
-                            <h3 class="h5 mb-3" id="nutrition-section-infant">{% trans "Nutrition" %}</h3>
-                            <ul class="list-group mb-4" aria-labelledby="nutrition-section-infant">
-                                <li class="list-group-item d-flex justify-content-between align-items-center p-3">
-                                    <a href="{% if nutrition_url %}{{ nutrition_url }}?topic=solids{% else %}#{% endif %}" class="text-decoration-none flex-grow-1">
-                                        {% trans "Starting Solid Foods" %}
-                                    </a>
-                                    <span class="badge bg-primary rounded-pill ms-2" aria-hidden="true">
-                                        <i class="fa-solid fa-star"></i>
-                                    </span>
-                                </li>
-                                <li class="list-group-item d-flex justify-content-between align-items-center p-3 mt-2">
-                                    <a href="{% if nutrition_url %}{{ nutrition_url }}?topic=recipes{% else %}#{% endif %}" class="text-decoration-none flex-grow-1">
-                                        {% trans "Baby Food Recipes" %}
-                                    </a>
-                                    <span class="badge bg-primary rounded-pill ms-2" aria-hidden="true">
-                                        <i class="fa-solid fa-star"></i>
-                                    </span>
-                                </li>
-                            </ul>
-                        </div>
-                        <div class="col-md-6 mb-4">
-                            <h3 class="h5 mb-3" id="parenting-section-infant">{% trans "Parenting" %}</h3>
-                            <ul class="list-group mb-4" aria-labelledby="parenting-section-infant">
-                                <li class="list-group-item d-flex justify-content-between align-items-center p-3">
-                                    <a href="{% if parenting_url %}{{ parenting_url }}?topic=development{% else %}#{% endif %}" class="text-decoration-none flex-grow-1">
-                                        {% trans "Development Milestones" %}
-                                    </a>
-                                    <span class="badge bg-primary rounded-pill ms-2" aria-hidden="true">
-                                        <i class="fa-solid fa-star"></i>
-                                    </span>
-                                </li>
-                                <li class="list-group-item d-flex justify-content-between align-items-center p-3 mt-2">
-                                    <a href="{% if parenting_url %}{{ parenting_url }}?topic=routines{% else %}#{% endif %}" class="text-decoration-none flex-grow-1">
-                                        {% trans "Establishing Routines" %}
-                                    </a>
-                                    <span class="badge bg-primary rounded-pill ms-2" aria-hidden="true">
-                                        <i class="fa-solid fa-star"></i>
-                                    </span>
-                                </li>
-                            </ul>
-                        </div>
-                        {% else %}
-                        <!-- Safe URL access - same approach for all sections -->
-                        {% url 'nutrition_articles' as nutrition_url %}
-                        {% url 'parenting_articles' as parenting_url %}
-                        
-                        <!-- 12+ months specific recommendations -->
-                        <div class="col-md-6 mb-4">
-                            <h3 class="h5 mb-3" id="nutrition-section-toddler">{% trans "Nutrition" %}</h3>
-                            <ul class="list-group mb-4" aria-labelledby="nutrition-section-toddler">
-                                <li class="list-group-item d-flex justify-content-between align-items-center p-3">
-                                    <a href="{% if nutrition_url %}{{ nutrition_url }}?topic=toddler{% else %}#{% endif %}" class="text-decoration-none flex-grow-1">
-                                        {% trans "Toddler Nutrition" %}
-                                    </a>
-                                    <span class="badge bg-primary rounded-pill ms-2" aria-hidden="true">
-                                        <i class="fa-solid fa-star"></i>
-                                    </span>
-                                </li>
-                                <li class="list-group-item d-flex justify-content-between align-items-center p-3 mt-2">
-                                    <a href="{% if nutrition_url %}{{ nutrition_url }}?topic=mealtime{% else %}#{% endif %}" class="text-decoration-none flex-grow-1">
-                                        {% trans "Managing Mealtime Challenges" %}
-                                    </a>
-                                    <span class="badge bg-primary rounded-pill ms-2" aria-hidden="true">
-                                        <i class="fa-solid fa-star"></i>
-                                    </span>
-                                </li>
-                            </ul>
-                        </div>
-                        <div class="col-md-6 mb-4">
-                            <h3 class="h5 mb-3" id="parenting-section-toddler">{% trans "Parenting" %}</h3>
-                            <ul class="list-group mb-4" aria-labelledby="parenting-section-toddler">
-                                <li class="list-group-item d-flex justify-content-between align-items-center p-3">
-                                    <a href="{% if parenting_url %}{{ parenting_url }}?topic=discipline{% else %}#{% endif %}" class="text-decoration-none flex-grow-1">
-                                        {% trans "Positive Discipline" %}
-                                    </a>
-                                    <span class="badge bg-primary rounded-pill ms-2" aria-hidden="true">
-                                        <i class="fa-solid fa-star"></i>
-                                    </span>
-                                </li>
-                                <li class="list-group-item d-flex justify-content-between align-items-center p-3 mt-2">
-                                    <a href="{% if parenting_url %}{{ parenting_url }}?topic=development{% else %}#{% endif %}" class="text-decoration-none flex-grow-1">
-                                        {% trans "Language Development" %}
-                                    </a>
-                                    <span class="badge bg-primary rounded-pill ms-2" aria-hidden="true">
-                                        <i class="fa-solid fa-star"></i>
-                                    </span>
-                                </li>
-                            </ul>
-                        </div>
-                        {% endif %}
-                    </div>
-                </div>
-            </div>
-        </section>
-    {% endif %}
-
-    <!-- Featured Tools Section -->
-    <section class="container my-5" aria-labelledby="tools-heading">
-        <h2 class="h3 text-center mb-4" id="tools-heading">{% trans "Featured Tools" %}</h2>
-        <div class="row justify-content-center">
-            <div class="col-lg-5 col-md-6 mb-4 px-md-3 px-lg-4">
-                <div class="card h-100 shadow-sm">
-                    <div class="card-body text-center p-4">
-                        <i class="fa-solid fa-calculator display-4 text-primary mb-4" aria-hidden="true"></i>
-                        <h3 class="h5 mb-3">{% trans "Baby Food Nutrition Analyzer" %}</h3>
-                        <p class="mb-4">{% trans "Analyze the nutritional content of baby foods and ingredients to ensure your baby gets the right nutrients." %}</p>
-                        {% url 'nutrition_analyzer' as analyzer_url %}
-                        <a href="{% firstof analyzer_url '#' %}" class="btn btn-success btn-lg mt-auto" aria-label="{% trans 'Try Baby Food Nutrition Analyzer' %}">
-                            <i class="fa-solid fa-flask me-2" aria-hidden="true"></i>{% trans "Try It Now" %}
-                        </a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-5 col-md-6 mb-4 px-md-3 px-lg-4">
-                <div class="card h-100 shadow-sm">
-                    <div class="card-body text-center p-4">
-                        <i class="fa-solid fa-clipboard-check display-4 text-primary mb-4" aria-hidden="true"></i>
-                        <h3 class="h5 mb-3">{% trans "Milestone Tracker" %}</h3>
-                        <p class="mb-4">{% trans "Keep track of your baby's development milestones and celebrate their progress together." %}</p>
-                        {% url 'milestone_add' as milestone_url %}
-                        <a href="{% firstof milestone_url view.milestone_url '#' %}" class="btn btn-primary btn-lg mt-auto" aria-label="{% trans 'Use Milestone Tracker' %}">
-                            <i class="fa-solid fa-plus me-2" aria-hidden="true"></i>{% trans "Track Milestones" %}
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Contribute Banner -->
-    <section class="container my-5" aria-labelledby="contribute-heading">
-        <div class="card bg-light">
-            <div class="card-body p-5 text-center">
-                <h2 class="h4 mb-3" id="contribute-heading">{% trans "Share Your Knowledge with Other Parents" %}</h2>
-                <p class="mb-4">{% trans "Help the TinySteps community grow by sharing your experiences and tips." %}</p>
-                {% url 'submit_guide' as submit_url %}
-                {% if submit_url %}
-                <div class="d-flex flex-column flex-sm-row justify-content-center gap-3">
-                    <a href="{{ submit_url }}?type=parent" class="btn btn-primary btn-lg" aria-label="{% trans 'Submit a parenting guide' %}">
-                        <i class="fa-solid fa-plus me-2" aria-hidden="true"></i>{% trans "Submit Parent Guide" %}
-                    </a>
-                    <a href="{{ submit_url }}?type=nutrition" class="btn btn-success btn-lg" aria-label="{% trans 'Submit a nutrition guide' %}">
-                        <i class="fa-solid fa-plus me-2" aria-hidden="true"></i>{% trans "Submit Nutrition Guide" %}
-                    </a>
-                </div>
-                {% else %}
-                <div class="d-flex flex-column flex-sm-row justify-content-center gap-3">
-                    <a href="#" class="btn btn-primary btn-lg" aria-label="{% trans 'Submit a parenting guide' %}">
-                        <i class="fa-solid fa-plus me-2" aria-hidden="true"></i>{% trans "Submit Parent Guide" %}
-                    </a>
-                    <a href="#" class="btn btn-success btn-lg" aria-label="{% trans 'Submit a nutrition guide' %}">
-                        <i class="fa-solid fa-plus me-2" aria-hidden="true"></i>{% trans "Submit Nutrition Guide" %}
-                    </a>
-                </div>
-                {% endif %}
-            </div>
-        </div>
-    </section>
+    </div>
 </main>
 {% endblock main_contents %}

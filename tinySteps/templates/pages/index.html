@@ -1,315 +1,539 @@
-{% extends 'base.html' %}
-{% load static %}
-{% load i18n %}
+{% extends 'base.html' %} 
+{% load static %} 
+{% load i18n %} 
+{% block title %} {% trans "TINY STEPS - EVERY STEP MATTERS" %} {% endblock %} 
 
-{% block title %}
-    {% trans "TINY STEPS - EVERY STEP MATTERS" %}
-{% endblock %}
-
-{% block main_contents %}
+{% block main_contents%}
     <!-- Hero Section with CTA -->
-    <section class="hero-section py-4 py-lg-6 bg-light rounded-3 mb-5" role="banner" aria-labelledby="hero-heading">
-        <div class="container">
-            <div class="row align-items-center gy-4">
-                <div class="col-lg-6 text-center text-lg-start order-2 order-lg-1">
-                    <h1 class="display-4 fw-bold mb-3 mb-md-4" id="hero-heading">{% trans "Welcome to Tiny Steps" %}</h1>
-                    <p class="lead mb-4 mb-md-5">
-                        {% blocktrans %}
-                        Your trusted companion for navigating the beautiful journey of parenthood. Track milestones, manage vaccinations, and get expert guidance - all in one place.
-                        {% endblocktrans %}
-                    </p>
-                    <div class="d-flex flex-column flex-sm-row gap-3 justify-content-center justify-content-lg-start mb-4 mb-lg-0">
-                        <a href="{% url 'register' %}" class="btn btn-primary btn-lg px-4" aria-label="{% trans 'Register for an account' %}">{% trans "Get Started" %}</a>
-                        <a href="{% url 'about' %}" class="btn btn-outline-secondary btn-lg px-4" aria-label="{% trans 'Learn more about our services' %}">{% trans "Learn More" %}</a>
-                    </div>
-                </div>
-                <div class="col-lg-6 text-center order-1 order-lg-2 mb-3 mb-lg-0">
-                    <img src="{% static 'res/img/logo/tinySteps-logo.png' %}" class="img-fluid" 
-                         alt="{% trans 'Tiny Steps application logo' %}" loading="lazy" width="320">
-                </div>
+    <section
+    class="hero-section py-4 py-lg-6 bg-light rounded-3 mb-5"
+    role="banner"
+    aria-labelledby="hero-heading"
+    >
+    <div class="container">
+        <div class="row align-items-center gy-4">
+        <div class="col-lg-6 text-center text-lg-start order-2 order-lg-1">
+            <h1 class="display-4 fw-bold mb-3 mb-md-4" id="hero-heading">
+            {% trans "Welcome to Tiny Steps" %}
+            </h1>
+            <p class="lead mb-4 mb-md-5">
+            {% blocktrans %} Your trusted companion for navigating the beautiful
+            journey of parenthood. Track milestones, manage vaccinations, and get
+            expert guidance - all in one place. {% endblocktrans %}
+            </p>
+            <div
+            class="d-flex flex-column flex-sm-row gap-3 justify-content-center justify-content-lg-start mb-4 mb-lg-0"
+            >
+            <a
+                href="{% url 'register' %}"
+                class="btn btn-primary btn-lg px-4"
+                aria-label="{% trans 'Register for an account' %}"
+                >{% trans "Get Started" %}</a
+            >
+            <a
+                href="{% url 'about' %}"
+                class="btn btn-outline-secondary btn-lg px-4"
+                aria-label="{% trans 'Learn more about our services' %}"
+                >{% trans "Learn More" %}</a
+            >
             </div>
         </div>
+        <div class="col-lg-6 text-center order-1 order-lg-2 mb-3 mb-lg-0">
+            <img
+            src="{% static 'res/img/logo/tinySteps-logo.png' %}"
+            class="img-fluid"
+            alt="{% trans 'Tiny Steps application logo' %}"
+            loading="lazy"
+            width="320"
+            />
+        </div>
+        </div>
+    </div>
     </section>
 
     <!-- Why Choose Us Section -->
     <section class="features-overview py-5 mb-5" aria-labelledby="features-heading">
-        <div class="container">
-            <h2 id="features-heading" class="section-title text-center mb-5">{% trans "Why Parents Choose Tiny Steps" %}</h2>
-            <div class="row g-4 justify-content-center">
-                <div class="col-md-6 col-lg-4">
-                    <div class="feature-card text-center p-4 h-100 rounded shadow-sm" aria-labelledby="feature1-heading">
-                        <div class="feature-icon mb-3">
-                            <i class="fa-solid fa-chart-line fa-3x text-primary" aria-hidden="true"></i>
-                        </div>
-                        <h3 id="feature1-heading" class="h5">{% trans "Track Development" %}</h3>
-                        <p>{% trans "Monitor your child's growth and milestones with intuitive tracking tools and personalized insights." %}</p>
-                    </div>
-                </div>
-                <div class="col-md-6 col-lg-4">
-                    <div class="feature-card text-center p-4 h-100 rounded shadow-sm" aria-labelledby="feature2-heading">
-                        <div class="feature-icon mb-3">
-                            <i class="fa-solid fa-calendar-check fa-3x text-primary" aria-hidden="true"></i>
-                        </div>
-                        <h3 id="feature2-heading" class="h5">{% trans "Smart Scheduling" %}</h3>
-                        <p>{% trans "Never miss important appointments with our intelligent reminder system for vaccinations and check-ups." %}</p>
-                    </div>
-                </div>
-                <div class="col-md-6 col-lg-4">
-                    <div class="feature-card text-center p-4 h-100 rounded shadow-sm" aria-labelledby="feature3-heading">
-                        <div class="feature-icon mb-3">
-                            <i class="fa-solid fa-users fa-3x text-primary" aria-hidden="true"></i>
-                        </div>
-                        <h3 id="feature3-heading" class="h5">{% trans "Community Support" %}</h3>
-                        <p>{% trans "Connect with other parents, share experiences, and get advice through our vibrant parents forum." %}</p>
-                    </div>
-                </div>
+    <div class="container">
+        <h2 id="features-heading" class="section-title text-center mb-5">
+        {% trans "Why Parents Choose Tiny Steps" %}
+        </h2>
+        <div class="row g-4 justify-content-center">
+        <div class="col-md-6 col-lg-4">
+            <div
+            class="feature-card text-center p-4 h-100 rounded shadow-sm"
+            aria-labelledby="feature1-heading"
+            >
+            <div class="feature-icon mb-3">
+                <i
+                class="fa-solid fa-chart-line fa-3x text-primary"
+                aria-hidden="true"
+                ></i>
+            </div>
+            <h3 id="feature1-heading" class="h5">
+                {% trans "Track Development" %}
+            </h3>
+            <p>
+                {% trans "Monitor your child's growth and milestones with intuitive
+                tracking tools and personalized insights." %}
+            </p>
             </div>
         </div>
+        <div class="col-md-6 col-lg-4">
+            <div
+            class="feature-card text-center p-4 h-100 rounded shadow-sm"
+            aria-labelledby="feature2-heading"
+            >
+            <div class="feature-icon mb-3">
+                <i
+                class="fa-solid fa-calendar-check fa-3x text-primary"
+                aria-hidden="true"
+                ></i>
+            </div>
+            <h3 id="feature2-heading" class="h5">
+                {% trans "Smart Scheduling" %}
+            </h3>
+            <p>
+                {% trans "Never miss important appointments with our intelligent
+                reminder system for vaccinations and check-ups." %}
+            </p>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-4">
+            <div
+            class="feature-card text-center p-4 h-100 rounded shadow-sm"
+            aria-labelledby="feature3-heading"
+            >
+            <div class="feature-icon mb-3">
+                <i
+                class="fa-solid fa-users fa-3x text-primary"
+                aria-hidden="true"
+                ></i>
+            </div>
+            <h3 id="feature3-heading" class="h5">
+                {% trans "Community Support" %}
+            </h3>
+            <p>
+                {% trans "Connect with other parents, share experiences, and get
+                advice through our vibrant parents forum." %}
+            </p>
+            </div>
+        </div>
+        </div>
+    </div>
     </section>
 
     <!-- Key Features Section -->
-    <section class="key-features py-5 bg-light rounded-3 mb-5" aria-labelledby="key-features-heading">
-        <div class="container">
-            <h2 id="key-features-heading" class="section-title text-center mb-5">{% trans "Everything You Need in One Place" %}</h2>
-            
-            <div class="row mb-5 align-items-center">
-                <div class="col-lg-6 order-lg-2 mb-4 mb-lg-0">
-                    <img src="{% static 'res/img/others/default.jpg' %}" class="img-fluid rounded shadow" 
-                         alt="{% trans 'Child profile tracking features' %}" loading="lazy">
-                </div>
-                <div class="col-lg-6 order-lg-1 text-center" aria-labelledby="profiles-heading">
-                    <h3 id="profiles-heading" class="mb-4">{% trans "Comprehensive Child Profiles" %}</h3>
-                    <ul class="list-unstyled mb-4">
-                        <li class="mb-3">
-                            <i class="fa-solid fa-check text-success me-2" aria-hidden="true"></i>
-                            {% trans "Store important health information in one secure location" %}
-                        </li>
-                        <li class="mb-3">
-                            <i class="fa-solid fa-check text-success me-2" aria-hidden="true"></i>
-                            {% trans "Track growth patterns with visual charts and percentiles" %}
-                        </li>
-                        <li class="mb-3">
-                            <i class="fa-solid fa-check text-success me-2" aria-hidden="true"></i>
-                            {% trans "Document developmental milestones with photos and notes" %}
-                        </li>
-                    </ul>
-                    <div class="text-center mt-4">
-                        <a href="{% url 'your_children' %}" class="btn btn-outline-primary" aria-label="{% trans 'View child profile features' %}">
-                            {% trans "Explore Child Profiles" %}
-                        </a>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="row mb-5 align-items-center">
-                <div class="col-lg-6 mb-4 mb-lg-0">
-                    <img src="{% static 'res/img/others/default.jpg' %}" class="img-fluid rounded shadow" 
-                         alt="{% trans 'Vaccination tracking system' %}" loading="lazy">
-                </div>
-                <div class="col-lg-6 text-center" aria-labelledby="vaccination-heading">
-                    <h3 id="vaccination-heading" class="mb-4">{% trans "Digital Vaccination Card" %}</h3>
-                    <ul class="list-unstyled mb-4">
-                        <li class="mb-3">
-                            <i class="fa-solid fa-check text-success me-2" aria-hidden="true"></i>
-                            {% trans "Keep track of all vaccinations with automatic scheduling" %}
-                        </li>
-                        <li class="mb-3">
-                            <i class="fa-solid fa-check text-success me-2" aria-hidden="true"></i>
-                            {% trans "Receive timely reminders for upcoming immunizations" %}
-                        </li>
-                        <li class="mb-3">
-                            <i class="fa-solid fa-check text-success me-2" aria-hidden="true"></i>
-                            {% trans "Access your child's complete vaccination history anytime" %}
-                        </li>
-                    </ul>
-                    <div class="text-center mt-4">
-                        <a href="{% url 'guides' %}" class="btn btn-outline-primary" aria-label="{% trans 'Learn more about vaccination tracking' %}">
-                            {% trans "Learn About Vaccinations" %}
-                        </a>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="row align-items-center">
-                <div class="col-lg-6 order-lg-2 mb-4 mb-lg-0">
-                    <img src="{% static 'res/img/others/default.jpg' %}" class="img-fluid rounded shadow" 
-                         alt="{% trans 'Nutrition guides and resources' %}" loading="lazy">
-                </div>
-                <div class="col-lg-6 order-lg-1 text-center" aria-labelledby="nutrition-heading">
-                    <h3 id="nutrition-heading" class="mb-4">{% trans "Expert Nutrition Guidance" %}</h3>
-                    <ul class="list-unstyled mb-4">
-                        <li class="mb-3">
-                            <i class="fa-solid fa-check text-success me-2" aria-hidden="true"></i>
-                            {% trans "Access age-appropriate nutrition recommendations" %}
-                        </li>
-                        <li class="mb-3">
-                            <i class="fa-solid fa-check text-success me-2" aria-hidden="true"></i>
-                            {% trans "Analyze baby food with our nutrition calculator" %}
-                        </li>
-                        <li class="mb-3">
-                            <i class="fa-solid fa-check text-success me-2" aria-hidden="true"></i>
-                            {% trans "Get meal ideas and feeding schedules by age" %}
-                        </li>
-                    </ul>
-                    <div class="text-center mt-4">
-                        <a href="{% url 'nutrition_guides' %}" class="btn btn-outline-primary" aria-label="{% trans 'View nutrition resources' %}">
-                            {% trans "Explore Nutrition Guides" %}
-                        </a>
-                    </div>
-                </div>
+    <section
+    class="key-features py-5 bg-light rounded-3 mb-5"
+    aria-labelledby="key-features-heading"
+    >
+    <div class="container">
+        <h2 id="key-features-heading" class="section-title text-center mb-5">
+        {% trans "Everything You Need in One Place" %}
+        </h2>
+
+        <div class="row mb-5 align-items-center">
+        <div class="col-lg-6 order-lg-2 mb-4 mb-lg-0">
+            <img
+            src="{% static 'res/img/others/default.jpg' %}"
+            class="img-fluid rounded shadow"
+            alt="{% trans 'Child profile tracking features' %}"
+            loading="lazy"
+            />
+        </div>
+        <div
+            class="col-lg-6 order-lg-1 text-center"
+            aria-labelledby="profiles-heading"
+        >
+            <h3 id="profiles-heading" class="mb-4">
+            {% trans "Comprehensive Child Profiles" %}
+            </h3>
+            <ul class="list-unstyled mb-4">
+            <li class="mb-3">
+                <i
+                class="fa-solid fa-check text-success me-2"
+                aria-hidden="true"
+                ></i>
+                {% trans "Store important health information in one secure location"
+                %}
+            </li>
+            <li class="mb-3">
+                <i
+                class="fa-solid fa-check text-success me-2"
+                aria-hidden="true"
+                ></i>
+                {% trans "Track growth patterns with visual charts and percentiles"
+                %}
+            </li>
+            <li class="mb-3">
+                <i
+                class="fa-solid fa-check text-success me-2"
+                aria-hidden="true"
+                ></i>
+                {% trans "Document developmental milestones with photos and notes"
+                %}
+            </li>
+            </ul>
+            <div class="text-center mt-4">
+            <a
+                href="{% url 'your_children' %}"
+                class="btn btn-outline-primary"
+                aria-label="{% trans 'View child profile features' %}"
+            >
+                {% trans "Explore Child Profiles" %}
+            </a>
             </div>
         </div>
+        </div>
+
+        <div class="row mb-5 align-items-center">
+        <div class="col-lg-6 mb-4 mb-lg-0">
+            <img
+            src="{% static 'res/img/others/default.jpg' %}"
+            class="img-fluid rounded shadow"
+            alt="{% trans 'Vaccination tracking system' %}"
+            loading="lazy"
+            />
+        </div>
+        <div class="col-lg-6 text-center" aria-labelledby="vaccination-heading">
+            <h3 id="vaccination-heading" class="mb-4">
+            {% trans "Digital Vaccination Card" %}
+            </h3>
+            <ul class="list-unstyled mb-4">
+            <li class="mb-3">
+                <i
+                class="fa-solid fa-check text-success me-2"
+                aria-hidden="true"
+                ></i>
+                {% trans "Keep track of all vaccinations with automatic scheduling"
+                %}
+            </li>
+            <li class="mb-3">
+                <i
+                class="fa-solid fa-check text-success me-2"
+                aria-hidden="true"
+                ></i>
+                {% trans "Receive timely reminders for upcoming immunizations" %}
+            </li>
+            <li class="mb-3">
+                <i
+                class="fa-solid fa-check text-success me-2"
+                aria-hidden="true"
+                ></i>
+                {% trans "Access your child's complete vaccination history anytime"
+                %}
+            </li>
+            </ul>
+            <div class="text-center mt-4">
+            <a
+                href="{% url 'guides' %}"
+                class="btn btn-outline-primary"
+                aria-label="{% trans 'Learn more about vaccination tracking' %}"
+            >
+                {% trans "Learn About Vaccinations" %}
+            </a>
+            </div>
+        </div>
+        </div>
+
+        <div class="row align-items-center">
+        <div class="col-lg-6 order-lg-2 mb-4 mb-lg-0">
+            <img
+            src="{% static 'res/img/others/default.jpg' %}"
+            class="img-fluid rounded shadow"
+            alt="{% trans 'Nutrition guides and resources' %}"
+            loading="lazy"
+            />
+        </div>
+        <div
+            class="col-lg-6 order-lg-1 text-center"
+            aria-labelledby="nutrition-heading"
+        >
+            <h3 id="nutrition-heading" class="mb-4">
+            {% trans "Expert Nutrition Guidance" %}
+            </h3>
+            <ul class="list-unstyled mb-4">
+            <li class="mb-3">
+                <i
+                class="fa-solid fa-check text-success me-2"
+                aria-hidden="true"
+                ></i>
+                {% trans "Access age-appropriate nutrition recommendations" %}
+            </li>
+            <li class="mb-3">
+                <i
+                class="fa-solid fa-check text-success me-2"
+                aria-hidden="true"
+                ></i>
+                {% trans "Analyze baby food with our nutrition calculator" %}
+            </li>
+            <li class="mb-3">
+                <i
+                class="fa-solid fa-check text-success me-2"
+                aria-hidden="true"
+                ></i>
+                {% trans "Get meal ideas and feeding schedules by age" %}
+            </li>
+            </ul>
+            <div class="text-center mt-4">
+            <a
+                href="{% url 'nutrition_guides' %}"
+                class="btn btn-outline-primary"
+                aria-label="{% trans 'View nutrition resources' %}"
+            >
+                {% trans "Explore Nutrition Guides" %}
+            </a>
+            </div>
+        </div>
+        </div>
+    </div>
     </section>
 
     <!-- Testimonials Section -->
     <section class="testimonials py-5 mb-5" aria-labelledby="testimonials-heading">
-        <div class="container">
-            <h2 id="testimonials-heading" class="section-title text-center mb-5">{% trans "What Parents Say About Us" %}</h2>
-            <div class="row justify-content-center">
-                <div class="col-md-6 col-lg-4 mb-4">
-                    <div class="testimonial-card p-4 h-100 rounded shadow-sm text-center">
-                        <div class="mb-3">
-                            <i class="fa-solid fa-quote-left fa-2x text-muted opacity-25" aria-hidden="true"></i>
-                        </div>
-                        <p class="testimonial-text mb-4">{% trans "Tiny Steps has been a lifesaver for keeping track of my twins' vaccinations and development milestones. I don't know how I would manage without it!" %}</p>
-                        <div class="d-flex align-items-center justify-content-center">
-                            <div class="testimonial-avatar me-3">
-                                <i class="fa-solid fa-circle-user fa-2x text-primary" aria-hidden="true"></i>
-                            </div>
-                            <div>
-                                <h5 class="mb-0 fw-bold">{% trans "Maria G." %}</h5>
-                                <small class="text-muted">{% trans "Mother of twins" %}</small>
-                            </div>
-                        </div>
-                    </div>
+    <div class="container">
+        <h2 id="testimonials-heading" class="section-title text-center mb-5">
+        {% trans "What Parents Say About Us" %}
+        </h2>
+        <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="testimonial-card p-4 h-100 rounded shadow-sm text-center">
+            <div class="mb-3">
+                <i
+                class="fa-solid fa-quote-left fa-2x text-muted opacity-25"
+                aria-hidden="true"
+                ></i>
+            </div>
+            <p class="testimonial-text mb-4">
+                {% trans "Tiny Steps has been a lifesaver for keeping track of my
+                twins' vaccinations and development milestones. I don't know how I
+                would manage without it!" %}
+            </p>
+            <div class="d-flex align-items-center justify-content-center">
+                <div class="testimonial-avatar me-3">
+                <i
+                    class="fa-solid fa-circle-user fa-2x text-primary"
+                    aria-hidden="true"
+                ></i>
                 </div>
-                <div class="col-md-6 col-lg-4 mb-4">
-                    <div class="testimonial-card p-4 h-100 rounded shadow-sm text-center">
-                        <div class="mb-3">
-                            <i class="fa-solid fa-quote-left fa-2x text-muted opacity-25" aria-hidden="true"></i>
-                        </div>
-                        <p class="testimonial-text mb-4">{% trans "The nutrition analyzer has been incredibly helpful for introducing solids to my baby. The parent forum provides so much support from others going through the same stages!" %}</p>
-                        <div class="d-flex align-items-center justify-content-center">
-                            <div class="testimonial-avatar me-3">
-                                <i class="fa-solid fa-circle-user fa-2x text-primary" aria-hidden="true"></i>
-                            </div>
-                            <div>
-                                <h5 class="mb-0 fw-bold">{% trans "David R." %}</h5>
-                                <small class="text-muted">{% trans "Father of one" %}</small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6 col-lg-4 mb-4">
-                    <div class="testimonial-card p-4 h-100 rounded shadow-sm text-center">
-                        <div class="mb-3">
-                            <i class="fa-solid fa-quote-left fa-2x text-muted opacity-25" aria-hidden="true"></i>
-                        </div>
-                        <p class="testimonial-text mb-4">{% trans "As a new parent, I felt overwhelmed until I found Tiny Steps. The guides are well-researched and the milestone tracking keeps me confident that my baby is developing well." %}</p>
-                        <div class="d-flex align-items-center justify-content-center">
-                            <div class="testimonial-avatar me-3">
-                                <i class="fa-solid fa-circle-user fa-2x text-primary" aria-hidden="true"></i>
-                            </div>
-                            <div>
-                                <h5 class="mb-0 fw-bold">{% trans "Sarah T." %}</h5>
-                                <small class="text-muted">{% trans "First-time mother" %}</small>
-                            </div>
-                        </div>
-                    </div>
+                <div>
+                <h5 class="mb-0 fw-bold">{% trans "Maria G." %}</h5>
+                <small class="text-muted">{% trans "Mother of twins" %}</small>
                 </div>
             </div>
+            </div>
         </div>
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="testimonial-card p-4 h-100 rounded shadow-sm text-center">
+            <div class="mb-3">
+                <i
+                class="fa-solid fa-quote-left fa-2x text-muted opacity-25"
+                aria-hidden="true"
+                ></i>
+            </div>
+            <p class="testimonial-text mb-4">
+                {% trans "The nutrition analyzer has been incredibly helpful for
+                introducing solids to my baby. The parent forum provides so much
+                support from others going through the same stages!" %}
+            </p>
+            <div class="d-flex align-items-center justify-content-center">
+                <div class="testimonial-avatar me-3">
+                <i
+                    class="fa-solid fa-circle-user fa-2x text-primary"
+                    aria-hidden="true"
+                ></i>
+                </div>
+                <div>
+                <h5 class="mb-0 fw-bold">{% trans "David R." %}</h5>
+                <small class="text-muted">{% trans "Father of one" %}</small>
+                </div>
+            </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="testimonial-card p-4 h-100 rounded shadow-sm text-center">
+            <div class="mb-3">
+                <i
+                class="fa-solid fa-quote-left fa-2x text-muted opacity-25"
+                aria-hidden="true"
+                ></i>
+            </div>
+            <p class="testimonial-text mb-4">
+                {% trans "As a new parent, I felt overwhelmed until I found Tiny
+                Steps. The guides are well-researched and the milestone tracking
+                keeps me confident that my baby is developing well." %}
+            </p>
+            <div class="d-flex align-items-center justify-content-center">
+                <div class="testimonial-avatar me-3">
+                <i
+                    class="fa-solid fa-circle-user fa-2x text-primary"
+                    aria-hidden="true"
+                ></i>
+                </div>
+                <div>
+                <h5 class="mb-0 fw-bold">{% trans "Sarah T." %}</h5>
+                <small class="text-muted">{% trans "First-time mother" %}</small>
+                </div>
+            </div>
+            </div>
+        </div>
+        </div>
+    </div>
     </section>
 
     <!-- Latest Resources Section -->
-    <section class="resources py-5 bg-light rounded-3 mb-5" aria-labelledby="resources-heading">
-        <div class="container">
-            <h2 id="resources-heading" class="section-title text-center mb-5">{% trans "Latest Resources" %}</h2>
-            <div class="row justify-content-center">
-                <div class="col-md-6">
-                    <div class="resource-card mb-4 p-4 h-100 rounded shadow-sm bg-white" aria-labelledby="forum-heading">
-                        <h3 id="forum-heading" class="h5 mb-4 text-center">{% trans "Recent Forum Discussions" %}</h3>
-                        {% if latest_posts %}
-                            <ul class="list-unstyled">
-                                {% for post in latest_posts|slice:":3" %}
-                                    <li class="mb-3 pb-2 border-bottom text-center">
-                                        <a href="{% url 'view_post' post.id %}" class="text-decoration-none" aria-label="{% trans 'View forum post:' %} {{ post.title }}">
-                                            <h4 class="h6 mb-1">{{ post.title }}</h4>
-                                        </a>
-                                        <small class="text-muted d-block text-center">{{ post.created_at|date:"d M Y" }}</small>
-                                    </li>
-                                {% endfor %}
-                            </ul>
-                        {% else %}
-                            <div class="text-center p-4">
-                                <i class="fa-solid fa-comments fa-3x text-muted mb-3" aria-hidden="true"></i>
-                                <p>{% trans "Join our forum to start discussions with other parents." %}</p>
-                            </div>
-                        {% endif %}
-                        <div class="text-center mt-3">
-                            <a href="{% url 'parents_forum' %}" class="btn btn-primary" aria-label="{% trans 'Go to the parents forum' %}">
-                                {% trans "Visit Forum" %}
-                            </a>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="col-md-6">
-                    <div class="resource-card mb-4 p-4 h-100 rounded shadow-sm bg-white" aria-labelledby="guides-heading">
-                        <h3 id="guides-heading" class="h5 mb-4 text-center">{% trans "Featured Guides" %}</h3>
-                        {% if featured_guides %}
-                            <ul class="list-unstyled">
-                                {% for guide in featured_guides|slice:":3" %}
-                                    <li class="mb-3 pb-2 border-bottom text-center">
-                                        <a href="{% if guide.type == 'nutrition' %}{% url 'nutrition_guide_details' guide.id %}{% else %}{% url 'parent_guide_details' guide.id %}{% endif %}" 
-                                           class="text-decoration-none"
-                                           aria-label="{% trans 'View guide:' %} {{ guide.title }}">
-                                            <h4 class="h6 mb-1">{{ guide.title }}</h4>
-                                        </a>
-                                        <small class="text-muted d-block text-center">{{ guide.created_at|date:"d M Y" }}</small>
-                                    </li>
-                                {% endfor %}
-                            </ul>
-                        {% else %}
-                            <div class="text-center p-4">
-                                <i class="fa-solid fa-book-open fa-3x text-muted mb-3" aria-hidden="true"></i>
-                                <p>{% trans "Explore our comprehensive guides for parents and caregivers." %}</p>
-                            </div>
-                        {% endif %}
-                        <div class="text-center mt-3">
-                            <a href="{% url 'guides' %}" class="btn btn-primary" aria-label="{% trans 'View all parent guides' %}">
-                                {% trans "Explore All Guides" %}
-                            </a>
-                        </div>
-                    </div>
-                </div>
+    <section
+    class="resources py-5 bg-light rounded-3 mb-5"
+    aria-labelledby="resources-heading"
+    >
+    <div class="container">
+        <h2 id="resources-heading" class="section-title text-center mb-5">
+        {% trans "Latest Resources" %}
+        </h2>
+        <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div
+            class="resource-card mb-4 p-4 h-100 rounded shadow-sm bg-white"
+            aria-labelledby="forum-heading"
+            >
+            <h3 id="forum-heading" class="h5 mb-4 text-center">
+                {% trans "Recent Forum Discussions" %}
+            </h3>
+            {% if latest_posts %}
+            <ul class="list-unstyled">
+                {% for post in latest_posts|slice:":3" %}
+                <li class="mb-3 pb-2 border-bottom text-center">
+                <a
+                    href="{% url 'view_post' post.id %}"
+                    class="text-decoration-none"
+                    aria-label="{% trans 'View forum post:' %} {{ post.title }}"
+                >
+                    <h4 class="h6 mb-1">{{ post.title }}</h4>
+                </a>
+                <small class="text-muted d-block text-center"
+                    >{{ post.created_at|date:"d M Y" }}</small
+                >
+                </li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <div class="text-center p-4">
+                <i
+                class="fa-solid fa-comments fa-3x text-muted mb-3"
+                aria-hidden="true"
+                ></i>
+                <p>
+                {% trans "Join our forum to start discussions with other parents."
+                %}
+                </p>
+            </div>
+            {% endif %}
+            <div class="text-center mt-3">
+                <a
+                href="{% url 'parent_forum' %}"
+                class="btn btn-primary"
+                aria-label="{% trans 'Go to the parents forum' %}"
+                >
+                {% trans "Visit Forum" %}
+                </a>
+            </div>
             </div>
         </div>
+
+        <div class="col-md-6">
+            <div
+            class="resource-card mb-4 p-4 h-100 rounded shadow-sm bg-white"
+            aria-labelledby="guides-heading"
+            >
+            <h3 id="guides-heading" class="h5 mb-4 text-center">
+                {% trans "Featured Guides" %}
+            </h3>
+            {% if featured_guides %}
+            <ul class="list-unstyled">
+                {% for guide in featured_guides|slice:":3" %}
+                <li class="mb-3 pb-2 border-bottom text-center">
+                <a
+                    href="{% if guide.type == 'nutrition' %}{% url 'nutrition_guide_details' guide.id %}{% else %}{% url 'parent_guide_details' guide.id %}{% endif %}"
+                    class="text-decoration-none"
+                    aria-label="{% trans 'View guide:' %} {{ guide.title }}"
+                >
+                    <h4 class="h6 mb-1">{{ guide.title }}</h4>
+                </a>
+                <small class="text-muted d-block text-center"
+                    >{{ guide.created_at|date:"d M Y" }}</small
+                >
+                </li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <div class="text-center p-4">
+                <i
+                class="fa-solid fa-book-open fa-3x text-muted mb-3"
+                aria-hidden="true"
+                ></i>
+                <p>
+                {% trans "Explore our comprehensive guides for parents and
+                caregivers." %}
+                </p>
+            </div>
+            {% endif %}
+            <div class="text-center mt-3">
+                <a
+                href="{% url 'guides' %}"
+                class="btn btn-primary"
+                aria-label="{% trans 'View all parent guides' %}"
+                >
+                {% trans "Explore All Guides" %}
+                </a>
+            </div>
+            </div>
+        </div>
+        </div>
+    </div>
     </section>
 
     <!-- Get Started CTA for hook the user to download our app -->
     <section class="cta-section py-5 mb-5" aria-labelledby="cta-heading">
-        <div class="container">
-            <div class="row justify-content-center">
-                <div class="col-lg-10">
-                    <div class="cta-card text-center p-4 p-md-5 rounded shadow bg-primary text-white">
-                        <h2 id="cta-heading" class="mb-4">{% trans "Start Your Parenting Journey with Confidence" %}</h2>
-                        <p class="lead mb-4">
-                            {% blocktrans %}
-                            Join thousands of parents who are already benefiting from Tiny Steps! Create your free account today and access all our features.
-                            {% endblocktrans %}
-                        </p>
-                        <div class="d-flex flex-column flex-md-row justify-content-center gap-2 gap-md-3">
-                            <a href="{% url 'register' %}" class="btn btn-light btn-lg mb-2 mb-md-0" aria-label="{% trans 'Create a free account' %}">
-                                <i class="fa-solid fa-user-plus me-2" aria-hidden="true"></i>{% trans "Sign Up Free" %}
-                            </a>
-                            <a href="{% url 'login' %}" class="btn btn-outline-light btn-lg" aria-label="{% trans 'Log in to your account' %}">
-                                <i class="fa-solid fa-right-to-bracket me-2" aria-hidden="true"></i>{% trans "Login" %}
-                            </a>
-                        </div>
-                    </div>
-                </div>
+    <div class="container">
+        <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div
+            class="cta-card text-center p-4 p-md-5 rounded shadow bg-primary text-white"
+            >
+            <h2 id="cta-heading" class="mb-4">
+                {% trans "Start Your Parenting Journey with Confidence" %}
+            </h2>
+            <p class="lead mb-4">
+                {% blocktrans %} Join thousands of parents who are already
+                benefiting from Tiny Steps! Create your free account today and
+                access all our features. {% endblocktrans %}
+            </p>
+            <div
+                class="d-flex flex-column flex-md-row justify-content-center gap-2 gap-md-3"
+            >
+                <a
+                href="{% url 'register' %}"
+                class="btn btn-light btn-lg mb-2 mb-md-0"
+                aria-label="{% trans 'Create a free account' %}"
+                >
+                <i class="fa-solid fa-user-plus me-2" aria-hidden="true"></i>{%
+                trans "Sign Up Free" %}
+                </a>
+                <a
+                href="{% url 'login' %}"
+                class="btn btn-outline-light btn-lg"
+                aria-label="{% trans 'Log in to your account' %}"
+                >
+                <i
+                    class="fa-solid fa-right-to-bracket me-2"
+                    aria-hidden="true"
+                ></i
+                >{% trans "Login" %}
+                </a>
+            </div>
             </div>
         </div>
+        </div>
+    </div>
     </section>
 {% endblock main_contents %}

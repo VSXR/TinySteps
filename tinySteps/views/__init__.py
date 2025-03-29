@@ -22,8 +22,7 @@ from .forum.forum_views import (
 )
 
 # Guide Views
-from .guides.guide_views import guides_page, guide_list_view, guide_detail_view, my_guides
-from .guides.article_views import article_list_view, article_detail_view
+from .guides.guide_views import guides_page, guide_list_view, guide_detail_view, my_guides_view
 from .guides.submission_views import SubmitGuide_View, submit_guide
 
 # Nutrition Views
@@ -59,7 +58,7 @@ __all__ = [
     'edit_post', 'delete_post', 'add_post_comment', 'forum_post_like_toggle',
     
     # Guide views
-    'guides_page', 'guide_list_view', 'guide_detail_view',
+    'guides_page', 'guide_list_view', 'guide_detail_view', 'my_guides_view',
     'article_list_view', 'article_detail_view', 'my_guides', 'SubmitGuide_View', 'submit_guide',
     
     # Nutrition views

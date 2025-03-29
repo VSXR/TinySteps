@@ -417,6 +417,109 @@ aside {
     width: 1px;
 }
 
+
+.hover-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.hover-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+}
+
+.transition-300 {
+    transition: all 0.3s ease;
+}
+
+.hero-content {
+    padding: 4rem 0;
+}
+
+@media (max-width: 992px) {
+    .hero-content {
+        padding: 2rem 0;
+    }
+}
+
+/* Modern Guide Index Styles */
+.hero-section {
+    background: linear-gradient(135deg, var(--bg-light) 0%, #e9ecef 100%);
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--border-light);
+}
+
+.hero-image {
+    max-height: 350px;
+}
+
+.search-area {
+    max-width: 550px;
+}
+
+.category-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    font-size: 1.2rem;
+}
+
+.contribute-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background-color: rgba(var(--bs-primary-rgb), 0.1);
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.personalized-banner {
+    background-color: rgba(var(--bs-primary-rgb), 0.05);
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+}
+
+.testimonial-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background-color: var(--primary-color);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+
+.testimonial-text {
+    font-style: italic;
+    position: relative;
+    padding-left: 1.5rem;
+}
+
+.testimonial-text::before {
+    content: """";
+    position: absolute;
+    left: 0;
+    top: -5px;
+    font-size: 2rem;
+    color: var(--primary-color);
+    opacity: 0.5;
+}
+
+/* Make the sidebar sticky on larger screens */
+@media (min-width: 992px) {
+    .sticky-lg-top {
+        position: sticky;
+        top: 2rem;
+    }
+}
+
 /*--------------------*/
 /* 5.2 Footer         */
 /*--------------------*/

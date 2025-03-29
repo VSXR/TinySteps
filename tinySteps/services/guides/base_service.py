@@ -21,7 +21,7 @@ class Guide_Service:
             count=limit, 
             exclude_id=exclude_id
         )
-    
+
     def get_guide_detail(self, guide_id):
         """Get a specific guide with details"""
         return self.repository.get_guide_details(guide_id, self.guide_type)
@@ -39,7 +39,6 @@ class Guide_Service:
         
         guide.save()
         
-        # Handle tags
         tags_text = form.cleaned_data.get('tags', '')
         if tags_text:
             guide.set_tags(tags_text)

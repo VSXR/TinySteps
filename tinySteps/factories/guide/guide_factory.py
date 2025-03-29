@@ -17,22 +17,34 @@ class GuideUrl_Factory:
         from tinySteps.views.guides import (
             guide_views, article_views, submission_views
         )
+        from tinySteps.views.guides.guide_views import guides_page
         from tinySteps.views.nutrition import (
             analyzer_views, comparison_views
         )
         
-        url_patterns = [
+        url_patterns = []
+        
+        # To avoid circular import issues, we import the views here!
+        if guide_type == 'parent':
+            url_patterns.append(path('guides/', guides_page, name='guides'))
+        
+        # Type-specific URLs
+        url_patterns.extend([
             path(f'guides/{guide_type}/', guide_views.guide_list_view, {'guide_type': guide_type}, 
                 name=f'{guide_type}_guides'),
             path(f'guides/{guide_type}/<int:pk>/', guide_views.guide_detail_view, {'guide_type': guide_type}, 
-                name=f'{guide_type}_guide_detail'),
+                name=f'{guide_type}_guide_details'),
             path(f'guides/{guide_type}/articles/', article_views.article_list_view, {'guide_type': guide_type}, 
                 name=f'{guide_type}_articles'),
             path(f'guides/{guide_type}/articles/<slug:slug>/', article_views.article_detail_view, {'guide_type': guide_type}, 
-                name=f'{guide_type}_article_detail'),
-            path(f'guides/submit/', submission_views.submit_guide, name='submit_guide'),
-            path(f'guides/my-guides/', guide_views.my_guides, name='my_guides'),
-        ]
+                name=f'{guide_type}_article_details'),
+        ])
+        
+        if guide_type == 'parent':
+            url_patterns.extend([
+                path('guides/submit/', submission_views.submit_guide, name='submit_guide'),
+                path('guides/my-guides/', guide_views.my_guides_view, name='my_guides'),
+            ])
         
         # Special cases for specific types
         if guide_type == 'nutrition':

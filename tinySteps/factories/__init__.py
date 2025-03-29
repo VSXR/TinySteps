@@ -1,16 +1,13 @@
 """Factories package"""
 
-# Guide Factories
-from .guide.guide_factory import GuideUrl_Factory, GuideService_Factory
-
-# Comment Factories
-from .comment.comment_factory import CommentUrl_Factory, CommentService_Factory
-
 # Auth Factories
 from .auth.auth_factory import AuthUrl_Factory
 
 # Child Factories
 from .child.child_factory import ChildUrl_Factory
+
+# Comment Factories
+from .comment.comment_factory import CommentUrl_Factory, CommentService_Factory
 
 # Forum Factories
 from .forum.forum_factory import ForumUrl_Factory, ForumService_Factory
@@ -24,9 +21,25 @@ from .contact.contact_factory import ContactUrl_Factory
 # Nutrition Factories
 from .nutrition.nutrition_factory import NutritionUrl_Factory
 
+def get_guide_service_factory():
+    from .guide.guide_factory import GuideService_Factory
+    return GuideService_Factory
+
+def get_guide_url_factory():
+    from .guide.guide_factory import GuideUrl_Factory
+    return GuideUrl_Factory
+
+# For backwards compatibility, we expose the factories directly
+# (this is what causes circular dependencies but we need to maintain it for now)
+try:
+    from .guide.guide_factory import GuideUrl_Factory, GuideService_Factory
+except ImportError:
+    GuideUrl_Factory = None
+    GuideService_Factory = None
+
 __all__ = [
     # Guide Factories
-    'GuideUrl_Factory', 'GuideService_Factory',
+    'GuideUrl_Factory', 'GuideService_Factory', 'get_guide_service_factory', 'get_guide_url_factory',
     
     # Comment Factories
     'CommentUrl_Factory', 'CommentService_Factory',

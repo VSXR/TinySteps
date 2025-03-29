@@ -1,24 +1,38 @@
-tinySteps/
-├── templates/
-│   └── guides/
-│       ├── base/                  # Keep your base templates
-│       │   └── article_list_base.html
-│       │   └── article_detail_base.html
-│       │   └── guide_list_base.html  
-│       │   └── guide_detail_base.html
-│       ├── common/                # NEW folder for shared templates
-│       │   └── article_list.html  # Common template used by both sections
-│       │   └── article_detail.html # Common template for both sections
-│       │   └── guide_list.html    # Common template for both sections
-│       │   └── guide_detail.html  # Common template for both sections
-│       ├── nutrition/
-│       │   └── analyzer.html      # Keep as special case
-│       │   └── articles.html      # Simplified to include common template
-│       │   └── article_detail.html # Simplified
-│       │   └── list.html          # Simplified
-│       │   └── detail.html        # Simplified
-│       └── parents/
-│           └── articles.html      # Simplified
-│           └── article_detail.html # Simplified
-│           └── list.html          # Simplified  
-│           └── detail.html        # Simplified
+# GUIDES TEMPLATE DIRECTORY STRUCTURE
+
+```
+guides/
+├── index.html                       # Página principal
+├── my_guides.html                   # Página "Mis guías"
+├── submit.html                      # Página para enviar guías
+├── README.md                        # Documentación
+├── admin/                           # Panel de administración
+│   ├── reject_guide.html           # Rechazar guías
+│   └── review_guides.html          # Revisar guías
+├── components/                      # Componentes reutilizables
+│   ├── guide_card.html             # Tarjeta de guía
+│   ├── article_card.html           # Tarjeta de artículo
+│   ├── sidebar.html                # Barra lateral
+│   ├── page_header.html            # Encabezado de página
+│   ├── breadcrumbs.html            # Migas de pan
+│   ├── pagination.html             # Paginación
+│   ├── status_badge.html           # Insignia de estado
+│   ├── cta_banner.html             # Banner CTA
+│   ├── contribute_banner.html      # Banner de contribución
+│   ├── personalized_alert.html     # Alerta personalizada
+│   ├── guide_categories.html       # Categorías de guías
+│   ├── recommended_guides.html     # Guías recomendadas
+│   └── featured_tools.html         # Herramientas destacadas
+├── shared/                          # Secciones compartidas entre vistas
+│   └── guide_list_section.html     # Sección de lista de guías
+├── parents/                         # Guías para padres
+│   ├── list.html                   # Lista de guías para padres
+│   ├── detail.html                 # Detalle de guía para padres
+│   └── articles.html               # Artículos para padres
+└── nutrition/                       # Guías de nutrición
+    ├── list.html                   # Lista de guías de nutrición
+    ├── detail.html                 # Detalle de guía de nutrición
+    └── tools/                      # Herramientas específicas de nutrición
+        ├── analyzer.html           # Analizador de nutrición
+        └── comparison.html         # Comparación de alimentos
+```
