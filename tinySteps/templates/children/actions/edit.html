@@ -3,19 +3,15 @@
 {% load crispy_forms_tags %}
 {% load i18n %}
 
-{% block title %}{% trans "Edit Child - TINY STEPS" %}{% endblock %}
+{% block title %}{% trans "Edit Child - Tiny Steps" %}{% endblock %}
 
 {% block main_contents %}
     <main id="main-content">
         <div class="container mt-4 mb-5">
-            <div class="row mb-4">
-                <div class="col">
-                    <h1 id="page-heading">{% trans "Edit Child Information" %}</h1>
-                    <p class="lead text-center" id="page-description">
-                        {% blocktrans with child_name=child.name %}Update {{ child_name }}'s information below{% endblocktrans %}
-                    </p>
-                </div>
-            </div>
+            <!-- Breadcrumbs and Page Header -->
+            {% include "children/components/child_breadcrumbs.html" with child=child feature_type="edit" %}
+            {% trans "Edit Child Information" as edit_title %}
+            {% include "children/components/page_header.html" with title=edit_title subtitle=update_subtitle %}
 
             <!-- Messages Container -->
             <div class="row">
@@ -30,8 +26,8 @@
 
             <div class="row justify-content-center">
                 <div class="col-md-8 col-lg-6">
-                    <div class="card shadow-sm">
-                        <div class="card-body">
+                    <div class="card shadow-sm border-0 rounded-4">
+                        <div class="card-body p-4">
                             <form method="post" enctype="multipart/form-data" novalidate aria-labelledby="form-heading">
                                 <h2 id="form-heading" class="fs-5 mb-3">{% trans "Update Information" %}</h2>
                                 {% csrf_token %}
@@ -39,29 +35,28 @@
                                 <!-- Nombre y segundo nombre -->
                                 <div class="mb-3">
                                     <label for="id_name" class="form-label">{% trans "Name" %} <span class="text-danger">*</span></label>
-                                    <input type="text" name="name" id="id_name" value="{{ form.name.value|default:'' }}" class="form-control" required>
+                                    <input type="text" name="name" id="id_name" value="{{ form.name.value|default:'' }}" class="form-control rounded-pill" required>
                                 </div>
                                 
                                 <div class="mb-3">
                                     <label for="id_second_name" class="form-label">{% trans "Second Name" %}</label>
-                                    <input type="text" name="second_name" id="id_second_name" value="{{ form.second_name.value|default:'' }}" class="form-control">
+                                    <input type="text" name="second_name" id="id_second_name" value="{{ form.second_name.value|default:'' }}" class="form-control rounded-pill">
                                 </div>
                                 
                                 <!-- Fecha de nacimiento y edad -->
                                 <div class="mb-3">
                                     <label for="id_birth_date" class="form-label">{% trans "Birth Date" %} <span class="text-danger">*</span></label>
-                                    <input type="date" name="birth_date" id="id_birth_date" value="{{ form.birth_date.value|date:'Y-m-d' }}" class="form-control" required>
+                                    <input type="date" name="birth_date" id="id_birth_date" value="{{ form.birth_date.value|date:'Y-m-d'|default:'' }}" class="form-control rounded-pill" required>
                                 </div>
                                 
                                 <div class="mb-3">
-                                    <label for="id_age" class="form-label">{% trans "Age (months)" %} <span class="text-danger">*</span></label>
-                                    <input type="number" name="age" id="id_age" value="{{ form.age.value }}" class="form-control" required>
+                                    <label for="id_age" class="form-label">{% trans "Age (in months)" %} <span class="text-danger">*</span></label>
+                                    <input type="number" name="age" id="id_age" value="{{ form.age.value|default:'' }}" class="form-control rounded-pill" required min="0" max="60">
                                 </div>
                                 
-                                <!-- Género -->
                                 <div class="mb-3">
                                     <label for="id_gender" class="form-label">{% trans "Gender" %} <span class="text-danger">*</span></label>
-                                    <select name="gender" id="id_gender" class="form-select" required>
+                                    <select name="gender" id="id_gender" class="form-select rounded-pill" required>
                                         <option value="">{% trans "Select gender" %}</option>
                                         <option value="M" {% if form.gender.value == 'M' %}selected{% endif %}>{% trans "Male" %}</option>
                                         <option value="F" {% if form.gender.value == 'F' %}selected{% endif %}>{% trans "Female" %}</option>
@@ -73,41 +68,44 @@
                                 <div class="row mb-3">
                                     <div class="col-md-6 mb-3 mb-md-0">
                                         <label for="id_weight" class="form-label">{% trans "Weight (kg)" %}</label>
-                                        <input type="number" name="weight" id="id_weight" step="0.01" min="0" value="{{ form.weight.value|default:'' }}" class="form-control">
+                                        <input type="number" name="weight" id="id_weight" step="0.01" min="0" value="{{ form.weight.value|default:'' }}" class="form-control rounded-pill">
                                     </div>
                                     <div class="col-md-6">
                                         <label for="id_height" class="form-label">{% trans "Height (cm)" %}</label>
-                                        <input type="number" name="height" id="id_height" step="0.1" min="0" value="{{ form.height.value|default:'' }}" class="form-control">
+                                        <input type="number" name="height" id="id_height" step="0.1" min="0" value="{{ form.height.value|default:'' }}" class="form-control rounded-pill">
                                     </div>
                                 </div>
                                 
                                 <!-- Descripción -->
                                 <div class="mb-3">
                                     <label for="id_desc" class="form-label">{% trans "Description" %}</label>
-                                    <textarea name="desc" id="id_desc" class="form-control">{{ form.desc.value|default:'' }}</textarea>
+                                    <textarea name="desc" id="id_desc" class="form-control rounded-3">{{ form.desc.value|default:'' }}</textarea>
                                 </div>
                                 
                                 <!-- Foto -->
                                 <div class="mb-3">
                                     <label for="id_image" class="form-label">{% trans "Upload Photo" %}</label>
-                                    <input type="file" name="image" id="id_image" class="form-control" accept="image/*">
+                                    <input type="file" name="image" id="id_image" class="form-control rounded-pill" accept="image/*">
                                     {% if form.instance.image %}
                                         <div class="mt-2">
                                             <p class="small">{% trans "Current photo:" %}</p>
-                                            <img src="{{ form.instance.get_image }}" alt="{{ form.instance.name }}" style="max-width: 100px;" class="img-thumbnail" loading="lazy">
+                                            <img src="{{ form.instance.get_image }}" alt="{{ form.instance.name }}" style="max-width: 100px;" class="img-thumbnail rounded-circle" loading="lazy">
                                         </div>
                                     {% endif %}
                                 </div>
                                 
                                 <div class="mb-3">
                                     <label for="id_image_url" class="form-label">{% trans "Photo URL" %}</label>
-                                    <input type="url" name="image_url" id="id_image_url" value="{{ form.image_url.value|default:'' }}" class="form-control">
+                                    <input type="url" name="image_url" id="id_image_url" value="{{ form.image_url.value|default:'' }}" class="form-control rounded-pill">
                                 </div>
                                 
                                 <!-- Botones -->
-                                <div class="d-flex justify-content-between">
-                                    <a href="{% url 'your_children' %}" class="btn btn-outline-secondary">{% trans "Cancel" %}</a>
-                                    <button type="submit" class="btn btn-primary">{% trans "Save Changes" %}</button>
+                                <div class="d-flex justify-content-between mt-4">
+                                    <a href="{% url 'your_children' %}" class="btn btn-outline-secondary rounded-pill px-4">{% trans "Cancel" %}</a>
+                                    <button type="submit" class="btn btn-primary rounded-pill px-4">
+                                        <i class="fa-solid fa-check me-2" aria-hidden="true"></i>
+                                        {% trans "Save Changes" %}
+                                    </button>
                                 </div>
                             </form>
                         </div>

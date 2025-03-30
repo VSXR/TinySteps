@@ -3,8 +3,9 @@ from django.contrib.auth.decorators import login_required
 from django.views import View
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.utils.translation import gettext as _
+from datetime import date, timedelta
 
-from tinySteps.models import YourChild_Model, VaccineCard_Model
+from tinySteps.models import YourChild_Model, VaccineCard_Model, CalendarEvent_Model
 from tinySteps.forms import Milestone_Form, CalendarEvent_Form, Vaccine_Form
 from tinySteps.services.core.child_service import Child_Service
 
@@ -34,12 +35,22 @@ def child_milestone(request, child_id):
 
 @login_required
 def child_calendar(request, child_id):
-    """View to display and manage child calendar"""
+    """View para mostrar y gestionar el calendario del niño"""
     child = get_object_or_404(YourChild_Model, pk=child_id, user=request.user)
+    
+    # Obtener recordatorios próximos
+    today = date.today()
+    next_week = today + timedelta(days=7)
+    upcoming_reminders = CalendarEvent_Model.objects.filter(
+        child=child,
+        date__gte=today,
+        date__lte=next_week,
+        has_reminder=True
+    ).order_by('date', 'time')
     
     context = {
         'child': child,
-        'events': child.events.all().order_by('date')
+        'upcoming_reminders': upcoming_reminders
     }
     
     return render(request, 'children/features/calendar/index.html', context)

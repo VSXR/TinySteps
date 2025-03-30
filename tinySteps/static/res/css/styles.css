@@ -418,11 +418,10 @@ aside {
 }
 
 
-.hover-card {
+.content-lift {
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
-
-.hover-card:hover {
+.content-lift:hover {
     transform: translateY(-5px);
     box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
 }
@@ -790,6 +789,412 @@ ul.messages li.error {
     height: auto;
     margin: var(--space-lg) auto;
     max-width: 25%;
+}
+
+/*--------------------*/
+/* 5.8 Children       */
+/*--------------------*/
+
+/* Child Cards */
+.child-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border-radius: 0.75rem;
+    overflow: hidden;
+}
+
+.child-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+}
+
+/* CHILD HOVER CARDS ANIMATION */
+.element-elevation {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.element-elevation:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+}
+
+/* Child Profile */
+.child-profile-image {
+    width: 170px;
+    height: 170px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 4px solid #fff;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.child-gender-badge {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    transform: translate(25%, 25%);
+    padding: 0.5rem;
+    border: 2px solid #fff;
+}
+
+/* Child Milestone Cards */
+.milestone-card {
+    transition: all 0.2s ease;
+    border-radius: 0.5rem;
+}
+
+.milestone-card:hover {
+    background-color: rgba(0, 0, 0, 0.02);
+}
+
+.milestone-date {
+    font-size: 0.85rem;
+    color: #6c757d;
+}
+
+/* Child Stats */
+.child-stat {
+    transition: transform 0.2s;
+    border-radius: 0.5rem;
+}
+
+.child-stat:hover {
+    transform: translateY(-3px);
+}
+
+/* Resource Cards */
+.resource-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border-radius: 1rem;
+    overflow: hidden;
+}
+
+.resource-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+}
+
+/* Child Action Buttons */
+.child-action-btn {
+    transition: all 0.2s ease;
+}
+
+.child-action-btn:hover {
+    transform: translateY(-2px);
+}
+
+/* Child Options Menu Button */
+.btn-options-menu {
+    width: 40px !important;
+    height: 40px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border-radius: 50% !important;
+    background-color: #f8f9fa;
+    transition: all 0.2s ease-in-out;
+    padding: 0 !important;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    border: none !important;
+    outline: none;
+    overflow: hidden;
+    min-width: 40px !important;
+    min-height: 40px !important;
+    max-width: 40px !important;
+    max-height: 40px !important;
+    position: relative;
+}
+
+.btn-options-menu::after {
+    display: none !important;
+    content: none !important;
+}
+
+.btn-options-menu i {
+    font-size: 1.2rem;
+    color: #6c757d;
+    line-height: 1;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.btn-options-menu:hover {
+    background-color: #e9ecef;
+    transform: scale(1.1);
+    box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+}
+
+/* Child Empty State */
+.child-empty-state {
+    padding: 3rem 2rem;
+    text-align: center;
+    background-color: rgba(0, 0, 0, 0.02);
+    border-radius: 1rem;
+}
+
+.child-empty-state i {
+    font-size: 3rem;
+    opacity: 0.5;
+    margin-bottom: 1rem;
+}
+
+/*--------------------*/
+/* 5.9 Calendar       */
+/*--------------------*/
+
+/* Calendar Container */
+.calendar-container {
+    border-radius: 0.5rem;
+    overflow: hidden;
+}
+
+/* Calendar Day Styling */
+.calendar-day {
+    height: 80px;
+    overflow: hidden;
+    position: relative;
+    transition: background-color 0.2s;
+}
+
+.calendar-day:hover {
+    background-color: rgba(0, 0, 0, 0.02);
+}
+
+.calendar-day.today {
+    background-color: rgba(13, 110, 253, 0.1);
+    font-weight: bold;
+}
+
+.calendar-day.empty {
+    background-color: #f8f9fa;
+}
+
+.calendar-day .day-number {
+    position: absolute;
+    top: 5px;
+    right: 8px;
+    font-size: 0.85rem;
+}
+
+/* Event Dots */
+.event-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: 3px;
+}
+
+.event-list {
+    margin-top: 20px;
+    font-size: 0.75rem;
+}
+
+.event-item {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 2px;
+    padding: 2px 4px;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.event-item:hover {
+    transform: translateX(2px);
+}
+
+/* Event Types */
+/* Ya tienes gran parte de este CSS en tu archivo existente */
+
+/* Colores para tipos de eventos */
+.event-type-doctor {
+    background-color: #2196f3;
+}
+.event-type-vaccine {
+    background-color: #ff9800;
+}
+.event-type-milestone {
+    background-color: #4caf50;
+}
+.event-type-feeding {
+    background-color: #9c27b0;
+}
+.event-type-other {
+    background-color: #757575;
+}
+
+/* Estilos para puntos de leyenda */
+.legend-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+/* Estilos para el botón de opciones */
+.btn-options-menu {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #ffffff;
+    border: 1px solid #e0e0e0;
+}
+
+/* Reminders */
+.reminder-item {
+    transition: background-color 0.2s;
+    cursor: pointer;
+}
+
+.reminder-item:hover {
+    background-color: rgba(0, 0, 0, 0.02);
+}
+
+/* Calendar Nav */
+.calendar-nav-btn {
+    transition: all 0.2s ease;
+}
+
+.calendar-nav-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Current day highlight */
+.current-month-title {
+    font-weight: 600;
+    color: #0d6efd;
+}
+
+/*--------------------*/
+/* 5.10 Vaccine Card  */
+/*--------------------*/
+
+/* Vaccine card styling */
+.vaccine-stat {
+    border-radius: 0.5rem;
+    transition: transform 0.2s;
+}
+
+.vaccine-stat:hover {
+    transform: translateY(-3px);
+}
+
+.vaccine-card {
+    transition: all 0.2s ease;
+}
+
+.vaccine-card:hover {
+    transform: translateX(5px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1) !important;
+}
+
+.vaccine-row {
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.vaccine-row:hover {
+    background-color: rgba(0, 0, 0, 0.03);
+}
+
+/* Vaccine filter buttons */
+.filter-button {
+    transition: all 0.2s;
+}
+
+.filter-button:hover {
+    transform: translateY(-2px);
+}
+
+.filter-button.active {
+    font-weight: 500;
+}
+
+/* Vaccine form */
+.vaccine-form-container {
+    border-radius: 0.75rem;
+}
+
+/* Empty state */
+.empty-state {
+    padding: 2rem 1rem;
+}
+
+.empty-state i {
+    font-size: 2.5rem;
+    opacity: 0.6;
+    margin-bottom: 1rem;
+    color: #6c757d;
+}
+
+/* ****************** */
+/* Milestones Styles */
+/* ****************** */
+
+.milestone-timeline {
+    position: relative;
+    padding: 10px 0;
+}
+
+.timeline-container {
+    position: relative;
+}
+
+.timeline-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 15px;
+    width: 2px;
+    background-color: #e0e0e0;
+}
+
+.timeline-item {
+    position: relative;
+    padding-left: 40px;
+    margin-bottom: 20px;
+}
+
+.timeline-marker {
+    position: absolute;
+    left: 7px;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    top: 15px;
+    border: 2px solid #fff;
+    box-shadow: 0 0 0 3px rgba(0,0,0,0.1);
+}
+
+.timeline-marker.bg-success {
+    background-color: #28a745;
+}
+
+.timeline-marker.bg-warning {
+    background-color: #ffc107;
+}
+
+.timeline-content {
+    padding-bottom: 10px;
+}
+
+/* Mobile optimization */
+@media (max-width: 767.98px) {
+    .timeline-item {
+        padding-left: 30px;
+    }
+    .timeline-container::before {
+        left: 10px;
+    }
+    .timeline-marker {
+        left: 2px;
+    }
 }
 
 /*====================*/

@@ -66,6 +66,7 @@ THIRD_PARTY_APPS = [
     'rest_framework.authtoken',
     'whitenoise.runserver_nostatic',
     'rosetta',
+    'widget_tweaks',
 ]
     
 PROJECT_APPS = [

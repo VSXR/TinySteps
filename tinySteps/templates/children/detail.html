@@ -1,37 +1,21 @@
 {% extends 'base.html' %} 
 {% load static %} 
 {% load i18n %} 
-{% block title %}{{ child.name }} - {% trans "TINY STEPS" %}{% endblock %} 
+{% block title %}{{ child.name }} - {% trans "Tiny Steps" %}{% endblock %} 
 
 {% block main_contents %}
 <main id="main-content">
     <div class="container mt-4 mb-5">
-        <!-- Child Profile Header -->
-        <div class="row mb-4">
-            <div class="col">
-                <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item">
-                            <a href="{% url 'your_children' %}">{% trans "Your Children" %}</a>
-                        </li>
-                        <li class="breadcrumb-item active" aria-current="page">
-                            {{ child.name }}
-                        </li>
-                    </ol>
-                </nav>
-                <h1 id="page-heading">{{ child.name }}</h1>
-                <p class="lead text-center" id="page-description">
-                    {% trans "Child profile and development information" %}
-                </p>
-            </div>
-        </div>
-
+        <!-- Breadcrumbs and Page Header -->
+        {% include "children/components/child_breadcrumbs.html" with child=child is_detail=True %}
+        {% include "children/components/page_header.html" with title=child.name subtitle=_("Child profile and development information") %}
+        
         <!-- Messages Container -->
         <div class="row">
             <div class="col">
                 <div id="messages-container" class="messages mb-3" role="alert" aria-live="polite">
                     {% if messages %} 
-                    {% include 'partials/messages.html' %} 
+                        {% include 'partials/messages.html' %} 
                     {% endif %}
                 </div>
             </div>
@@ -40,42 +24,53 @@
         <!-- Child Information Card -->
         <div class="row mb-4">
             <div class="col-lg-4">
-                <div class="card shadow-sm h-100">
-                    <div class="card-body text-center">
-                        <div class="mb-3">
-                            <img src="{{ child.get_image }}" alt="{{ child.name }}" class="rounded-circle img-thumbnail" loading="lazy" style="width: 150px; height: 150px; object-fit: cover" />
+                <div class="card border-0 shadow-sm rounded-4 h-100">
+                    <div class="card-body text-center p-4">
+                        <div class="position-relative d-inline-block mb-4">
+                            <img src="{{ child.get_image }}" alt="{{ child.name }}" 
+                                 class="rounded-circle border border-4 border-light shadow" 
+                                 loading="lazy" 
+                                 style="width: 170px; height: 170px; object-fit: cover" />
+                            
+                            {% if child.gender == 'male' %}
+                                <span class="position-absolute bottom-0 end-0 translate-middle badge rounded-pill bg-info p-2 border border-2 border-white">
+                                    <i class="fa-solid fa-mars fa-lg" aria-hidden="true"></i>
+                                    <span class="visually-hidden">{% trans "Male" %}</span>
+                                </span>
+                            {% elif child.gender == 'female' %}
+                                <span class="position-absolute bottom-0 end-0 translate-middle badge rounded-pill bg-danger p-2 border border-2 border-white">
+                                    <i class="fa-solid fa-venus fa-lg" aria-hidden="true"></i>
+                                    <span class="visually-hidden">{% trans "Female" %}</span>
+                                </span>
+                            {% endif %}
                         </div>
 
-                        <h2 class="fs-4">
+                        <h2 class="fs-3 fw-bold text-primary mb-2">
                             {{ child.name }} {% if child.second_name %}{{ child.second_name }}{% endif %}
                         </h2>
-                        <p class="mb-1">
-                          <span class="badge bg-primary">
-                            {% blocktrans with age=child.age %}{{ age }} months{% endblocktrans %}
-                          </span>
-                          
-                          {% if child.gender == 'male' %}
-                            <span class="badge bg-info">{{ child.gender|title }}</span>
-                          {% elif child.gender == 'female' %}
-                            <span class="badge bg-danger">{{ child.gender|title }}</span>
-                          {% else %}
-                            <span class="badge bg-secondary">{{ child.gender|title }}</span>
-                          {% endif %}
-                        </p>
-                        <p class="text-muted">
+                        
+                        <div class="d-flex justify-content-center gap-2 mb-3">
+                            <span class="badge bg-primary rounded-pill px-3 py-2">
+                                <i class="fa-solid fa-cake-candles me-1" aria-hidden="true"></i>
+                                {% blocktrans with age=child.age %}{{ age }} months{% endblocktrans %}
+                            </span>
+                        </div>
+                        
+                        <p class="text-muted mb-4">
+                            <i class="fa-solid fa-calendar-day me-1" aria-hidden="true"></i>
                             {% blocktrans with date=child.birth_date|date:"F j, Y" %}Born on {{ date }}{% endblocktrans %}
                         </p>
 
                         <!-- Quick Actions -->
-                        <div class="d-grid gap-2 mt-3">
-                            <a href="{% url 'edit_child' child.id %}" class="btn btn-outline-primary btn-sm">
-                                <i class="fa-solid fa-pen-to-square" aria-hidden="true"></i> {% trans "Edit Profile" %}
+                        <div class="d-grid gap-2 mt-4">
+                            <a href="{% url 'edit_child' child.id %}" class="btn btn-outline-primary rounded-pill">
+                                <i class="fa-solid fa-pen-to-square me-2" aria-hidden="true"></i> {% trans "Edit Profile" %}
                             </a>
-                            <a href="{% url 'child_calendar' child.id %}" class="btn btn-outline-info btn-sm">
-                                <i class="fa-solid fa-calendar" aria-hidden="true"></i> {% trans "View Calendar" %}
+                            <a href="{% url 'child_calendar' child.id %}" class="btn btn-outline-info rounded-pill">
+                                <i class="fa-solid fa-calendar me-2" aria-hidden="true"></i> {% trans "View Calendar" %}
                             </a>
-                            <a href="{% url 'child_vaccine_card' child.id %}" class="btn btn-outline-success btn-sm">
-                                <i class="fa-solid fa-syringe" aria-hidden="true"></i> {% trans "Vaccine Card" %}
+                            <a href="{% url 'child_vaccine_card' child.id %}" class="btn btn-outline-success rounded-pill">
+                                <i class="fa-solid fa-syringe me-2" aria-hidden="true"></i> {% trans "Vaccine Card" %}
                             </a>
                         </div>
                     </div>
@@ -83,55 +78,33 @@
             </div>
 
             <div class="col-lg-8 mt-4 mt-lg-0">
-                <div class="card shadow-sm h-100">
-                    <div class="card-header bg-light">
-                        <h3 class="fs-5 mb-0">{% trans "Details" %}</h3>
+                <div class="card border-0 shadow-sm rounded-4 h-100">
+                    <div class="card-header bg-light border-0 pt-3">
+                        <h3 class="fs-5 mb-0 d-flex align-items-center">
+                            <i class="fa-solid fa-circle-info text-primary me-2" aria-hidden="true"></i>
+                            {% trans "Details" %}
+                        </h3>
                     </div>
+                    
+                    <!-- Child Stats Component -->
+                    {% include "children/components/child_stats.html" with child=child %}
+
                     <div class="card-body">
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <h4 class="fs-6">{% trans "Physical Measurements" %}</h4>
-                                <ul class="list-group list-group-flush">
-                                    {% if child.weight %}
-                                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                                            <span>{% trans "Weight" %}</span>
-                                            <span>{% blocktrans with weight=child.weight %}{{ weight }} kg{% endblocktrans %}</span>
-                                        </li>
-                                    {% endif %} 
-                                    
-                                    {% if child.height %}
-                                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                                            <span>{% trans "Height" %}</span>
-                                            <span>{% blocktrans with height=child.height %}{{ height }} cm{% endblocktrans %}</span>
-                                        </li>
-                                    {% endif %}
-                                </ul>
-                            </div>
-
-                            <div class="col-md-6 mt-3 mt-md-0">
-                                <h4 class="fs-6">{% trans "Growth Status" %}</h4>
-                                <div class="alert alert-info">
-                                    <i class="fa-solid fa-chart-line" aria-hidden="true"></i>
-                                    {% if child.weight and child.height %}
-                                        {% trans "View growth charts for more information" %}
-                                    {% else %}
-                                        {% trans "Add weight and height to track growth" %}
-                                    {% endif %}
-                                </div>
-                            </div>
-                        </div>
-
                         <div class="mt-4">
-                            <h4 class="fs-6">
+                            <h4 class="fs-6 d-flex align-items-center mb-3">
+                                <i class="fa-solid fa-book text-primary me-2" aria-hidden="true"></i>
                                 {% blocktrans with name=child.name %}About {{ name }}{% endblocktrans %}
                             </h4>
-                            <div class="card">
+                            <div class="card border-0 shadow-sm bg-light bg-opacity-50 rounded-3">
                                 <div class="card-body">
                                     {% if child.desc %}
-                                        <p>{{ child.desc }}</p>
+                                        <p class="mb-0">{{ child.desc }}</p>
                                     {% else %}
-                                        <p class="text-muted fst-italic">
+                                        <p class="text-muted fst-italic mb-0">
                                             {% trans "No description added yet." %}
+                                            <a href="{% url 'edit_child' child.id %}" class="ms-1 text-decoration-none">
+                                                {% trans "Add one now" %}
+                                            </a>
                                         </p>
                                     {% endif %}
                                 </div>
@@ -139,38 +112,22 @@
                         </div>
 
                         <div class="mt-4">
-                            <h4 class="fs-6">{% trans "Recent Milestones" %}</h4>
-                            <div class="card">
-                                <div class="card-body">
-                                    {% if child.milestone_set.all %}
-                                        <ul class="list-group list-group-flush">
-                                            {% for milestone in child.milestone_set.all|dictsortreversed:"date_achieved"|slice:":3" %}
-                                                <li class="list-group-item">
-                                                    <div class="d-flex justify-content-between align-items-center">
-                                                        <span>{{ milestone.title }}</span>
-                                                        <span class="badge bg-success">{{ milestone.date_achieved|date:"M d, Y" }}</span>
-                                                    </div>
-                                                    {% if milestone.description %}
-                                                        <small class="text-muted">{{ milestone.description|truncatechars:60 }}</small>
-                                                    {% endif %}
-                                                </li>
-                                            {% endfor %}
-                                        </ul>
-                                        <div class="text-center mt-2">
-                                            <a href="#" class="btn btn-sm btn-outline-primary">{% trans "View All Milestones" %}</a>
-                                        </div>
-                                    {% else %}
-                                        <p class="text-muted fst-italic text-center">
-                                            {% trans "No milestones recorded yet!" %}
-                                        </p>
-                                        <div class="text-center">
-                                            <a href="#" class="btn btn-sm btn-outline-success">
-                                                <i class="fa-solid fa-plus"></i> {% trans "Add First Milestone" %}
-                                            </a>
-                                        </div>
-                                    {% endif %}
+                            <h4 class="fs-6 d-flex align-items-center mb-3">
+                                <i class="fa-solid fa-flag text-warning me-2" aria-hidden="true"></i>
+                                {% trans "Recent Milestones" %}
+                            </h4>
+                            
+                            <!-- Child Milestone Component -->
+                            {% include "children/components/child_milestone.html" with milestones=child.milestone_set.all|dictsortreversed:"date_achieved"|slice:":3" show_actions=False show_add_button=True %}
+                                
+                            {% if child.milestone_set.all %}
+                                <div class="text-center mt-3">
+                                    <a href="#" class="btn btn-sm btn-outline-primary rounded-pill px-4">
+                                        <i class="fa-solid fa-list me-1" aria-hidden="true"></i>
+                                        {% trans "View All Milestones" %}
+                                    </a>
                                 </div>
-                            </div>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
@@ -181,28 +138,28 @@
         <div class="row mb-4">
             <div class="col-12">
                 <div class="d-flex justify-content-between">
-                    <a href="{% url 'your_children' %}" class="btn btn-outline-secondary">
-                        <i class="fa-solid fa-arrow-left" aria-hidden="true"></i> {% trans "Back to Children" %}
+                    <a href="{% url 'your_children' %}" class="btn btn-outline-secondary rounded-pill px-4">
+                        <i class="fa-solid fa-arrow-left me-2" aria-hidden="true"></i> {% trans "Back to Children" %}
                     </a>
                     <div class="dropdown">
-                        <button class="btn btn-primary dropdown-toggle" type="button" id="moreActions" data-bs-toggle="dropdown" aria-expanded="false">
-                            {% trans "More Actions" %}
+                        <button class="btn btn-primary rounded-pill px-4 dropdown-toggle" type="button" id="moreActions" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fa-solid fa-ellipsis me-2" aria-hidden="true"></i> {% trans "More Actions" %}
                         </button>
-                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="moreActions">
+                        <ul class="dropdown-menu dropdown-menu-end shadow-sm" aria-labelledby="moreActions">
                             <li>
-                                <a class="dropdown-item" href="#">
-                                    <i class="fa-solid fa-flag" aria-hidden="true"></i> {% trans "Add Milestone" %}
+                                <a class="dropdown-item d-flex align-items-center" href="#">
+                                    <i class="fa-solid fa-flag me-2 text-warning" aria-hidden="true"></i> {% trans "Add Milestone" %}
                                 </a>
                             </li>
                             <li>
-                                <a class="dropdown-item" href="#">
-                                    <i class="fa-solid fa-chart-bar" aria-hidden="true"></i> {% trans "Growth Chart" %}
+                                <a class="dropdown-item d-flex align-items-center" href="#">
+                                    <i class="fa-solid fa-chart-bar me-2 text-primary" aria-hidden="true"></i> {% trans "Growth Chart" %}
                                 </a>
                             </li>
                             <li><hr class="dropdown-divider" /></li>
                             <li>
-                                <a class="dropdown-item text-danger" href="{% url 'delete_child' child.id %}">
-                                    <i class="fa-solid fa-trash" aria-hidden="true"></i> {% trans "Delete Profile" %}
+                                <a class="dropdown-item d-flex align-items-center text-danger" href="{% url 'delete_child' child.id %}">
+                                    <i class="fa-solid fa-trash me-2" aria-hidden="true"></i> {% trans "Delete Profile" %}
                                 </a>
                             </li>
                         </ul>
@@ -213,36 +170,45 @@
 
         <!-- Helpful Resources Section -->
         <section aria-labelledby="helpful-resources-heading" class="mt-5">
-            <h3 id="helpful-resources-heading" class="text-center">
-                {% blocktrans with age=child.age %}Resources for {{ age }} Month Old{% endblocktrans %}
-            </h3>
-            <div class="card mb-4">
-                <div class="card-body">
-                    <p class="text-center">
+            <div class="card border-0 shadow-sm rounded-4 bg-light bg-opacity-50">
+                <div class="card-body p-4">
+                    <h3 id="helpful-resources-heading" class="text-center fs-4 mb-4 text-primary">
+                        <i class="fa-solid fa-lightbulb me-2" aria-hidden="true"></i>
+                        {% blocktrans with age=child.age %}Resources for {{ age }} Month Old{% endblocktrans %}
+                    </h3>
+                    
+                    <p class="lead text-center text-muted mb-4">
                         {% trans "Based on your child's age, these resources might be helpful:" %}
                     </p>
-                    <div class="row justify-content-center">
-                        <div class="col-md-6 col-lg-5 mb-3">
-                            <div class="card border-primary h-100">
-                                <div class="card-body text-center">
-                                    <h4 class="fs-6">{% trans "Nutrition" %}</h4>
-                                    <p>
+                    
+                    <div class="row justify-content-center g-4">
+                        <div class="col-md-6 col-lg-5">
+                            <div class="card border-0 shadow-sm h-100 rounded-4 resource-card">
+                                <div class="card-body text-center p-4">
+                                    <div class="mb-3">
+                                        <i class="fa-solid fa-apple-whole fa-2x text-primary" aria-hidden="true"></i>
+                                    </div>
+                                    <h4 class="fs-5 mb-3">{% trans "Nutrition" %}</h4>
+                                    <p class="text-muted mb-4">
                                         {% trans "Find age-appropriate nutrition guidelines for your child." %}
                                     </p>
-                                    <a href="{% url 'nutrition_guides' %}" class="btn btn-sm btn-outline-primary">
+                                    <a href="{% url 'nutrition_guides' %}" class="btn btn-outline-primary rounded-pill px-4">
                                         {% trans "View Nutrition Guides" %}
                                     </a>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-6 col-lg-5 mb-3">
-                            <div class="card border-success h-100">
-                                <div class="card-body text-center">
-                                    <h4 class="fs-6">{% trans "Development" %}</h4>
-                                    <p>
+                        <div class="col-md-6 col-lg-5">
+                            <div class="card border-0 shadow-sm h-100 rounded-4 resource-card">
+                                <div class="card-body text-center p-4">
+                                    <div class="mb-3">
+                                        <i class="fa-solid fa-brain fa-2x text-success" aria-hidden="true"></i>
+                                    </div>
+                                    <h4 class="fs-5 mb-3">{% trans "Development" %}</h4>
+                                    <p class="text-muted mb-4">
                                         {% blocktrans with age=child.age %}Learn about developmental milestones for {{ age }} month olds.{% endblocktrans %}
                                     </p>
-                                    <a href="{% url 'parent_guides' %}" class="btn btn-sm btn-outline-success">
+                                    <a href="{% url 'parent_guides' %}" class="btn btn-outline-success rounded-pill px-4">
                                         {% trans "View Development Guides" %}
                                     </a>
                                 </div>

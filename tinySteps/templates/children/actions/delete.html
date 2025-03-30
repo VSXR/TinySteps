@@ -2,25 +2,23 @@
 {% load static %}
 {% load i18n %}
 
-{% block title %}{% trans "Delete Child - TINY STEPS" %}{% endblock %}
+{% block title %}{% trans "Delete Child - Tiny Steps" %}{% endblock %}
 
 {% block main_contents %}
     <main id="main-content">
-        <div class="container mt-4 mb-5">
-            <div class="row mb-4">
-                <div class="col">
-                    <h1 id="page-heading">{% trans "Delete Child Profile" %}</h1>
-                    <p class="lead text-center text-danger" id="page-description">
-                        <i class="fa-solid fa-exclamation-triangle" aria-hidden="true"></i> 
-                        {% trans "This action cannot be undone" %}
-                    </p>
-                </div>
+        <div class="container mt-2 mb-3">
+            <!-- Breadcrumbs and Page Header (with reduced margins) -->
+            {% include "children/components/child_breadcrumbs.html" with child=yourchild_model feature_type="delete" %}
+            
+            <!-- Reduced vertical space by removing subtitle and making title more compact -->
+            <div class="text-center mb-2">
+                <h1 class="fs-2 fw-bold">{% trans "Delete Child Profile" %}</h1>
             </div>
 
-            <!-- Messages Container -->
-            <div class="row">
-                <div class="col">
-                    <div id="messages-container" class="messages mb-3" role="alert" aria-live="polite">
+            <!-- Messages Container - reduced margin -->
+            <div class="row justify-content-center mb-1">
+                <div class="col-md-8 col-lg-6">
+                    <div id="messages-container" class="messages mb-1" role="alert" aria-live="polite">
                         {% if messages %}
                             {% include 'partials/messages.html' %}
                         {% endif %}
@@ -28,84 +26,45 @@
                 </div>
             </div>
 
-            <!-- Your Children List -->
-            {% if children %}
-            <div class="row mb-4">
-                <div class="col-12">
-                    <div class="card shadow-sm">
-                        <div class="card-header bg-light">
-                            <h3 class="card-title fs-5 mb-0">{% trans "Your Children" %}</h3>
-                        </div>
-                        <div class="card-body">
-                            <div class="row">
-                                {% for child_item in children %}
-                                <div class="col-md-6 col-lg-4 mb-3">
-                                    <div class="d-flex align-items-center {% if child_item.id == yourchild_model.id %}bg-light rounded p-2{% endif %}">
-                                        <div class="flex-shrink-0 me-2">
-                                            <img src="{{ child_item.image_url }}" alt="{{ child_item.name }}" 
-                                                class="rounded-circle" loading="lazy" width="40" height="40" style="object-fit: cover;">
-                                        </div>
-                                        <div>
-                                            <h4 class="fs-6 mb-0">
-                                                <a href="{% url 'child_details' child_item.id %}" class="text-decoration-none">
-                                                    {{ child_item.name }}
-                                                </a>
-                                                {% if child_item.id == yourchild_model.id %}
-                                                <span class="badge bg-danger">{% trans "Deleting" %}</span>
-                                                {% endif %}
-                                            </h4>
-                                            <span class="badge bg-primary">{% blocktrans with age=child_item.age %}{{ age }} months{% endblocktrans %}</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                {% endfor %}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            {% endif %}
-
             <div class="row justify-content-center">
                 <div class="col-md-8 col-lg-6">
                     <div class="card shadow-sm border-danger">
-                        <div class="card-header bg-danger text-white">
+                        <div class="card-header bg-danger text-white text-center py-2">
                             <h2 class="card-title fs-5 mb-0">{% trans "Confirm Deletion" %}</h2>
                         </div>
-                        <div class="card-body">
-                            <div class="d-flex align-items-center mb-4">
-                                <div class="flex-shrink-0 me-3">
-                                    <img src="{{ yourchild_model.image_url }}" alt="{{ yourchild_model.name }}" 
-                                         class="rounded-circle" loading="lazy" style="width: 64px; height: 64px; object-fit: cover;">
-                                </div>
+                        <div class="card-body py-2">
+                            <div class="d-flex align-items-center justify-content-center mb-2">
+                                <img src="{{ yourchild_model.image_url }}" alt="{{ yourchild_model.name }}" 
+                                    class="rounded-circle me-3" loading="lazy" style="width: 60px; height: 60px; object-fit: cover;">
                                 <div>
                                     <h3 class="fs-5 mb-0">{{ yourchild_model.name }}</h3>
                                     <p class="text-muted small mb-0">{% blocktrans with age=yourchild_model.age %}{{ age }} months old{% endblocktrans %}</p>
                                 </div>
                             </div>
                             
-                            <div class="alert alert-warning" role="alert">
-                                <h4 class="alert-heading fs-6">{% trans "Warning!" %}</h4>
-                                <p>{% blocktrans with name=yourchild_model.name %}You are about to permanently delete {{ name }}'s profile and all associated data including:{% endblocktrans %}</p>
-                                <ul>
+                            <div class="alert alert-warning py-2 mb-2" role="alert">
+                                <h4 class="alert-heading fs-6 mb-1">{% trans "Warning!" %}</h4>
+                                <p class="mb-1 small">{% blocktrans with name=yourchild_model.name %}You are about to permanently delete {{ name }}'s profile and all associated data including:{% endblocktrans %}</p>
+                                <ul class="mb-1 small">
                                     <li>{% trans "All milestone records" %}</li>
                                     <li>{% trans "Calendar events" %}</li>
                                     <li>{% trans "Vaccination records" %}</li>
                                 </ul>
-                                <p class="mb-0">{% trans "This action cannot be reversed." %}</p>
+                                <p class="mb-0 small fw-bold">{% trans "This action cannot be reversed." %}</p>
                             </div>
                             
                             <form method="post" aria-labelledby="delete-form-heading">
                                 <h2 id="delete-form-heading" class="visually-hidden">{% trans "Delete child confirmation form" %}</h2>
                                 {% csrf_token %}
                                 
-                                <div class="d-flex justify-content-between mt-4">
-                                    <a href="{% url 'your_children' %}" class="btn btn-outline-secondary" 
+                                <div class="d-flex justify-content-center gap-3 mt-2">
+                                    <a href="{% url 'your_children' %}" class="btn btn-outline-secondary rounded-pill" 
                                        aria-label="{% trans 'Cancel deletion and return to your children page' %}">
                                         {% trans "Cancel" %}
                                     </a>
-                                    <button type="submit" class="btn btn-danger" 
+                                    <button type="submit" class="btn btn-danger rounded-pill" 
                                             aria-label="{% blocktrans with name=yourchild_model.name %}Permanently delete {{ name }}'s profile{% endblocktrans %}">
+                                        <i class="fa-solid fa-trash-alt me-1" aria-hidden="true"></i>
                                         {% trans "Delete Permanently" %}
                                     </button>
                                 </div>
@@ -114,6 +73,55 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Your Children List -->
+            {% if children %}
+            <div class="row justify-content-center mt-4">
+                <div class="col-md-8 col-lg-6">
+                    <div class="card shadow-sm">
+                        <div class="card-header bg-primary text-white py-2">
+                            <h3 class="card-title fs-5 mb-0 text-center">{% trans "Your Children" %}</h3>
+                        </div>
+                        <div class="card-body p-3">
+                            <div class="row g-3">
+                                {% for child_item in children %}
+                                <div class="col-md-6">
+                                    <div class="d-flex align-items-center p-2 rounded border {% if child_item.id == yourchild_model.id %}border-danger bg-light{% else %}border-light{% endif %} h-100">
+                                        <img src="{{ child_item.image_url }}" alt="{{ child_item.name }}" 
+                                            class="rounded-circle me-3" loading="lazy" width="50" height="50" style="object-fit: cover; border: 2px solid {% if child_item.id == yourchild_model.id %}#dc3545{% else %}#6c757d{% endif %};">
+                                        <div>
+                                            <h4 class="fs-6 mb-1 d-flex align-items-center">
+                                                <a href="{% url 'child_details' child_item.id %}" class="text-decoration-none {% if child_item.id == yourchild_model.id %}text-danger fw-bold{% endif %}">
+                                                    {{ child_item.name }}
+                                                </a>
+                                                {% if child_item.id == yourchild_model.id %}
+                                                <span class="badge bg-danger ms-2 animate__animated animate__pulse animate__infinite">{% trans "Deleting" %}</span>
+                                                {% endif %}
+                                            </h4>
+                                            <div class="d-flex flex-wrap gap-1">
+                                                <span class="badge bg-primary">{% blocktrans with age=child_item.age %}{{ age }} months{% endblocktrans %}</span>
+                                                {% if child_item.gender %}
+                                                <span class="badge {% if child_item.gender == 'M' %}bg-info{% else %}bg-pink{% endif %}">
+                                                    {{ child_item.get_gender_display }}
+                                                </span>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                            
+                            <div class="text-center mt-3">
+                                <a href="{% url 'your_children' %}" class="btn btn-sm btn-outline-primary">
+                                    <i class="bi bi-grid-3x3-gap-fill me-1"></i>{% trans "View All Children" %}
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
         </div>
     </main>
 {% endblock main_contents %}

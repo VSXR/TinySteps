@@ -1,0 +1,125 @@
+{% load static %}
+{% load i18n %}
+
+<div class="d-flex justify-content-center">
+    <article class="card h-100 border-0 shadow-sm content-lift" data-child-id="{{ child.id }}">
+        <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h4 class="card-title mb-0 text-primary">{{ child.name }}</h4>
+                <span class="badge bg-primary rounded-pill px-3">
+                    {% blocktrans with age=child.age %}
+                        {{ age }} months
+                    {% endblocktrans %}
+                </span>
+            </div>
+            
+            {% if show_image|default:True %}
+            <div class="text-center mb-3">
+                <div class="position-relative d-inline-block">
+                    <img src="{{ child.get_image }}" alt="{{ child.name }}" 
+                         class="rounded-circle border border-3 border-light shadow-sm" width="100" height="100" 
+                         style="object-fit: cover;" loading="lazy">
+                    {% if child.gender == 'M' %}
+                        <span class="position-absolute bottom-0 end-0 translate-middle badge rounded-pill bg-info">
+                            <i class="fa-solid fa-mars" aria-hidden="true"></i>
+                            <span class="visually-hidden">{% trans "Male" %}</span>
+                        </span>
+                    {% elif child.gender == 'F' %}
+                        <span class="position-absolute bottom-0 end-0 translate-middle badge rounded-pill bg-danger">
+                            <i class="fa-solid fa-venus" aria-hidden="true"></i>
+                            <span class="visually-hidden">{% trans "Female" %}</span>
+                        </span>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+            
+            {% if show_description|default:True %}
+            <p class="card-text text-muted small">{{ child.desc|truncatechars:100 }}</p>
+            {% endif %}
+            
+            <div class="mt-3">
+                <p class="mb-1 d-flex align-items-center">
+                    <strong class="me-2">{% trans "Gender:" %}</strong> 
+                    {% if child.gender == 'M' %}
+                        <span class="text-info">{% trans "Male" %}</span>
+                    {% elif child.gender == 'F' %}
+                        <span class="text-danger">{% trans "Female" %}</span>
+                    {% endif %}
+                </p>
+                <p class="mb-1 d-flex align-items-center">
+                    <strong class="me-2">{% trans "Date of Birth:" %}</strong>
+                    <span class="text-muted">{{ child.birth_date|date:"d M Y" }}</span>
+                </p>
+                                
+                {% if show_status|default:True %}
+                <div class="mt-3 d-flex justify-content-between">
+                    <div>
+                        <span class="badge {% if child.vaccine_status %}bg-success{% else %}bg-warning{% endif %} rounded-pill px-2 me-1">
+                            <i class="fa-solid fa-syringe me-1" aria-hidden="true"></i>
+                            {% if child.vaccine_status %}{% trans "Vaccines up to date" %}{% else %}{% trans "Vaccines pending" %}{% endif %}
+                        </span>
+                    </div>
+                    <div>
+                        <span class="badge bg-info rounded-pill px-2">
+                            <i class="fa-solid fa-calendar-check me-1" aria-hidden="true"></i>
+                            {{ child.upcoming_events|default:"0" }}
+                        </span>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+            
+            <div class="mt-3 d-flex justify-content-between align-items-center">
+                <a href="{% url 'child_detail' child.id %}" class="btn btn-primary rounded-pill px-3" aria-label="{% blocktrans with name=child.name %}View {{ name }}'s profile{% endblocktrans %}">
+                    <i class="fa-solid fa-child fa-fw me-1" aria-hidden="true"></i>
+                    {% trans "Profile" %}
+                </a>
+                <div class="dropdown">
+                    <!-- Options button with circular border -->
+                    <button class="btn-options-menu rounded-circle border border-light shadow-sm" 
+                            type="button" 
+                            id="dropdownMenuButton-{{ child.id }}" 
+                            data-bs-toggle="dropdown" 
+                            aria-expanded="false"
+                            aria-label="{% trans 'More options' %}">
+                        <i class="fa-solid fa-ellipsis-vertical" aria-hidden="true"></i>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0" aria-labelledby="dropdownMenuButton-{{ child.id }}">
+                        <li>
+                            <a class="dropdown-item d-flex align-items-center" href="{% url 'edit_child' child.id %}">
+                                <i class="fa-solid fa-pen-to-square fa-fw me-2 text-primary" aria-hidden="true"></i>
+                                {% trans "Edit Profile" %}
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item d-flex align-items-center" href="{% url 'child_calendar' child.id %}">
+                                <i class="fa-solid fa-calendar-days fa-fw me-2 text-success" aria-hidden="true"></i>
+                                {% trans "Calendar" %}
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item d-flex align-items-center" href="{% url 'child_vaccine_card' child.id %}">
+                                <i class="fa-solid fa-syringe fa-fw me-2 text-warning" aria-hidden="true"></i>
+                                {% trans "Vaccines" %}
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item d-flex align-items-center" href="{% url 'child_milestones' child.id %}">
+                                <i class="fa-solid fa-flag fa-fw me-2 text-info" aria-hidden="true"></i>
+                                {% trans "Milestones" %}
+                            </a>
+                        </li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <a class="dropdown-item d-flex align-items-center text-danger" href="{% url 'delete_child' child.id %}">
+                                <i class="fa-solid fa-trash-alt fa-fw me-2" aria-hidden="true"></i>
+                                {% trans "Delete" %}
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </article>
+</div>

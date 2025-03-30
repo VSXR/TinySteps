@@ -3,17 +3,15 @@
 {% load crispy_forms_tags %}
 {% load i18n %}
 
-{% block title %}{% trans "Add Child - TINY STEPS" %}{% endblock %}
+{% block title %}{% trans "Add Child - Tiny Steps" %}{% endblock %}
 
 {% block main_contents %}
     <main id="main-content">
         <div class="container mt-4 mb-5">
-            <div class="row mb-4">
-                <div class="col">
-                    <h1 id="page-heading">{% trans "Add New Child" %}</h1>
-                    <p class="lead text-center" id="page-description">{% trans "Enter your child's information below to set up their profile" %}</p>
-                </div>
-            </div>
+            <!-- Breadcrumbs and Page Header -->
+            {% include "children/components/child_breadcrumbs.html" with action_type="add" %}
+            
+            {% include "children/components/page_header.html" with title=_("Add New Child") subtitle=_("Enter your child's information below to set up their profile") %}
 
             <!-- Messages Container -->
             <div class="row">

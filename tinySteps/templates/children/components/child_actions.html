@@ -1,0 +1,43 @@
+{% load i18n %}
+
+<div class="dropdown">
+    <button class="btn btn-sm btn-outline-secondary rounded-pill dropdown-toggle" type="button" 
+            id="childActions{{ child.id }}" data-bs-toggle="dropdown" 
+            data-bs-auto-close="outside"
+            aria-expanded="false" aria-label="{% blocktrans with name=child.name %}More options for {{ name }}{% endblocktrans %}">
+        <i class="fa-solid fa-ellipsis-vertical me-1" aria-hidden="true"></i> {% trans "Actions" %}
+    </button>
+    <ul class="dropdown-menu dropdown-menu-end shadow-sm border-light" aria-labelledby="childActions{{ child.id }}">
+        <li>
+            <h6 class="dropdown-header">{% trans "Manage Child" %}</h6>
+        </li>
+        <li>
+            <a class="dropdown-item d-flex align-items-center" href="{% url 'edit_child' child.id %}">
+                <i class="fa-solid fa-pen-to-square text-primary me-2" aria-hidden="true"></i> {% trans "Edit" %}
+            </a>
+        </li>
+        <li>
+            <a class="dropdown-item d-flex align-items-center" href="{% url 'child_calendar' child.id %}">
+                <i class="fa-solid fa-calendar text-info me-2" aria-hidden="true"></i> {% trans "Calendar" %}
+            </a>
+        </li>
+        <li>
+            <a class="dropdown-item d-flex align-items-center" href="{% url 'child_vaccine_card' child.id %}">
+                <i class="fa-solid fa-syringe text-success me-2" aria-hidden="true"></i> {% trans "Vaccine Card" %}
+            </a>
+        </li>
+        {% if show_milestones|default:True %}
+        <li>
+            <a class="dropdown-item d-flex align-items-center" href="#">
+                <i class="fa-solid fa-flag text-warning me-2" aria-hidden="true"></i> {% trans "Milestones" %}
+            </a>
+        </li>
+        {% endif %}
+        <li><hr class="dropdown-divider"></li>
+        <li>
+            <a class="dropdown-item d-flex align-items-center text-danger" href="{% url 'delete_child' child.id %}">
+                <i class="fa-solid fa-trash me-2" aria-hidden="true"></i> {% trans "Delete" %}
+            </a>
+        </li>
+    </ul>
+</div>

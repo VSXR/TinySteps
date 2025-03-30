@@ -1,0 +1,56 @@
+{% load i18n %}
+
+<nav aria-label="{% trans 'Breadcrumb navigation' %}" class="py-2 mb-3 d-none d-md-block">
+    <ol class="breadcrumb bg-light py-2 px-3 rounded-pill shadow-sm mb-0">
+        <li class="breadcrumb-item">
+            <a href="{% url 'index' %}" class="text-decoration-none d-flex align-items-center">
+                <i class="fa-solid fa-house-chimney me-1" aria-hidden="true"></i>
+                <span>{% trans "Home" %}</span>
+            </a>
+        </li>
+        <li class="breadcrumb-item">
+            <a href="{% url 'your_children' %}" class="text-decoration-none d-flex align-items-center">
+                <i class="fa-solid fa-child me-1" aria-hidden="true"></i>
+                <span>{% trans "Your Children" %}</span>
+            </a>
+        </li>
+        
+        {% if child %}
+            {% if is_detail %}
+                <li class="breadcrumb-item active fw-semibold" aria-current="page">
+                    {{ child.name }}
+                </li>
+            {% else %}
+                <li class="breadcrumb-item">
+                    <a href="{% url 'child_detail' child.id %}" class="text-decoration-none">{{ child.name }}</a>
+                </li>
+                
+                {% if feature_type %}
+                    <li class="breadcrumb-item active fw-semibold" aria-current="page">
+                        {% if feature_type == 'calendar' %}
+                            <i class="fa-solid fa-calendar me-1" aria-hidden="true"></i> {% trans "Calendar" %}
+                        {% elif feature_type == 'vaccine' %}
+                            <i class="fa-solid fa-syringe me-1" aria-hidden="true"></i> {% trans "Vaccination Card" %}
+                        {% elif feature_type == 'milestones' %}
+                            <i class="fa-solid fa-flag me-1" aria-hidden="true"></i> {% trans "Milestones" %}
+                        {% elif feature_type == 'edit' %}
+                            <i class="fa-solid fa-pen-to-square me-1" aria-hidden="true"></i> {% trans "Edit" %}
+                        {% elif feature_type == 'delete' %}
+                            <i class="fa-solid fa-trash me-1" aria-hidden="true"></i> {% trans "Delete" %}
+                        {% else %}
+                            {{ feature_type|title }}
+                        {% endif %}
+                    </li>
+                {% endif %}
+            {% endif %}
+        {% elif action_type %}
+            <li class="breadcrumb-item active fw-semibold" aria-current="page">
+                {% if action_type == 'add' %}
+                    <i class="fa-solid fa-plus me-1" aria-hidden="true"></i> {% trans "Add Child" %}
+                {% else %}
+                    {{ action_type|title }}
+                {% endif %}
+            </li>
+        {% endif %}
+    </ol>
+</nav>

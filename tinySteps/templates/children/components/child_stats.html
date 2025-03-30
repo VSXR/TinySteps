@@ -1,0 +1,72 @@
+{% load i18n %}
+
+<div class="card-body border-bottom bg-light bg-opacity-50">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="row">
+                <div class="col-md-6">
+                    <h4 class="fs-6 mb-3 d-flex align-items-center">
+                        <i class="fa-solid fa-weight-scale text-primary me-2" aria-hidden="true"></i>
+                        {% trans "Physical Measurements" %}
+                    </h4>
+                    <ul class="list-group list-group-flush rounded-3 shadow-sm">
+                        {% if child.weight %}
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <span>{% trans "Weight" %}</span>
+                                <span class="badge bg-primary rounded-pill py-2 px-3">
+                                    {% blocktrans with weight=child.weight %}{{ weight }} kg{% endblocktrans %}
+                                </span>
+                            </li>
+                        {% endif %} 
+                        
+                        {% if child.height %}
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <span>{% trans "Height" %}</span>
+                                <span class="badge bg-primary rounded-pill py-2 px-3">
+                                    {% blocktrans with height=child.height %}{{ height }} cm{% endblocktrans %}
+                                </span>
+                            </li>
+                        {% endif %}
+                        
+                        {% if not child.weight and not child.height %}
+                            <li class="list-group-item text-center text-muted fst-italic py-3">
+                                {% trans "No measurements added yet" %}
+                            </li>
+                        {% endif %}
+                    </ul>
+                </div>
+
+                <div class="col-md-6 mt-4 mt-md-0">
+                    <h4 class="fs-6 mb-3 d-flex align-items-center">
+                        <i class="fa-solid fa-chart-line text-success me-2" aria-hidden="true"></i>
+                        {% trans "Growth Status" %}
+                    </h4>
+                    <div class="alert {% if child.weight and child.height %}alert-success{% else %}alert-info{% endif %} shadow-sm rounded-3">
+                        <div class="d-flex">
+                            <div class="flex-shrink-0">
+                                <i class="fa-solid {% if child.weight and child.height %}fa-check-circle{% else %}fa-info-circle{% endif %} mt-1" aria-hidden="true"></i>
+                            </div>
+                            <div class="ms-2">
+                                {% if child.weight and child.height %}
+                                    {% trans "Growth data available. View charts for detailed information." %}
+                                    <div class="mt-2">
+                                        <a href="#" class="btn btn-sm btn-outline-success rounded-pill">
+                                            <i class="fa-solid fa-chart-bar me-1" aria-hidden="true"></i> {% trans "View Charts" %}
+                                        </a>
+                                    </div>
+                                {% else %}
+                                    {% trans "Add weight and height measurements to track growth patterns." %}
+                                    <div class="mt-2">
+                                        <a href="{% url 'edit_child' child.id %}" class="btn btn-sm btn-outline-primary rounded-pill">
+                                            <i class="fa-solid fa-plus me-1" aria-hidden="true"></i> {% trans "Add Measurements" %}
+                                        </a>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
