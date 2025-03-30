@@ -12,15 +12,13 @@ class NutritionGuide_Service(Guide_Service):
     def get_template_path(self, view_type):
         """Get the template path for a specific view type"""
         templates = {
-            'list': 'guides/nutrition/list.html',
-            'detail': 'guides/nutrition/detail.html',
-            'articles': 'guides/nutrition/articles.html',
-            'article_detail': 'guides/nutrition/article_detail.html',
-            'analyzer': 'guides/nutrition/tools/analyzer.html',
-            'comparison': 'guides/nutrition/tools/comparison.html',
-            'history': 'guides/nutrition/tools/history.html',
-            'favorites': 'guides/nutrition/tools/favorites.html',
-            'recipe': 'guides/nutrition/tools/recipe.html',
+            'list': 'guides/display/nutrition_guide_list.html',
+            'detail': 'guides/display/nutrition_guide_detail.html',
+            'analyzer': 'guides/display/tools/analyzer.html',
+            'comparison': 'guides/display/tools/comparison.html',
+            'history': 'guides/display/tools/history.html',
+            'favorites': 'guides/display/tools/favorites.html',
+            'recipe': 'guides/display/tools/recipe.html',
         }
         return templates.get(view_type)
     

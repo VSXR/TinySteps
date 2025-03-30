@@ -43,3 +43,19 @@ def format_age(months):
         return f"{years}y"
     else:
         return f"{months}m"
+
+@register.filter
+@stringfilter
+def split(value, delimiter):
+    """Split the value by the given delimiter."""
+    if value:
+        return value.split(delimiter)
+    return []
+
+@register.filter
+@stringfilter
+def trim(value):
+    """Remove leading and trailing whitespace."""
+    if value:
+        return value.strip()
+    return ""

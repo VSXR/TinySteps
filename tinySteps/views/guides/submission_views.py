@@ -1,88 +1,114 @@
+import os
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.utils.translation import gettext as _
 from django.views import View
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.files.base import ContentFile
+from django.core.files.storage import default_storage
+from django.middleware.csrf import get_token  # Add this import
 
 from tinySteps.forms import GuideSubmission_Form
 from tinySteps.factories import GuideService_Factory
+
 
 class SubmitGuide_View(LoginRequiredMixin, View):
     """Guide submission view"""
     
     def get(self, request, guide_type=None):
         """Handle GET request - show form"""
-        if not guide_type:
-            guide_type = 'parent'
+        guide_type = guide_type or request.GET.get('type', 'parent')
         
-        form = GuideSubmission_Form()
+        valid_types = ['parent', 'nutrition']
+        if guide_type not in valid_types:
+            guide_type = 'parent'
+            
+        form = GuideSubmission_Form(guide_type=guide_type)
+        tag_categories = form.get_tag_categories(guide_type)
+        
+        # Add a unique submission token to the session
+        if 'guide_submit_token' not in request.session:
+            request.session['guide_submit_token'] = get_token(request)
+        
         return render(request, 'guides/submit.html', {
             'form': form,
-            'guide_type': guide_type
+            'guide_type': guide_type,
+            'title': _("Submit Guide"),
+            'tag_categories': tag_categories,
+            'section_type': guide_type,
+            'submit_token': request.session['guide_submit_token']  # Pass token to template
         })
     
     def post(self, request, guide_type=None):
         """Handle POST request - process form"""
-        if not guide_type:
+        # Check if this is a duplicate submission
+        submitted_token = request.POST.get('submit_token')
+        stored_token = request.session.get('guide_submit_token')
+        
+        if not submitted_token or submitted_token != stored_token:
+            messages.error(request, _("Your form may have been submitted twice. Please try again."))
+            return redirect('submit_guide')
+        
+        guide_type = guide_type or request.POST.get('guide_type', 'parent')
+        
+        valid_types = ['parent', 'nutrition']
+        if guide_type not in valid_types:
             guide_type = 'parent'
         
-        form = GuideSubmission_Form(request.POST, request.FILES)
+        form = GuideSubmission_Form(request.POST, request.FILES, guide_type=guide_type)
         if form.is_valid():
-            service = GuideService_Factory.create_service(guide_type)
-            created_guide = service.create_guide_from_form(form, request.user)
-            messages.success(request, _("Your guide has been submitted for review!"))
-            return redirect('my_guides')
-        
-        return render(request, 'guides/submit.html', {
-            'form': form,
-            'guide_type': guide_type
-        })
-
-@login_required
-def submit_guide(request):
-    """Get the guide type from the request and handle the submission
-    The default guide type is parent!
-    """
-    guide_type = request.GET.get('type', 'parent')
-    
-    valid_types = ['parent', 'nutrition']
-    if guide_type not in valid_types:
-        guide_type = 'parent'  # Default to parent if invalid
-    
-    if request.method == 'POST':
-        form = GuideSubmission_Form(request.POST, request.FILES)
-        if form.is_valid():
-            guide = form.save(commit=False)
-            guide.author = request.user
-            guide.guide_type = request.POST.get('guide_type', guide_type)
-            guide.status = 'pending'
-            guide.save()
+            # Generate a new token to prevent resubmission
+            request.session['guide_submit_token'] = get_token(request)
             
+            service = GuideService_Factory.create_service(guide_type)
+            if not form.cleaned_data.get('image'):
+                try:
+                    self._apply_default_image(form, guide_type, request)
+                except Exception as e:
+                    print(f"Error applying default image: {str(e)}")
+                    messages.warning(request, _("There was an issue with the default image. Your guide will be submitted without an image."))
+            
+            created_guide = service.create_guide_from_form(form, request.user)
             tags = form.cleaned_data.get('tags', '')
-            if tags:
-                guide.tags = tags.strip()
-                guide.save()
+            if tags and hasattr(created_guide, 'tags'):
+                created_guide.tags = tags.strip()
+                created_guide.save()
             
             messages.success(request, 
                 _("Your guide has been submitted for review. Thank you for contributing!"))
             
-            # We redirect the user to the newly created guide
-            if guide.guide_type == 'nutrition':
-                return redirect('nutrition_guide_details', guide.id)
+            if created_guide.status == 'approved':
+                return redirect(f'{guide_type}_guide_details', created_guide.id)
             else:
-                return redirect('parent_guide_details', guide.id)
-    else:
-        form = GuideSubmission_Form()
+                return redirect('my_guides')
+        
+        # If form is invalid, generate a new token for the form
+        request.session['guide_submit_token'] = get_token(request)
+        
+        tag_categories = form.get_tag_categories(guide_type)
+        return render(request, 'guides/submit.html', {
+            'form': form,
+            'guide_type': guide_type,
+            'title': _("Submit Guide"),
+            'tag_categories': tag_categories,
+            'section_type': guide_type,
+            'submit_token': request.session['guide_submit_token']  # Pass token to template
+        })
     
-    # Get tag categories for the selected guide type
-    tag_categories = form.get_tag_categories(guide_type)
-    
-    context = {
-        'form': form,
-        'guide_type': guide_type,
-        'title': _("Submit Guide"),
-        'tag_categories': tag_categories
-    }
-    
-    return render(request, 'guides/submit.html', context)
+    def _apply_default_image(self, form, guide_type, request):
+        """Apply default image based on guide type"""
+        base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+        
+        if guide_type == 'nutrition':
+            default_img_path = os.path.join(base_dir, 'static', 'res', 'img', 'others', 'nutrition_guide.jpg')
+        else:
+            default_img_path = os.path.join(base_dir, 'static', 'res', 'img', 'others', 'parent_guide.jpg')
+        
+        if os.path.exists(default_img_path):
+            with open(default_img_path, 'rb') as f:
+                data = f.read()
+            filename = os.path.basename(default_img_path)
+            form.files['image'] = ContentFile(data, name=filename)
+        else:
+            messages.warning(request, _("Default image not found. Your guide will be submitted without an image."))

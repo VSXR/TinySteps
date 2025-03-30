@@ -1,83 +1,60 @@
-import time
 from django.conf import settings
 from django.conf.urls.static import static
-from django.http import HttpResponseNotFound
-from django.urls import path
-from django.db import connections
-from django.http import JsonResponse
+from django.urls import path, include
 
-from tinySteps.views.base import home_views 
+from tinySteps.views.base import home_views
+from tinySteps.views.guides import guide_views, submission_views
+
 from tinySteps.factories import (
     GuideUrl_Factory, CommentUrl_Factory, AuthUrl_Factory, 
     ChildUrl_Factory, ForumUrl_Factory, AdminUrl_Factory,
     ContactUrl_Factory, NutritionUrl_Factory
 )
 
-# -----------------------------------------------
-# -- TESTING VIEWS (FOR DEVELOPMENT)
-# -----------------------------------------------
-def db_connection_test(_request):
-    start_time = time.time()
-    try:
-        # Testing for the database connectivity (error 500 if fails!)
-        with connections['default'].cursor() as cursor:
-            cursor.execute('SELECT 1')
-            result = cursor.fetchone()[0]
-        
-        response_time = time.time() - start_time
-        return JsonResponse({
-            'status': 'success',
-            'message': 'Database connection successful',
-            'response_time': f'{response_time:.4f}s',
-            'result': result
-        })
-    except Exception as e:
-        response_time = time.time() - start_time
-        return JsonResponse({
-            'status': 'error',
-            'message': str(e),
-            'response_time': f'{response_time:.4f}s',
-            'error_type': type(e).__name__,
-        }, status=500)
-
-def favicon_view(_request):
-    return HttpResponseNotFound()
-
-# Main site URLs
+# Main URL patterns
 urlpatterns = [
-    # Home and common pages
+    # Home routes
     path('', home_views.index, name='index'),
     path('about/', home_views.about, name='about'),
-    path('favicon.ico', favicon_view),
-    path('db-test/', db_connection_test, name='db_test'),
     
-    # Auth URLs
+    # Auth routes
     *AuthUrl_Factory.create_urls(),
     
-    # Child management
+    # Children routes
     *ChildUrl_Factory.create_urls(),
     
-    # Guide URLs
+    # Forum routes
+    *ForumUrl_Factory.create_urls(),
+    
+    # Guide routes - primary URLs
+    path('guides/', guide_views.guides_page, name='guides'),
+    path('guides/submit/', submission_views.SubmitGuide_View.as_view(), name='submit_guide'),
+    path('guides/my-guides/', guide_views.my_guides_view, name='my_guides'),
+    
+    # Guide type-specific routes
     *GuideUrl_Factory.create_urls('parent'),
     *GuideUrl_Factory.create_urls('nutrition'),
     
-    # Nutrition specific URLs (beyond guides)
+    # Nutrition tools
     *NutritionUrl_Factory.create_urls(),
     
-    # Forum URLs
-    *ForumUrl_Factory.create_urls(),
-    
-    # Comment system
-    *CommentUrl_Factory.create_urls(),
-    
-    # Admin functionality
+    # Comment routes
+    path('comments/', include((CommentUrl_Factory.create_urls(), 'comments'))),  
+      
+    # Admin routes
     *AdminUrl_Factory.create_urls(),
     
-    # Contact
+    # Contact routes
     *ContactUrl_Factory.create_urls(),
 ]
 
-# Static media for development
+# Media and static files in development
 if settings.DEBUG:
-    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+
+# Error handlers
+handler400 = 'tinySteps.views.base.error_views.custom_error_400'
+handler403 = 'tinySteps.views.base.error_views.custom_error_403'
+handler404 = 'tinySteps.views.base.error_views.custom_error_404'
+handler500 = 'tinySteps.views.base.error_views.custom_error_500'

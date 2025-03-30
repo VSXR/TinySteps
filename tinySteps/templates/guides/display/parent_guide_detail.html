@@ -1,0 +1,57 @@
+{% extends 'guides/base/guide_detail_base.html' %}
+{% load static %}
+{% load i18n %}
+{% load custom_filters %}
+
+{% block type_badge %}
+<span class="badge bg-primary" aria-label="{% trans 'Guide category' %}">
+    {% trans "Parenting" %}
+</span>
+{% if guide.category %}
+<span class="badge bg-light text-dark" aria-label="{% trans 'Guide subcategory' %}">
+    {{ guide.category.name }}
+</span>
+{% endif %}
+{% endblock %}
+
+{% block guide_content %}
+<div class="guide-content mb-4">
+    {{ guide.desc|safe }}
+    
+    {% if guide.tips.all %}
+    <div class="mt-4 mb-3">
+        <h3 class="h5">{% trans "Useful Tips" %}</h3>
+        <div class="card bg-light">
+            <div class="card-body">
+                <ul class="mb-0">
+                {% for tip in guide.tips.all %}
+                    <li>{{ tip.content }}</li>
+                {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    
+    {% if guide.resources.all %}
+    <div class="mt-4">
+        <h3 class="h5">{% trans "Additional Resources" %}</h3>
+        <div class="row g-3">
+            {% for resource in guide.resources.all %}
+            <div class="col-md-6">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h4 class="h6 card-title">{{ resource.title }}</h4>
+                        <p class="card-text small mb-3">{{ resource.description }}</p>
+                        <a href="{{ resource.url }}" class="btn btn-sm btn-outline-primary" target="_blank" rel="noopener">
+                            {% trans "View Resource" %} <i class="bi bi-box-arrow-up-right ms-1" aria-hidden="true"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

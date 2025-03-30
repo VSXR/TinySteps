@@ -3,7 +3,7 @@
 {% load crispy_forms_tags %}
 {% load i18n %}
 
-{% block title %}{% trans "TINY STEPS - REGISTER" %}{% endblock %}
+{% block title %}{% trans "Register - Tiny Steps" %}{% endblock %}
 
 {% block main_contents %}
     <main id="main-content">
@@ -29,18 +29,15 @@
                             </div>
                             {% endif %}
                             
-                            <form method="POST" action="{% url 'register' %}" novalidate aria-labelledby="register-heading">
+                            <form method="post" novalidate class="needs-validation">
                                 {% csrf_token %}
                                 
+                                <!-- Username -->
                                 <div class="mb-3">
-                                    <label for="username" class="form-label fw-bold">{% trans "Username" %}</label>
-                                    <input type="text" class="form-control form-control-lg {% if form.username.errors %}is-invalid{% endif %}" 
-                                           id="username" name="username" required aria-required="true" 
-                                           aria-describedby="username-help" autocomplete="username" 
-                                           value="{{ form.username.value|default:'' }}">
-                                    <div id="username-help" class="form-text">{% trans "Username must be unique" %}</div>
+                                    <label for="{{ form.username.id_for_label }}" class="form-label fw-bold">{{ form.username.label }}</label>
+                                    {{ form.username|add_class:"form-control form-control-lg" }}
                                     {% if form.username.errors %}
-                                        <div class="invalid-feedback" role="alert" aria-live="assertive">
+                                        <div class="invalid-feedback d-block">
                                             {% for error in form.username.errors %}
                                                 {{ error }}
                                             {% endfor %}
@@ -48,15 +45,12 @@
                                     {% endif %}
                                 </div>
                                 
+                                <!-- Email -->
                                 <div class="mb-3">
-                                    <label for="email" class="form-label fw-bold">{% trans "Email" %}</label>
-                                    <input type="email" class="form-control form-control-lg {% if form.email.errors %}is-invalid{% endif %}" 
-                                        id="email" name="email" required aria-required="true"
-                                        aria-describedby="email-help" autocomplete="email" 
-                                        value="{{ form.email.value|default:'' }}">
-                                    <div id="email-help" class="form-text">{% trans "Valid email address required" %}</div>
+                                    <label for="{{ form.email.id_for_label }}" class="form-label fw-bold">{{ form.email.label }}</label>
+                                    {{ form.email|add_class:"form-control form-control-lg" }}
                                     {% if form.email.errors %}
-                                        <div class="invalid-feedback" role="alert" aria-live="assertive">
+                                        <div class="invalid-feedback d-block">
                                             {% for error in form.email.errors %}
                                                 {{ error }}
                                             {% endfor %}
@@ -64,29 +58,54 @@
                                     {% endif %}
                                 </div>
                                 
+                                <!-- First Name -->
                                 <div class="mb-3">
-                                    <label for="password1" class="form-label fw-bold">{% trans "Password" %}</label>
-                                    <input type="password" class="form-control form-control-lg {% if form.password1.errors %}is-invalid{% endif %}" 
-                                           id="password1" name="password1" required aria-required="true" 
-                                           aria-describedby="password1-help" autocomplete="new-password">
-                                    <div id="password1-help" class="form-text">{% trans "Create a strong, secure password" %}</div>
-                                    {% if form.password1.errors %}
-                                        <div class="invalid-feedback" role="alert" aria-live="assertive">
-                                            {% for error in form.password1.errors %}
+                                    <label for="{{ form.first_name.id_for_label }}" class="form-label fw-bold">{{ form.first_name.label }}</label>
+                                    {{ form.first_name|add_class:"form-control form-control-lg" }}
+                                    {% if form.first_name.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {% for error in form.first_name.errors %}
                                                 {{ error }}
                                             {% endfor %}
                                         </div>
                                     {% endif %}
                                 </div>
                                 
+                                <!-- Last Name -->
+                                <div class="mb-3">
+                                    <label for="{{ form.last_name.id_for_label }}" class="form-label fw-bold">{{ form.last_name.label }}</label>
+                                    {{ form.last_name|add_class:"form-control form-control-lg" }}
+                                    {% if form.last_name.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {% for error in form.last_name.errors %}
+                                                {{ error }}
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                
+                                <!-- Password -->
+                                <div class="mb-3">
+                                    <label for="{{ form.password1.id_for_label }}" class="form-label fw-bold">{{ form.password1.label }}</label>
+                                    {{ form.password1|add_class:"form-control form-control-lg" }}
+                                    {% if form.password1.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {% for error in form.password1.errors %}
+                                                {{ error }}
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                    {% if form.password1.help_text %}
+                                        <div class="form-text small text-muted mt-1">{{ form.password1.help_text|safe }}</div>
+                                    {% endif %}
+                                </div>
+                                
+                                <!-- Confirm Password -->
                                 <div class="mb-4">
-                                    <label for="password2" class="form-label fw-bold">{% trans "Repeat Password" %}</label>
-                                    <input type="password" class="form-control form-control-lg {% if form.password2.errors %}is-invalid{% endif %}" 
-                                           id="password2" name="password2" required aria-required="true" 
-                                           aria-describedby="password2-help" autocomplete="new-password">
-                                    <div id="password2-help" class="form-text">{% trans "Confirm your password" %}</div>
+                                    <label for="{{ form.password2.id_for_label }}" class="form-label fw-bold">{{ form.password2.label }}</label>
+                                    {{ form.password2|add_class:"form-control form-control-lg" }}
                                     {% if form.password2.errors %}
-                                        <div class="invalid-feedback" role="alert" aria-live="assertive">
+                                        <div class="invalid-feedback d-block">
                                             {% for error in form.password2.errors %}
                                                 {{ error }}
                                             {% endfor %}
@@ -95,17 +114,12 @@
                                 </div>
                                 
                                 <div class="d-grid gap-2">
-                                    <button type="submit" class="btn btn-primary btn-lg" aria-label="{% trans 'Submit registration form' %}">
-                                        {% trans "Register" %}
-                                    </button>
+                                    <button type="submit" class="btn btn-primary btn-lg">{% trans "REGISTER" %}</button>
                                 </div>
                             </form>
                             
-                            <div class="text-center mt-4">
-                                <p class="mb-0">
-                                    Already have an account? <a href="{% url 'login' %}" class="link-primary" 
-                                       aria-label="Login to your existing account">Login here</a>
-                                </p>
+                            <div class="mt-4 text-center">
+                                <p class="mb-0">{% trans "Already have an account?" %} <a href="{% url 'login' %}" class="text-primary">{% trans "Log in" %}</a></p>
                             </div>
                         </div>
                     </div>

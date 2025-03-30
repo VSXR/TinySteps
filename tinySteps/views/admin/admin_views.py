@@ -42,21 +42,23 @@ def review_guides(request):
 
 @staff_member_required
 def approve_guide(request, guide_id):
-    """Approve a guide submission"""
-    guide = get_object_or_404(Guides_Model, pk=guide_id)
-    next_page = request.GET.get('next', 'my_guides')
+    """Approve a guide by ID"""
+    next_url = request.GET.get('next', 'review_guides')
+    service = AdminGuide_Service()
+    guide = service.approve_guide(guide_id)
     
-    if guide.status == 'pending':
-        guide.status = 'approved'
-        guide.save()
-        messages.success(request, _("Guide successfully approved!"))
-    else:
-        messages.warning(request, _("This guide is not pending approval."))
+    messages.success(request, _(f"The guide '{guide.title}' has been approved."))
     
-    # Redirect back to either review panel or my guides
-    if next_page == 'review':
+    if next_url == 'detail':
+        if guide.guide_type == 'nutrition':
+            return redirect('nutrition_guide_details', guide.id)
+        else:
+            return redirect('parent_guide_details', guide.id)
+    
+    if next_url == 'review':
         return redirect('review_guides')
-    return redirect('my_guides')
+    
+    return redirect(next_url)
 
 @staff_member_required
 def reject_guide(request, guide_id):

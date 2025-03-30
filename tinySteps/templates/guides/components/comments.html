@@ -1,0 +1,82 @@
+{% load static %} {% load i18n %}
+
+<section aria-labelledby="comments-heading" id="comments" class="mt-4">
+    <h2 id="comments-heading" class="h3 mb-3">
+        {% blocktrans count counter=guide.comments.count %}Comment ({{ counter }}){% plural %}Comments ({{ counter }}){% endblocktrans %}
+    </h2>
+
+    {% if guide.comments.exists %}
+        <div class="comment-list">
+            {% for comment in guide.comments.all %}
+                <div class="card mb-3" id="comment-{{ comment.id }}">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between mb-2">
+                            <div>
+                                <strong>{{ comment.author.username }}</strong>
+                            </div>
+                            <time
+                                datetime="{{ comment.created_at|date:'Y-m-d' }}"
+                                class="text-muted"
+                            >
+                                {{ comment.created_at|date:"M j, Y" }}
+                            </time>
+                        </div>
+                        <p class="mb-0">{{ comment.text }}</p>
+
+                        {% if user == comment.author or user.is_staff %}
+                            <div class="mt-2 d-flex justify-content-end">
+                                <button
+                                    type="button"
+                                    class="btn btn-sm btn-outline-danger delete-comment-btn"
+                                    data-comment-id="{{ comment.id }}"
+                                    aria-label="{% trans 'Delete comment' %}"
+                                >
+                                    <i class="fa-solid fa-trash-alt" aria-hidden="true"></i>
+                                </button>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="text-center my-4">
+            {% trans "No comments yet. Be the first to comment!" %}
+        </p>
+    {% endif %}
+
+    <div class="card mt-4 mb-4">
+        <div class="card-header">
+            <h3 class="card-title h5 mb-0">{% trans "Add Your Comment" %}</h3>
+        </div>
+        <div class="card-body">
+            {% if user.is_authenticated %}
+                <form id="comment-form" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="comment_action" value="add">
+                    <input type="hidden" name="content_type" value="{{ guide.guide_type }}">
+                    <input type="hidden" name="object_id" value="{{ guide.id }}">
+                    <div class="form-group mb-3">
+                        <label for="comment-content" class="form-label">{% trans "Your comment" %}</label>
+                        <textarea
+                            id="comment-content"
+                            name="content"
+                            class="form-control"
+                            rows="3"
+                            required
+                        ></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-paper-plane me-2" aria-hidden="true"></i>{% trans "Post Comment" %}
+                    </button>
+                </form>
+            {% else %}
+                <div class="alert alert-info mb-0">
+                    {% trans "Please" %}
+                    <a href="{% url 'login' %}?next={{ request.path }}">{% trans "log in" %}</a>
+                    {% trans "to leave a comment." %}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</section>

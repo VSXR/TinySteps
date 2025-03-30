@@ -16,13 +16,31 @@ class CustomUserCreation_Form(UserCreationForm, FormControlMixin):
         })
     )
     
+    first_name = forms.CharField(
+        required=True,
+        max_length=30,
+        widget=forms.TextInput(attrs={
+            'placeholder': _('Enter your first name'),
+            'autocomplete': 'given-name'
+        })
+    )
+    
+    last_name = forms.CharField(
+        required=True,
+        max_length=30,
+        widget=forms.TextInput(attrs={
+            'placeholder': _('Enter your last name'),
+            'autocomplete': 'family-name'
+        })
+    )
+    
     class Meta(UserCreationForm.Meta):
         model = User
-        fields = UserCreationForm.Meta.fields + ('email',)
+        fields = UserCreationForm.Meta.fields + ('email', 'first_name', 'last_name')
     
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        for field_name in ['username', 'password1', 'password2']:
+        for field_name in ['username', 'password1', 'password2', 'first_name', 'last_name']:
             if field_name in self.fields:
                 self.fields[field_name].widget.attrs['class'] = 'form-control'
     
@@ -35,6 +53,8 @@ class CustomUserCreation_Form(UserCreationForm, FormControlMixin):
     def save(self, commit=True):
         user = super().save(commit=False)
         user.email = self.cleaned_data['email']
+        user.first_name = self.cleaned_data['first_name']
+        user.last_name = self.cleaned_data['last_name']
         if commit:
             user.save()
         return user

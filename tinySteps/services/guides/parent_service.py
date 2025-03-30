@@ -13,10 +13,10 @@ class ParentGuide_Service(Guide_Service):
     def get_template_path(self, view_type):
         """Get the template path for the given view type"""
         templates = {
-            'list': 'guides/parents/list.html',
-            'detail': 'guides/parents/detail.html',
-            'articles': 'guides/parents/articles.html',
-            'article_detail': 'guides/parents/article_detail.html',
+            'list': 'guides/display/parent_guide_list.html',
+            'detail': 'guides/display/parent_guide_detail.html',
+            'articles': 'guides/display/parent_article_list.html',
+            'article_detail': 'guides/display/parent_article_detail.html',
         }
         return templates.get(view_type)
     

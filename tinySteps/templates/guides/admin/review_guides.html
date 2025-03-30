@@ -120,7 +120,7 @@
                             
                             {% if guide.image %}
                             <div class="mb-3">
-                                <img src="{{ guide.image.url }}" alt="{{ guide.title }}" class="img-fluid rounded" style="max-height: 150px; width: 100%; object-fit: cover;">
+                                <img src="{{ guide.get_image_url }}" class="card-img-top" alt="{{ guide.title }}" class="img-fluid rounded" style="max-height: 150px; width: 100%; object-fit: cover;">
                             </div>
                             {% endif %}
                         </div>
@@ -134,7 +134,7 @@
                                 </a>
                                 
                                 <div class="d-flex gap-2 flex-grow-1">
-                                    <a href="{% url 'approve_guide' guide.id %}?next=review" 
+                                    <a href="{% url 'approve_guide' guide.id %}?next=review_guides" 
                                        class="btn btn-sm btn-success w-50 d-flex align-items-center justify-content-center"
                                        onclick="return confirm('{% trans "Are you sure you want to approve this guide?" %}')"
                                        aria-label="{% trans "Approve guide" %}">
@@ -155,8 +155,7 @@
                         <div class="modal-content">
                             <form action="{% url 'reject_guide' guide.id %}" method="post">
                                 {% csrf_token %}
-                                <input type="hidden" name="next" value="review">
-                                <div class="modal-header">
+                                <input type="hidden" name="next" value="review_guides">                                <div class="modal-header">
                                     <h5 class="modal-title" id="rejectModalLabel{{ guide.id }}">{% trans "Reject Guide" %}</h5>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% trans "Close" %}"></button>
                                 </div>

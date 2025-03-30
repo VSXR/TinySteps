@@ -1,95 +1,90 @@
 {% extends 'base.html' %}
 {% load static %}
 {% load i18n %}
+{% load custom_filters %}
 
 {% block title %}
-    {% if section_type == 'nutrition' %}
-        {{ nutrition_guide.title }} - {% trans "NUTRITION GUIDE" %}
+    {{ guide.title }} - 
+    {% if guide.guide_type == 'nutrition' %}
+        {% trans "Nutrition Guide - Tiny Steps" %}
     {% else %}
-        {{ parent_guide.title }} - {% trans "TINY STEPS" %}
+        {% trans "Parenting Guide - Tiny Steps" %}
     {% endif %}
 {% endblock %}
 
 {% block main_contents %}
-    <main id="main-content">
-        <div class="container mt-4">
-            <!-- Breadcrumbs -->
-            {% include 'guides/components/breadcrumbs.html' with is_articles=False is_detail=True %}
-            
-            <article class="card mb-4">
-                <div class="card-header">
-                    <h2>
-                        {% if section_type == 'nutrition' %}
-                            {{ nutrition_guide.title }}
-                        {% else %}
-                            {{ parent_guide.title }}
-                        {% endif %}
-                    </h2>
-                </div>
-                <div class="card-body">
-                    {% if section_type == 'nutrition' and nutrition_guide.image %}
-                        <img src="{{ nutrition_guide.image.url }}" 
-                             alt="{% blocktrans with title=nutrition_guide.title %}Illustration for {{ title }} nutrition guide{% endblocktrans %}" 
-                             class="img-fluid mb-3" loading="lazy">
-                    {% elif parent_guide.image %}
-                        <img src="{{ parent_guide.image.url }}" 
-                             alt="{% blocktrans with title=parent_guide.title %}Illustration for {{ title }} parenting guide{% endblocktrans %}" 
-                             class="img-fluid mb-3" loading="lazy">
+<main id="main-content" role="main">
+    <div class="container my-4">
+        {% include 'guides/components/breadcrumbs.html' with is_detail=True guide=guide section_type=guide.guide_type %}
+        
+        <div class="row g-4">
+            <!-- Main content column -->
+            <div class="col-lg-8">
+                <article class="card shadow-sm border-0 mb-4" aria-labelledby="guide-title">
+                    <!-- Featured Image Header -->
+                    {% if guide.image %}
+                    <div class="position-relative">
+                        <img src="{{ guide.get_image_url }}" class="card-img-top" alt="{{ guide.title }}" 
+                             style="height: 300px; object-fit: cover;">
+                        <div class="position-absolute bottom-0 start-0 w-100 p-3 pb-4" 
+                             style="background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);">
+                            <div class="badges mb-2">
+                                <!-- Guide Type Badge -->
+                                {% block type_badge %}
+                                    {% if guide.guide_type == 'nutrition' %}
+                                        <span class="badge bg-success" aria-label="{% trans 'Guide category' %}">
+                                            {% trans "Nutrition" %}
+                                        </span>
+                                    {% else %}
+                                        <span class="badge bg-primary" aria-label="{% trans 'Guide category' %}">
+                                            {% trans "Parenting" %}
+                                        </span>
+                                    {% endif %}
+                                {% endblock %}
+                            </div>
+                            <h1 id="guide-title" class="card-title text-white mb-0 fs-3">{{ guide.title }}</h1>
+                        </div>
+                    </div>
                     {% endif %}
                     
-                    <p class="text-muted">
-                        {% if section_type == 'nutrition' %}
-                            {% blocktrans with date=nutrition_guide.created_at|date:"d/m/Y" %}Published: {{ date }}{% endblocktrans %}
-                        {% else %}
-                            {% blocktrans with date=parent_guide.created_at|date:"d/m/Y" %}Published: {{ date }}{% endblocktrans %}
-                        {% endif %}
-                    </p>
-                    <div class="guide-content">
-                        {% if section_type == 'nutrition' %}
-                            {{ nutrition_guide.content|safe }}
-                        {% else %}
-                            {{ parent_guide.content|safe }}
+                    <div class="card-body p-4 {% if not guide.image %}pt-3{% endif %}">
+                        <!-- Content from the guide -->
+                        {% block guide_content %}
+                            <div class="guide-content mb-4">
+                                {{ guide.desc|linebreaks }}
+                            </div>
+                        {% endblock %}
+                        
+                        <!-- Tags -->
+                        {% if guide.tags.all %}
+                        <div class="d-flex flex-wrap align-items-center mt-4 pt-3 border-top">
+                            <span class="text-muted me-2 fs-6" aria-label="{% trans 'Tags' %}">
+                                <i class="bi bi-tags me-1" aria-hidden="true"></i> {% trans "Tags:" %}
+                            </span>
+                            {% for tag in guide.tags.all %}
+                                <a href="{% url 'guide_list' guide.guide_type %}?tag={{ tag.slug }}" 
+                                   class="badge bg-light text-dark me-2 mb-1 text-decoration-none">
+                                    {{ tag.name }}
+                                </a>
+                            {% endfor %}
+                        </div>
                         {% endif %}
                     </div>
-                    
-                    {% if section_type == 'nutrition' and nutrition_guide.tags.all %}
-                        <div class="mt-3" aria-labelledby="categories-heading">
-                            <h3 id="categories-heading" class="h6 d-inline">{% trans "Categories:" %}</h3>
-                            <ul class="list-inline d-inline">
-                                {% for tag in nutrition_guide.tags.all %}
-                                    <li class="list-inline-item">
-                                        <span class="badge bg-secondary">{{ tag.name }}</span>
-                                    </li>
-                                {% endfor %}
-                            </ul>
-                        </div>
-                    {% elif parent_guide.tags.all %}
-                        <div class="mt-3" aria-labelledby="categories-heading">
-                            <h3 id="categories-heading" class="h6 d-inline">{% trans "Categories:" %}</h3>
-                            <ul class="list-inline d-inline">
-                                {% for tag in parent_guide.tags.all %}
-                                    <li class="list-inline-item">
-                                        <span class="badge bg-secondary">{{ tag.name }}</span>
-                                    </li>
-                                {% endfor %}
-                            </ul>
-                        </div>
-                    {% endif %}
-                </div>
-            </article>
+                </article>
 
-            {% block additional_content %}
+                <!-- Comments section -->
+                {% block comments_section %}
+                    {% include 'guides/components/comments.html' with guide=guide %}
+                {% endblock %}
+            </div>
             
-            {% endblock additional_content %}
-
-            <!-- Back to Guides Button -->
-            <div class="row mt-5 mb-4">
-                <div class="col text-center">
-                    <a href="{% url 'guides' %}" class="btn btn-primary" aria-label="{% trans "Return to guides page" %}">
-                        {% trans "Back to Guides" %}
-                    </a>
+            <!-- Sidebar column -->
+            <div class="col-lg-4">
+                <div class="sticky-lg-top" style="top: 2rem">
+                    {% include 'guides/components/sidebar.html' with related_guides=related_guides section_type=guide.guide_type %}
                 </div>
             </div>
         </div>
-    </main>
+    </div>
+</main>
 {% endblock main_contents %}

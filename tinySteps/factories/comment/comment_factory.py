@@ -11,6 +11,5 @@ class CommentUrl_Factory:
     @staticmethod
     def create_urls():
         """Create URL patterns for the comments section"""
-        return [
-            path('comments/', include('tinySteps.views.comments.urls', namespace='comments')),
-        ]
+        from tinySteps.views.comments import urls
+        return urls.urlpatterns

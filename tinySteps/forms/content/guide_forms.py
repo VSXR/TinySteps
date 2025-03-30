@@ -62,7 +62,6 @@ class GuideSubmission_Form(forms.ModelForm, FormControlMixin, TextareaMixin, Fil
     
     def get_tag_categories(self, guide_type):
         """Get predefined tag categories for the guide type"""
-        from tinySteps.models import Guides_Model
         
         predefined_tags = Guides_Model.PREDEFINED_TAGS.get(guide_type, {})
         if guide_type == 'parent':

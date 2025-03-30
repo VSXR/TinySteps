@@ -1,9 +1,0 @@
-{% load i18n %}
-
-{% if status == 'pending' %}
-    <span class="badge bg-warning text-dark">{% trans "Pending Review" %}</span>
-{% elif status == 'approved' %}
-    <span class="badge bg-success">{% trans "Approved" %}</span>
-{% elif status == 'rejected' %}
-    <span class="badge bg-danger">{% trans "Rejected" %}</span>
-{% endif %}

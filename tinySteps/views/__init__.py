@@ -23,7 +23,7 @@ from .forum.forum_views import (
 
 # Guide Views
 from .guides.guide_views import guides_page, guide_list_view, guide_detail_view, my_guides_view
-from .guides.submission_views import SubmitGuide_View, submit_guide
+from .guides.submission_views import SubmitGuide_View
 from .guides.article_views import article_list_view, article_detail_view
 
 # Nutrition Views
@@ -60,7 +60,7 @@ __all__ = [
     
     # Guide views
     'guides_page', 'guide_list_view', 'guide_detail_view', 'my_guides_view',
-    'article_list_view', 'article_detail_view', 'SubmitGuide_View', 'submit_guide',
+    'article_list_view', 'article_detail_view', 'SubmitGuide_View',  # Removed 'submit_guide'
     
     # Nutrition views
     'nutrition_analyzer_view', 'nutrition_comparison_view', 'nutrition_save_view',

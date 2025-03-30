@@ -49,8 +49,8 @@ class GuideType_Registry:
         ParentsGuides_Model = apps.get_model('tinySteps', 'ParentsGuides_Model')
         
         from .services import NutritionGuide_Service, ParentGuide_Service
-        cls.register('nutrition', NutritionGuides_Model, NutritionGuide_Service, 'guides/nutrition')
-        cls.register('parent', ParentsGuides_Model, ParentGuide_Service, 'guides/parents')
+        cls.register('nutrition', NutritionGuides_Model, NutritionGuide_Service, 'guides/display')
+        cls.register('parent', ParentsGuides_Model, ParentGuide_Service, 'guides/display')
 
 class FactoryRegistry:
     """Registry for all factories in the application"""

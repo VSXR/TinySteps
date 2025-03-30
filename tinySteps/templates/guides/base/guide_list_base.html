@@ -1,166 +1,107 @@
 {% extends 'base.html' %}
 {% load static %}
 {% load i18n %}
+{% load custom_filters %}
 
 {% block title %}
-    {% if section_type == 'nutrition' %}
-        {% trans "NUTRITION GUIDES - TINY STEPS" %}
+    {% if guide_type == 'nutrition' %}
+        {% trans "Nutrition Guides" %} - {% trans "Tiny Steps" %}
     {% else %}
-        {% trans "PARENTS GUIDES - TINY STEPS" %}
+        {% trans "Parenting Guides" %} - {% trans "Tiny Steps" %}
     {% endif %}
 {% endblock %}
 
 {% block main_contents %}
-    <main id="main-content">
-        <div class="container mt-4">
-            <!-- Breadcrumbs -->
-            {% include 'guides/components/breadcrumbs.html' with is_articles=False is_detail=False %}
-
-            <div class="row mb-4">
-                <div class="col">
-                    <h1 class="page-title text-center">
-                        {% if section_type == 'nutrition' %}
-                            {% trans "NUTRITION GUIDES" %}
-                        {% else %}
-                            {% trans "PARENTS GUIDES" %}
-                        {% endif %}
-                    </h1>
-                    <p class="lead text-center">
-                        {% if section_type == 'nutrition' %}
-                            {% trans "Find tips and recommendations for healthy eating" %}
-                        {% else %}
-                            {% trans "Find advice and recommendations for new parents" %}
-                        {% endif %}
-                    </p>
-                
-                    <div class="text-center mt-3">
-                        {% if section_type == 'nutrition' %}
-                            <a href="{% url 'submit_guide' %}?type=nutrition" class="btn btn-success">
-                                <i class="fa-solid fa-plus me-2"></i>{% trans "Submit Nutrition Guide" %}
-                            </a>
-                        {% else %}
-                            <a href="{% url 'submit_guide' %}?type=parent" class="btn btn-primary">
-                                <i class="fa-solid fa-plus me-2"></i>{% trans "Submit Parent Guide" %}
-                            </a>
-                        {% endif %}
-                    </div>
+<main id="main-content" role="main">
+    <div class="container my-4">
+        {% include 'guides/components/breadcrumbs.html' with section_type=guide_type %}
+        
+        {% block page_header %}
+            {% include "guides/components/page_header.html" with title=title|default:"Guides" subtitle=subtitle|default:"Browse our collection of expert guides" %}
+        {% endblock %}
+        
+        <div class="row">
+            <!-- Sidebar Column -->
+            {% block sidebar_column %}
+                <div class="col-lg-3 col-md-4 mb-4">
+                    {% include "guides/components/sidebar.html" with active_section="guides" active_page=guide_type|add:"_guides" section_type=guide_type %}
                 </div>
-            </div>
-
-            <!-- Additional Content Section -->
-            {% block additional_content %}
-                <!-- This block allows child templates to insert content here -->
-            {% endblock additional_content %}
-           
-            <!-- Latest Articles Card -->
-            <div class="card bg-light mb-4 shadow-sm">
-                <div class="card-body">
-                    <h2 class="h4 mb-3">
-                        {% if section_type == 'nutrition' %}
-                            {% trans "External Nutrition Articles" %}
-                        {% else %}
-                            {% trans "External Parenting Articles" %}
-                        {% endif %}
-                    </h2>
-                    <p>
-                        {% if section_type == 'nutrition' %}
-                            {% trans "We've curated helpful nutrition articles from around the web to support your journey." %}
-                        {% else %}
-                            {% trans "We've curated helpful parenting articles from around the web to support your journey." %}
-                        {% endif %}
-                    </p>
-                    
-                    <div class="text-center my-4">
-                        {% if section_type == 'nutrition' %}
-                            <a href="{% url 'nutrition_articles' %}" class="btn btn-outline-info">
-                                <i class="bi bi-journal-text me-2"></i>{% trans "Browse External Nutrition Articles" %}
-                            </a>
-                        {% else %}
-                            <a href="{% url 'parenting_articles' %}" class="btn btn-outline-info">
-                                <i class="bi bi-journal-text me-2"></i>{% trans "Browse External Parenting Articles" %}
-                            </a>
-                        {% endif %}
-                    </div>
-                    
-                    {% if latest_articles %}
-                        <div class="row">
-                            {% for article in latest_articles|slice:":3" %}
+            {% endblock %}
+            
+            <!-- Main Content Column -->
+            <div class="{% block main_column_classes %}col-lg-9 col-md-8{% endblock %}">
+                <!-- Tools Area (Optional) -->
+                {% block tools_area %}{% endblock %}
+                
+                <!-- Search Filters -->
+                {% block search_filters %}
+                    <div class="card shadow-sm mb-4">
+                        <div class="card-header bg-light">
+                            <h2 class="h5 mb-0">{% trans "Filter Guides" %}</h2>
+                        </div>
+                        <div class="card-body p-3">
+                            <form method="get" class="row g-3 align-items-end" role="search">
                                 <div class="col-md-4">
-                                    <div class="card mb-3 h-100 shadow-sm">
-                                        {% if article.image_url %}
-                                            <img src="{{ article.image_url }}" class="card-img-top" loading="lazy"
-                                                 alt="{{ article.title }}" style="height: 120px; object-fit: cover;">
-                                        {% else %}
-                                            <div class="bg-secondary text-white p-4 text-center">
-                                                <i class="bi bi-journal-text fs-3"></i>
-                                            </div>
-                                        {% endif %}
-                                        <div class="card-body">
-                                            <h5 class="card-title small">{{ article.title|truncatechars:60 }}</h5>
-                                            <p class="text-muted small mb-2">{{ article.source_name }}</p>
-                                        </div>
-                                        <div class="card-footer bg-transparent border-top-0">
-                                            <a href="{{ article.url }}" target="_blank" rel="noopener" class="btn btn-sm btn-outline-primary stretched-link" 
-                                               aria-label="{% blocktrans with title=article.title %}Read article: {{ title }}{% endblocktrans %}">
-                                               {% trans "Read Article" %}
-                                            </a>
-                                        </div>
+                                    <label for="search" class="form-label">{% trans "Search" %}</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text" aria-hidden="true"><i class="bi bi-search"></i></span>
+                                        <input type="text" class="form-control" id="search" name="search" 
+                                               value="{{ request.GET.search }}" placeholder="{% trans 'Keywords...' %}"
+                                               aria-label="{% trans 'Search guides' %}">
                                     </div>
                                 </div>
+                                {% block extra_filters %}
+                                    <!-- Here we put the extra filters like tags, categories, etc. -->
+                                {% endblock %}
+                                <div class="col-md-2">
+                                    <button type="submit" class="btn btn-primary w-100">
+                                        <i class="bi bi-funnel-fill me-1" aria-hidden="true"></i> {% trans "Filter" %}
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                {% endblock %}
+                
+                <!-- Guide Listing -->
+                <section aria-labelledby="guides-heading">
+                    <h2 id="guides-heading" class="h3 mb-4">
+                        {% if guide_type == 'nutrition' %}
+                            {% trans "Nutrition Guides" %}
+                        {% else %}
+                            {% trans "Parenting Guides" %}
+                        {% endif %}
+                        {% if guides %}<span class="badge bg-secondary ms-2">{{ guides|length }}</span>{% endif %}
+                    </h2>
+                    
+                    {% if guides %}
+                        <div class="row row-cols-1 row-cols-md-2 g-4 mb-4">
+                            {% for guide in guides %}
+                                {% include "guides/components/guide_card.html" with guide=guide show_author=True show_date=True %}
                             {% endfor %}
                         </div>
+                        
+                        <!-- Pagination -->
+                        {% include "guides/components/pagination.html" with page_obj=guides %}
                     {% else %}
-                        <p class="text-center text-muted my-3">{% trans "No articles available at the moment." %}</p>
-                    {% endif %}
-                </div>
-            </div>
-
-            <section aria-labelledby="guides-content">
-                <h2 id="guides-content" class="h3 mb-4">
-                    {% if section_type == 'nutrition' %}
-                        {% trans "Available Nutrition Guides" %}
-                    {% else %}
-                        {% trans "Available Parents Guides" %}
-                    {% endif %}
-                </h2>
-                
-                {% if messages %}
-                    {% include 'partials/messages.html' %}
-                {% endif %}
-                
-                <div class="row">
-                    {% if guides %}
-                        {% for guide in guides %}
-                            <div class="col-md-4 mb-4">
-                                {% include 'guides/components/guide_card.html' with guide=guide %}
+                        <div class="alert alert-info" role="alert">
+                            <div class="d-flex">
+                                <div class="me-3">
+                                    <i class="bi bi-info-circle-fill fs-4" aria-hidden="true"></i>
+                                </div>
+                                <div>
+                                    <h3 class="h5 alert-heading">{% trans "No Guides Found" %}</h3>
+                                    <p class="mb-0">{% trans "No guides found matching your criteria. Try adjusting your filters or check back later." %}</p>
+                                </div>
                             </div>
-                        {% endfor %}
-                    {% else %}
-                        <div class="col-12 text-center py-5">
-                            <p class="text-center fs-5" role="status">
-                                {% if section_type == 'nutrition' %}
-                                    {% trans "There aren't any nutrition guides available at this moment!" %}
-                                {% else %}
-                                    {% trans "There aren't any parents guides available at this moment!" %}
-                                {% endif %}
-                            </p>
                         </div>
                     {% endif %}
-                </div>
-
-                {% if guides.has_other_pages %}
-                    {% include 'guides/components/pagination.html' with page_obj=guides %}
-                {% endif %}
-            </section>
-            
-            <!-- Back to Guides Button -->
-            <div class="row mt-5 mb-4">
-                <div class="col text-center">
-                    <a href="{% url 'guides' %}" class="btn btn-primary" aria-label="{% trans "Return to guides page" %}">
-                        {% trans "Back to Guides" %}
-                    </a>
-                </div>
+                </section>
+                
+                <!-- Contribute Banner -->
+                {% include "guides/components/contribute_banner.html" %}
             </div>
         </div>
-    </main>
+    </div>
+</main>
 {% endblock main_contents %}

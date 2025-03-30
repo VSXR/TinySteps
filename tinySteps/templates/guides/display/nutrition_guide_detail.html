@@ -1,0 +1,79 @@
+{% extends 'guides/base/guide_detail_base.html' %}
+{% load static %}
+{% load i18n %}
+{% load custom_filters %}
+
+{% block type_badge %}
+<span class="badge bg-success" aria-label="{% trans 'Guide category' %}">
+    {% trans "Nutrition" %}
+</span>
+{% if guide.category %}
+<span class="badge bg-light text-dark" aria-label="{% trans 'Guide subcategory' %}">
+    {{ guide.category.name }}
+</span>
+{% endif %}
+{% if guide.age_range %}
+<span class="badge bg-info text-dark" aria-label="{% trans 'Age range' %}">
+    {{ guide.age_range }}
+</span>
+{% endif %}
+{% endblock %}
+
+{% block guide_content %}
+<div class="guide-content mb-4">
+    {{ guide.desc|safe }}
+    
+    {% if guide.nutritional_info %}
+    <div class="mt-4 mb-3">
+        <h3 class="h5">{% trans "Nutritional Information" %}</h3>
+        <div class="card bg-light">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h4 class="h6">{% trans "Key Nutrients" %}</h4>
+                        <ul>
+                            {% for nutrient in guide.nutritional_info.key_nutrients %}
+                                <li><strong>{{ nutrient.name }}:</strong> {{ nutrient.amount }} {{ nutrient.unit }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <h4 class="h6">{% trans "Health Benefits" %}</h4>
+                        <ul>
+                            {% for benefit in guide.nutritional_info.benefits %}
+                                <li>{{ benefit }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    
+    {% if guide.recipes.all %}
+    <div class="mt-4">
+        <h3 class="h5">{% trans "Related Recipes" %}</h3>
+        <div class="row g-3">
+            {% for recipe in guide.recipes.all %}
+            <div class="col-md-6">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h4 class="h6 card-title">{{ recipe.title }}</h4>
+                        <p class="card-text small mb-2">
+                            <i class="bi bi-clock me-1" aria-hidden="true"></i> {{ recipe.prep_time }} {% trans "mins" %}
+                            <span class="mx-2">|</span>
+                            <i class="bi bi-people me-1" aria-hidden="true"></i> {{ recipe.servings }}
+                        </p>
+                        <a href="{{ recipe.url }}" class="btn btn-sm btn-outline-success">
+                            {% trans "View Recipe" %}
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

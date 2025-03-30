@@ -48,10 +48,10 @@
                                 </div>
                             {% endif %}
 
-                            <form method="post" enctype="multipart/form-data" novalidate aria-labelledby="submit-heading">
+                           <form method="post" enctype="multipart/form-data">
                                 {% csrf_token %}
-                                <input type="hidden" name="guide_type" value="{{ guide_type }}">
-
+                                <input type="hidden" name="submit_token" value="{{ submit_token }}">
+                                
                                 {% if form %}
                                     {{ form.non_field_errors }}
                                     
@@ -184,5 +184,17 @@
 <script type="module">
     import { initTagAccordion } from '{% static "res/javascript/pages/guide-submission.js" %}';
     document.addEventListener('DOMContentLoaded', initTagAccordion);
+</script>
+<script>
+  // Add this near the end of your template
+  document.addEventListener('DOMContentLoaded', function() {
+    const form = document.querySelector('form');
+    form.addEventListener('submit', function() {
+      // Disable submit button after first click
+      const submitButton = document.querySelector('button[type="submit"]');
+      submitButton.disabled = true;
+      submitButton.innerHTML = '{{ _("Submitting...") }}';
+    });
+  });
 </script>
 {% endblock %}

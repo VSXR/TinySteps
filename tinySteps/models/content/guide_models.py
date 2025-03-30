@@ -5,11 +5,14 @@ from django.db import models
 from django.urls import reverse
 from django.utils.translation import gettext as _
 from django.utils.text import slugify
+from django.templatetags.static import static
 
 from tinySteps.models.base.mixins import CommentableMixin
 from tinySteps.models.content.category_models import Category_Model
 from tinySteps.models.external.article_models import ExternalArticle_Model
 
+
+# Abstract Interface
 class Guide_Interface(models.Model):
     """Abstract base class for the Guide interface class"""
     
@@ -29,7 +32,28 @@ class Guide_Interface(models.Model):
     def get_related_articles(cls):
         """Get related external articles for this guide type"""
         raise NotImplementedError("Subclasses must implement this method")
-    
+
+
+# Managers
+class BaseGuide_Manager(models.Manager):
+    """Base manager for guide models"""
+    def get_approved(self):
+        return self.filter(status='approved')
+
+
+class ParentGuides_Manager(BaseGuide_Manager):
+    """Manager for parent guides"""
+    def get_queryset(self):
+        return super().get_queryset().filter(guide_type='parent')
+
+
+class NutritionGuides_Manager(BaseGuide_Manager):
+    """Manager for nutrition guides"""
+    def get_queryset(self):
+        return super().get_queryset().filter(guide_type='nutrition')
+
+
+# Base Guide Model
 class Guides_Model(Guide_Interface, CommentableMixin):
     GUIDE_TYPE_CHOICES = (
         ('parent', _("Parent Guide")),
@@ -45,6 +69,7 @@ class Guides_Model(Guide_Interface, CommentableMixin):
         'nutrition': ['diet', 'health', 'recipes']
     }
     
+    # Basic fields
     title = models.CharField(_("Title"), max_length=100)
     slug = models.SlugField(
         _("Slug"),
@@ -66,18 +91,22 @@ class Guides_Model(Guide_Interface, CommentableMixin):
         blank=True,
         help_text=_("Comma-separated tags for the guide.")
     )
+    
+    # Classification and status
     guide_type = models.CharField(_("Guide type"), max_length=20, choices=GUIDE_TYPE_CHOICES, default='parent')
     status = models.CharField(_("Status"), max_length=20, choices=STATUS_CHOICES, default='pending')
+    
+    # Timestamps
     created_at = models.DateTimeField(_("Created at"), auto_now_add=True)
     published_at = models.DateTimeField(
         _("Published at"), null=True, blank=True,
         help_text=_("Set this field when the guide is published.")
     )
     approved_at = models.DateTimeField(_("Approved at"), null=True, blank=True)
-    rejection_reason = models.TextField(_("Rejection Reason"), max_length=500, null=True, blank=True)
+    
+    # Relations
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='guides')
     comments = GenericRelation('Comment_Model', related_query_name='guide')
-
     category = models.ForeignKey(
         Category_Model, 
         on_delete=models.SET_NULL, 
@@ -87,7 +116,10 @@ class Guides_Model(Guide_Interface, CommentableMixin):
         verbose_name=_("Category")
     )
     
+    # Rejection data
+    rejection_reason = models.TextField(_("Rejection Reason"), max_length=500, null=True, blank=True)
 
+    # Methods
     def __str__(self):
         return self.title
     
@@ -98,6 +130,16 @@ class Guides_Model(Guide_Interface, CommentableMixin):
 
     def get_absolute_url(self):
         return reverse(f'{self.guide_type}_guide_details', kwargs={'pk': self.pk})
+    
+    def get_image_url(self):
+        """Obtener la URL de la imagen de la guía, o una por defecto si no existe"""
+        if self.image and hasattr(self.image, 'url'):
+            return self.image.url
+            
+        if self.guide_type == 'nutrition':
+            return static('res/img/others/nutrition_guide.jpg')
+        else:  # parent
+            return static('res/img/others/parent_guide.jpg')
         
     @property
     def predefined_tags(self):
@@ -134,18 +176,8 @@ class Guides_Model(Guide_Interface, CommentableMixin):
             
         return guide
 
-class BaseGuide_Manager(models.Manager):
-    """
-    Base manager for guide models
-    """
-    def get_approved(self):
-        return self.filter(status='approved')
 
-class ParentGuides_Manager(BaseGuide_Manager):
-    """Manager for parent guides"""
-    def get_queryset(self):
-        return super().get_queryset().filter(guide_type='parent')
-
+# Specialized Guide Models
 class ParentsGuides_Model(Guides_Model):
     objects = ParentGuides_Manager()
     
@@ -184,11 +216,7 @@ class ParentsGuides_Model(Guides_Model):
             category='parenting'
         ).order_by('-published_at')[:3]
 
-class NutritionGuides_Manager(BaseGuide_Manager):
-    """Manager for nutrition guides"""
-    def get_queryset(self):
-        return super().get_queryset().filter(guide_type='nutrition')
-      
+
 class NutritionGuides_Model(Guides_Model):
     """Proxy model for nutrition guides"""
     objects = NutritionGuides_Manager()
