@@ -1,6 +1,6 @@
 from django.shortcuts import get_object_or_404
 from django.db.models import Q
-from tinySteps.models import YourChild_Model, Milestone_Model, VaccineCard_Model, Vaccine_Model, CalendarEvent_Model
+from tinySteps.models import YourChild_Model, Milestone_Model, VaccineCard_Model, Vaccine_Model
 from tinySteps.repositories.base.base_repository import GenericRepository
 
 class Child_Repository(GenericRepository):
@@ -73,28 +73,3 @@ class Vaccine_Repository(GenericRepository):
             administered=False
         ).order_by('date')
 
-class CalendarEvent_Repository(GenericRepository):
-    """Repository for calendar event-related operations"""
-    
-    def __init__(self):
-        super().__init__(CalendarEvent_Model)
-    
-    def get_child_events(self, child_id):
-        """Get all events for a specific child"""
-        return self.model.objects.filter(child_id=child_id).order_by('date', 'time')
-    
-    def get_upcoming_events(self, child_id, limit=5):
-        """Get upcoming events for a specific child"""
-        from django.utils import timezone
-        
-        return self.model.objects.filter(
-            child_id=child_id,
-            date__gte=timezone.now().date()
-        ).order_by('date', 'time')[:limit]
-    
-    def get_events_by_type(self, child_id, event_type):
-        """Get events of a specific type for a specific child"""
-        return self.model.objects.filter(
-            child_id=child_id,
-            type=event_type
-        ).order_by('date', 'time')

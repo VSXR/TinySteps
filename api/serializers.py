@@ -133,17 +133,10 @@ class CalendarEvent_Serializer(serializers.ModelSerializer):
     
     class Meta:
         model = CalendarEvent_Model
-        fields = ['id', 'child', 'title', 'type', 'date', 'time', 'description', 
+        fields = ['id', 'child', 'title', 'type', 'date', 'time', 'location', 'description', 
                   'has_reminder', 'reminder_minutes', 'created_at', 'updated_at',
                   'event_color']
         read_only_fields = ['id', 'created_at', 'updated_at']
     
     def get_event_color(self, obj):
-        color_map = {
-            'doctor': '#4285F4',    # Azul
-            'vaccine': '#EA4335',   # Rojo
-            'milestone': '#FBBC05', # Amarillo
-            'feeding': '#34A853',   # Verde
-            'other': '#8f6ed5',     # Morado
-        }
-        return color_map.get(obj.type, '#8f6ed5')
+        return obj.get_event_color()

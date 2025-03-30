@@ -51,7 +51,6 @@
     min-height: 220px;
 }
 
-
 /* Event Stats */
 .event-stats-container {
     display: flex;
@@ -195,6 +194,23 @@
 .fc-toolbar-title {
     font-size: 1.5rem !important;
     color: #333;
+}
+
+/* Event Types */
+.event-type-doctor {
+    background-color: #2196f3;
+}
+.event-type-vaccine {
+    background-color: #ff9800;
+}
+.event-type-milestone {
+    background-color: #4caf50;
+}
+.event-type-feeding {
+    background-color: #9c27b0;
+}
+.event-type-other {
+    background-color: #757575;
 }
 
 /* Responsive adjustments */

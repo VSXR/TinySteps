@@ -378,7 +378,7 @@ document.addEventListener('DOMContentLoaded', function() {
             eventData.time = null;
         }
         
-        fetch(`/api/calendar-events/${event.id}/update_date/`, {
+        fetch(`/api/calendar-events/${event.id}/update-date/`, {
             method: 'POST',
             headers: {
                 'X-CSRFToken': csrfToken,

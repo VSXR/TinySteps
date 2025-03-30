@@ -156,12 +156,21 @@ class TinyStepsAPI {
     }
 
     // ====== CALENDAR API ======
-    async getCalendarEvents(childId) {
-        return this.fetchAPI(`calendar-events/?child=${childId}`);
+    async getCalendarEvents(childId, startDate, endDate) {
+        let endpoint = `children/${childId}/events/`;
+        if (startDate && endDate) {
+            endpoint += `?start=${startDate}&end=${endDate}`;
+        }
+        return this.fetchAPI(endpoint);
+    }
+
+    async getCalendarEvent(id) {
+        return this.fetchAPI(`calendar-events/${id}/`);
     }
 
     async createCalendarEvent(data) {
-        return this.fetchAPI("calendar-events/", "POST", data);
+        const childId = data.child;
+        return this.fetchAPI(`children/${childId}/events/`, "POST", data);
     }
 
     async updateCalendarEvent(id, data) {
@@ -170,6 +179,18 @@ class TinyStepsAPI {
 
     async deleteCalendarEvent(id) {
         return this.fetchAPI(`calendar-events/${id}/`, "DELETE");
+    }
+
+    async updateCalendarEventDate(id, dateData) {
+        return this.fetchAPI(`calendar-events/${id}/update-date/`, "POST", dateData);
+    }
+
+    async getUpcomingEvents(childId) {
+        return this.fetchAPI(`children/${childId}/events/upcoming_events/`);
+    }
+
+    async getEventStats(childId) {
+        return this.fetchAPI(`children/${childId}/events/event_stats/`);
     }
 
     // ====== FORUM API ======

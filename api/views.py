@@ -1,12 +1,13 @@
-from rest_framework import viewsets, permissions, status, generics, filters
-from rest_framework.decorators import action
-from rest_framework.response import Response
-from rest_framework.views import APIView
+from datetime import date, timedelta
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Q, Count
-from datetime import date, timedelta
+from rest_framework import viewsets, permissions, status, generics, filters
+from rest_framework.decorators import action
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from rest_framework.exceptions import ValidationError
 
 from .serializers import (
     User_Serializer,
@@ -22,6 +23,7 @@ from .serializers import (
     Vaccine_Serializer,
     CalendarEvent_Serializer,
 )
+
 from tinySteps.models import (
     YourChild_Model,
     Milestone_Model,
@@ -36,7 +38,7 @@ from tinySteps.models import (
 )
 
 ###########################################################################
-# PERMISOS PERSONALIZADOS
+# CUSTOM PERMISSIONS
 ###########################################################################
 class IsOwnerOrReadOnly(permissions.BasePermission):
     """
@@ -99,7 +101,7 @@ class IsAdminOrOwnerOrReadOnly(permissions.BasePermission):
         return False
 
 ###########################################################################
-# USUARIOS
+# USER VIEWS
 ###########################################################################
 class User_ViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = User.objects.all().order_by('-date_joined')
@@ -139,7 +141,7 @@ class CurrentUserChildren_View(generics.ListAPIView):
         return YourChild_Model.objects.filter(user=self.request.user)
 
 ###########################################################################
-# NIÑOS Y HITOS DE DESARROLLO
+# CHILDREN AND DEVELOPMENT MILESTONES
 ###########################################################################
 class YourChild_ViewSet(viewsets.ModelViewSet):
     serializer_class = YourChild_Serializer
@@ -192,7 +194,7 @@ class ChildMilestone_ViewSet(viewsets.ModelViewSet):
         serializer.save(child=child)
 
 ###########################################################################
-# FOROS Y COMENTARIOS
+# FORUMS AND COMMENTS
 ###########################################################################
 class ParentsForum_ViewSet(viewsets.ModelViewSet):
     serializer_class = ParentsForum_Serializer
@@ -303,7 +305,7 @@ class Comment_ViewSet(viewsets.ModelViewSet):
                            status=status.HTTP_400_BAD_REQUEST)
 
 ###########################################################################
-# GUÍAS PARA PADRES Y NUTRICIÓN
+# PARENT AND NUTRITION GUIDES
 ###########################################################################
 class ParentsGuide_ViewSet(viewsets.ModelViewSet):
     queryset = Guides_Model.objects.filter(guide_type='parent').order_by('-created_at')
@@ -365,7 +367,7 @@ class GuideComment_ViewSet(viewsets.ModelViewSet):
         )
 
 ###########################################################################
-# NOTIFICACIONES
+# NOTIFICATIONS
 ###########################################################################
 class Notification_ViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = Notification_Serializer
@@ -382,7 +384,7 @@ class Notification_ViewSet(viewsets.ReadOnlyModelViewSet):
         return Response({'status': 'notification marked as read'})
 
 ###########################################################################
-# SOLICITUDES DE INFORMACIÓN / CONTACTO
+# CONTACT REQUESTS
 ###########################################################################
 class Contact_ViewSet(viewsets.ModelViewSet):
     serializer_class = Contact_Serializer
@@ -396,7 +398,7 @@ class Contact_ViewSet(viewsets.ModelViewSet):
         return [permission() for permission in permission_classes]
 
 ###########################################################################
-# VACUNA Y REGISTRO DE VACUNAS
+# VACCINE AND VACCINE RECORDS
 ###########################################################################
 class VaccineCard_ViewSet(viewsets.ModelViewSet):
     serializer_class = VaccineCard_Serializer
@@ -424,7 +426,6 @@ class ChildVaccine_ViewSet(viewsets.ModelViewSet):
     serializer_class = Vaccine_Serializer
     permission_classes = [permissions.IsAuthenticated, IsAdminOrOwnerOrReadOnly]
     
-    # Sobreescribir método get_queryset para filtrar por el niño para el que se está consultando
     def get_queryset(self):
         child_id = self.kwargs['child_pk']
         vaccine_card = get_object_or_404(
@@ -444,8 +445,9 @@ class ChildVaccine_ViewSet(viewsets.ModelViewSet):
         serializer.save(vaccine_card=vaccine_card)
 
 ###########################################################################
-# CALENDARIO DE EVENTOS
+# CALENDAR EVENTS
 ###########################################################################
+# Añade estos viewsets a tu archivo de vistas
 class ChildCalendarEvents_ViewSet(viewsets.ModelViewSet):
     """
     ViewSet for managing calendar events for a specific child
@@ -454,8 +456,9 @@ class ChildCalendarEvents_ViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
     
     def get_queryset(self):
+        """Get all events for the specified child"""
         child_pk = self.kwargs['child_pk']
-        # Opcionalmente filtrar por fechas si se proporcionan en query params
+        # Filter by date range if provided in query params
         start_date = self.request.query_params.get('start')
         end_date = self.request.query_params.get('end')
         
@@ -469,57 +472,48 @@ class ChildCalendarEvents_ViewSet(viewsets.ModelViewSet):
         return queryset.order_by('date', 'time')
     
     def perform_create(self, serializer):
+        """Ensure the event is created for the correct child"""
         child_pk = self.kwargs['child_pk']
         child = get_object_or_404(YourChild_Model, id=child_pk, user=self.request.user)
         serializer.save(child=child)
     
     @action(detail=False, methods=['get'])
     def upcoming_events(self, request, child_pk=None):
-        """Obtiene los próximos eventos y recordatorios para un niño"""
+        """Get upcoming events and reminders for a child"""
         child = get_object_or_404(YourChild_Model, id=child_pk, user=request.user)
         today = date.today()
         next_week = today + timedelta(days=7)
         
-        # Eventos próximos
+        # Get upcoming events in the next week
         upcoming_events = CalendarEvent_Model.objects.filter(
             child=child,
             date__gte=today,
             date__lte=next_week
         ).order_by('date', 'time')
         
-        # Recordatorios (eventos con recordatorio activado)
+        # Events with reminders enabled
         upcoming_reminders = upcoming_events.filter(has_reminder=True)
         
-        # Estadísticas de eventos
-        event_stats = {
-            'doctor': CalendarEvent_Model.objects.filter(child=child, type='doctor').count(),
-            'vaccine': CalendarEvent_Model.objects.filter(child=child, type='vaccine').count(),
-            'milestone': CalendarEvent_Model.objects.filter(child=child, type='milestone').count(),
-            'feeding': CalendarEvent_Model.objects.filter(child=child, type='feeding').count(),
-            'other': CalendarEvent_Model.objects.filter(child=child, type='other').count(),
-        }
-        
-        # Serializar datos
+        # Serialize data
         events_serializer = self.get_serializer(upcoming_events, many=True)
         reminders_serializer = self.get_serializer(upcoming_reminders, many=True)
         
         return Response({
             'events': events_serializer.data,
-            'reminders': reminders_serializer.data,
-            'stats': event_stats
+            'reminders': reminders_serializer.data
         })
     
     @action(detail=False, methods=['get'])
     def event_stats(self, request, child_pk=None):
-        """Devuelve estadísticas de eventos para el panel de control"""
+        """Return event statistics for dashboard"""
         child = get_object_or_404(YourChild_Model, id=child_pk, user=request.user)
         
-        # Obtener recuento de eventos por tipo
+        # Count events by type
         event_counts = CalendarEvent_Model.objects.filter(child=child)\
             .values('type')\
             .annotate(count=Count('id'))
         
-        # Convertir a diccionario para fácil acceso
+        # Create dictionary for easy access
         stats = {
             'doctor': 0,
             'vaccine': 0,
@@ -532,10 +526,10 @@ class ChildCalendarEvents_ViewSet(viewsets.ModelViewSet):
         for item in event_counts:
             stats[item['type']] = item['count']
         
-        # Calcular total
+        # Calculate total
         stats['total'] = sum(stats.values())
         
-        # Eventos próximos (para información adicional)
+        # Upcoming events count
         today = date.today()
         upcoming_count = CalendarEvent_Model.objects.filter(
             child=child, 
@@ -548,46 +542,23 @@ class ChildCalendarEvents_ViewSet(viewsets.ModelViewSet):
 
 class CalendarEvent_ViewSet(viewsets.ModelViewSet):
     """
-    API endpoint para gestionar eventos del calendario
+    API endpoint for managing calendar events
     """
     serializer_class = CalendarEvent_Serializer
     permission_classes = [permissions.IsAuthenticated]
     
     def get_queryset(self):
-        """Devuelve los eventos a los que tiene acceso el usuario actual"""
+        """Return events the current user has access to"""
         return CalendarEvent_Model.objects.filter(child__user=self.request.user)
-    
-    def retrieve(self, request, pk=None):
-        """Obtener un evento específico"""
-        event = get_object_or_404(self.get_queryset(), pk=pk)
-        serializer = self.get_serializer(event)
-        return Response(serializer.data)
-    
-    def update(self, request, pk=None):
-        """Actualizar un evento existente"""
-        event = get_object_or_404(self.get_queryset(), pk=pk)
-        serializer = self.get_serializer(event, data=request.data, partial=True)
-        
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
-    def destroy(self, request, pk=None):
-        """Eliminar un evento"""
-        event = get_object_or_404(self.get_queryset(), pk=pk)
-        event.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
     
     @action(detail=True, methods=['post'])
     def update_date(self, request, pk=None):
         """
-        Actualiza solo la fecha/hora de un evento (para drag & drop en calendario)
+        Update only the date/time of an event (for drag & drop in calendar)
         """
         event = get_object_or_404(self.get_queryset(), pk=pk)
         
-        # Extraer los datos de la solicitud
+        # Extract data from request
         new_date = request.data.get('date')
         new_time = request.data.get('time')
         all_day = request.data.get('allDay', False)
@@ -603,18 +574,9 @@ class CalendarEvent_ViewSet(viewsets.ModelViewSet):
         event.save()
         serializer = self.get_serializer(event)
         return Response(serializer.data)
-    
-    def perform_create(self, serializer):
-        """Valida que el niño pertenece al usuario antes de crear el evento"""
-        child_id = self.request.data.get('child')
-        try:
-            child = YourChild_Model.objects.get(id=child_id, user=self.request.user)
-            serializer.save()
-        except YourChild_Model.DoesNotExist:
-            raise ValueError("No tienes permiso para crear eventos para este niño")
-        
+
 ###########################################################################
-# BÚSQUEDA
+# SEARCH
 ###########################################################################
 class Search_View(generics.ListAPIView):
     """

@@ -2,56 +2,51 @@
 {% load i18n %}
 {% load custom_filters %}
 
-<div class="col">
-    <article class="card h-100 shadow-sm hover-card border-0 text-center mx-auto" style="max-width: 320px;">
-        <div class="position-relative">
-            {% if guide.image %}
-                <img src="{{ guide.get_image_url }}" class="card-img-top" loading="lazy" style="height: 160px; object-fit: cover;"
-                    alt="{{ guide.title }}">
+<div class="card h-100 shadow-sm border-0 rounded-4 content-lift">
+    <div class="position-relative">
+        {% if guide.image %}
+            <img src="{{ guide.get_image_url }}" class="card-img-top rounded-top-4" loading="lazy" style="height: 160px; object-fit: cover;"
+                alt="{{ guide.title }}">
+        {% else %}
+            <img src="{% static 'res/img/others/default.jpg' %}" class="card-img-top rounded-top-4" loading="lazy" style="height: 160px; object-fit: cover;"
+                alt="{% trans 'Default guide image' %}">
+        {% endif %}
+        
+        <!-- Badge overlay -->
+        <div class="position-absolute top-0 end-0 p-2">
+            {% if guide.guide_type == 'parent' %}
+                <span class="badge bg-primary rounded-pill px-3">{% trans "Parenting" %}</span>
             {% else %}
-                <img src="{% static 'res/img/others/default.jpg' %}" class="card-img-top" loading="lazy" style="height: 160px; object-fit: cover;"
-                    alt="{% trans 'Default guide image' %}">
+                <span class="badge bg-success rounded-pill px-3">{% trans "Nutrition" %}</span>
+            {% endif %}
+        </div>
+    </div>
+    
+    <div class="card-body py-3 px-3 d-flex flex-column">
+        <h2 class="card-title h5 mb-2 text-center">{{ guide.title }}</h2>
+        
+        <div class="mt-auto">
+            {% if show_author and guide.author %}
+                <div class="d-flex justify-content-center align-items-center mb-2">
+                    <img src="{% if guide.author.profile.avatar %}{{ guide.author.profile.avatar.url }}{% else %}{% static 'res/img/others/default_avatar.jpg' %}{% endif %}" 
+                         class="rounded-circle me-2" width="24" height="24" alt="">
+                    <small class="text-muted">{{ guide.author.get_full_name|default:guide.author.username|truncatechars:15 }}</small>
+                </div>
             {% endif %}
             
-            <!-- Badge overlay -->
-            <div class="position-absolute top-0 end-0 p-2">
-                {% if guide.guide_type == 'parent' %}
-                    <span class="badge bg-primary">{% trans "Parenting" %}</span>
-                {% else %}
-                    <span class="badge bg-success">{% trans "Nutrition" %}</span>
-                {% endif %}
-            </div>
-        </div>
-        
-        <div class="card-body py-3 px-3 d-flex flex-column align-items-center">
-            <h2 class="card-title h6 mb-2">{{ guide.title }}</h2>
-            
-            <p class="card-text small text-muted mb-2 flex-grow-1">
-                {{ guide.desc|truncatewords:15 }}
-            </p>
-            
-            <div class="d-flex justify-content-center align-items-center w-100 mt-auto">
-                {% if show_author and guide.author %}
-                    <small class="text-muted me-2">
-                        <i class="bi bi-person-fill me-1" aria-hidden="true"></i>
-                        {{ guide.author.get_full_name|default:guide.author.username|truncatechars:15 }}
+            <div class="text-center">
+                {% if show_date and guide.created_at %}
+                    <small class="text-muted d-block mb-2">
+                        <i class="fa-regular fa-calendar me-1" aria-hidden="true"></i>
+                        {{ guide.created_at|date:"d M Y" }}
                     </small>
                 {% endif %}
                 
-                {% if show_date and guide.created_at %}
-                    <small class="text-muted">
-                        <i class="bi bi-calendar3 me-1" aria-hidden="true"></i>
-                        {{ guide.created_at|date:"M d" }}
-                    </small>
-                {% endif %}
+                <a href="{% if guide.guide_type == 'parent' %}{% url 'parent_guide_details' guide.id %}{% else %}{% url 'nutrition_guide_details' guide.id %}{% endif %}" 
+                   class="btn btn-{% if guide.guide_type == 'parent' %}primary{% else %}success{% endif %} rounded-pill px-3 w-100">
+                    {% trans "Read" %}
+                </a>
             </div>
         </div>
-        
-        <div class="card-footer bg-white border-top-0 p-3">
-            <a href="{% url guide.guide_type|add:'_guide_details' guide.id %}" 
-               class="btn btn-sm btn-outline-{% if guide.guide_type == 'nutrition' %}success{% else %}primary{% endif %} w-100">
-                {% trans "Read More" %}
-            </a>
-        </div>
-    </article>
+    </div>
 </div>

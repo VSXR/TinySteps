@@ -105,6 +105,7 @@ class CalendarEvent_Model(models.Model):
     type = models.CharField(_("Type"), max_length=20, choices=TYPE_CHOICES, default='other')
     date = models.DateField(_("Date"))
     time = models.TimeField(_("Time"), null=True, blank=True)
+    location = models.CharField(_("Location"), max_length=255, null=True, blank=True)
     description = models.TextField(_("Description"), blank=True, null=True)
     has_reminder = models.BooleanField(_("Has reminder"), default=False)
     reminder_minutes = models.IntegerField(_("Reminder minutes"), null=True, blank=True)
@@ -114,16 +115,17 @@ class CalendarEvent_Model(models.Model):
     class Meta:
         verbose_name = _("Calendar Event")
         verbose_name_plural = _("Calendar Events")
+        ordering = ["date", "time"]
     
     def get_event_color(self):
         color_map = {
-            'doctor': '#4285F4',
-            'vaccine': '#EA4335',
-            'milestone': '#FBBC05',
-            'feeding': '#34A853',
-            'other': '#8f6ed5',
+            'doctor': '#2196f3',
+            'vaccine': '#ff9800',
+            'milestone': '#4caf50',
+            'feeding': '#9c27b0',
+            'other': '#757575',
         }
-        return color_map.get(self.type, '#8f6ed5')
+        return color_map.get(self.type, '#757575')
     
     def __str__(self):
         return f"{self.title} - {self.date}"

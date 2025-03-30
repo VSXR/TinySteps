@@ -35,12 +35,13 @@ def child_milestone(request, child_id):
 
 @login_required
 def child_calendar(request, child_id):
-    """View para mostrar y gestionar el calendario del niño"""
+    """View for displaying and managing a child's calendar"""
     child = get_object_or_404(YourChild_Model, pk=child_id, user=request.user)
     
-    # Obtener recordatorios próximos
+    # Get upcoming reminders
     today = date.today()
     next_week = today + timedelta(days=7)
+    
     upcoming_reminders = CalendarEvent_Model.objects.filter(
         child=child,
         date__gte=today,

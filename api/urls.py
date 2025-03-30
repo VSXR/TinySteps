@@ -10,7 +10,7 @@ router = DefaultRouter()
 router.register(r'users', views.User_ViewSet, basename='user')
 router.register(r'children', views.YourChild_ViewSet, basename='child')
 router.register(r'vaccine-cards', views.VaccineCard_ViewSet, basename='vaccine-card')
-router.register(r'events', views.CalendarEvent_ViewSet, basename='calendar-events')
+router.register(r'calendar-events', views.CalendarEvent_ViewSet, basename='calendar-events')
 router.register(r'milestones', views.Milestone_ViewSet, basename='milestone')
 router.register(r'forums', views.ParentsForum_ViewSet, basename='forum')
 router.register(r'comments', views.Comment_ViewSet, basename='comment')
@@ -22,7 +22,7 @@ router.register(r'info-requests', views.Contact_ViewSet, basename='info-request'
 # Nested routers
 children_router = routers.NestedSimpleRouter(router, r'children', lookup='child')
 children_router.register(r'vaccines', views.ChildVaccine_ViewSet, basename='child-vaccine')
-children_router.register(r'events', views.ChildCalendarEvents_ViewSet, basename='child-event')
+children_router.register(r'events', views.ChildCalendarEvents_ViewSet, basename='child-events')
 children_router.register(r'milestones', views.ChildMilestone_ViewSet, basename='child-milestone')
 
 # Routers for forums and guides
@@ -49,13 +49,13 @@ urlpatterns = [
     path('search/', views.Search_View.as_view(), name='search'),
 
     # Additional calendar endpoints (for updating event dates)
-    path('children/<int:child_pk>/upcoming-events/', 
+    path('children/<int:child_pk>/events/upcoming_events/', 
          views.ChildCalendarEvents_ViewSet.as_view({'get': 'upcoming_events'}), 
          name='child-upcoming-events'),
-    path('children/<int:child_pk>/event-stats/', 
+    path('children/<int:child_pk>/events/event_stats/', 
          views.ChildCalendarEvents_ViewSet.as_view({'get': 'event_stats'}), 
          name='child-event-stats'),
-    path('events/<int:pk>/update-date/', 
+    path('calendar-events/<int:pk>/update-date/', 
          views.CalendarEvent_ViewSet.as_view({'post': 'update_date'}), 
-         name='event-update-date'),
+         name='calendar-event-update-date'),
 ]

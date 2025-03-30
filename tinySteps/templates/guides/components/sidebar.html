@@ -1,12 +1,12 @@
 {% load static %} 
 {% load i18n %}
 
-<!-- Enhanced Sidebar Component -->
-<aside class="sidebar-component" aria-label="{% trans 'Sidebar' %}">
+<!-- Sidebar Component -->
+<aside class="sidebar-component position-sticky top-0" style="align-self: flex-start;" aria-label="{% trans 'Sidebar' %}">
     <!-- Related Guides Section -->
     {% if related_guides %}
-    <div class="card border-0 shadow-sm mb-4 rounded-3 overflow-hidden">
-        <div class="card-header bg-light py-3">
+    <div class="card border-0 shadow-sm mb-4 rounded-4 overflow-hidden">
+        <div class="card-header bg-light border-0 py-3">
             <h3 class="h5 mb-0 fw-semibold" id="related-guides-heading">{% trans "Related Guides" %}</h3>
         </div>
         <div class="card-body p-0">
@@ -42,8 +42,8 @@
     {% endif %}
 
     <!-- Tools Section -->
-    <div class="card border-0 shadow-sm mb-4 rounded-3 overflow-hidden">
-        <div class="card-header bg-light py-3">
+    <div class="card border-0 shadow-sm mb-4 rounded-4 overflow-hidden">
+        <div class="card-header bg-light border-0 py-3">
             <h3 class="h5 mb-0 fw-semibold" id="tools-heading">{% trans "Helpful Tools" %}</h3>
         </div>
         <div class="card-body p-3">
@@ -70,37 +70,9 @@
         </div>
     </div>
 
-    <!-- Recent Articles Section -->
-    {% if recent_articles %}
-    <div class="card border-0 shadow-sm mb-4 rounded-3 overflow-hidden">
-        <div class="card-header bg-light py-3">
-            <h3 class="h5 mb-0 fw-semibold" id="recommended-reading-heading">{% trans "Recommended Reading" %}</h3>
-        </div>
-        <div class="card-body p-0">
-            <ul class="list-group list-group-flush border-0" aria-labelledby="recommended-reading-heading">
-                {% for article in recent_articles|slice:":3" %}
-                <li class="list-group-item border-start-0 border-end-0 py-3">
-                    <h4 class="h6 text-primary mb-1 fw-bold">{{ article.title|truncatechars:60 }}</h4>
-                    <p class="small text-muted mb-2">
-                        {{ article.source_name }} · {{ article.published_at|date:"M d" }}
-                    </p>
-                    <a href="{{ article.url }}"
-                       class="btn btn-sm btn-link p-0 text-decoration-none"
-                       target="_blank"
-                       rel="noopener"
-                       aria-label="{% trans 'Read article' %}: {{ article.title }}">
-                        {% trans "Read" %} <i class="bi bi-arrow-right" aria-hidden="true"></i>
-                    </a>
-                </li>
-                {% endfor %}
-            </ul>
-        </div>
-    </div>
-    {% endif %}
-
     <!-- Contribute Section -->
-    <div class="card border-0 shadow-sm mb-4 rounded-3 overflow-hidden">
-        <div class="card-header bg-light py-3">
+    <div class="card border-0 shadow-sm mb-4 rounded-4 overflow-hidden">
+        <div class="card-header bg-light border-0 py-3">
             <h3 class="h5 mb-0 fw-semibold" id="contribute-heading">{% trans "Share Your Knowledge" %}</h3>
         </div>
         <div class="card-body p-3">

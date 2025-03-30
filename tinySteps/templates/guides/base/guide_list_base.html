@@ -13,18 +13,20 @@
 
 {% block main_contents %}
 <main id="main-content" role="main">
-    <div class="container my-4">
+    <div class="container py-4">
         {% include 'guides/components/breadcrumbs.html' with section_type=guide_type %}
         
         {% block page_header %}
             {% include "guides/components/page_header.html" with title=title|default:"Guides" subtitle=subtitle|default:"Browse our collection of expert guides" %}
         {% endblock %}
         
-        <div class="row">
+        <div class="row g-4">
             <!-- Sidebar Column -->
             {% block sidebar_column %}
-                <div class="col-lg-3 col-md-4 mb-4">
-                    {% include "guides/components/sidebar.html" with active_section="guides" active_page=guide_type|add:"_guides" section_type=guide_type %}
+                <div class="col-lg-3 col-md-4">
+                    <div class="sticky-top pt-3" style="top: 1rem; z-index: 1000;">
+                        {% include "guides/components/sidebar.html" with active_section="guides" active_page=guide_type|add:"_guides" section_type=guide_type %}
+                    </div>
                 </div>
             {% endblock %}
             
@@ -41,7 +43,7 @@
                         </div>
                         <div class="card-body p-3">
                             <form method="get" class="row g-3 align-items-end" role="search">
-                                <div class="col-md-4">
+                                <div class="col-lg-4 col-md-6 col-sm-12">
                                     <label for="search" class="form-label">{% trans "Search" %}</label>
                                     <div class="input-group">
                                         <span class="input-group-text" aria-hidden="true"><i class="bi bi-search"></i></span>
@@ -53,7 +55,7 @@
                                 {% block extra_filters %}
                                     <!-- Here we put the extra filters like tags, categories, etc. -->
                                 {% endblock %}
-                                <div class="col-md-2">
+                                <div class="col-lg-2 col-md-3 col-sm-12">
                                     <button type="submit" class="btn btn-primary w-100">
                                         <i class="bi bi-funnel-fill me-1" aria-hidden="true"></i> {% trans "Filter" %}
                                     </button>
@@ -65,19 +67,27 @@
                 
                 <!-- Guide Listing -->
                 <section aria-labelledby="guides-heading">
-                    <h2 id="guides-heading" class="h3 mb-4">
-                        {% if guide_type == 'nutrition' %}
-                            {% trans "Nutrition Guides" %}
-                        {% else %}
-                            {% trans "Parenting Guides" %}
-                        {% endif %}
-                        {% if guides %}<span class="badge bg-secondary ms-2">{{ guides|length }}</span>{% endif %}
-                    </h2>
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h2 id="guides-heading" class="h3 mb-0">
+                            {% if guide_type == 'nutrition' %}
+                                {% trans "Nutrition Guides" %}
+                            {% else %}
+                                {% trans "Parenting Guides" %}
+                            {% endif %}
+                            {% if guides %}<span class="badge bg-secondary ms-2">{{ guides|length }}</span>{% endif %}
+                        </h2>
+                        
+                        <div class="d-none d-md-block">
+                            <!-- Optional: Add sorting controls here -->
+                        </div>
+                    </div>
                     
                     {% if guides %}
                         <div class="row row-cols-1 row-cols-md-2 g-4 mb-4">
                             {% for guide in guides %}
-                                {% include "guides/components/guide_card.html" with guide=guide show_author=True show_date=True %}
+                                <div class="col">
+                                    {% include "guides/components/guide_card.html" with guide=guide show_author=True show_date=True %}
+                                </div>
                             {% endfor %}
                         </div>
                         
@@ -85,7 +95,7 @@
                         {% include "guides/components/pagination.html" with page_obj=guides %}
                     {% else %}
                         <div class="alert alert-info" role="alert">
-                            <div class="d-flex">
+                            <div class="d-flex align-items-center">
                                 <div class="me-3">
                                     <i class="bi bi-info-circle-fill fs-4" aria-hidden="true"></i>
                                 </div>
@@ -99,7 +109,9 @@
                 </section>
                 
                 <!-- Contribute Banner -->
-                {% include "guides/components/contribute_banner.html" %}
+                <div class="mt-4">
+                    {% include "guides/components/contribute_banner.html" %}
+                </div>
             </div>
         </div>
     </div>

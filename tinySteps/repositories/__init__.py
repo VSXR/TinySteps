@@ -4,7 +4,9 @@
 from .base.base_repository import BaseRepository, GenericRepository
 
 # Child repositories
-from .child.child_repository import Child_Repository, CalendarEvent_Repository
+from .child.child_repository import Child_Repository
+from .child.calendar_event_repository import CalendarEvent_Repository
+#from .child.vaccine_repository import Vaccine_Repository
 
 # Content repositories
 from .content.guide_repository import Guide_Repository
@@ -23,6 +25,7 @@ __all__ = [
     'GenericRepository',
     'Child_Repository',
     'CalendarEvent_Repository',
+    #'Vaccine_Repository',
     'Guide_Repository',
     'Article_Repository',
     'Forum_Repository',
