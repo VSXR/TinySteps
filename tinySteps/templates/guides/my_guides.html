@@ -11,31 +11,30 @@
         <!-- Header Section -->
         {% include "guides/components/page_header.html" with title="My Guides" subtitle="View and manage the guides you have submitted" %}
         
-        <!-- Staff Admin Panel (Conditional) -->
-        {% if is_staff %}
+        <!-- Staff/Admin Panel (Conditional) -->
+        {% if is_staff or is_admin %}
         <div class="row mb-4">
             <div class="col-12">
-                <div class="card border-warning shadow-sm">
-                    <div class="card-header bg-warning text-dark">
-                        <h3 class="h5 mb-0 py-1">{% trans "Staff Controls" %}</h3>
-                    </div>
-                    <div class="card-body py-3">
-                        <div class="d-flex flex-column flex-md-row align-items-center justify-content-between">
-                            <p class="mb-3 mb-md-0">{% trans "As staff, you can review all pending guides." %}</p>
-                            <a href="{% url 'review_guides' %}" class="btn btn-primary">
-                                <i class="fa-solid fa-list-check me-1" aria-hidden="true"></i> 
-                                {% trans "Review Panel" %}
-                                {% if pending_guides_count > 0 %}
-                                    <span class="badge bg-danger ms-1">{{ pending_guides_count }}</span>
-                                {% endif %}
-                            </a>
-                        </div>
-                    </div>
+            <div class="card border-warning shadow-sm">
+                <div class="card-header bg-warning text-dark">
+                <h3 class="h5 mb-0 py-1">{% trans "Staff Controls" %}</h3>
                 </div>
+                <div class="card-body py-3">
+                <div class="d-flex flex-column flex-md-row align-items-center justify-content-between">
+                    <p class="mb-3 mb-md-0">{% trans "As staff, you can review all pending guides." %}</p>
+                    <a href="{% url 'review_guides' %}" class="btn btn-primary">
+                    <i class="fa-solid fa-list-check me-1" aria-hidden="true"></i> 
+                    {% trans "Review Panel" %}
+                    {% if pending_guides_count > 0 %}
+                        <span class="badge bg-danger ms-1">{{ pending_guides_count }}</span>
+                    {% endif %}
+                    </a>
+                </div>
+                </div>
+            </div>
             </div>
         </div>
         {% endif %}
-        
         <!-- Submit Buttons -->
         <div class="row mb-4">
             <div class="col-12 d-flex justify-content-center">

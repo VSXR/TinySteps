@@ -60,6 +60,26 @@ class GuideSubmission_Form(forms.ModelForm, FormControlMixin, TextareaMixin, Fil
             except:
                 pass
     
+    def get_tag_categories(self, guide_type):
+        """Get predefined tag categories for the guide type"""
+        from tinySteps.models import Guides_Model
+        
+        predefined_tags = Guides_Model.PREDEFINED_TAGS.get(guide_type, {})
+        if guide_type == 'parent':
+            tag_categories = {
+                'Basic': ['parenting', 'childcare', 'development', 'education'],
+                'Ages': ['newborn', 'infant', 'toddler', 'preschool'],
+                'Topics': ['sleep', 'discipline', 'health', 'activities']
+            }
+        else:  # nutrition
+            tag_categories = {
+                'Basic': ['nutrition', 'diet', 'health', 'recipes'],
+                'Food Types': ['vegetables', 'fruits', 'proteins', 'grains'],
+                'Ages': ['baby food', 'toddler meals', 'kids meals']
+            }
+        
+        return tag_categories
+
     def clean_title(self):
         title = self.cleaned_data.get('title', '')
         if len(title) < 5:

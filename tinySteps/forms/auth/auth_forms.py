@@ -48,6 +48,7 @@ class PasswordReset_Form(forms.Form, FormControlMixin):
         widget=forms.TextInput(attrs={
             'placeholder': _('Enter your username'),
             'autocomplete': 'username',
+            'readonly': 'readonly',  # Make field read-only
         })
     )
     
@@ -56,6 +57,7 @@ class PasswordReset_Form(forms.Form, FormControlMixin):
         widget=forms.EmailInput(attrs={
             'placeholder': _('Enter your email address'),
             'autocomplete': 'email',
+            'readonly': 'readonly',  # Make field read-only
         })
     )
     
@@ -79,17 +81,8 @@ class PasswordReset_Form(forms.Form, FormControlMixin):
     
     def clean(self):
         cleaned_data = super().clean()
-        username = cleaned_data.get('username')
-        email = cleaned_data.get('email')
         password1 = cleaned_data.get('new_password1')
         password2 = cleaned_data.get('new_password2')
-        
-        try:
-            user = User.objects.get(username=username)
-            if user.email != email:
-                raise forms.ValidationError(_("The email does not correspond to the indicated user!"))
-        except User.DoesNotExist:
-            raise forms.ValidationError(_("There is no user with this username!"))
         
         if password1 and password2 and password1 != password2:
             raise forms.ValidationError(_("Passwords do not match."))

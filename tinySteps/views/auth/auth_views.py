@@ -1,12 +1,11 @@
 from django.contrib import messages
-from django.contrib.auth import login
-from django.contrib.auth import views as auth_views
+from django.contrib.auth import login, views as auth_views
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.messages.views import SuccessMessageMixin
 from django.db import models
-from django.urls import reverse_lazy
 from django.shortcuts import render, redirect
+from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.utils.translation import gettext as _
 from django.views.decorators.debug import sensitive_post_parameters
@@ -15,6 +14,8 @@ from django.views.generic.edit import CreateView
 from tinySteps.forms import CustomUserCreation_Form, PasswordReset_Form
 from tinySteps.models import PasswordReset_Model, YourChild_Model, ParentsForum_Model
 
+
+# Authentication Views
 class Login_View(auth_views.LoginView):
     """Login view"""
     template_name = 'accounts/login.html'
@@ -57,6 +58,8 @@ class Logout_View(auth_views.LogoutView):
         messages.success(request, _("You have been logged out successfully."))
         return super().dispatch(request, *args, **kwargs)
 
+
+@method_decorator(sensitive_post_parameters('password1', 'password2'), name='dispatch')
 class Register_View(SuccessMessageMixin, CreateView):
     """User registration view"""
     template_name = 'accounts/register.html'
@@ -70,7 +73,6 @@ class Register_View(SuccessMessageMixin, CreateView):
             return redirect('index')
         return super().get(request)
     
-    @method_decorator(sensitive_post_parameters('password1', 'password2'))
     def form_valid(self, form):
         """Handle valid form submission - log the user into TinySteps after registration"""
         response = super().form_valid(form)
@@ -78,6 +80,8 @@ class Register_View(SuccessMessageMixin, CreateView):
         login(self.request, user)
         return response
 
+
+# Profile Views
 @login_required
 def profile(request):
     """User profile view"""
@@ -93,6 +97,7 @@ def profile(request):
     
     return render(request, 'accounts/profile.html', context)
 
+
 @login_required
 def edit_profile(request):
     """Edit profile view"""
@@ -107,13 +112,21 @@ def edit_profile(request):
     
     return render(request, 'accounts/edit_profile.html', {'form': form})
 
+
+# Password Management
 @login_required
 def password_reset(request):
-    """Password reset view"""
+    """Password reset view for authenticated users
+       It also allows users to change their password if they are logged in
+       and prefills the form with their current username and email"""
     if request.method == 'POST':
-        form = PasswordReset_Form(request.POST)
+        form = PasswordReset_Form(request.POST, initial={
+            'username': request.user.username,
+            'email': request.user.email
+        })
+        
         if form.is_valid():
-            user = User.objects.get(username=form.cleaned_data['username'])
+            user = request.user
             user.set_password(form.cleaned_data['new_password1'])
             user.save()
             
@@ -121,6 +134,9 @@ def password_reset(request):
             messages.success(request, _("Password reset successfully! You can now login with your new password."))
             return redirect('login')
     else:
-        form = PasswordReset_Form()
+        form = PasswordReset_Form(initial={
+            'username': request.user.username,
+            'email': request.user.email
+        })
     
     return render(request, 'accounts/reset.html', {'form': form})
