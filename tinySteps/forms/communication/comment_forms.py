@@ -18,13 +18,21 @@ class ForumComment_Form(CommentFormBase):
     
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.apply_form_control_class()
-        self.apply_textarea_class('comment')
+        for field_name, field in self.fields.items():
+            css_class = 'form-control'
+            if 'class' in field.widget.attrs:
+                field.widget.attrs['class'] += f' {css_class}'
+            else:
+                field.widget.attrs['class'] = css_class
 
 class GuideComment_Form(CommentFormBase):
     """Comment form for guides"""
     
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.apply_form_control_class()
-        self.apply_textarea_class('comment')
+        for field_name, field in self.fields.items():
+            css_class = 'form-control'
+            if 'class' in field.widget.attrs:
+                field.widget.attrs['class'] += f' {css_class}'
+            else:
+                field.widget.attrs['class'] = css_class

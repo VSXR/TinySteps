@@ -13,11 +13,11 @@ class ChildUrl_Factory:
             
             # Child forms
             path('children/add/', form_views.YourChild_Add_View.as_view(), name='add_child'),
-            path('children/<int:child_id>/edit/', form_views.YourChild_UpdateDetails_View.as_view(), name='edit_child'),
-            path('children/<int:child_id>/delete/', form_views.YourChild_Delete_View.as_view(), name='delete_child'),
+            path('children/<int:pk>/edit/', form_views.YourChild_UpdateDetails_View.as_view(), name='edit_child'), 
+            path('children/<int:pk>/delete/', form_views.YourChild_Delete_View.as_view(), name='delete_child'),
             
             # Features
             path('children/<int:child_id>/calendar/', feature_views.child_calendar, name='child_calendar'),
-            path('children/<int:child_id>/vaccines/', feature_views.child_vaccine_card, name='child_vaccines'),
+            path('children/<int:child_id>/vaccines/', feature_views.child_vaccine_card, name='child_vaccine_card'),
             path('children/<int:child_id>/milestones/', feature_views.child_milestone, name='child_milestones'),
         ]

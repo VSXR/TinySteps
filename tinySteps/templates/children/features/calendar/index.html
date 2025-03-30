@@ -22,7 +22,7 @@
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="{% url 'index' %}">{% trans "Home" %}</a></li>
             <li class="breadcrumb-item"><a href="{% url 'your_children' %}">{% trans "Your Children" %}</a></li>
-            <li class="breadcrumb-item"><a href="{% url 'child_details' child.id %}">{{ child.name }}</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'child_detail' child.id %}">{{ child.name }}</a></li>
             <li class="breadcrumb-item active" aria-current="page">{% trans "Calendar" %}</li>
         </ol>
     </nav>

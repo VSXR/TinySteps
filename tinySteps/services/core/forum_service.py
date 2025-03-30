@@ -10,7 +10,13 @@ class Forum_Service:
     
     def get_posts(self, page=1, search=None, category=None, per_page=10):
         """Get forum posts with optional filtering"""
-        posts = self.repository.get_posts(search, category)
+        if search:
+            posts = self.repository.search_posts(search, category)
+        elif category:
+            posts = self.repository.get_posts_by_category(category)
+        else:
+            posts = self.repository.get_latest_posts(limit=100)
+            
         return posts
     
     def get_post(self, post_id):

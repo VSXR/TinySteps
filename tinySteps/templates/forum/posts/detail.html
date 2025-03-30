@@ -1,209 +1,156 @@
-{% extends 'base.html' %} {% load static %} {% load i18n %} {% block title %}{{
-post.title }} - {% trans "Parents Forum" %}{% endblock %} {% block main_contents
-%} {% csrf_token %}
-<main id="main-content">
-  <div class="container mt-4 mb-5">
-    <!-- Messages container -->
-    <div
-      id="messages-container"
-      class="messages mb-3"
-      role="alert"
-      aria-live="polite"
-    >
-      {% if messages %} {% include 'partials/messages.html' %} {% endif %}
-    </div>
+{% extends 'base.html' %} 
+{% load static %} 
+{% load i18n %} 
 
-    <!-- Main post content -->
-    <article class="card mb-4">
-      <div class="card-header">
-        <div
-          class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-2"
-        >
-          <h1 class="mb-0 fs-4 fw-bold">{{ post.title }}</h1>
-          {% if user == post.author or user.is_staff or user.is_superuser %}
-          <div class="d-flex gap-2 flex-shrink-0">
-            <div class="dropdown d-md-none">
-              <button
-                class="btn btn-sm btn-outline-secondary dropdown-toggle"
-                type="button"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
-              >
-                <i class="fa-solid fa-ellipsis-vertical" aria-hidden="true"></i>
-                <span class="visually-hidden">{% trans "Post actions" %}</span>
-              </button>
-              <ul class="dropdown-menu dropdown-menu-end">
-                <li>
-                  <a class="dropdown-item" href="{% url 'edit_post' post.id %}">
-                    <i class="fa-solid fa-edit" aria-hidden="true"></i> {% trans
-                    "Edit" %}
-                  </a>
-                </li>
-                <li>
-                  <a
-                    class="dropdown-item text-danger"
-                    href="{% url 'delete_post' post.id %}"
-                  >
-                    <i class="fa-solid fa-trash" aria-hidden="true"></i> {%
-                    trans "Delete" %}
-                  </a>
-                </li>
-              </ul>
+{% block title %}{{post.title }} - {% trans "Parents Forum" %}{% endblock %} 
+
+{% block main_contents%} 
+    {% csrf_token %}
+    <main id="main-content">
+        <div class="container mt-4 mb-5">
+            <!-- Messages container -->
+            <div id="messages-container" class="messages mb-3" role="alert" aria-live="polite">
+                {% if messages %} 
+                    {% include 'partials/messages.html' %} 
+                {% endif %}
             </div>
-            <div class="d-none d-md-flex gap-2">
-              <a
-                href="{% url 'edit_post' post.id %}"
-                class="btn btn-sm btn-outline-primary"
-                aria-label="{% trans 'Edit this post' %}"
-              >
-                <i class="fa-solid fa-edit" aria-hidden="true"></i> {% trans
-                "Edit" %}
-              </a>
-              <a
-                href="{% url 'delete_post' post.id %}"
-                class="btn btn-sm btn-outline-danger"
-                aria-label="{% trans 'Delete this post' %}"
-              >
-                <i class="fa-solid fa-trash" aria-hidden="true"></i> {% trans
-                "Delete" %}
-              </a>
+
+            <!-- Main post content -->
+            <article class="card mb-4">
+                <div class="card-header">
+                    <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-2">
+                        <h1 class="mb-0 fs-4 fw-bold">{{ post.title }}</h1>
+                        {% if user == post.author or user.is_staff or user.is_superuser %}
+                            <div class="d-flex gap-2 flex-shrink-0">
+                                <div class="dropdown d-md-none">
+                                    <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="fa-solid fa-ellipsis-vertical" aria-hidden="true"></i>
+                                        <span class="visually-hidden">{% trans "Post actions" %}</span>
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-end">
+                                        <li>
+                                            <a class="dropdown-item" href="{% url 'edit_post' post.id %}">
+                                                <i class="fa-solid fa-edit" aria-hidden="true"></i> {% trans "Edit" %}
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item text-danger" href="{% url 'delete_post' post.id %}">
+                                                <i class="fa-solid fa-trash" aria-hidden="true"></i> {% trans "Delete" %}
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="d-none d-md-flex gap-2">
+                                    <a href="{% url 'edit_post' post.id %}" class="btn btn-sm btn-outline-primary" aria-label="{% trans 'Edit this post' %}">
+                                        <i class="fa-solid fa-edit" aria-hidden="true"></i> {% trans "Edit" %}
+                                    </a>
+                                    <a href="{% url 'delete_post' post.id %}" class="btn btn-sm btn-outline-danger" aria-label="{% trans 'Delete this post' %}">
+                                        <i class="fa-solid fa-trash" aria-hidden="true"></i> {% trans "Delete" %}
+                                    </a>
+                                </div>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="card-body">
+                    <!-- Post metadata -->
+                    <div class="mb-3 d-flex flex-column flex-sm-row justify-content-between gap-2">
+                        <div class="post-author">
+                            <span class="fw-bold">{% trans "Posted by:" %}</span> {{ post.author.username }}
+                        </div>
+                        <div class="post-date d-flex align-items-center gap-2">
+                            <button id="like-button" class="btn btn-outline-primary btn-sm like-button {% if user_liked %}liked{% endif %}" aria-label="{% trans 'Like this post' %}" aria-pressed="{% if user_liked %}true{% else %}false{% endif %}">
+                                <i class="fa-solid fa-heart" aria-hidden="true"></i>
+                                <span id="like-count" class="like-count">{{ likes_count }}</span>
+                                <span class="visually-hidden">{% trans "likes" %}</span>
+                            </button>
+                            <time datetime="{{ post.created_at|date:'Y-m-d' }}" class="text-muted small ms-auto">
+                                {{ post.created_at|date:"F j, Y" }}
+                            </time>
+                        </div>
+                    </div>
+
+                    <!-- Post content -->
+                    <div class="post-content mb-4">{{ post.desc|safe|linebreaks }}</div>
+
+                    <!-- Post tags -->
+                    <div class="post-tags mt-3">
+                        <a href="{% url 'parent_forum' %}?category={{ post.category }}" class="badge bg-primary text-decoration-none">
+                            #{{ post.get_category_display }}
+                        </a>
+                    </div>
+                </div>
+            </article>
+
+            <!-- Comments section -->
+            <section aria-labelledby="comments-heading" id="comments">
+                <h2 id="comments-heading">
+                    {% blocktrans count counter=post.comments_count %}Comment ({{ counter }}){% plural %}Comments ({{ counter }}){% endblocktrans %}
+                </h2>
+
+                {% if comments %}
+                    <div class="comment-list">
+                        {% for comment in comments %}
+                            <div class="card mb-3" id="comment-{{ comment.id }}">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <div>
+                                            <strong>{{ comment.author.username }}</strong>
+                                        </div>
+                                        <time datetime="{{ comment.created_at|date:'Y-m-d' }}" class="text-muted">
+                                            {{ comment.created_at|date:"M j, Y" }}
+                                        </time>
+                                    </div>
+                                    <p>{{ comment.text }}</p>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="text-center my-4">
+                        {% trans "No comments yet. Be the first to comment!" %}
+                    </p>
+                {% endif %}
+
+                <div class="card mt-4 mb-4">
+                    <div class="card-header">
+                        <h3 class="card-title h5 mb-0">{% trans "Add Your Comment" %}</h3>
+                    </div>
+                    <div class="card-body">
+                        {% if user.is_authenticated %}
+                            <form id="comment-form" method="post">
+                                {% csrf_token %}
+                                <div class="form-group mb-3">
+                                    <label for="comment-content" class="form-label">{% trans "Your comment" %}</label>
+                                    <textarea id="comment-content" name="content" class="form-control" rows="3" required></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-paper-plane me-2"></i>{% trans "Post Comment" %}
+                                </button>
+                            </form>
+                        {% else %}
+                            <div class="alert alert-info mb-0">
+                                {% trans "Please" %}
+                                <a href="{% url 'login' %}?next={{ request.path }}">{% trans "log in" %}</a>
+                                {% trans "to leave a comment." %}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </section>
+
+            <!-- Back to forum link -->
+            <div class="mt-4 mb-5">
+                <a href="{% url 'parent_forum' %}" class="btn btn-outline-primary">
+                    <i class="fa-solid fa-arrow-left" aria-hidden="true"></i> {% trans "Back to the Parents Forum" %}
+                </a>
             </div>
-          </div>
-          {% endif %}
         </div>
-      </div>
+    </main>
+{% endblock main_contents %}
 
-      <div class="card-body">
-        <!-- Post metadata -->
-        <div
-          class="mb-3 d-flex flex-column flex-sm-row justify-content-between gap-2"
-        >
-          <div class="post-author">
-            <span class="fw-bold">{% trans "Posted by:" %}</span> {{
-            post.author.username }}
-          </div>
-          <div class="post-date d-flex align-items-center gap-2">
-            <button
-              id="like-button"
-              class="btn btn-outline-primary btn-sm like-button {% if user_liked %}liked{% endif %}"
-              aria-label="{% trans 'Like this post' %}"
-              aria-pressed="{% if user_liked %}true{% else %}false{% endif %}"
-            >
-              <i class="fa-solid fa-heart" aria-hidden="true"></i>
-              <span id="like-count" class="like-count">{{ likes_count }}</span>
-              <span class="visually-hidden">{% trans "likes" %}</span>
-            </button>
-            <time
-              datetime="{{ post.created_at|date:'Y-m-d' }}"
-              class="text-muted small ms-auto"
-            >
-              {{ post.created_at|date:"F j, Y" }}
-            </time>
-          </div>
-        </div>
-
-        <!-- Post content -->
-        <div class="post-content mb-4">{{ post.desc|safe|linebreaks }}</div>
-
-        <!-- Post tags -->
-        <div class="post-tags mt-3">
-          <a
-            href="{% url 'parent_forum' %}?category={{ post.category }}"
-            class="badge bg-primary text-decoration-none"
-          >
-            #{{ post.get_category_display }}
-          </a>
-        </div>
-      </div>
-    </article>
-
-    <!-- Comments section -->
-    <section aria-labelledby="comments-heading" id="comments">
-      <h2 id="comments-heading">
-        {% blocktrans count counter=post.comments_count %}Comment ({{ counter
-        }}){% plural %}Comments ({{ counter }}){% endblocktrans %}
-      </h2>
-
-      {% if comments %}
-      <div class="comment-list">
-        {% for comment in comments %}
-        <div class="card mb-3" id="comment-{{ comment.id }}">
-          <div class="card-body">
-            <div class="d-flex justify-content-between mb-2">
-              <div>
-                <strong>{{ comment.author.username }}</strong>
-              </div>
-              <time
-                datetime="{{ comment.created_at|date:'Y-m-d' }}"
-                class="text-muted"
-              >
-                {{ comment.created_at|date:"M j, Y" }}
-              </time>
-            </div>
-            <p>{{ comment.text }}</p>
-          </div>
-        </div>
-        {% endfor %}
-      </div>
-      {% else %}
-      <p class="text-center my-4">
-        {% trans "No comments yet. Be the first to comment!" %}
-      </p>
-      {% endif %}
-
-      <div class="card mt-4 mb-4">
-        <div class="card-header">
-          <h3 class="card-title h5 mb-0">{% trans "Add Your Comment" %}</h3>
-        </div>
-        <div class="card-body">
-          {% if user.is_authenticated %}
-          <form
-            id="comment-form"
-            method="post"
-            action="{% url 'add_post_comment' post.id %}"
-          >
-            {% csrf_token %}
-            <div class="form-group mb-3">
-              <label for="comment-content" class="form-label"
-                >{% trans "Your comment" %}</label
-              >
-              <textarea
-                id="comment-content"
-                name="content"
-                class="form-control"
-                rows="3"
-                required
-              ></textarea>
-            </div>
-            <button type="submit" class="btn btn-primary">
-              <i class="fas fa-paper-plane me-2"></i>{% trans "Post Comment" %}
-            </button>
-          </form>
-          {% else %}
-          <div class="alert alert-info mb-0">
-            {% trans "Please" %}
-            <a href="{% url 'login' %}?next={{ request.path }}"
-              >{% trans "log in" %}</a
-            >
-            {% trans "to leave a comment." %}
-          </div>
-          {% endif %}
-        </div>
-      </div>
-    </section>
-
-    <!-- Back to forum link -->
-    <div class="mt-4 mb-5">
-      <a href="{% url 'parent_forum' %}" class="btn btn-outline-primary">
-        <i class="fa-solid fa-arrow-left" aria-hidden="true"></i> {% trans "Back
-        to the Parents Forum" %}
-      </a>
-    </div>
-  </div>
-</main>
-{% endblock main_contents %} {% block extra_js %} {{ block.super }}
-<script
-  src="{% static 'res/javascript/pages/post-page.js' %}"
-  type="module"
-></script>
-{% endblock %}
+{% block extra_js %}
+    {{ block.super }}
+    <script src="{% static 'res/javascript/pages/post-page.js' %}" type="module"></script>
+{% endblock extra_js %}

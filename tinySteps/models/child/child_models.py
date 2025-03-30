@@ -35,7 +35,7 @@ class YourChild_Model(models.Model):
         return self.name
     
     def get_absolute_url(self):
-        return reverse('child_details', kwargs={'pk': self.pk})
+        return reverse('child_detail', kwargs={'pk': self.pk})
     
     @property
     def get_image(self):

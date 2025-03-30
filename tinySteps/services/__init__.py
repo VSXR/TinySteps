@@ -1,27 +1,27 @@
 """Service package"""
 
 # Core services
-from .core.admin_service import AdminGuide_Service, Notification_Repository
-from .core.child_service import Child_Service
-from .core.forum_service import Forum_Service
+from tinySteps.services.core.admin_service import AdminGuide_Service, Notification_Repository
+from tinySteps.services.core.child_service import Child_Service
+from tinySteps.services.core.forum_service import Forum_Service
 
 # Guide services
-from .guides.base_service import Guide_Service
-from .guides.context_service import GuideContext_Service
-from .guides.nutrition_service import NutritionGuide_Service
-from .guides.parent_service import ParentGuide_Service
+from tinySteps.services.guides.base_service import Guide_Service
+from tinySteps.services.guides.context_service import GuideContext_Service
+from tinySteps.services.guides.nutrition_service import NutritionGuide_Service
+from tinySteps.services.guides.parent_service import ParentGuide_Service
 
 # External data services
-from .external.article_service import Article_Service
-from .external.nutrition_data_service import NutritionData_Service
+from tinySteps.services.external.article_service import Article_Service
+from tinySteps.services.external.nutrition_data_service import NutritionData_Service
 
 # API integrations
-from .apis.currents_service import CurrentsAPI_Service
-from .apis.edamam_service import EdamamAPI_Service
-from .apis.news_service import NewsAPI_Service
+from tinySteps.services.apis.currents_service import CurrentsAPI_Service
+from tinySteps.services.apis.edamam_service import EdamamAPI_Service
+from tinySteps.services.apis.news_service import NewsAPI_Service
 
 # Communication services
-from .communication.contact_service import Contact_Service
+from tinySteps.services.communication.contact_service import Contact_Service
 
 __all__ = [
     'AdminGuide_Service',

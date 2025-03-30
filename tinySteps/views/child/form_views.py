@@ -11,8 +11,9 @@ class YourChild_Add_View(LoginRequiredMixin, CreateView):
     """View to add a new child"""
     model = YourChild_Model
     form_class = YourChild_Form
-    template_name = 'child/add_child.html'
+    template_name = 'children/actions/create.html'
     
+    # Remove duplicate form_valid method - you have it twice
     def form_valid(self, form):
         """Set the user before saving the form"""
         form.instance.user = self.request.user
@@ -21,14 +22,18 @@ class YourChild_Add_View(LoginRequiredMixin, CreateView):
     
     def get_success_url(self):
         """Redirect to the child details page after successful creation"""
-        return reverse_lazy('your_child', kwargs={'pk': self.object.pk})
+        return reverse_lazy('child_detail', kwargs={'child_id': self.object.pk})
 
 class YourChild_UpdateDetails_View(LoginRequiredMixin, UpdateView):
     """View to update child details"""
     model = YourChild_Model
     form_class = YourChild_Form
-    template_name = 'child/edit_child.html'
+    template_name = 'children/actions/edit.html'
     
+    def get_success_url(self):
+        """Return to the child details page after updating"""
+        return reverse_lazy('child_detail', kwargs={'child_id': self.object.pk})
+
     def get_queryset(self):
         """Ensure users can only edit their own children"""
         return YourChild_Model.objects.filter(user=self.request.user)
@@ -37,11 +42,11 @@ class YourChild_UpdateDetails_View(LoginRequiredMixin, UpdateView):
         """Handle successful form submission"""
         messages.success(self.request, _("Child details updated successfully!"))
         return super().form_valid(form)
-
+    
 class YourChild_Delete_View(LoginRequiredMixin, DeleteView):
     """View to delete a child"""
     model = YourChild_Model
-    template_name = 'child/delete_child.html'
+    template_name = 'children/actions/delete.html'
     success_url = reverse_lazy('your_children')
     
     def get_queryset(self):

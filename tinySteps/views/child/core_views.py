@@ -8,17 +8,16 @@ from tinySteps.models import YourChild_Model
 def your_children(request):
     """View to display all children of the logged-in user"""
     children = YourChild_Model.objects.filter(user=request.user)
-    
     context = {
         'children': children,
     }
     
-    return render(request, 'child/children_list.html', context)
+    return render(request, 'children/list.html', context)
 
 @login_required
-def your_child(request, pk):
+def your_child(request, child_id):
     """View to display details of a specific child"""
-    child = get_object_or_404(YourChild_Model, pk=pk, user=request.user)
+    child = get_object_or_404(YourChild_Model, pk=child_id, user=request.user)
     
     context = {
         'child': child,
@@ -26,4 +25,4 @@ def your_child(request, pk):
         'upcoming_events': child.events.filter(date__gte=timezone.now().date()).order_by('date')[:3]
     }
     
-    return render(request, 'child/child_details.html', context)
+    return render(request, 'children/detail.html', context)
