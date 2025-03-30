@@ -1,23 +1,12 @@
 {% load i18n %}
 
-<div class="card {% if bg_color %}{{ bg_color }}{% else %}bg-light{% endif %} shadow-sm">
-    <div class="card-body p-4">
-        <div class="row align-items-center">
-            <div class="{% if button_url %}col-md-8{% else %}col-12{% endif %}">
-                <h2 class="{% if title_class %}{{ title_class }}{% else %}h4{% endif %} mb-3">{% trans title %}</h2>
-                <p class="mb-md-0">
-                    {% trans message %}
-                </p>
-            </div>
-            
-            {% if button_url %}
-            <div class="col-md-4 text-center text-md-end mt-3 mt-md-0">
-                <a href="{{ button_url }}" class="btn {% if button_class %}{{ button_class }}{% else %}btn-primary{% endif %}">
-                    {% if button_icon %}<i class="{{ button_icon }} me-1" aria-hidden="true"></i>{% endif %} 
-                    {% trans button_text %}
-                </a>
-            </div>
-            {% endif %}
-        </div>
+<div class="card bg-light mb-4">
+    <div class="card-body p-4 text-center">
+        <h3 class="card-title">{{ title }}</h3>
+        <p class="card-text mb-4">{{ message }}</p>
+        <a href="{{ button_url }}" class="btn {{ button_class }}">
+            {% if button_icon %}<i class="{{ button_icon }} me-2" aria-hidden="true"></i>{% endif %}
+            {{ button_text }}
+        </a>
     </div>
 </div>

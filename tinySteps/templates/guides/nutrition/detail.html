@@ -1,51 +1,121 @@
 {% extends 'base.html' %}
 {% load static %}
 {% load i18n %}
+{% load custom_filters %}
 
-{% block title %}
-{{ guide.title }} - {% trans "TINY STEPS" %}
-{% endblock %}
+{% block title %}{{ guide.title }} - {% trans "Tiny Steps" %}{% endblock %}
 
 {% block main_contents %}
-<main id="main-content">
+<main id="main-content" role="main">
     <div class="container my-4">
-        {% include 'guides/components/breadcrumbs.html' with is_detail=True guide=guide %}
+        {% include 'guides/components/breadcrumbs.html' with is_detail=True guide=guide section_type='nutrition' %}
         
-        <div class="row">
+        <div class="row g-4">
             <!-- Main content column -->
             <div class="col-lg-8">
-                <article class="card shadow-sm mb-4">
-                    <div class="card-body p-4">
-                        <h1 class="card-title mb-3">{{ guide.title }}</h1>
-                        
-                        <div class="d-flex justify-content-between align-items-center mb-4">
-                            <div class="meta text-muted">
-                                <span><i class="fa-solid fa-user me-1"></i> {{ guide.author.username }}</span>
-                                <span class="ms-3"><i class="fa-solid fa-calendar me-1"></i> {{ guide.approved_at|date:"F d, Y" }}</span>
-                            </div>
-                            <span class="badge bg-{% if section_type == 'nutrition' %}success{% else %}primary{% endif %}">
-                                {% if section_type == 'nutrition' %}
+                <article class="card shadow-sm border-0 mb-4" aria-labelledby="guide-title">
+                    <!-- Featured Image Header -->
+                    {% if guide.image %}
+                    <div class="position-relative">
+                        <img src="{{ guide.image.url }}" alt="{{ guide.title }}" class="card-img-top" style="height: 300px; object-fit: cover;">
+                        <div class="position-absolute bottom-0 start-0 w-100 p-3 pb-4" style="background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);">
+                            <div class="badges mb-2">
+                                <span class="badge bg-success" aria-label="{% trans 'Guide category' %}">
                                     {% trans "Nutrition" %}
-                                {% else %}
-                                    {% trans "Parenting" %}
+                                </span>
+                                
+                                {% if guide.age_range %}
+                                <span class="badge bg-secondary" aria-label="{% trans 'Age range' %}">
+                                    {{ guide.age_range }}
+                                </span>
                                 {% endif %}
-                            </span>
+                            </div>
+                            <h1 id="guide-title" class="card-title text-white mb-0 fs-3">{{ guide.title }}</h1>
                         </div>
+                    </div>
+                    {% endif %}
+                    
+                    <div class="card-body p-4 {% if not guide.image %}pt-3{% endif %}">
+                        {% if not guide.image %}
+                        <h1 id="guide-title" class="card-title mb-3">{{ guide.title }}</h1>
                         
-                        {% if guide.image_url %}
-                            <img src="{{ guide.image_url }}" alt="{{ guide.title }}" class="img-fluid rounded mb-4">
+                        <div class="badges mb-3">
+                            <span class="badge bg-success" aria-label="{% trans 'Guide category' %}">
+                                {% trans "Nutrition" %}
+                            </span>
+                            
+                            {% if guide.age_range %}
+                            <span class="badge bg-secondary" aria-label="{% trans 'Age range' %}">
+                                {{ guide.age_range }}
+                            </span>
+                            {% endif %}
+                        </div>
                         {% endif %}
                         
-                        <div class="guide-content">
+                        <!-- Author and Date -->
+                        <div class="meta text-muted mb-4">
+                            {% if guide.author %}
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-person-circle me-2 text-success" aria-hidden="true"></i>
+                                <span class="fw-medium">{{ guide.author.get_full_name|default:guide.author.username }}</span>
+                                <span class="mx-2">•</span>
+                                <time datetime="{{ guide.created_at|date:'Y-m-d' }}" class="text-muted">
+                                    <i class="bi bi-calendar3 me-1" aria-hidden="true"></i>
+                                    {{ guide.created_at|date:"F d, Y" }}
+                                </time>
+                            </div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Main Content -->
+                        <div class="guide-content mb-4">
                             {{ guide.desc|linebreaks }}
+                        </div>
+                        
+                        <!-- Tags -->
+                        {% if guide.tags.all %}
+                        <div class="d-flex flex-wrap align-items-center mt-4 pt-3 border-top">
+                            <span class="text-muted me-2 fs-6" aria-label="{% trans 'Tags' %}">
+                                <i class="bi bi-tags me-1" aria-hidden="true"></i> {% trans "Tags:" %}
+                            </span>
+                            {% for tag in guide.tags.all %}
+                                <a href="{% url 'nutrition_guides' %}?tag={{ tag.slug }}" class="badge bg-light text-dark me-2 mb-1 text-decoration-none">
+                                    {{ tag.name }}
+                                </a>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                        
+                        <!-- Social Share -->
+                        <div class="d-flex flex-wrap align-items-center mt-4 pt-3 border-top">
+                            <span class="text-muted me-3" aria-label="{% trans 'Share this guide' %}">
+                                {% trans "Share:" %}
+                            </span>
+                            <div class="share-buttons">
+                                <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri }}" 
+                                   class="btn btn-sm btn-outline-primary me-2" target="_blank" rel="noopener" 
+                                   aria-label="{% trans 'Share on Facebook' %}">
+                                    <i class="bi bi-facebook" aria-hidden="true"></i>
+                                </a>
+                                <a href="https://twitter.com/intent/tweet?url={{ request.build_absolute_uri }}&text={{ guide.title }}"
+                                   class="btn btn-sm btn-outline-info me-2" target="_blank" rel="noopener"
+                                   aria-label="{% trans 'Share on Twitter' %}">
+                                    <i class="bi bi-twitter" aria-hidden="true"></i>
+                                </a>
+                                <a href="mailto:?subject={{ guide.title }}&body={{ request.build_absolute_uri }}"
+                                   class="btn btn-sm btn-outline-secondary" target="_blank" rel="noopener"
+                                   aria-label="{% trans 'Share via Email' %}">
+                                    <i class="bi bi-envelope" aria-hidden="true"></i>
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </article>
 
                 <!-- Comments section -->
                 <section aria-labelledby="comments-heading" id="comments" class="mb-4">
-                    <div class="card shadow-sm">
-                        <div class="card-header bg-light">
+                    <div class="card shadow-sm border-0">
+                        <div class="card-header bg-light d-flex justify-content-between align-items-center">
                             <h2 id="comments-heading" class="h5 mb-0">
                                 {% if comments %}
                                     {% blocktrans count counter=comments.count %}Comment ({{ counter }}){% plural %}Comments ({{ counter }}){% endblocktrans %}
@@ -58,27 +128,28 @@
                             {% if comments %}
                                 <div class="comment-list">
                                     {% for comment in comments %}
-                                        <div class="card mb-3" id="comment-{{ comment.id }}">
+                                        <div class="card mb-3 border-0 bg-light bg-opacity-50" id="comment-{{ comment.id }}">
                                             <div class="card-body">
                                                 <div class="d-flex justify-content-between mb-2">
-                                                    <div>
+                                                    <div class="d-flex align-items-center">
+                                                        <i class="bi bi-person-circle me-2 fs-5" aria-hidden="true"></i>
                                                         <strong>{{ comment.author.username }}</strong>
                                                     </div>
-                                                    <time datetime="{{ comment.created_at|date:'Y-m-d' }}" class="text-muted">
+                                                    <time datetime="{{ comment.created_at|date:'Y-m-d' }}" class="text-muted small">
                                                         {{ comment.created_at|date:"M j, Y" }}
                                                     </time>
                                                 </div>
-                                                <p>{{ comment.text }}</p>
+                                                <p class="mb-0">{{ comment.text }}</p>
                                             </div>
                                         </div>
                                     {% endfor %}
                                 </div>
                             {% else %}
-                                <p class="text-center my-4">{% trans "No comments yet. Be the first to comment!" %}</p>
+                                <p class="text-center my-4 text-muted">{% trans "No comments yet. Be the first to comment!" %}</p>
                             {% endif %}
 
-                            <div class="card mt-4">
-                                <div class="card-header">
+                            <div class="card mt-4 border-0 bg-light">
+                                <div class="card-header bg-light">
                                     <h3 class="card-title h5 mb-0">{% trans "Add Your Comment" %}</h3>
                                 </div>
                                 <div class="card-body">
@@ -87,10 +158,14 @@
                                             {% csrf_token %}
                                             <div class="form-group mb-3">
                                                 <label for="comment-content" class="form-label">{% trans "Your comment" %}</label>
-                                                <textarea id="comment-content" name="content" class="form-control" rows="3" required></textarea>
+                                                <textarea id="comment-content" name="content" class="form-control" rows="3" required 
+                                                          aria-describedby="comment-help"></textarea>
+                                                <small id="comment-help" class="form-text text-muted">
+                                                    {% trans "Share your thoughts on this nutrition guide to help other parents." %}
+                                                </small>
                                             </div>
                                             <button type="submit" class="btn btn-success">
-                                                <i class="fas fa-paper-plane me-2"></i>{% trans "Post Comment" %}
+                                                <i class="bi bi-chat-dots-fill me-2" aria-hidden="true"></i>{% trans "Post Comment" %}
                                             </button>
                                         </form>
                                     {% else %}
@@ -107,9 +182,11 @@
             
             <!-- Sidebar column -->
             <div class="col-lg-4">
-                {% include 'guides/components/sidebar.html' with recent_guides=related_guides section_type=section_type %}
+                <div class="sticky-lg-top" style="top: 2rem">
+                    {% include 'guides/components/sidebar.html' with related_guides=related_guides section_type='nutrition' %}
+                </div>
             </div>
         </div>
     </div>
 </main>
-{% endblock %}
+{% endblock main_contents %}

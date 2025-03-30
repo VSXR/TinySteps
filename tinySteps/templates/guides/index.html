@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 {% load i18n %}
+{% load custom_filters %}
 
 {% block title %}
     {% trans "Guides and Resources - Tiny Steps" %}
@@ -9,19 +10,18 @@
 {% block main_contents %}
 <main id="main-content" role="main">
     <!-- Hero Section -->
-    <section class="hero-section py-5 bg-light mb-5">
-        <div class="container">
+    <div class="hero-section py-5 mb-5">        <div class="container">
             <div class="row justify-content-center">
                 <div class="col-lg-8 text-center">
-                    <h2 class="text-center fw-bold mb-3" id="page-heading">{% trans "Find Guidance for Every Step" %}</h2>
-                    <p class="lead text-center text-muted mb-4" id="page-description">
+                    <h1 class="display-5 fw-bold mb-3" id="page-heading">{% trans "Find Guidance for Every Step" %}</h1>
+                    <p class="lead text-center mb-4" id="page-description">
                         {% trans "Expert advice and support for your parenting journey." %}
                     </p>
-                    <hr class="my-4 w-50 mx-auto">
+                    <hr class="my-4 w-50 mx-auto opacity-25">
                 </div>
             </div>
         </div>
-    </section>
+    </div>
     
     <div class="container mb-5">
         <div class="row">
@@ -54,74 +54,18 @@
                     </section>
                 {% endif %}
                 
-                <!-- Featured Guides Section -->
-                <section class="mb-5">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <h2 class="h3 mb-0">{% trans "Featured Guides" %}</h2>
-                        <a href="{% url 'guides' %}" class="btn btn-sm btn-outline-primary">
-                            {% trans "View All" %} <i class="bi bi-arrow-right ms-1" aria-hidden="true"></i>
-                        </a>
-                    </div>
-                    
-                    <div class="row g-4">
-                        {% for guide in recent_guides|slice:":3" %}
-                            <div class="col-md-4">
-                                {% include "guides/components/guide_card.html" with guide=guide show_author=True %}
-                            </div>
-                        {% empty %}
-                            <div class="col-12">
-                                <div class="alert alert-info">
-                                    {% trans "No guides available yet. Check back soon!" %}
-                                </div>
-                            </div>
-                        {% endfor %}
-                    </div>
-                </section>
-                
-                <!-- Featured Articles Section -->
-                <section class="mb-5">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <h2 class="h3 mb-0">{% trans "Latest Articles" %}</h2>
-                        <div>
-                            <a href="{% url 'nutrition_articles' %}" class="btn btn-sm btn-outline-success me-2">
-                                {% trans "Nutrition" %}
-                            </a>
-                            <a href="{% url 'parent_articles' %}" class="btn btn-sm btn-outline-primary">
-                                {% trans "Parenting" %}
-                            </a>
-                        </div>
-                    </div>
-                    
-                    <div class="row g-4">
-                        {% for article in recent_articles|slice:":3" %}
-                            <div class="col-md-4">
-                                {% include "guides/components/article_card.html" with article=article %}
-                            </div>
-                        {% empty %}
-                            <div class="col-12">
-                                <div class="alert alert-info">
-                                    {% trans "No articles available yet. Check back soon!" %}
-                                </div>
-                            </div>
-                        {% endfor %}
-                    </div>
-                </section>
-                
-                <!-- Tools Section -->
-                <section>
-                    {% include "guides/components/featured_tools.html" %}
-                </section>
-
                 <!-- All Available Guides Section -->
-                <section class="mt-5">
-                    <div class="card border-0 shadow-sm">
-                        <div class="card-header bg-primary text-white">
-                            <h2 class="h4 mb-0">{% trans "All Available Guides" %}</h2>
+                <section>
+                    <!-- Parent Guides -->
+                    <div class="card border-0 shadow-sm mb-5">
+                        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                            <h2 class="h4 mb-0">{% trans "Parenting Guides" %}</h2>
+                            <a href="{% url 'parent_guides' %}" class="btn btn-sm btn-outline-light">
+                                {% trans "View All" %} <i class="bi bi-arrow-right ms-1" aria-hidden="true"></i>
+                            </a>
                         </div>
                         <div class="card-body">
-                            <!-- Parent Guides -->
-                            <h3 class="h5 mb-3 border-bottom pb-2">{% trans "Parenting Guides" %}</h3>
-                            <div class="row g-4 mb-4">
+                            <div class="row g-4">
                                 {% for guide in all_parent_guides %}
                                     <div class="col-md-6 col-lg-4">
                                         {% include "guides/components/guide_card.html" with guide=guide show_author=True %}
@@ -134,9 +78,18 @@
                                     </div>
                                 {% endfor %}
                             </div>
-                            
-                            <!-- Nutrition Guides -->
-                            <h3 class="h5 mb-3 mt-4 border-bottom pb-2">{% trans "Nutrition Guides" %}</h3>
+                        </div>
+                    </div>
+                    
+                    <!-- Nutrition Guides -->
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+                            <h2 class="h4 mb-0">{% trans "Nutrition Guides" %}</h2>
+                            <a href="{% url 'nutrition_guides' %}" class="btn btn-sm btn-outline-light">
+                                {% trans "View All" %} <i class="bi bi-arrow-right ms-1" aria-hidden="true"></i>
+                            </a>
+                        </div>
+                        <div class="card-body">
                             <div class="row g-4">
                                 {% for guide in all_nutrition_guides %}
                                     <div class="col-md-6 col-lg-4">
@@ -152,6 +105,11 @@
                             </div>
                         </div>
                     </div>
+                </section>
+                
+                <!-- Tools Section -->
+                <section class="mb-5 mt-5">
+                    {% include "guides/components/featured_tools.html" %}
                 </section>
             </div>
             

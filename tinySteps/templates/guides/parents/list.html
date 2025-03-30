@@ -1,37 +1,56 @@
 {% extends 'base.html' %}
 {% load static %}
 {% load i18n %}
+{% load custom_filters %}
 
-{% block title %}{% trans "Parent Guides - Tiny Steps" %}{% endblock %}
+{% block title %}{% trans "Parenting Guides - Tiny Steps" %}{% endblock %}
 
 {% block main_contents %}
-<main id="main-content" class="py-4">
+<main id="main-content" class="py-4" role="main">
     <div class="container mt-4 mb-5">
-        <div class="row">
-            <!-- Sidebar Column -->
-            <div class="col-lg-3 col-md-4 mb-4">
-                {% include "guides/components/sidebar.html" with active_section="guides" active_page="parent_guides" %}
-            </div>
+        {% include 'guides/components/breadcrumbs.html' with section_type='parent' is_articles=False is_detail=False %}
+        
+        {% include "guides/components/page_header.html" with title="Parenting Guides" subtitle="Development tips, care practices, and advice for new parents" %}
             
+        <div class="row">
             <!-- Main Content Column -->
-            <div class="col-lg-9 col-md-8">
-                <!-- Usar componente page_header -->
-                {% include "guides/components/page_header.html" with 
-                    title="PARENT GUIDES" 
-                    subtitle="Expert advice on parenting, child development, and more" %}
+            <div class="col-lg-9 col-md-8 order-1 order-md-1">
+                <!-- Featured Content Banner -->
+                <div class="card mb-4 bg-primary bg-opacity-10 border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <div class="row align-items-center">
+                            <div class="col-md-8">
+                                <h2 class="h4 mb-3">{% trans "New Parent Resources" %}</h2>
+                                <p class="mb-md-0">{% trans "Find comprehensive guides for new parents, covering everything from sleep routines to developmental milestones." %}</p>
+                            </div>
+                            <div class="col-md-4 text-md-end mt-3 mt-md-0">
+                                <a href="{% url 'parent_articles' %}" class="btn btn-primary" aria-label="{% trans 'Browse parenting articles' %}">
+                                    <i class="bi bi-collection me-2" aria-hidden="true"></i>{% trans "Browse Articles" %}
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 
-                <!-- Filtros de búsqueda -->
+                <!-- Search Filters -->
                 <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-light">
+                        <h2 class="h5 mb-0">{% trans "Filter Guides" %}</h2>
+                    </div>
                     <div class="card-body p-3">
-                        <form method="get" class="row g-3 align-items-end">
+                        <form method="get" class="row g-3 align-items-end" role="search">
                             <div class="col-md-4">
                                 <label for="search" class="form-label">{% trans "Search" %}</label>
-                                <input type="text" class="form-control" id="search" name="search" 
-                                       value="{{ request.GET.search }}" placeholder="{% trans 'Keywords...' %}">
+                                <div class="input-group">
+                                    <span class="input-group-text" aria-hidden="true"><i class="bi bi-search"></i></span>
+                                    <input type="text" class="form-control" id="search" name="search" 
+                                           value="{{ request.GET.search }}" placeholder="{% trans 'Keywords...' %}"
+                                           aria-label="{% trans 'Search guides' %}">
+                                </div>
                             </div>
                             <div class="col-md-3">
                                 <label for="age_range" class="form-label">{% trans "Age Range" %}</label>
-                                <select class="form-select" id="age_range" name="age_range">
+                                <select class="form-select" id="age_range" name="age_range" aria-label="{% trans 'Filter by age range' %}">
                                     <option value="">{% trans "All Ages" %}</option>
                                     <option value="0-6" {% if request.GET.age_range == '0-6' %}selected{% endif %}>0-6 {% trans "months" %}</option>
                                     <option value="6-12" {% if request.GET.age_range == '6-12' %}selected{% endif %}>6-12 {% trans "months" %}</option>
@@ -41,7 +60,7 @@
                             </div>
                             <div class="col-md-3">
                                 <label for="sort" class="form-label">{% trans "Sort By" %}</label>
-                                <select class="form-select" id="sort" name="sort">
+                                <select class="form-select" id="sort" name="sort" aria-label="{% trans 'Sort results' %}">
                                     <option value="newest" {% if request.GET.sort == 'newest' %}selected{% endif %}>{% trans "Newest First" %}</option>
                                     <option value="oldest" {% if request.GET.sort == 'oldest' %}selected{% endif %}>{% trans "Oldest First" %}</option>
                                     <option value="popular" {% if request.GET.sort == 'popular' %}selected{% endif %}>{% trans "Most Popular" %}</option>
@@ -49,45 +68,108 @@
                             </div>
                             <div class="col-md-2">
                                 <button type="submit" class="btn btn-primary w-100">
-                                    <i class="fa-solid fa-search me-1"></i> {% trans "Filter" %}
+                                    <i class="bi bi-funnel-fill me-1" aria-hidden="true"></i> {% trans "Filter" %}
                                 </button>
                             </div>
                         </form>
                     </div>
                 </div>
                 
-                <!-- Resultados -->
-                {% if guides %}
-                    <div class="row g-4 mb-4">
-                        {% for guide in guides %}
-                            <div class="col-md-6">
-                                {% include "guides/components/guide_card.html" with guide=guide show_date=True %}
+                <!-- Guide Listing -->
+                <section aria-labelledby="guides-heading">
+                    <h2 id="guides-heading" class="h3 mb-4">
+                        {% trans "Parenting Guides" %}
+                        {% if guides %}<span class="badge bg-secondary ms-2">{{ guides|length }}</span>{% endif %}
+                    </h2>
+                    
+                    {% if guides %}
+                        <div class="row row-cols-1 row-cols-md-2 g-4 mb-4">
+                            {% for guide in guides %}
+                                {% include "guides/components/guide_card.html" with guide=guide show_author=True show_date=True %}
+                            {% endfor %}
+                        </div>
+                        
+                        <!-- Pagination -->
+                        {% include "guides/components/pagination.html" with page_obj=guides %}
+                    {% else %}
+                        <div class="alert alert-info" role="alert">
+                            <div class="d-flex">
+                                <div class="me-3">
+                                    <i class="bi bi-info-circle-fill fs-4" aria-hidden="true"></i>
+                                </div>
+                                <div>
+                                    <h3 class="h5 alert-heading">{% trans "No Guides Found" %}</h3>
+                                    <p class="mb-0">{% trans "No parenting guides found matching your criteria. Try adjusting your filters or check back later." %}</p>
+                                </div>
                             </div>
-                        {% endfor %}
+                        </div>
+                    {% endif %}
+                </section>
+                
+                <!-- Contribute Banner -->
+                {% include "guides/components/contribute_banner.html" %}
+            </div>
+            
+            <!-- Sidebar Column -->
+            <div class="col-lg-3 col-md-4 order-2 order-md-2 mt-4 mt-md-0">
+                <div class="sticky-lg-top" style="top: 2rem;">
+                    {% include "guides/components/sidebar.html" with active_section="guides" active_page="parent_guides" %}
+                    
+                    <!-- Popular Tags -->
+                    <div class="card shadow-sm mb-4 mt-3">
+                        <div class="card-header bg-light">
+                            <h3 class="h5 mb-0">{% trans "Popular Topics" %}</h3>
+                        </div>
+                        <div class="card-body p-3">
+                            <div class="d-flex flex-wrap gap-2">
+                                <a href="?tag=sleep" class="btn btn-sm btn-outline-secondary">{% trans "Sleep" %}</a>
+                                <a href="?tag=feeding" class="btn btn-sm btn-outline-secondary">{% trans "Feeding" %}</a>
+                                <a href="?tag=development" class="btn btn-sm btn-outline-secondary">{% trans "Development" %}</a>
+                                <a href="?tag=play" class="btn btn-sm btn-outline-secondary">{% trans "Play" %}</a>
+                                <a href="?tag=health" class="btn btn-sm btn-outline-secondary">{% trans "Health" %}</a>
+                                <a href="?tag=behavior" class="btn btn-sm btn-outline-secondary">{% trans "Behavior" %}</a>
+                            </div>
+                        </div>
                     </div>
                     
-                    <!-- Paginación -->
-                    {% include "guides/components/pagination.html" with page_obj=guides %}
-                {% else %}
-                    <div class="alert alert-info">
-                        <p class="mb-0">{% trans "No parent guides found matching your criteria." %}</p>
-                    </div>
-                {% endif %}
-                
-                <!-- Artículos recientes -->
-                {% if latest_articles %}
-                    <h2 class="h4 mt-5 mb-4">{% trans "Latest Articles" %}</h2>
-                    <div class="row g-4">
-                        {% for article in latest_articles %}
-                            <div class="col-md-4">
-                                {% include "guides/components/article_card.html" with article=article %}
+                    <!-- Age-Based Resources -->
+                    <div class="card shadow-sm mb-4">
+                        <div class="card-header bg-primary text-white">
+                            <h3 class="h5 mb-0">{% trans "Age-Based Resources" %}</h3>
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="list-group list-group-flush">
+                                <a href="?age_range=0-6" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                    <span>{% trans "0-6 months" %}</span>
+                                    <i class="bi bi-chevron-right" aria-hidden="true"></i>
+                                </a>
+                                <a href="?age_range=6-12" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                    <span>{% trans "6-12 months" %}</span>
+                                    <i class="bi bi-chevron-right" aria-hidden="true"></i>
+                                </a>
+                                <a href="?age_range=12-24" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                    <span>{% trans "1-2 years" %}</span>
+                                    <i class="bi bi-chevron-right" aria-hidden="true"></i>
+                                </a>
+                                <a href="?age_range=24+" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                    <span>{% trans "2+ years" %}</span>
+                                    <i class="bi bi-chevron-right" aria-hidden="true"></i>
+                                </a>
                             </div>
-                        {% endfor %}
+                        </div>
                     </div>
-                {% endif %}
-                
-                <!-- Banner de contribución -->
-                {% include "guides/components/contribute_banner.html" %}
+                    
+                    <!-- Need Help? -->
+                    <div class="card shadow-sm bg-light">
+                        <div class="card-body">
+                            <h3 class="h5">{% trans "Need Help?" %}</h3>
+                            <p class="small mb-3">{% trans "Can't find what you're looking for? Our community is here to help." %}</p>
+                            <a href="#" class="btn btn-outline-primary btn-sm w-100">
+                                <i class="bi bi-chat-dots me-2" aria-hidden="true"></i>{% trans "Ask the Community" %}
+                            </a>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

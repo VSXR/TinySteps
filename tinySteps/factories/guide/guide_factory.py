@@ -28,30 +28,46 @@ class GuideUrl_Factory:
         if guide_type == 'parent':
             url_patterns.append(path('guides/', guides_page, name='guides'))
         
-        # Type-specific URLs
+        # These are the core URL patterns for each guide type
         url_patterns.extend([
-            path(f'guides/{guide_type}/', guide_views.guide_list_view, {'guide_type': guide_type}, 
+            # Guide list view
+            path(f'guides/{guide_type}/', 
+                guide_views.guide_list_view, 
+                {'guide_type': guide_type}, 
                 name=f'{guide_type}_guides'),
-            path(f'guides/{guide_type}/<int:pk>/', guide_views.guide_detail_view, {'guide_type': guide_type}, 
+            
+            # Guide detail view
+            path(f'guides/{guide_type}/<int:pk>/', 
+                guide_views.guide_detail_view, 
+                {'guide_type': guide_type}, 
                 name=f'{guide_type}_guide_details'),
-            path(f'guides/{guide_type}/articles/', article_views.article_list_view, {'guide_type': guide_type}, 
+            
+            # Article list view
+            path(f'guides/{guide_type}/articles/', 
+                article_views.article_list_view, 
+                {'guide_type': guide_type}, 
                 name=f'{guide_type}_articles'),
-            path(f'guides/{guide_type}/articles/<slug:slug>/', article_views.article_detail_view, {'guide_type': guide_type}, 
+            
+            # Article detail view - using guide_type for the URL name
+            path(f'guides/{guide_type}/articles/<int:article_id>/', 
+                article_views.article_detail_view, 
+                {'guide_type': guide_type, 'category': guide_type}, 
                 name=f'{guide_type}_article_details'),
         ])
         
+        # Special cases for parent guide type
         if guide_type == 'parent':
             url_patterns.extend([
                 path('guides/submit/', submission_views.submit_guide, name='submit_guide'),
                 path('guides/my-guides/', guide_views.my_guides_view, name='my_guides'),
             ])
         
-        # Special cases for specific types
+        # Special cases for nutrition guide type
         if guide_type == 'nutrition':
             url_patterns.extend([
                 path('nutrition/analyzer/', analyzer_views.nutrition_analyzer_view, name='nutrition_analyzer'),
                 path('nutrition/comparison/', comparison_views.nutrition_comparison_view, name='nutrition_comparison'),
                 path('nutrition/save/', analyzer_views.nutrition_save_view, name='nutrition_save'),
             ])
-            
+        
         return url_patterns

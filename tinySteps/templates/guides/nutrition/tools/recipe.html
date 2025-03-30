@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load i18n %}
+{% load custom_filters %}
+
+{% block title %}{% trans "Baby Food Recipe" %} - {% trans "Tiny Steps" %}{% endblock %}
+
+{% block main_contents %}
+<main id="main-content" role="main">
+    <div class="container my-4">
+        {% include 'guides/components/breadcrumbs.html' with section_type='nutrition' %}
+        
+        <h1 class="mb-4">{% trans "Baby Food Recipe" %}</h1>
+        
+        <div class="row g-4">
+            <div class="col-lg-8">
+                <div class="card shadow-sm border-0">
+                    <div class="card-body p-4">
+                        <div class="alert alert-info">
+                            <i class="bi bi-info-circle-fill me-2"></i>
+                            {% trans "The baby food recipes feature is coming soon! You'll be able to view detailed recipes with nutritional information here." %}
+                        </div>
+                        
+                        <div class="text-center mt-4 mb-2">
+                            <p class="mb-3">{% trans "Recipe ID:" %} {{ recipe_id }}</p>
+                            <a href="{% url 'nutrition_analyzer' %}" class="btn btn-success">
+                                <i class="bi bi-calculator me-2"></i>{% trans "Go to Nutrition Analyzer" %}
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-4">
+                    <a href="{% url 'nutrition_guides' %}" class="btn btn-outline-primary">
+                        <i class="bi bi-arrow-left me-2"></i>{% trans "Back to Nutrition Guides" %}
+                    </a>
+                </div>
+            </div>
+            
+            <div class="col-lg-4">
+                <div class="card shadow-sm border-0 mb-4">
+                    <div class="card-header bg-light">
+                        <h2 class="h5 mb-0">{% trans "Nutrition Tools" %}</h2>
+                    </div>
+                    <div class="card-body">
+                        <a href="{% url 'nutrition_analyzer' %}" class="btn btn-outline-success d-block mb-2">
+                            <i class="bi bi-calculator me-2"></i>{% trans "Nutrition Analyzer" %}
+                        </a>
+                        <a href="{% url 'nutrition_comparison' %}" class="btn btn-outline-success d-block mb-2">
+                            <i class="bi bi-bar-chart me-2"></i>{% trans "Food Comparison" %}
+                        </a>
+                        {% if user.is_authenticated %}
+                        <a href="{% url 'nutrition_favorites' %}" class="btn btn-outline-primary d-block">
+                            <i class="bi bi-bookmark-heart me-2"></i>{% trans "My Saved Items" %}
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="card shadow-sm border-0">
+                    <div class="card-body bg-light">
+                        <h3 class="h5">{% trans "Coming Soon" %}</h3>
+                        <p class="mb-0 text-muted">
+                            {% trans "We're building a comprehensive database of age-appropriate baby food recipes with complete nutritional information and preparation instructions." %}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock main_contents %}

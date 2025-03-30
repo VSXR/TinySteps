@@ -1,9 +1,11 @@
 {% load i18n %}
 
-{% include "guides/components/cta_banner.html" with 
-    title="Share Your Knowledge" 
-    message="Have parenting or nutrition tips that worked for you? Submit your own guide to help other parents." 
-    button_url=submit_guide_url|default:"/guides/submit/" 
-    button_text="Submit Guide" 
-    button_icon="fa-solid fa-pencil" 
-    button_class="btn-primary" %}
+<div class="card bg-light mb-4">
+    <div class="card-body p-4 text-center">
+        <h3 class="card-title">{% trans "Share Your Knowledge" %}</h3>
+        <p class="card-text mb-4">{% trans "Have parenting or nutrition tips that worked for you? Submit your own guide to help other parents." %}</p>
+        <a href="{{ submit_guide_url|default:'/guides/submit/' }}" class="btn btn-primary">
+            <i class="fa-solid fa-pencil me-2" aria-hidden="true"></i>{% trans "Submit Guide" %}
+        </a>
+    </div>
+</div>

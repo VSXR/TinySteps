@@ -3,13 +3,13 @@
 <nav aria-label="{% trans 'Breadcrumb' %}" class="mb-4">
     <ol class="breadcrumb bg-light p-3 rounded shadow-sm">
         <li class="breadcrumb-item">
-            <a href="{% url 'home' %}" class="text-decoration-none">
+            <a href="/" class="text-decoration-none">
                 <i class="bi bi-house-door me-1" aria-hidden="true"></i>
                 <span>{% trans "Home" %}</span>
             </a>
         </li>
         <li class="breadcrumb-item">
-            <a href="{% url 'guides' %}" class="text-decoration-none">
+            <a href="/guides/" class="text-decoration-none">
                 <i class="bi bi-journals me-1" aria-hidden="true"></i>
                 <span>{% trans "Guides" %}</span>
             </a>
@@ -18,17 +18,17 @@
         {% if section_type %}
             <li class="breadcrumb-item">
                 {% if section_type == 'nutrition' %}
-                    <a href="{% url 'nutrition_guides' %}" class="text-decoration-none">
+                    <a href="/guides/nutrition/" class="text-decoration-none">
                         <i class="bi bi-apple me-1" aria-hidden="true"></i>
                         <span>{% trans "Nutrition" %}</span>
                     </a>
                 {% elif section_type == 'parent' %}
-                    <a href="{% url 'parenting_guides' %}" class="text-decoration-none">
+                    <a href="/guides/parent/" class="text-decoration-none">
                         <i class="bi bi-people me-1" aria-hidden="true"></i>
                         <span>{% trans "Parenting" %}</span>
                     </a>
                 {% elif section_type == 'my_guides' %}
-                    <a href="{% url 'my_guides' %}" class="text-decoration-none">
+                    <a href="/guides/my/" class="text-decoration-none">
                         <i class="bi bi-collection me-1" aria-hidden="true"></i>
                         <span>{% trans "My Guides" %}</span>
                     </a>
@@ -40,12 +40,12 @@
             <li class="breadcrumb-item {% if not is_detail %}active{% endif %}">
                 {% if is_detail %}
                     {% if section_type == 'nutrition' %}
-                        <a href="{% url 'nutrition_articles' %}" class="text-decoration-none">
+                        <a href="/articles/nutrition/" class="text-decoration-none">
                             <i class="bi bi-newspaper me-1" aria-hidden="true"></i>
                             <span>{% trans "Articles" %}</span>
                         </a>
                     {% else %}
-                        <a href="{% url 'parenting_articles' %}" class="text-decoration-none">
+                        <a href="/articles/parenting/" class="text-decoration-none">
                             <i class="bi bi-newspaper me-1" aria-hidden="true"></i>
                             <span>{% trans "Articles" %}</span>
                         </a>

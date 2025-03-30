@@ -2,18 +2,19 @@
 {% load i18n %}
 {% load custom_filters %}
 
-<article class="card h-100 shadow-sm hover-card transition-300" role="article" aria-labelledby="guide-title-{{ guide.id }}">
-    {% if guide.image %}
-        <img src="{{ guide.image.url }}" class="card-img-top" loading="lazy" style="height: 200px; object-fit: cover;"
-             alt="{% blocktrans with title=guide.title %}Visual representation for {{ title }} guide{% endblocktrans %}">
-    {% else %}
-        <img src="{% static 'img/others/default.jpg' %}" class="card-img-top" loading="lazy" style="height: 200px; object-fit: cover;"
-             alt="{% if guide.guide_type == 'nutrition' %}{% trans 'Default nutrition guide illustration' %}{% else %}{% trans 'Default parenting guide illustration' %}{% endif %}">
-    {% endif %}
-    
-    <div class="card-body d-flex flex-column">
-        {% if show_type_badge|default:True %}
-            <div class="mb-2">
+<div class="col">
+    <article class="card h-100 shadow-sm hover-card border-0 text-center mx-auto" style="max-width: 320px;">
+        <div class="position-relative">
+            {% if guide.image %}
+                <img src="{{ guide.image.url }}" class="card-img-top" loading="lazy" style="height: 160px; object-fit: cover;"
+                    alt="{% trans 'Guide image' %}">
+            {% else %}
+                <img src="{% static 'res/img/others/default.jpg' %}" class="card-img-top" loading="lazy" style="height: 160px; object-fit: cover;"
+                    alt="{% trans 'Default guide image' %}">
+            {% endif %}
+            
+            <!-- Badge overlay -->
+            <div class="position-absolute top-0 end-0 p-2">
                 {% if guide.guide_type == 'parent' %}
                     <span class="badge bg-primary">{% trans "Parenting" %}</span>
                 {% else %}
@@ -21,60 +22,47 @@
                 {% endif %}
                 
                 {% if guide.expert_reviewed %}
-                    <span class="badge bg-info ms-1" data-bs-toggle="tooltip" title="{% trans 'This guide has been reviewed by experts' %}">
-                        <i class="bi bi-patch-check-fill me-1" aria-hidden="true"></i>{% trans "Expert Reviewed" %}
+                    <span class="badge bg-info ms-1" data-bs-toggle="tooltip" title="{% trans 'Expert reviewed' %}">
+                        <i class="bi bi-patch-check-fill" aria-hidden="true"></i>
                     </span>
                 {% endif %}
             </div>
-        {% endif %}
+        </div>
         
-        <h2 id="guide-title-{{ guide.id }}" class="card-title h5">{{ guide.title }}</h2>
-        
-        <p class="card-text flex-grow-1">
-            {{ guide.desc|truncatewords:25 }}
-        </p>
-        
-        {% if show_author and guide.author %}
-            <div class="d-flex align-items-center mt-2 mb-3">
-                {% if guide.author.profile_image %}
-                    <img src="{{ guide.author.profile_image.url }}" class="rounded-circle me-2" width="32" height="32" 
-                         alt="{% blocktrans with name=guide.author.get_full_name %}Profile picture of {{ name }}{% endblocktrans %}">
-                {% else %}
-                    <div class="bg-light rounded-circle me-2 d-flex justify-content-center align-items-center" style="width: 32px; height: 32px;">
-                        <i class="bi bi-person-fill text-secondary" aria-hidden="true"></i>
-                    </div>
+        <div class="card-body py-3 px-3 d-flex flex-column align-items-center">
+            <h2 class="card-title h6 mb-2">{{ guide.title }}</h2>
+            
+            <p class="card-text small text-muted mb-2 flex-grow-1">
+                {{ guide.desc|truncatewords:15 }}
+            </p>
+            
+            <div class="d-flex justify-content-center align-items-center w-100 mt-auto">
+                {% if show_author and guide.author %}
+                    <small class="text-muted me-2">
+                        <i class="bi bi-person-fill me-1" aria-hidden="true"></i>
+                        {{ guide.author.get_full_name|default:guide.author.username|truncatechars:15 }}
+                    </small>
                 {% endif %}
-                <span class="small text-muted">
-                    <span class="visually-hidden">{% trans "Author:" %}</span>
-                    {{ guide.author.get_full_name }}
-                </span>
+                
+                {% if show_date and guide.created_at %}
+                    <small class="text-muted">
+                        <i class="bi bi-calendar3 me-1" aria-hidden="true"></i>
+                        {{ guide.created_at|date:"M d" }}
+                    </small>
+                {% endif %}
             </div>
-        {% endif %}
-    </div>
-    
-    <div class="card-footer bg-white border-top-0 d-flex justify-content-between align-items-center">
-        {% if show_button|default:True %}
+        </div>
+        
+        <div class="card-footer bg-white border-top-0 p-3">
             {% if guide.guide_type == 'nutrition' %}
-                <a href="{% url 'nutrition_guide_details' guide.id %}" class="btn {% if button_style %}{{ button_style }}{% else %}btn-sm btn-outline-success{% endif %}" 
-                   aria-label="{% blocktrans with title=guide.title %}Show details for {{ title }}{% endblocktrans %}">
-                   <i class="bi bi-journal-richtext me-1 d-none d-sm-inline" aria-hidden="true"></i>
-                   {% if button_text %}{{ button_text }}{% else %}{% trans "Read More" %}{% endif %}
+                <a href="{% url 'nutrition_guide_details' guide.id %}" class="btn btn-sm btn-outline-success w-100">
+                    {% trans "Read More" %}
                 </a>
             {% else %}
-                <a href="{% url 'parent_guide_details' guide.id %}" class="btn {% if button_style %}{{ button_style }}{% else %}btn-sm btn-outline-primary{% endif %}" 
-                   aria-label="{% blocktrans with title=guide.title %}Show details for {{ title }}{% endblocktrans %}">
-                   <i class="bi bi-journal-richtext me-1 d-none d-sm-inline" aria-hidden="true"></i>
-                   {% if button_text %}{{ button_text }}{% else %}{% trans "Read More" %}{% endif %}
+                <a href="{% url 'parent_guide_details' guide.id %}" class="btn btn-sm btn-outline-primary w-100">
+                    {% trans "Read More" %}
                 </a>
             {% endif %}
-        {% endif %}
-        
-        {% if show_date and guide.created_at %}
-            <small class="text-muted">
-                <i class="bi bi-calendar3 me-1" aria-hidden="true"></i>
-                <span class="visually-hidden">{% trans "Published:" %}</span>
-                {{ guide.created_at|date:"M d, Y" }}
-            </small>
-        {% endif %}
-    </div>
-</article>
+        </div>
+    </article>
+</div>

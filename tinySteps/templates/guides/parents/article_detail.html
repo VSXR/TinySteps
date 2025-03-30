@@ -1,0 +1,179 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load i18n %}
+{% load custom_filters %}
+
+{% block title %}{{ article.title }} - Tiny Steps{% endblock %}
+
+{% block main_contents %}
+<main id="main-content" role="main">
+    <div class="container my-5">
+        <!-- Breadcrumbs -->
+        {% include 'guides/components/breadcrumbs.html' with section_type='parent' is_articles=True is_detail=True article=article %}
+        
+        {% if article %}
+            <article class="pb-4">
+                <!-- Article Header -->
+                <header class="mb-4 text-center">
+                    <h1 class="display-5 fw-bold mb-3">{{ article.title }}</h1>
+                    
+                    <div class="d-flex justify-content-center flex-wrap text-muted mb-3">
+                        {% if article.published_at %}
+                        <div class="mx-2 mb-2">
+                            <i class="bi bi-calendar-date me-1" aria-hidden="true"></i> 
+                            {{ article.published_at|date:"F d, Y" }}
+                        </div>
+                        {% endif %}
+                        
+                        {% if article.author %}
+                        <div class="mx-2 mb-2">
+                            <i class="bi bi-person me-1" aria-hidden="true"></i> 
+                            {{ article.author.get_full_name|default:article.author.username }}
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Tags if available -->
+                    {% if article.tags.all %}
+                    <div class="mb-3">
+                        {% for tag in article.tags.all %}
+                            <span class="badge bg-primary me-1">{{ tag.name }}</span>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </header>
+                
+                <!-- Article Featured Image -->
+                {% if article.image %}
+                <figure class="text-center mb-5">
+                    <img src="{{ article.image.url }}" alt="{{ article.title }}" class="img-fluid rounded shadow-sm" style="max-height: 500px; max-width: 100%;">
+                </figure>
+                {% endif %}
+                
+                <!-- Article Content -->
+                <div class="article-content lh-lg mb-5">
+                    {% if article.desc %}
+                        {{ article.desc|safe }}
+                    {% else %}
+                        <p class="text-muted text-center">{% trans "No content available for this article." %}</p>
+                    {% endif %}
+                </div>
+                
+                <!-- Share Links -->
+                <div class="d-flex justify-content-center mb-5">
+                    <div class="d-flex gap-2">
+                        <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri }}" target="_blank" rel="noopener" class="btn btn-sm btn-outline-primary">
+                            <i class="bi bi-facebook me-1" aria-hidden="true"></i> {% trans "Share" %}
+                        </a>
+                        <a href="https://twitter.com/intent/tweet?url={{ request.build_absolute_uri }}&text={{ article.title }}" target="_blank" rel="noopener" class="btn btn-sm btn-outline-info">
+                            <i class="bi bi-twitter me-1" aria-hidden="true"></i> {% trans "Tweet" %}
+                        </a>
+                        <a href="mailto:?subject={{ article.title }}&body={{ request.build_absolute_uri }}" class="btn btn-sm btn-outline-secondary">
+                            <i class="bi bi-envelope me-1" aria-hidden="true"></i> {% trans "Email" %}
+                        </a>
+                    </div>
+                </div>
+            </article>
+            
+            <!-- Comments Section -->
+            <section class="comments-section bg-light p-4 rounded-3 mb-5">
+                <h3 class="h5 mb-4">{% trans "Comments" %} ({{ article.comments.count|default:"0" }})</h3>
+                
+                {% if article.comments.all %}
+                    <div class="comments-list mb-4">
+                        {% for comment in article.comments.all %}
+                            <div class="comment-item mb-3 pb-3 {% if not forloop.last %}border-bottom{% endif %}">
+                                <div class="d-flex">
+                                    <div class="flex-shrink-0 me-3">
+                                        {% if comment.user.profile.avatar %}
+                                            <img src="{{ comment.user.profile.avatar.url }}" alt="{{ comment.user.username }}" class="rounded-circle" width="40" height="40">
+                                        {% else %}
+                                            <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center text-white" style="width: 40px; height: 40px;">
+                                                <span>{{ comment.user.username|first }}</span>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <div class="d-flex justify-content-between align-items-center mb-1">
+                                            <h6 class="m-0">{{ comment.user.get_full_name|default:comment.user.username }}</h6>
+                                            <small class="text-muted">{{ comment.created_at|date:"M d, Y" }}</small>
+                                        </div>
+                                        <p class="mb-0">{{ comment.content }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="text-muted">{% trans "No comments yet. Be the first to share your thoughts!" %}</p>
+                {% endif %}
+                
+                <!-- Comment Form -->
+                {% if user.is_authenticated %}
+                    <form method="post" action="{% url 'parent_article_comment' article.id %}">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="comment-content" class="form-label">{% trans "Leave a comment" %}</label>
+                            <textarea id="comment-content" name="content" class="form-control" rows="3" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">{% trans "Post Comment" %}</button>
+                    </form>
+                {% else %}
+                    <div class="alert alert-info mb-0">
+                        <i class="bi bi-info-circle me-2" aria-hidden="true"></i>
+                        {% trans "Please" %} <a href="{% url 'login' %}?next={{ request.path }}" class="alert-link">{% trans "log in" %}</a> {% trans "to leave a comment." %}
+                    </div>
+                {% endif %}
+            </section>
+            
+            <!-- Related Articles -->
+            {% if related_articles %}
+            <section class="mt-5">
+                <h3 class="h5 mb-4">{% trans "You might also like" %}</h3>
+                <div class="row row-cols-1 row-cols-md-3 g-4">
+                    {% for related in related_articles %}
+                        {% if related.id != article.id %}
+                        <div class="col">
+                            <div class="card h-100 shadow-sm hover-card">
+                                {% if related.image %}
+                                    <img src="{{ related.image.url }}" class="card-img-top" alt="{{ related.title }}" style="height: 140px; object-fit: cover;">
+                                {% else %}
+                                    <div class="card-img-top bg-light d-flex align-items-center justify-content-center py-4" style="height: 140px;">
+                                        <i class="bi bi-journal-text fs-1 text-muted" aria-hidden="true"></i>
+                                    </div>
+                                {% endif %}
+                                
+                                <div class="card-body">
+                                    <h4 class="h6 card-title">{{ related.title }}</h4>
+                                    <p class="card-text small text-muted">{{ related.desc|truncatechars:80 }}</p>
+                                    <a href="{% url 'parent_article_details' related.id %}" class="btn btn-sm btn-outline-primary w-100">{% trans "Read More" %}</a>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </section>
+            {% endif %}
+        
+        {% else %}
+            <!-- Article Not Found -->
+            <div class="text-center py-5 my-5">
+                <div class="display-1 text-muted mb-4">
+                    <i class="bi bi-journal-x" aria-hidden="true"></i>
+                </div>
+                <h2 class="h3 mb-4">{% trans "Article not found" %}</h2>
+                <p class="lead text-muted mb-4">{% trans "The parenting article you're looking for doesn't exist or has been removed." %}</p>
+                <div>
+                    <a href="{% url 'parent_articles' %}" class="btn btn-primary me-2">
+                        <i class="bi bi-journals me-1" aria-hidden="true"></i> {% trans "Browse Articles" %}
+                    </a>
+                    <a href="{% url 'home' %}" class="btn btn-outline-secondary">
+                        <i class="bi bi-house me-1" aria-hidden="true"></i> {% trans "Back to Home" %}
+                    </a>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</main>
+{% endblock main_contents %}

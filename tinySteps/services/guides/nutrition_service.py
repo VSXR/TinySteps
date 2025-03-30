@@ -10,13 +10,17 @@ class NutritionGuide_Service(Guide_Service):
         self.nutrition_data_service = NutritionData_Service()
     
     def get_template_path(self, view_type):
+        """Get the template path for a specific view type"""
         templates = {
             'list': 'guides/nutrition/list.html',
             'detail': 'guides/nutrition/detail.html',
             'articles': 'guides/nutrition/articles.html',
             'article_detail': 'guides/nutrition/article_detail.html',
-            'analyzer': 'guides/nutrition/analyzer.html',
-            'comparison': 'guides/nutrition/comparison.html',
+            'analyzer': 'guides/nutrition/tools/analyzer.html',
+            'comparison': 'guides/nutrition/tools/comparison.html',
+            'history': 'guides/nutrition/tools/history.html',
+            'favorites': 'guides/nutrition/tools/favorites.html',
+            'recipe': 'guides/nutrition/tools/recipe.html',
         }
         return templates.get(view_type)
     
@@ -25,13 +29,6 @@ class NutritionGuide_Service(Guide_Service):
         from tinySteps.services.apis.edamam_service import EdamamAPI_Service
         service = EdamamAPI_Service()
         return service.get_nutrition_data(ingredient)
-    
-    def get_recent_guides(self, limit=3):
-        """Get recent nutrition guides"""
-        return self.repository.get_guides_by_type(
-            self.guide_type,
-            count=limit
-        )
     
     def analyze_request(self, request):
         """Analyze nutrition request from view"""
@@ -62,7 +59,7 @@ class NutritionGuide_Service(Guide_Service):
             'saved_data': saved_data,
         }
     
-    def compare_ingredients(self, ingredients):
+    def compare_nutrition_data(self, ingredients):
         """Compare nutritional values of different ingredients"""
         results = {}
         
@@ -117,3 +114,21 @@ class NutritionGuide_Service(Guide_Service):
             status='approved',
             count=limit
         )
+        
+    # Métodos de compatibilidad para evitar errores - devuelven valores por defecto
+    def get_recent_nutrition_searches(self, limit=5, user=None):
+        """Compatibilidad: Devuelve una lista vacía para mantener la API"""
+        return []
+        
+    def get_popular_comparisons(self, limit=5):
+        """Compatibilidad: Devuelve datos de ejemplo"""
+        return [
+            ["apple", "banana"],
+            ["broccoli", "spinach"],
+            ["yogurt", "milk"],
+            ["sweet potato", "carrots"]
+        ][:limit]
+        
+    def save_user_nutrition_preference(self, user, ingredient):
+        """Compatibilidad: Redirige a save_ingredient_for_user"""
+        return self.save_ingredient_for_user(ingredient, user)

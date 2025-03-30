@@ -1,0 +1,315 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load i18n %}
+{% load custom_filters %}
+
+{% block title %}{% trans "Food Comparison Tool" %} - {% trans "Tiny Steps" %}{% endblock %}
+
+{% block main_contents %}
+<main id="main-content" role="main">
+    <div class="container my-4">
+        {% include 'guides/components/breadcrumbs.html' with section_type='nutrition' %}
+        
+        <h1 class="mb-4" id="page-heading">{% trans "Food Comparison Tool" %}</h1>
+        
+        <div class="row g-4">
+            <div class="col-lg-8">
+                <div class="card shadow-sm border-0 mb-4">
+                    <div class="card-body p-4">
+                        <p class="text-muted mb-4" id="comparison-description">
+                            {% trans "Compare the nutritional values of different foods to make informed choices for your baby." %}
+                        </p>
+                        
+                        <form method="GET" action="{% url 'nutrition_comparison' %}" class="mb-4" id="comparison-form" aria-labelledby="comparison-description">
+                            <div class="ingredients-container">
+                                {% for i in ingredients %}
+                                <div class="input-group mb-2">
+                                    <span class="input-group-text" id="food-label-{{ forloop.counter }}">{% trans "Food" %} {{ forloop.counter }}</span>
+                                    <input type="text" name="ingredients" class="form-control" 
+                                           value="{{ i }}" placeholder="{% trans 'e.g., avocado' %}"
+                                           aria-labelledby="food-label-{{ forloop.counter }}">
+                                    {% if forloop.counter > 2 %}
+                                    <button type="button" class="btn btn-outline-danger remove-ingredient" aria-label="{% trans 'Remove this ingredient' %}">
+                                        <i class="bi bi-x-lg" aria-hidden="true"></i>
+                                    </button>
+                                    {% endif %}
+                                </div>
+                                {% empty %}
+                                <div class="input-group mb-2">
+                                    <span class="input-group-text" id="food-label-1">{% trans "Food" %} 1</span>
+                                    <input type="text" name="ingredients" class="form-control" 
+                                           placeholder="{% trans 'e.g., avocado' %}" required
+                                           aria-labelledby="food-label-1">
+                                </div>
+                                <div class="input-group mb-2">
+                                    <span class="input-group-text" id="food-label-2">{% trans "Food" %} 2</span>
+                                    <input type="text" name="ingredients" class="form-control" 
+                                           placeholder="{% trans 'e.g., sweet potato' %}" required
+                                           aria-labelledby="food-label-2">
+                                </div>
+                                {% endfor %}
+                            </div>
+                            
+                            <div class="mb-3">
+                                <button type="button" id="add-ingredient" class="btn btn-outline-secondary btn-sm">
+                                    <i class="bi bi-plus-lg me-1" aria-hidden="true"></i>{% trans "Add Another Food" %}
+                                </button>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-success">
+                                <i class="bi bi-bar-chart me-2" aria-hidden="true"></i>{% trans "Compare Foods" %}
+                            </button>
+                        </form>
+                        
+                        {% if comparison_data %}
+                            <h2 class="h4 mb-3" id="results-heading">{% trans "Comparison Results" %}</h2>
+                            
+                            <div class="table-responsive">
+                                <table class="table table-striped" aria-labelledby="results-heading">
+                                    <caption class="visually-hidden">{% trans "Nutritional comparison of selected foods" %}</caption>
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">{% trans "Nutrient" %}</th>
+                                            {% for ingredient in comparison_data.keys %}
+                                            <th scope="col">{{ ingredient }}</th>
+                                            {% endfor %}
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- Calories -->
+                                        <tr>
+                                            <th scope="row">{% trans "Calories" %}</th>
+                                            {% for ingredient, data in comparison_data.items %}
+                                            <td>{{ data.calories|floatformat:0 }} kcal</td>
+                                            {% endfor %}
+                                        </tr>
+                                        
+                                        <!-- Protein -->
+                                        <tr>
+                                            <th scope="row">{% trans "Protein" %}</th>
+                                            {% for ingredient, data in comparison_data.items %}
+                                            <td>
+                                                {% if 'PROCNT' in data.totalNutrients %}
+                                                {{ data.totalNutrients.PROCNT.quantity|floatformat:1 }} {{ data.totalNutrients.PROCNT.unit }}
+                                                {% else %}
+                                                <span aria-label="{% trans 'Not available' %}">-</span>
+                                                {% endif %}
+                                            </td>
+                                            {% endfor %}
+                                        </tr>
+                                        
+                                        <!-- Fat -->
+                                        <tr>
+                                            <th scope="row">{% trans "Fat" %}</th>
+                                            {% for ingredient, data in comparison_data.items %}
+                                            <td>
+                                                {% if 'FAT' in data.totalNutrients %}
+                                                {{ data.totalNutrients.FAT.quantity|floatformat:1 }} {{ data.totalNutrients.FAT.unit }}
+                                                {% else %}
+                                                <span aria-label="{% trans 'Not available' %}">-</span>
+                                                {% endif %}
+                                            </td>
+                                            {% endfor %}
+                                        </tr>
+                                        
+                                        <!-- Carbs -->
+                                        <tr>
+                                            <th scope="row">{% trans "Carbohydrates" %}</th>
+                                            {% for ingredient, data in comparison_data.items %}
+                                            <td>
+                                                {% if 'CHOCDF' in data.totalNutrients %}
+                                                {{ data.totalNutrients.CHOCDF.quantity|floatformat:1 }} {{ data.totalNutrients.CHOCDF.unit }}
+                                                {% else %}
+                                                <span aria-label="{% trans 'Not available' %}">-</span>
+                                                {% endif %}
+                                            </td>
+                                            {% endfor %}
+                                        </tr>
+                                        
+                                        <!-- Vitamin A -->
+                                        <tr>
+                                            <th scope="row">{% trans "Vitamin A" %}</th>
+                                            {% for ingredient, data in comparison_data.items %}
+                                            <td>
+                                                {% if 'VITA_RAE' in data.totalNutrients %}
+                                                {{ data.totalNutrients.VITA_RAE.quantity|floatformat:1 }} {{ data.totalNutrients.VITA_RAE.unit }}
+                                                {% else %}
+                                                <span aria-label="{% trans 'Not available' %}">-</span>
+                                                {% endif %}
+                                            </td>
+                                            {% endfor %}
+                                        </tr>
+                                        
+                                        <!-- Vitamin C -->
+                                        <tr>
+                                            <th scope="row">{% trans "Vitamin C" %}</th>
+                                            {% for ingredient, data in comparison_data.items %}
+                                            <td>
+                                                {% if 'VITC' in data.totalNutrients %}
+                                                {{ data.totalNutrients.VITC.quantity|floatformat:1 }} {{ data.totalNutrients.VITC.unit }}
+                                                {% else %}
+                                                <span aria-label="{% trans 'Not available' %}">-</span>
+                                                {% endif %}
+                                            </td>
+                                            {% endfor %}
+                                        </tr>
+                                        
+                                        <!-- Calcium -->
+                                        <tr>
+                                            <th scope="row">{% trans "Calcium" %}</th>
+                                            {% for ingredient, data in comparison_data.items %}
+                                            <td>
+                                                {% if 'CA' in data.totalNutrients %}
+                                                {{ data.totalNutrients.CA.quantity|floatformat:1 }} {{ data.totalNutrients.CA.unit }}
+                                                {% else %}
+                                                <span aria-label="{% trans 'Not available' %}">-</span>
+                                                {% endif %}
+                                            </td>
+                                            {% endfor %}
+                                        </tr>
+                                        
+                                        <!-- Iron -->
+                                        <tr>
+                                            <th scope="row">{% trans "Iron" %}</th>
+                                            {% for ingredient, data in comparison_data.items %}
+                                            <td>
+                                                {% if 'FE' in data.totalNutrients %}
+                                                {{ data.totalNutrients.FE.quantity|floatformat:1 }} {{ data.totalNutrients.FE.unit }}
+                                                {% else %}
+                                                <span aria-label="{% trans 'Not available' %}">-</span>
+                                                {% endif %}
+                                            </td>
+                                            {% endfor %}
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            
+                            <div class="mt-4">
+                                <h3 class="h5" id="comparison-note">{% trans "Nutritional Comparison" %}</h3>
+                                <p class="text-muted" aria-labelledby="comparison-note">
+                                    {% trans "This comparison helps you identify which foods provide better nutritional value for specific nutrients. Higher values generally indicate more nutrient-dense foods." %}
+                                </p>
+                            </div>
+                        
+                        {% elif ingredients and ingredients|length > 1 %}
+                            <div class="alert alert-warning" role="alert">
+                                <i class="bi bi-exclamation-triangle-fill me-2" aria-hidden="true"></i>
+                                {% trans "We couldn't find complete nutritional information for some of the ingredients. Please try with more specific descriptions." %}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="mt-4">
+                    <a href="{% url 'nutrition_guides' %}" class="btn btn-outline-primary">
+                        <i class="bi bi-arrow-left me-2" aria-hidden="true"></i>{% trans "Back to Nutrition Guides" %}
+                    </a>
+                </div>
+            </div>
+            
+            <div class="col-lg-4">
+                {% if popular_comparisons %}
+                <div class="card shadow-sm border-0 mb-4">
+                    <div class="card-header bg-success text-white">
+                        <h2 class="h5 mb-0" id="popular-comparisons-heading">{% trans "Popular Comparisons" %}</h2>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-group list-group-flush" aria-labelledby="popular-comparisons-heading">
+                            {% for comparison in popular_comparisons %}
+                            <li class="list-group-item">
+                                <a href="{% url 'nutrition_comparison' %}?{% for item in comparison %}ingredients={{ item|urlencode }}&{% endfor %}" class="text-decoration-none d-flex align-items-center">
+                                    <i class="bi bi-graph-up me-2 text-muted" aria-hidden="true"></i>
+                                    <span>{{ comparison|join:" vs. " }}</span>
+                                </a>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+                {% endif %}
+                
+                <div class="card shadow-sm border-0 mb-4">
+                    <div class="card-header bg-light">
+                        <h2 class="h5 mb-0" id="related-tools-heading">{% trans "Related Tools" %}</h2>
+                    </div>
+                    <div class="card-body">
+                        <a href="{% url 'nutrition_analyzer' %}" class="btn btn-outline-success d-block mb-2 d-flex align-items-center justify-content-center">
+                            <i class="bi bi-calculator me-2" aria-hidden="true"></i>
+                            <span>{% trans "Nutrition Analyzer" %}</span>
+                        </a>
+                        {% if user.is_authenticated %}
+                        <a href="{% url 'nutrition_favorites' %}" class="btn btn-outline-primary d-block d-flex align-items-center justify-content-center">
+                            <i class="bi bi-bookmark-heart me-2" aria-hidden="true"></i>
+                            <span>{% trans "My Saved Items" %}</span>
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="card shadow-sm border-0">
+                    <div class="card-body bg-light">
+                        <h3 class="h5" id="nutrition-tip">{% trans "Tip" %}</h3>
+                        <p class="mb-0 text-muted" aria-labelledby="nutrition-tip">
+                            {% trans "When introducing new foods to your baby, compare nutrient profiles to ensure a balanced diet. Focus on foods rich in iron, calcium, and essential vitamins." %}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock main_contents %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('comparison-form');
+        const container = form.querySelector('.ingredients-container');
+        const addButton = document.getElementById('add-ingredient');
+        
+        // Add new ingredient input
+        addButton.addEventListener('click', function() {
+            const inputs = container.querySelectorAll('input[name="ingredients"]');
+            const newIndex = inputs.length + 1;
+            
+            const div = document.createElement('div');
+            div.className = 'input-group mb-2';
+            
+            const labelId = `food-label-${newIndex}`;
+            
+            div.innerHTML = `
+                <span class="input-group-text" id="${labelId}">{% trans "Food" %} ${newIndex}</span>
+                <input type="text" name="ingredients" class="form-control" 
+                       placeholder="{% trans 'e.g., banana' %}" aria-labelledby="${labelId}">
+                <button type="button" class="btn btn-outline-danger remove-ingredient" aria-label="{% trans 'Remove this ingredient' %}">
+                    <i class="bi bi-x-lg" aria-hidden="true"></i>
+                </button>
+            `;
+            
+            container.appendChild(div);
+        });
+        
+        // Remove ingredient input
+        container.addEventListener('click', function(e) {
+            if (e.target.closest('.remove-ingredient')) {
+                e.target.closest('.input-group').remove();
+                
+                // Update indices
+                const spans = container.querySelectorAll('.input-group-text');
+                spans.forEach((span, index) => {
+                    const newIndex = index + 1;
+                    span.textContent = `{% trans "Food" %} ${newIndex}`;
+                    span.id = `food-label-${newIndex}`;
+                    
+                    // Also update the aria-labelledby on the corresponding input
+                    const input = span.closest('.input-group').querySelector('input');
+                    if (input) {
+                        input.setAttribute('aria-labelledby', `food-label-${newIndex}`);
+                    }
+                });
+            }
+        });
+    });
+</script>
+{% endblock %}

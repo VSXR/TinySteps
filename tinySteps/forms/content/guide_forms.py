@@ -1,70 +1,76 @@
 from django import forms
 from django.utils.translation import gettext as _
-
-from tinySteps.models import Guides_Model
+from tinySteps.models import Guides_Model, Category_Model
 from tinySteps.forms.base.mixins import FormControlMixin, TextareaMixin, FileMixin
 
 class GuideSubmission_Form(forms.ModelForm, FormControlMixin, TextareaMixin, FileMixin):
     """Form for submitting a new guide"""
     
+    category = forms.ModelChoiceField(
+        queryset=Category_Model.objects.all().order_by('name'),
+        empty_label=_("Select a category"),
+        required=False,
+        label=_("Category"),
+        widget=forms.Select(attrs={'class': 'form-select'})
+    )
+    
     tags = forms.CharField(
         required=False,
         widget=forms.TextInput(attrs={
-            'placeholder': _('Add tags separated by commas (e.g., parenting, nutrition)'),
-            'class': 'tag-hidden-input'
+            'class': 'tag-hidden-input form-control',
+            'data-role': 'tagsinput'
         }),
         label=_('Tags')
     )
 
     image = forms.ImageField(
         required=True,
-        label=_('Upload Image')
+        label=_('Featured Image'),
+        widget=forms.FileInput(attrs={
+            'class': 'form-control',
+            'accept': 'image/jpeg,image/png'
+        })
+    )
+    
+    summary = forms.CharField(
+        required=False,
+        max_length=200,
+        widget=forms.TextInput(attrs={'class': 'form-control'}),
+        label=_('Summary')
     )
 
     class Meta:
         model = Guides_Model
-        fields = ['title', 'desc', 'image']
+        fields = ['title', 'summary', 'category', 'desc', 'image', 'tags']
         widgets = {
-            'title': forms.TextInput(attrs={
-                'placeholder': _('Enter a clear title for your guide')
-            }),
-            'desc': forms.Textarea(attrs={
-                'rows': 10,
-                'placeholder': _('Share your knowledge and experience')
-            }),
-        }
-        labels = {
-            'title': _('Title'),
-            'desc': _('Content'),
-            'image': _('Image'),
+            'title': forms.TextInput(attrs={'class': 'form-control', 'maxlength': '100'}),
+            'desc': forms.Textarea(attrs={'rows': 10, 'class': 'form-control rich-text-editor'})
         }
     
-    def get_tag_categories(self, guide_type='parent'):
-        """Get predefined tag categories and options based on guide type"""
-        if guide_type == 'nutrition':
-            return {
-                'Age Group': [
-                    '0-6 months', '6-12 months', '1-3 years', '3-5 years'
-                ],
-                'Nutrition Type': [
-                    'Breastfeeding', 'Formula', 'Solid Foods', 'Allergies', 'Meal Planning'
-                ],
-                'Special Considerations': [
-                    'Vegan', 'Vegetarian', 'Gluten-Free', 'Dairy-Free'
-                ]
-            }
-        else:  # parent guides
-            return {
-                'Age Group': [
-                    'Newborn', 'Infant', 'Toddler', 'Preschooler'
-                ],
-                'Parenting Topics': [
-                    'Sleep', 'Potty Training', 'Discipline', 'Development', 'Routines'
-                ],
-                'Challenges': [
-                    'Tantrums', 'Picky Eating', 'Separation Anxiety', 'Screen Time'
-                ]
-            }
+    def __init__(self, *args, **kwargs):
+        guide_type = kwargs.pop('guide_type', 'parent')
+        super().__init__(*args, **kwargs)
+        
+        # Filter categories by guide type
+        if guide_type:
+            try:
+                self.fields['category'].queryset = Category_Model.objects.filter(
+                    guide_type=guide_type
+                ).order_by('name')
+            except:
+                pass
+    
+    def clean_title(self):
+        title = self.cleaned_data.get('title', '')
+        if len(title) < 5:
+            raise forms.ValidationError(_('Title must be at least 5 characters long.'))
+        return title
+    
+    def clean_desc(self):
+        desc = self.cleaned_data.get('desc', '')
+        if len(desc) < 300:
+            raise forms.ValidationError(_('Content must be at least 300 characters long.'))
+        return desc
 
 class GuideRejection_Form(forms.Form, FormControlMixin, TextareaMixin):
     """Form for rejecting a guide submission"""

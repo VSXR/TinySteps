@@ -273,8 +273,7 @@ trans "TINY STEPS - PARENTS FORUM" %}{% endblock %} {% block main_contents %}
                     />
                     <small class="text-muted">
                       {% blocktrans with username=post.author.username %}Posted
-                      by <span class="fw-bold">{{ username }}</span>{%
-                      endblocktrans %}
+                      by <span class="fw-bold">{{ username }}</span>{% endblocktrans %}
                     </small>
                   </div>
                   <div

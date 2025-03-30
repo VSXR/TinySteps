@@ -18,6 +18,7 @@ def guides_page(request):
     
     context['all_parent_guides'] = parent_service.get_guide_listing()
     context['all_nutrition_guides'] = nutrition_service.get_guide_listing()
+    context['submit_guide_url'] = '/guides/submit/'
     
     return render(request, 'guides/index.html', context)
 
@@ -34,7 +35,9 @@ def guide_list_view(request, guide_type):
         context = {
             'guides': guides,
             'guide_type': guide_type,
-            'view_type': 'list'
+            'view_type': 'list',
+            'submit_guide_url': '/guides/submit/',
+            'section_type': guide_type
         }
         
         context = view_helper.enhance_context(context, guide_type, request)
@@ -93,7 +96,9 @@ def my_guides_view(request):
         context = {
             'guides': all_guides,
             'title': _('My Guides'),
-            'section': 'guides'
+            'section': 'guides',
+            'submit_guide_url': '/guides/submit/',
+            'section_type': 'my_guides'
         }
         
         return render(request, 'guides/my_guides.html', context)

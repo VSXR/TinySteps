@@ -15,11 +15,17 @@ def nutrition_analyzer_view(request):
     if ingredient:
         nutrition_data = service.get_nutrition_data(ingredient)
     
+    # Usar valores predeterminados vacíos para evitar errores
+    recent_searches = []
+    popular_ingredients = service.get_popular_ingredients(limit=10)
+    
     context = {
         'ingredient': ingredient,
         'nutrition_data': nutrition_data,
-        'recent_searches': service.get_recent_nutrition_searches(limit=5),
-        'popular_ingredients': service.get_popular_ingredients(limit=10),
+        'recent_searches': recent_searches,
+        'popular_ingredients': popular_ingredients,
+        'section_type': 'nutrition',
+        'submit_guide_url': '/guides/submit/',
     }
     
     template = service.get_template_path('analyzer')
@@ -35,19 +41,54 @@ def nutrition_save_view(request):
     ingredient = request.POST.get('ingredient', '')
     
     if ingredient:
-        service.save_user_nutrition_preference(request.user, ingredient)
-        messages.success(request, _("Added to your saved nutrition items!"))
+        try:
+            # Usar el método existente en lugar del eliminado
+            success = service.save_ingredient_for_user(ingredient, request.user)
+            if success:
+                messages.success(request, _("Added to your saved nutrition items!"))
+            else:
+                messages.warning(request, _("Could not save the ingredient."))
+        except AttributeError:
+            messages.warning(request, _("Saving nutrition preferences is not available yet."))
     
     return redirect('nutrition_analyzer')
 
 @login_required
 def nutrition_history_view(request):
-    pass
+    """View for user's nutrition search history"""
+    service = GuideService_Factory.create_service('nutrition')
+    
+    context = {
+        'section_type': 'nutrition',
+        'submit_guide_url': '/guides/submit/',
+    }
+    
+    template = service.get_template_path('history')
+    return render(request, template, context)
 
 @login_required
 def nutrition_favorites_view(request):
-    pass
+    """View for user's favorite nutrition items"""
+    service = GuideService_Factory.create_service('nutrition')
+    
+    context = {
+        'section_type': 'nutrition',
+        'submit_guide_url': '/guides/submit/',
+    }
+    
+    template = service.get_template_path('favorites')
+    return render(request, template, context)
 
 @login_required
 def nutrition_recipe_view(request, recipe_id):
-    pass
+    """View for nutrition recipe details"""
+    service = GuideService_Factory.create_service('nutrition')
+    
+    context = {
+        'section_type': 'nutrition',
+        'submit_guide_url': '/guides/submit/',
+        'recipe_id': recipe_id
+    }
+    
+    template = service.get_template_path('recipe')
+    return render(request, template, context)

@@ -1,115 +1,204 @@
 {% extends 'base.html' %}
 {% load static %}
 {% load i18n %}
+{% load custom_filters %}
 
-{% block title %}{{ guide.title }} - {% trans "Parent Guide" %}{% endblock %}
+{% block title %}{{ guide.title }} - {% trans "Tiny Steps" %}{% endblock %}
 
 {% block main_contents %}
-<main id="main-content" class="py-4">
-    <div class="container mt-4 mb-5">
-        <div class="row">
-            <!-- Sidebar Column -->
-            <div class="col-lg-3 col-md-4 mb-4">
-                {% include "guides/components/sidebar.html" with active_section="guides" active_page="parent_guides" %}
-            </div>
-            
-            <!-- Main Content Column -->
-            <div class="col-lg-9 col-md-8">
-                <!-- Breadcrumbs -->
-                {% include "guides/components/breadcrumbs.html" with 
-                    items=breadcrumbs current=guide.title %}
-                
-                <!-- Artículo principal -->
-                <article class="bg-white p-3 p-md-4 shadow-sm rounded">
-                    <!-- Cabecera -->
-                    <header class="mb-4">
-                        <h1 class="mb-3">{{ guide.title }}</h1>
-                        
-                        <div class="d-flex flex-wrap align-items-center mb-3 gap-2">
-                            <span class="badge bg-primary">{% trans "Parent Guide" %}</span>
-                            
-                            {% if guide.age_range %}
-                            <span class="badge bg-secondary">
-                                {{ guide.age_range }}
-                            </span>
-                            {% endif %}
-                            
-                            <span class="text-muted ms-auto small">
-                                {% trans "Published:" %} {{ guide.created_at|date:"d M Y" }}
-                            </span>
-                        </div>
-                        
-                        {% if guide.author %}
-                        <div class="d-flex align-items-center mb-3">
-                            <div class="avatar">
-                                <i class="fa-solid fa-user-circle fa-2x text-secondary"></i>
+<main id="main-content" role="main">
+    <div class="container my-4">
+        {% include 'guides/components/breadcrumbs.html' with is_detail=True guide=guide section_type='parent' %}
+        
+        <div class="row g-4">
+            <!-- Main content column -->
+            <div class="col-lg-8">
+                <article class="card shadow-sm border-0 mb-4" aria-labelledby="guide-title">
+                    <!-- Featured Image Header -->
+                    {% if guide.image %}
+                    <div class="position-relative">
+                        <img src="{{ guide.image.url }}" alt="{{ guide.title }}" class="card-img-top" style="height: 300px; object-fit: cover;">
+                        <div class="position-absolute bottom-0 start-0 w-100 p-3 pb-4" style="background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);">
+                            <div class="badges mb-2">
+                                <span class="badge bg-primary" aria-label="{% trans 'Guide category' %}">
+                                    {% trans "Parenting" %}
+                                </span>
+                                
+                                {% if guide.age_range %}
+                                <span class="badge bg-secondary" aria-label="{% trans 'Age range' %}">
+                                    {{ guide.age_range }}
+                                </span>
+                                {% endif %}
+                                
+                                {% if guide.expert_reviewed %}
+                                <span class="badge bg-info" aria-label="{% trans 'Expert reviewed' %}">
+                                    <i class="bi bi-patch-check-fill me-1" aria-hidden="true"></i>
+                                    {% trans "Expert Reviewed" %}
+                                </span>
+                                {% endif %}
                             </div>
-                            <div class="ms-2">
-                                <span class="text-muted small">{% trans "By" %}</span>
-                                <span class="fw-bold">{{ guide.author.get_full_name|default:guide.author.username }}</span>
-                            </div>
-                        </div>
-                        {% endif %}
-                        
-                        {% if guide.image %}
-                        <div class="featured-image mb-4">
-                            <img src="{{ guide.image.url }}" alt="{{ guide.title }}" class="img-fluid rounded">
-                        </div>
-                        {% endif %}
-                    </header>
-                    
-                    <!-- Contenido -->
-                    <div class="guide-content mb-5">
-                        <div class="lead mb-4">{{ guide.desc }}</div>
-                        
-                        {{ guide.content|safe }}
-                    </div>
-                    
-                    <!-- Etiquetas -->
-                    {% if guide.tags %}
-                    <div class="mb-4">
-                        <h3 class="h5 mb-2">{% trans "Tags:" %}</h3>
-                        <div class="d-flex flex-wrap gap-2">
-                            {% for tag in guide.tags|split:"," %}
-                                <span class="badge bg-light text-dark">{{ tag|trim }}</span>
-                            {% endfor %}
+                            <h1 id="guide-title" class="card-title text-white mb-0 fs-3">{{ guide.title }}</h1>
                         </div>
                     </div>
                     {% endif %}
                     
-                    <!-- Acciones -->
-                    <div class="d-flex flex-wrap justify-content-between">
-                        <div>
-                            <a href="{% url 'parent_guides' %}" class="btn btn-outline-secondary">
-                                <i class="fa-solid fa-arrow-left me-1"></i> {% trans "Back to Guides" %}
-                            </a>
+                    <div class="card-body p-4 {% if not guide.image %}pt-3{% endif %}">
+                        {% if not guide.image %}
+                        <h1 id="guide-title" class="card-title mb-3">{{ guide.title }}</h1>
+                        
+                        <div class="badges mb-3">
+                            <span class="badge bg-primary" aria-label="{% trans 'Guide category' %}">
+                                {% trans "Parenting" %}
+                            </span>
+                            
+                            {% if guide.age_range %}
+                            <span class="badge bg-secondary" aria-label="{% trans 'Age range' %}">
+                                {{ guide.age_range }}
+                            </span>
+                            {% endif %}
+                            
+                            {% if guide.expert_reviewed %}
+                            <span class="badge bg-info" aria-label="{% trans 'Expert reviewed' %}">
+                                <i class="bi bi-patch-check-fill me-1" aria-hidden="true"></i>
+                                {% trans "Expert Reviewed" %}
+                            </span>
+                            {% endif %}
+                        </div>
+                        {% endif %}
+                        
+                        <!-- Author and Date -->
+                        <div class="meta text-muted mb-4">
+                            {% if guide.author %}
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-person-circle me-2 text-primary" aria-hidden="true"></i>
+                                <span class="fw-medium">{{ guide.author.get_full_name|default:guide.author.username }}</span>
+                                <span class="mx-2">•</span>
+                                <time datetime="{{ guide.approved_at|date:'Y-m-d' }}" class="text-muted">
+                                    <i class="bi bi-calendar3 me-1" aria-hidden="true"></i>
+                                    {{ guide.approved_at|date:"F d, Y" }}
+                                </time>
+                            </div>
+                            {% endif %}
                         </div>
                         
-                        <div class="d-flex gap-2">
-                            <!-- Acciones sociales - opcionales -->
-                            <button class="btn btn-outline-primary" title="{% trans 'Share' %}">
-                                <i class="fa-solid fa-share-alt"></i>
-                            </button>
-                            <button class="btn btn-outline-danger" title="{% trans 'Save' %}">
-                                <i class="fa-solid fa-bookmark"></i>
-                            </button>
+                        <!-- Main Content -->
+                        <div class="guide-content mb-4" data-bs-spy="scroll" data-bs-target="#guide-nav">
+                            {{ guide.desc|linebreaks }}
+                        </div>
+                        
+                        <!-- Tags -->
+                        {% if guide.tags.all %}
+                        <div class="d-flex flex-wrap align-items-center mt-4 pt-3 border-top">
+                            <span class="text-muted me-2 fs-6" aria-label="{% trans 'Tags' %}">
+                                <i class="bi bi-tags me-1" aria-hidden="true"></i> {% trans "Tags:" %}
+                            </span>
+                            {% for tag in guide.tags.all %}
+                                <a href="{% url 'parent_guides' %}?tag={{ tag.slug }}" class="badge bg-light text-dark me-2 mb-1 text-decoration-none">
+                                    {{ tag.name }}
+                                </a>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                        
+                        <!-- Social Share -->
+                        <div class="d-flex flex-wrap align-items-center mt-4 pt-3 border-top">
+                            <span class="text-muted me-3" aria-label="{% trans 'Share this guide' %}">
+                                {% trans "Share:" %}
+                            </span>
+                            <div class="share-buttons">
+                                <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri }}" 
+                                   class="btn btn-sm btn-outline-primary me-2" target="_blank" rel="noopener" 
+                                   aria-label="{% trans 'Share on Facebook' %}">
+                                    <i class="bi bi-facebook" aria-hidden="true"></i>
+                                </a>
+                                <a href="https://twitter.com/intent/tweet?url={{ request.build_absolute_uri }}&text={{ guide.title }}"
+                                   class="btn btn-sm btn-outline-info me-2" target="_blank" rel="noopener"
+                                   aria-label="{% trans 'Share on Twitter' %}">
+                                    <i class="bi bi-twitter" aria-hidden="true"></i>
+                                </a>
+                                <a href="mailto:?subject={{ guide.title }}&body={{ request.build_absolute_uri }}"
+                                   class="btn btn-sm btn-outline-secondary" target="_blank" rel="noopener"
+                                   aria-label="{% trans 'Share via Email' %}">
+                                    <i class="bi bi-envelope" aria-hidden="true"></i>
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </article>
-                
-                <!-- Guías relacionadas -->
-                {% if related_guides %}
-                <section class="mt-5">
-                    <h2 class="h4 mb-4">{% trans "Related Guides" %}</h2>
-                    <div class="row g-4">
-                        {% for related in related_guides %}
-                            <div class="col-md-6">
-                                {% include "guides/components/guide_card.html" with guide=related %}
+
+                <!-- Comments section -->
+                <section aria-labelledby="comments-heading" id="comments" class="mb-4">
+                    <div class="card shadow-sm border-0">
+                        <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                            <h2 id="comments-heading" class="h5 mb-0">
+                                {% if comments %}
+                                    {% blocktrans count counter=comments.count %}Comment ({{ counter }}){% plural %}Comments ({{ counter }}){% endblocktrans %}
+                                {% else %}
+                                    {% trans "Comments" %}
+                                {% endif %}
+                            </h2>
+                        </div>
+                        <div class="card-body">
+                            {% if comments %}
+                                <div class="comment-list">
+                                    {% for comment in comments %}
+                                        <div class="card mb-3 border-0 bg-light bg-opacity-50" id="comment-{{ comment.id }}">
+                                            <div class="card-body">
+                                                <div class="d-flex justify-content-between mb-2">
+                                                    <div class="d-flex align-items-center">
+                                                        <i class="bi bi-person-circle me-2 fs-5" aria-hidden="true"></i>
+                                                        <strong>{{ comment.author.username }}</strong>
+                                                    </div>
+                                                    <time datetime="{{ comment.created_at|date:'Y-m-d' }}" class="text-muted small">
+                                                        {{ comment.created_at|date:"M j, Y" }}
+                                                    </time>
+                                                </div>
+                                                <p class="mb-0">{{ comment.text }}</p>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                <p class="text-center my-4 text-muted">{% trans "No comments yet. Be the first to comment!" %}</p>
+                            {% endif %}
+
+                            <div class="card mt-4 border-0 bg-light">
+                                <div class="card-header bg-light">
+                                    <h3 class="card-title h5 mb-0">{% trans "Add Your Comment" %}</h3>
+                                </div>
+                                <div class="card-body">
+                                    {% if user.is_authenticated %}
+                                        <form id="comment-form" method="post" action="{% url 'comments:add' 'parent_guide' guide.id %}">
+                                            {% csrf_token %}
+                                            <div class="form-group mb-3">
+                                                <label for="comment-content" class="form-label">{% trans "Your comment" %}</label>
+                                                <textarea id="comment-content" name="content" class="form-control" rows="3" required 
+                                                          aria-describedby="comment-help"></textarea>
+                                                <small id="comment-help" class="form-text text-muted">
+                                                    {% trans "Share your thoughts on this guide to help other parents." %}
+                                                </small>
+                                            </div>
+                                            <button type="submit" class="btn btn-primary">
+                                                <i class="bi bi-chat-dots-fill me-2" aria-hidden="true"></i>{% trans "Post Comment" %}
+                                            </button>
+                                        </form>
+                                    {% else %}
+                                        <div class="alert alert-info mb-0">
+                                            {% trans "Please" %} <a href="{% url 'login' %}?next={{ request.path }}">{% trans "log in" %}</a> {% trans "to leave a comment." %}
+                                        </div>
+                                    {% endif %}
+                                </div>
                             </div>
-                        {% endfor %}
+                        </div>
                     </div>
                 </section>
-                {% endif %}
+            </div>
+            
+            <!-- Sidebar column -->
+            <div class="col-lg-4">
+                <div class="sticky-lg-top" style="top: 2rem">
+                    {% include 'guides/components/sidebar.html' with related_guides=related_guides section_type='parent' %}
+                </div>
             </div>
         </div>
     </div>

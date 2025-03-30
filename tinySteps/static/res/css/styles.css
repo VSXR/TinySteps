@@ -441,11 +441,10 @@ aside {
     }
 }
 
-/* Modern Guide Index Styles */
 .hero-section {
-    background: linear-gradient(135deg, var(--bg-light) 0%, #e9ecef 100%);
-    padding: 1rem 0;
-    border-bottom: 1px solid var(--border-light);
+    background: white;
+    padding: 3rem 0;
+    border-bottom: none;
 }
 
 .hero-image {

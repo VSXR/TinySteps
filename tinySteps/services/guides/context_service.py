@@ -17,12 +17,12 @@ class GuideContext_Service:
         """Get context data for the main guides page"""
         # Get parent guide service
         parent_service = GuideService_Factory.create_service('parent')
-        parent_guides = parent_service.get_recent_guides(count=5)
+        parent_guides = parent_service.get_recent_guides(limit=5)
         
         # Get nutrition guide service
         nutrition_service = GuideService_Factory.create_service('nutrition')
-        nutrition_guides = nutrition_service.get_recent_guides(count=5)
-        
+        nutrition_guides = nutrition_service.get_recent_guides(limit=5)
+            
         context = {
             'recent_guides': parent_guides[:3],
             'parent_guides': parent_guides,
@@ -34,7 +34,6 @@ class GuideContext_Service:
             'show_search': True
         }
         
-        # Add personalized recommendations if user is authenticated
         if request and request.user.is_authenticated:
             context.update(self.get_personalized_recommendations(request.user))
         

@@ -66,7 +66,12 @@ def submit_guide(request):
             
             messages.success(request, 
                 _("Your guide has been submitted for review. Thank you for contributing!"))
-            return redirect('my_guides')
+            
+            # We redirect the user to the newly created guide
+            if guide.guide_type == 'nutrition':
+                return redirect('nutrition_guide_details', guide.id)
+            else:
+                return redirect('parent_guide_details', guide.id)
     else:
         form = GuideSubmission_Form()
     

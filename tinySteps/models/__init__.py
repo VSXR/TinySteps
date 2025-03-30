@@ -24,9 +24,10 @@ from .content.guide_models import (
     ParentGuides_Manager, 
     ParentsGuides_Model,
     NutritionGuides_Manager, 
-    NutritionGuides_Model
+    NutritionGuides_Model,
 )
 from .content.forum_models import ParentsForum_Model
+from .content.category_models import Category_Model
 
 # Communication Models
 from .communication.notification_models import Notification_Model
@@ -55,7 +56,7 @@ __all__ = [
     'Guide_Interface', 'Guides_Model', 'BaseGuide_Manager',
     'ParentGuides_Manager', 'ParentsGuides_Model',
     'NutritionGuides_Manager', 'NutritionGuides_Model',
-    'ParentsForum_Model',
+    'ParentsForum_Model', 'Category_Model',
     
     # Communication Models
     'Notification_Model', 'Contact_Model',

@@ -7,6 +7,7 @@ from django.utils.translation import gettext as _
 from django.utils.text import slugify
 
 from tinySteps.models.base.mixins import CommentableMixin
+from tinySteps.models.content.category_models import Category_Model
 from tinySteps.models.external.article_models import ExternalArticle_Model
 
 class Guide_Interface(models.Model):
@@ -76,6 +77,16 @@ class Guides_Model(Guide_Interface, CommentableMixin):
     rejection_reason = models.TextField(_("Rejection Reason"), max_length=500, null=True, blank=True)
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='guides')
     comments = GenericRelation('Comment_Model', related_query_name='guide')
+
+    category = models.ForeignKey(
+        Category_Model, 
+        on_delete=models.SET_NULL, 
+        null=True, 
+        blank=True, 
+        related_name='%(class)s',
+        verbose_name=_("Category")
+    )
+    
 
     def __str__(self):
         return self.title
