@@ -1,0 +1,14 @@
+{% load static %}
+{% load i18n %}
+
+<div class="card border-0 shadow-sm rounded-4 h-100 content-lift">
+    <div class="card-header bg-light border-0 py-3" id="{{ header_id }}">
+        <h2 class="h5 mb-0 fw-semibold d-flex align-items-center">
+            {% if header_icon %}<i class="{{ header_icon }} text-primary me-2" aria-hidden="true"></i>{% endif %}
+            {{ header_title }}
+        </h2>
+    </div>
+    <div class="card-body p-4">
+        {{ body|safe }}
+    </div>
+</div>

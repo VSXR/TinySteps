@@ -12,31 +12,31 @@
             <h6 class="dropdown-header">{% trans "Manage Child" %}</h6>
         </li>
         <li>
-            <a class="dropdown-item d-flex align-items-center" href="{% url 'edit_child' child.id %}">
+            <a class="dropdown-item d-flex align-items-center" href="{% url 'children:edit_child' child.id %}">
                 <i class="fa-solid fa-pen-to-square text-primary me-2" aria-hidden="true"></i> {% trans "Edit" %}
             </a>
         </li>
         <li>
-            <a class="dropdown-item d-flex align-items-center" href="{% url 'child_calendar' child.id %}">
+            <a class="dropdown-item d-flex align-items-center" href="{% url 'children:child_calendar' child.id %}">
                 <i class="fa-solid fa-calendar text-info me-2" aria-hidden="true"></i> {% trans "Calendar" %}
             </a>
         </li>
         <li>
-            <a class="dropdown-item d-flex align-items-center" href="{% url 'child_vaccine_card' child.id %}">
+            <a class="dropdown-item d-flex align-items-center" href="{% url 'children:child_vaccine_card' child.id %}">
                 <i class="fa-solid fa-syringe text-success me-2" aria-hidden="true"></i> {% trans "Vaccine Card" %}
             </a>
         </li>
         {% if show_milestones|default:True %}
         <li>
-            <a class="dropdown-item d-flex align-items-center" href="#">
+            <a class="dropdown-item d-flex align-items-center" href="{% url 'children:child_milestones' child.id %}">
                 <i class="fa-solid fa-flag text-warning me-2" aria-hidden="true"></i> {% trans "Milestones" %}
             </a>
         </li>
         {% endif %}
-        <li><hr class="dropdown-divider"></li>
         <li>
-            <a class="dropdown-item d-flex align-items-center text-danger" href="{% url 'delete_child' child.id %}">
-                <i class="fa-solid fa-trash me-2" aria-hidden="true"></i> {% trans "Delete" %}
+            <hr class="dropdown-divider"></li>
+        <li>
+            <a class="dropdown-item d-flex align-items-center text-danger" href="{% url 'children:delete_child' child.id %}">                <i class="fa-solid fa-trash me-2" aria-hidden="true"></i> {% trans "Delete" %}
             </a>
         </li>
     </ul>

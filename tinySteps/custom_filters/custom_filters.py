@@ -25,8 +25,10 @@ def strip_html(value):
 
 @register.filter
 def get_item(dictionary, key):
-    """Get an item from a dictionary using bracket notation in templates."""
-    return dictionary.get(key)
+    """Get an item from a dictionary using a key."""
+    if dictionary is None or not isinstance(dictionary, dict):
+        return 0
+    return dictionary.get(key, 0)  # We return 0 if key doesn't exist
 
 @register.filter
 def format_age(months):

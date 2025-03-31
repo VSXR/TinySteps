@@ -1,0 +1,34 @@
+{% load static %}
+{% load i18n %}
+
+<div class="text-center">
+    <div class="mb-4">
+        <img src="{% static 'res/img/others/default_avatar.jpg' %}" alt="{% trans 'Profile Picture for' %} {{ user.username }}" 
+             class="rounded-circle border border-4 border-light shadow" loading="lazy" 
+             width="120" height="120" style="width: 120px; height: 120px; object-fit: cover;">
+    </div>
+    <h3 class="fs-5 mb-4 fw-bold text-primary">{{ user.username }}</h3>
+    
+    <div class="list-group list-group-flush border-top border-bottom py-2 mb-4">
+        <div class="list-group-item bg-transparent d-flex justify-content-between px-0">
+            <strong id="email-label" class="text-muted">{% trans "Email:" %}</strong> 
+            <span aria-labelledby="email-label">{{ user.email }}</span>
+        </div>
+        <div class="list-group-item bg-transparent d-flex justify-content-between px-0">
+            <strong id="joined-label" class="text-muted">{% trans "Joined:" %}</strong> 
+            <span aria-labelledby="joined-label">{{ user.date_joined|date:"F j, Y" }}</span>
+        </div>
+        <div class="list-group-item bg-transparent d-flex justify-content-between px-0">
+            <strong id="children-label" class="text-muted">{% trans "Children:" %}</strong> 
+            <span aria-labelledby="children-label" class="badge bg-primary rounded-pill px-3">{{ user.children.count }}</span>
+        </div>
+        <div class="list-group-item bg-transparent d-flex justify-content-between px-0">
+            <strong id="posts-label" class="text-muted">{% trans "Forum Posts:" %}</strong> 
+            <span aria-labelledby="posts-label" class="badge bg-primary rounded-pill px-3">{{ user.forum_posts.count }}</span>
+        </div>
+    </div>
+    
+    <a href="#" class="btn btn-outline-primary rounded-pill px-4" aria-label="{% trans 'Edit your profile information' %}">
+        <i class="fa-solid fa-pen-to-square me-2" aria-hidden="true"></i> {% trans "Edit Profile" %}
+    </a>
+</div>

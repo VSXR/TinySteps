@@ -1,0 +1,11 @@
+{% load i18n %}
+
+<div class="row mb-4">
+    <div class="col-12 text-center">
+        <h1 class="text-center fw-bold fs-3 mb-2" id="page-heading">{{ title }}</h1>
+        {% if subtitle %}
+            <p class="lead text-center text-muted" id="page-description">{{ subtitle }}</p>
+            <hr class="my-3 w-50 mx-auto opacity-25">
+        {% endif %}
+    </div>
+</div>

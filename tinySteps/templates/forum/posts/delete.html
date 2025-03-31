@@ -1,60 +1,56 @@
-{% extends 'base.html' %}
+{% extends 'forum/base/forum_base.html' %}
 {% load static %}
 {% load i18n %}
 
-{% block title %}
-    {% trans "TINY STEPS - Delete Discussion" %}
-{% endblock title %}
+{% block title %}{% trans "Delete Discussion" %} - {% trans "Parents Forum" %}{% endblock %}
 
-{% block main_contents %}
-    <main id="main-content">
-        <div class="container mt-4 mb-5">
-            <div class="row justify-content-center">
-                <div class="col-md-8 col-lg-6">
-                    <div class="card border-danger">
-                        <div class="card-header bg-danger text-white">
-                            <h1 class="h4 mb-0" id="delete-heading">{% trans "Delete Discussion" %}</h1>
-                        </div>
-                        <div class="card-body">
-                            <div class="alert alert-warning" role="alert">
-                                <span class="fw-bold">
-                                    <i class="fa-solid fa-exclamation-triangle me-2" aria-hidden="true"></i>
-                                    {% trans "Warning:" %}
-                                </span>
-                                {% trans "This action cannot be undone. All comments on this post will also be deleted." %}
-                            </div>
-                            
-                            <h2 class="h5 mb-3">{% trans "Are you sure you want to delete the following discussion?" %}</h2>
-                            
-                            <div class="card mb-4">
-                                <div class="card-header bg-light">
-                                    <h3 class="h6 mb-0">{{ post.title }}</h3>
-                                </div>
-                                <div class="card-body">
-                                    <p class="card-text">{{ post.desc|truncatechars:150 }}</p>
-                                    <p class="card-text mb-0">
-                                        <small class="text-muted">
-                                            {% blocktrans with date=post.created_at|date:"F j, Y" %}Posted on {{ date }}{% endblocktrans %}
-                                        </small>
-                                    </p>
-                                </div>
-                            </div>
-                            
-                            <form method="post">
-                                {% csrf_token %}
-                                <div class="d-flex justify-content-between">
-                                    <a href="{% url 'view_post' post.id %}" class="btn btn-outline-secondary" aria-label="{% trans 'Cancel deletion and return to post' %}">
-                                        {% trans "Cancel" %}
-                                    </a>
-                                    <button type="submit" class="btn btn-danger" aria-label="{% trans 'Permanently delete this discussion' %}">
-                                        {% trans "Delete Permanently" %}
-                                    </button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
+{% block breadcrumbs %}
+    {% include 'forum/components/breadcrumbs.html' with view_type="delete" post=post %}
+{% endblock %}
+
+{% block page_header %}
+    {% include "forum/components/page_header.html" with title=_("Delete Discussion") subtitle=_("This action cannot be undone") %}
+{% endblock %}
+
+{% block search_filters %}{% endblock %}
+
+{% block content %}
+    <div class="card border-0 shadow-sm rounded-4">
+        <div class="card-header bg-danger text-white border-0 pt-3">
+            <h2 class="h5 mb-0" id="delete-heading">
+                <i class="fa-solid fa-triangle-exclamation me-2" aria-hidden="true"></i>
+                {% trans "Confirm Deletion" %}
+            </h2>
+        </div>
+        <div class="card-body p-4">
+            <div class="alert alert-warning mb-4" role="alert">
+                <h3 class="h6 fw-bold">{% trans "Warning" %}</h3>
+                <p class="mb-0">{% trans "This action will permanently delete your discussion and all comments. This cannot be undone." %}</p>
+            </div>
+            
+            <div class="card bg-light border-0 rounded-3 mb-4">
+                <div class="card-body">
+                    <h3 class="h6 fw-bold">{% trans "Discussion to be deleted:" %}</h3>
+                    <p class="fw-medium mb-1">{{ post.title }}</p>
+                    <p class="small text-muted mb-0">
+                        <i class="fa-regular fa-calendar me-1" aria-hidden="true"></i>
+                        {% trans "Created on" %} {{ post.created_at|date:"d M Y" }}
+                    </p>
                 </div>
             </div>
+            
+            <form method="post" action="{% url 'forum:delete_post' post.id %}">
+                {% csrf_token %}
+                
+                <div class="d-flex justify-content-between">
+                    <a href="{% url 'forum:view_post' post.id %}" class="btn btn-outline-secondary rounded-pill px-4">
+                        <i class="fa-solid fa-arrow-left me-2" aria-hidden="true"></i>{% trans "Cancel" %}
+                    </a>
+                    <button type="submit" class="btn btn-danger rounded-pill px-4">
+                        <i class="fa-solid fa-trash me-2" aria-hidden="true"></i>{% trans "Confirm Delete" %}
+                    </button>
+                </div>
+            </form>
         </div>
-    </main>
-{% endblock main_contents %}
+    </div>
+{% endblock %}

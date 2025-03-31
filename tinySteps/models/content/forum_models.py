@@ -42,4 +42,4 @@ class ParentsForum_Model(models.Model, CommentableMixin, LikeableMixin):
         return f"{self.title} - {truncated_desc}"
 
     def get_absolute_url(self):
-        return reverse('view_post', kwargs={'post_id': self.pk})
+        return reverse('forum:view_post', kwargs={'post_id': self.pk})

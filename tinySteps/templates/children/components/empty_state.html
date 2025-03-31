@@ -13,7 +13,7 @@
                 
                 {% if show_button|default:False %}
                 <div class="mt-4">
-                    <a href="{% url 'add_child' %}" class="btn btn-primary rounded-pill px-4 py-2 shadow-sm">
+                    <a href="{% url 'children:add_child' %}" class="btn btn-primary rounded-pill px-4 py-2 shadow-sm">
                         <i class="fa-solid fa-plus me-2" aria-hidden="true"></i> {% trans "Add Your First Child" %}
                     </a>
                 </div>

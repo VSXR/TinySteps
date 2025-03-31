@@ -1,0 +1,58 @@
+{% load i18n %}
+
+<nav aria-label="{% trans 'Breadcrumb navigation' %}" class="py-2 mb-3 d-none d-md-block">
+    <ol class="breadcrumb bg-light py-2 px-3 rounded-pill shadow-sm mb-0">
+        <li class="breadcrumb-item">
+            <a href="{% url 'index' %}" class="text-decoration-none d-flex align-items-center">
+                <i class="fa-solid fa-house-chimney me-1" aria-hidden="true"></i>
+                <span>{% trans "Home" %}</span>
+            </a>
+        </li>
+        
+        {% if view_type == "list" or not view_type %}
+            <li class="breadcrumb-item active fw-semibold" aria-current="page">
+                <div class="d-flex align-items-center">
+                    <i class="fa-solid fa-comments me-1" aria-hidden="true"></i>
+                    <span>{% trans "Parents Forum" %}</span>
+                </div>
+            </li>
+        {% else %}
+            <li class="breadcrumb-item">
+                <a href="{% url 'forum:parent_forum' %}" class="text-decoration-none d-flex align-items-center">
+                    <i class="fa-solid fa-comments me-1" aria-hidden="true"></i>
+                    <span>{% trans "Parents Forum" %}</span>
+                </a>
+            </li>
+            
+            {% if view_type == "detail" %}
+                <li class="breadcrumb-item active fw-semibold" aria-current="page">
+                    <div class="d-flex align-items-center">
+                        <i class="fa-solid fa-message me-1" aria-hidden="true"></i>
+                        <span>{% if post %}{{ post.title|truncatechars:30 }}{% else %}{% trans "Discussion" %}{% endif %}</span>
+                    </div>
+                </li>
+            {% elif view_type == "create" %}
+                <li class="breadcrumb-item active fw-semibold" aria-current="page">
+                    <div class="d-flex align-items-center">
+                        <i class="fa-solid fa-plus me-1" aria-hidden="true"></i>
+                        <span>{% trans "New Discussion" %}</span>
+                    </div>
+                </li>
+            {% elif view_type == "edit" %}
+                <li class="breadcrumb-item active fw-semibold" aria-current="page">
+                    <div class="d-flex align-items-center">
+                        <i class="fa-solid fa-pen-to-square me-1" aria-hidden="true"></i>
+                        <span>{% trans "Edit Discussion" %}</span>
+                    </div>
+                </li>
+            {% elif view_type == "delete" %}
+                <li class="breadcrumb-item active fw-semibold" aria-current="page">
+                    <div class="d-flex align-items-center">
+                        <i class="fa-solid fa-trash me-1" aria-hidden="true"></i>
+                        <span>{% trans "Delete Discussion" %}</span>
+                    </div>
+                </li>
+            {% endif %}
+        {% endif %}
+    </ol>
+</nav>

@@ -1,0 +1,24 @@
+{% load i18n %}
+
+<div class="card h-100 shadow-sm border-0 rounded-4 content-lift">
+    <div class="card-body text-center p-4">
+        <div class="mb-3">
+            <img src="{{ child.get_image }}" alt="{% trans 'Photo of' %} {{ child.name }}" 
+                 class="rounded-circle border border-3 border-light shadow" loading="lazy" 
+                 width="80" height="80" style="width: 80px; height: 80px; object-fit: cover;">
+        </div>
+        <h3 class="fs-6 mb-2 fw-bold">{{ child.name }}</h3>
+        <p class="mb-3">
+            <span class="badge bg-primary rounded-pill px-3">
+                <i class="fa-solid fa-cake-candles me-1" aria-hidden="true"></i>
+                {% blocktrans with age=child.age %}{{ age }} months{% endblocktrans %}
+            </span>
+        </p>
+        <div class="d-grid">
+            <a href="{% url 'children:child_detail' child.id %}" class="btn btn-primary rounded-pill py-2" 
+               aria-label="{% trans 'View details for' %} {{ child.name }}">
+                <i class="fa-solid fa-eye me-1" aria-hidden="true"></i> {% trans "View Profile" %}
+            </a>
+        </div>
+    </div>
+</div>

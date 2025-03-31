@@ -58,7 +58,7 @@
                                 {% csrf_token %}
                                 
                                 <div class="d-flex justify-content-center gap-3 mt-2">
-                                    <a href="{% url 'your_children' %}" class="btn btn-outline-secondary rounded-pill" 
+                                    <a href="{% url 'children:your_children' %}" class="btn btn-outline-secondary rounded-pill" 
                                        aria-label="{% trans 'Cancel deletion and return to your children page' %}">
                                         {% trans "Cancel" %}
                                     </a>
@@ -91,7 +91,7 @@
                                             class="rounded-circle me-3" loading="lazy" width="50" height="50" style="object-fit: cover; border: 2px solid {% if child_item.id == yourchild_model.id %}#dc3545{% else %}#6c757d{% endif %};">
                                         <div>
                                             <h4 class="fs-6 mb-1 d-flex align-items-center">
-                                                <a href="{% url 'child_details' child_item.id %}" class="text-decoration-none {% if child_item.id == yourchild_model.id %}text-danger fw-bold{% endif %}">
+                                                <a href="{% url 'children:child_detail' child_item.id %}" class="text-decoration-none {% if child_item.id == yourchild_model.id %}text-danger fw-bold{% endif %}">
                                                     {{ child_item.name }}
                                                 </a>
                                                 {% if child_item.id == yourchild_model.id %}
@@ -113,7 +113,7 @@
                             </div>
                             
                             <div class="text-center mt-3">
-                                <a href="{% url 'your_children' %}" class="btn btn-sm btn-outline-primary">
+                                <a href="{% url 'children:your_children' %}" class="btn btn-sm btn-outline-primary">
                                     <i class="bi bi-grid-3x3-gap-fill me-1"></i>{% trans "View All Children" %}
                                 </a>
                             </div>

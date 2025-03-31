@@ -1,0 +1,51 @@
+{% load i18n %}
+
+<div class="card border-0 shadow-sm rounded-4 h-100 content-lift">
+    <div class="card-header bg-light border-0 py-3" id="forum-activity-header">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <h2 class="h5 mb-0 fw-semibold d-flex align-items-center">
+                <i class="fa-solid fa-comments text-primary me-2" aria-hidden="true"></i>
+                {% trans "My Forum Activity" %}
+            </h2>
+            <a href="{% url 'forum:parent_forum' %}" class="btn btn-sm btn-outline-primary rounded-pill px-3" aria-label="{% trans 'Navigate to forums' %}">
+                <i class="fa-solid fa-external-link-alt me-1" aria-hidden="true"></i> {% trans "Go to Forum" %}
+            </a>
+        </div>
+    </div>
+    <div class="card-body p-4">
+        {% if user.forum_posts.all %}
+            <div class="list-group list-group-flush" aria-labelledby="forum-activity-header">
+                {% for post in user.forum_posts.all|slice:":5" %}
+                    <a href="{% url 'forum:view_post' post.id %}" class="list-group-item list-group-item-action p-3 border-0 mb-2 rounded-3 transition-300" aria-label="{% trans 'Forum post titled' %} {{ post.title }}">
+                        <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-2">
+                            <h3 class="h6 mb-1 mb-sm-0 text-primary">{{ post.title }}</h3>
+                            <span class="badge bg-light text-dark rounded-pill px-3">{{ post.created_at|date:"M d, Y" }}</span>
+                        </div>
+                        <p class="mb-0 small text-muted mt-2">
+                            {{ post.desc|truncatechars:120 }}
+                        </p>
+                    </a>
+                {% endfor %}
+            </div>
+            {% if user.forum_posts.count > 5 %}
+                <div class="text-center mt-4">
+                    <a href="{% url 'forum:parent_forum' %}" class="btn btn-outline-primary rounded-pill px-4" aria-label="{% trans 'View all your forum posts' %}">
+                        <i class="fa-solid fa-list me-2" aria-hidden="true"></i>
+                        {% trans "View All Posts" %}
+                    </a>
+                </div>
+            {% endif %}
+        {% else %}
+            <div class="text-center py-5">
+                <div class="mb-4">
+                    <i class="fa-solid fa-comments text-muted opacity-25 display-1" aria-hidden="true"></i>
+                </div>
+                <h3 class="h5 mb-3 text-muted">{% trans "You haven't created any forum posts yet" %}</h3>
+                <p class="text-muted mb-4">{% trans "Join the community by sharing your experiences or asking questions." %}</p>
+                <a href="{% url 'forum:parent_forum' %}" class="btn btn-primary rounded-pill px-4" aria-label="{% trans 'Create your first forum post' %}">
+                    <i class="fa-solid fa-plus me-2" aria-hidden="true"></i> {% trans "Create Your First Post" %}
+                </a>
+            </div>
+        {% endif %}
+    </div>
+</div>

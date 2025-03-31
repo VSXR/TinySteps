@@ -21,6 +21,7 @@ from .contact.contact_factory import ContactUrl_Factory
 # Nutrition Factories
 from .nutrition.nutrition_factory import NutritionUrl_Factory
 
+# Guide Factories
 def get_guide_service_factory():
     from .guide.guide_factory import GuideService_Factory
     return GuideService_Factory
@@ -38,17 +39,14 @@ except ImportError:
     GuideService_Factory = None
 
 __all__ = [
-    # Guide Factories
-    'GuideUrl_Factory', 'GuideService_Factory', 'get_guide_service_factory', 'get_guide_url_factory',
-    
-    # Comment Factories
-    'CommentUrl_Factory', 'CommentService_Factory',
-    
     # Auth Factories
     'AuthUrl_Factory',
     
     # Child Factories
     'ChildUrl_Factory',
+    
+    # Comment Factories
+    'CommentUrl_Factory', 'CommentService_Factory',
     
     # Forum Factories
     'ForumUrl_Factory', 'ForumService_Factory',
@@ -61,4 +59,7 @@ __all__ = [
     
     # Nutrition Factories
     'NutritionUrl_Factory',
+    
+    # Guide Factories
+    'GuideUrl_Factory', 'GuideService_Factory', 'get_guide_service_factory', 'get_guide_url_factory',
 ]

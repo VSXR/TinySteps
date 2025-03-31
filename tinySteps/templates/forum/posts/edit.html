@@ -1,82 +1,81 @@
-{% extends 'base.html' %}
+{% extends 'forum/base/forum_base.html' %}
 {% load static %}
-{% load crispy_forms_tags %}
 {% load i18n %}
 
-{% block title %}
-    {% trans "TINY STEPS - Edit Discussion" %}
-{% endblock title %}
+{% block title %}{% trans "Edit Discussion" %} - {% trans "Parents Forum" %}{% endblock %}
 
-{% block main_contents %}
-    <main id="main-content">
-        <div class="container mt-4 mb-5">
-            <div class="row mb-4">
-                <div class="col">
-                    <h1 id="page-heading">{% trans "Edit Discussion" %}</h1>
-                    <p class="lead text-center" id="page-description">{% trans "Update your post details below" %}</p>
-                </div>
-            </div>
-            
-            <div class="row justify-content-center">
-                <div class="col-md-8">
-                    {% if messages %}
-                       {% include 'partials/messages.html' %}
-                    {% endif %}
-                    
-                    <div class="card">
-                        <div class="card-body">
-                            <form method="post" aria-labelledby="form-heading" novalidate>
-                                <span id="form-heading" class="visually-hidden">{% trans "Edit discussion form" %}</span>
-                                {% csrf_token %}
-                                
-                                <div class="mb-3">
-                                    <label for="id_title" class="form-label">
-                                        {% trans "Discussion Title" %} <span class="text-danger" aria-hidden="true">*</span>
-                                        <span class="visually-hidden">{% trans "(required)" %}</span>
-                                    </label>
-                                    <input type="text" name="title" maxlength="100" class="form-control" required id="id_title" 
-                                        aria-describedby="title-help" value="{{ post.title }}">
-                                    <div id="title-help" class="form-text">{% trans "Choose a clear, specific title for your discussion (100 characters max)" %}</div>
-                                </div>
-                                
-                                <div class="mb-3">
-                                    <label for="id_desc" class="form-label">
-                                        {% trans "Your Message" %} <span class="text-danger" aria-hidden="true">*</span>
-                                        <span class="visually-hidden">{% trans "(required)" %}</span>
-                                    </label>
-                                    <textarea name="desc" cols="40" rows="6" class="form-control" required id="id_desc" 
-                                            aria-describedby="desc-help">{{ post.desc }}</textarea>
-                                    <div id="desc-help" class="form-text">{% trans "Share your experience, question, or advice (2000 characters max)" %}</div>
-                                </div>
+{% block breadcrumbs %}
+    {% include 'forum/components/breadcrumbs.html' with view_type="edit" post=post %}
+{% endblock %}
 
-                                <div class="mb-3">
-                                    <label for="id_category" class="form-label">
-                                        {% trans "Category" %} <span class="text-danger" aria-hidden="true">*</span>
-                                        <span class="visually-hidden">{% trans "(required)" %}</span>
-                                    </label>
-                                    <select name="category" id="id_category" class="form-select" required aria-required="true">
-                                        {% for value, name in post_category_choices %}
-                                            <option value="{{ value }}" {% if post.category == value %}selected{% endif %}>{{ name }}</option>
-                                        {% endfor %}
-                                    </select>
-                                    <div id="category-help" class="form-text">
-                                        {% trans "Choose a category to help others find your discussion" %}
-                                    </div>
-                                </div>
-                                
-                                <div class="d-flex justify-content-between mt-4">
-                                    <a href="{% url 'view_post' post.id %}" class="btn btn-outline-secondary" aria-label="{% trans 'Cancel editing and return to post' %}">
-                                        {% trans "Cancel" %}
-                                    </a>
-                                    <button type="submit" class="btn btn-primary" aria-label="{% trans 'Save changes to discussion' %}">
-                                        {% trans "Save Changes" %}
-                                    </button>
-                                </div>
-                            </form>
-                        </div>
+{% block page_header %}
+    {% include "forum/components/page_header.html" with title=_("Edit Your Discussion") subtitle=_("Update your post to provide more information or clarity") %}
+{% endblock %}
+
+{% block search_filters %}{% endblock %}
+
+{% block content %}
+    <div class="card border-0 shadow-sm rounded-4">
+        <div class="card-header bg-light border-0 pt-3">
+            <h2 class="h5 mb-0" id="form-heading">{% trans "Edit Discussion" %}</h2>
+        </div>
+        <div class="card-body p-4">
+            <form method="post" action="{% url 'forum:edit_post' post.id %}" aria-labelledby="form-heading" novalidate>
+                {% csrf_token %}
+                
+                <div class="mb-3">
+                    <label for="id_title" class="form-label fw-medium">
+                        {% trans "Discussion Title" %} <span class="text-danger" aria-hidden="true">*</span>
+                        <span class="visually-hidden">{% trans "(required)" %}</span>
+                    </label>
+                    <input type="text" name="title" maxlength="100" class="form-control rounded-pill" 
+                           required id="id_title" aria-required="true" value="{{ post.title }}"
+                           placeholder="{% trans 'Enter a clear, specific title' %}"
+                           aria-describedby="title-help">
+                    <div id="title-help" class="form-text">
+                        {% trans "Choose a clear, specific title for your discussion (100 characters max)" %}
                     </div>
                 </div>
-            </div>
+                
+                <div class="mb-3">
+                    <label for="id_desc" class="form-label fw-medium">
+                        {% trans "Your Message" %} <span class="text-danger" aria-hidden="true">*</span>
+                        <span class="visually-hidden">{% trans "(required)" %}</span>
+                    </label>
+                    <textarea name="desc" cols="40" rows="6" class="form-control rounded-3" 
+                            required id="id_desc" aria-required="true"
+                            placeholder="{% trans 'Share your experience or question...' %}"
+                            aria-describedby="desc-help">{{ post.desc }}</textarea>
+                    <div id="desc-help" class="form-text">
+                        {% trans "Share your experience, question, or advice (2000 characters max)" %}
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="id_category" class="form-label fw-medium">
+                        {% trans "Category" %} <span class="text-danger" aria-hidden="true">*</span>
+                        <span class="visually-hidden">{% trans "(required)" %}</span>
+                    </label>
+                    <select name="category" id="id_category" class="form-select rounded-pill" required aria-required="true">
+                        <option value="" disabled>{% trans "Select a category" %}</option>
+                        {% for value, name in post_category_choices %}
+                            <option value="{{ value }}" {% if post.category == value %}selected{% endif %}>{{ name }}</option>
+                        {% endfor %}
+                    </select>
+                    <div id="category-help" class="form-text">
+                        {% trans "Choose a category to help others find your discussion" %}
+                    </div>
+                </div>
+                
+                <div class="d-flex justify-content-between mt-4">
+                    <a href="{% url 'forum:view_post' post.id %}" class="btn btn-outline-secondary rounded-pill px-4">
+                        <i class="fa-solid fa-arrow-left me-2" aria-hidden="true"></i>{% trans "Cancel" %}
+                    </a>
+                    <button type="submit" class="btn btn-primary rounded-pill px-4">
+                        <i class="fa-solid fa-save me-2" aria-hidden="true"></i>{% trans "Save Changes" %}
+                    </button>
+                </div>
+            </form>
         </div>
-    </main>
-{% endblock main_contents %}
+    </div>
+{% endblock content %}

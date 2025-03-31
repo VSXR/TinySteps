@@ -25,7 +25,7 @@ class Forum_Repository(GenericRepository):
             search_query &= Q(category=category)
         
         return self.model.objects.filter(search_query).order_by('-created_at')
-    
+        
     def get_posts_by_category(self, category, limit=None):
         """Get forum posts by category with optional limit"""
         query = self.model.objects.filter(category=category).order_by('-created_at')

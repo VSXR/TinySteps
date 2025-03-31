@@ -1,101 +1,84 @@
-{% extends 'base.html' %}
+{% extends 'forum/base/forum_base.html' %}
 {% load static %}
-{% load crispy_forms_tags %}
 {% load i18n %}
 
-{% block title %}
-    {% trans "TINY STEPS - Start a New Discussion" %}
-{% endblock title %}
+{% block title %}{% trans "New Discussion" %} - {% trans "Parents Forum" %}{% endblock %}
 
-{% block main_contents %}
-    <main id="main-content">
-        <div class="container my-4 my-md-5">
-            <div class="row mb-3 mb-lg-4">
-                <div class="col-12 text-center">
-                    <h1 id="page-heading">{% trans "Start a New Discussion" %}</h1>
-                    <p class="lead" id="page-description">
-                        {% trans "Share your parenting experiences or questions with other parents" %}
-                    </p>
-                </div>
-                <hr class="my-4 w-50 mx-auto">
-            </div>
-            
-            <div class="row justify-content-center">
-                <div class="col-12 col-md-10 col-lg-8">
-                    {% if messages %}
-                        {% include 'partials/messages.html' %}
-                    {% endif %}
-                    
-                    <div class="card shadow-sm">
-                        <div class="card-header bg-light">
-                            <h2 class="h5 mb-0" id="form-heading">{% trans "New Discussion" %}</h2>
-                        </div>
-                        <div class="card-body">
-                            <form method="post" action="{% url 'create_post' %}" aria-labelledby="form-heading" novalidate>
-                                {% csrf_token %}
-                                
-                                <div class="mb-3 mb-md-4">
-                                    <label for="id_title" class="form-label fw-medium">
-                                        {% trans "Discussion Title" %} <span class="text-danger" aria-hidden="true">*</span>
-                                        <span class="visually-hidden">{% trans "(required)" %}</span>
-                                    </label>
-                                    <input type="text" name="title" maxlength="100" class="form-control" 
-                                        required id="id_title" aria-required="true"
-                                        aria-describedby="title-help">
-                                    <div id="title-help" class="form-text">
-                                        {% trans "Choose a clear, specific title for your discussion (100 characters max)" %}
-                                    </div>
-                                </div>
-                                
-                                <div class="mb-4">
-                                    <label for="id_desc" class="form-label fw-medium">
-                                        {% trans "Your Message" %} <span class="text-danger" aria-hidden="true">*</span>
-                                        <span class="visually-hidden">{% trans "(required)" %}</span>
-                                    </label>
-                                    <textarea name="desc" cols="40" rows="6" class="form-control" 
-                                            required id="id_desc" aria-required="true"
-                                            aria-describedby="desc-help"></textarea>
-                                    <div id="desc-help" class="form-text">
-                                        {% trans "Share your experience, question, or advice (2000 characters max)" %}
-                                    </div>
-                                </div>
+{% block breadcrumbs %}
+    {% include 'forum/components/breadcrumbs.html' with view_type="create" %}
+{% endblock %}
 
-                                <div class="mb-4">
-                                    <label for="id_category" class="form-label fw-medium">
-                                        {% trans "Category" %} <span class="text-danger" aria-hidden="true">*</span>
-                                        <span class="visually-hidden">{% trans "(required)" %}</span>
-                                    </label>
-                                    <select name="category" id="id_category" class="form-select" required aria-required="true">
-                                        <option value="" disabled selected>{% trans "Select a category" %}</option>
-                                        {% for value, name in post_category_choices %}
-                                            <option value="{{ value }}">{{ name }}</option>
-                                        {% endfor %}
-                                    </select>
-                                    <div id="category-help" class="form-text">
-                                        {% trans "Choose a category to help others find your discussion" %}
-                                    </div>
-                                </div>
-                                
-                                <div class="d-grid gap-2 mt-4">
-                                    <button type="submit" class="btn btn-primary py-2" aria-label="{% trans "Create new discussion" %}">
-                                        <i class="fa-solid fa-plus me-2" aria-hidden="true"></i>{% trans "CREATE DISCUSSION" %}
-                                    </button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                    
-                    <div class="mt-4 text-center">
-                        <a href="{% url 'parent_forum' %}" class="btn btn-outline-secondary" 
-                            aria-label="{% trans "Return to forums list" %}">
-                            <i class="fa-solid fa-arrow-left me-2" aria-hidden="true"></i>{% trans "Back to Forums" %}
-                        </a>
-                    </div>
-                </div>
-            </div>
+{% block page_header %}
+    {% include "forum/components/page_header.html" with title=_("Start a New Discussion") subtitle=_("Share your parenting experiences or questions with other parents") %}
+{% endblock %}
+
+{% block search_filters %}{% endblock %}
+
+{% block content %}
+    <div class="card border-0 shadow-sm rounded-4">
+        <div class="card-header bg-light border-0 pt-3">
+            <h2 class="h5 mb-0" id="form-heading">{% trans "New Discussion" %}</h2>
         </div>
-    </main>
-{% endblock main_contents %}
+        <div class="card-body p-4">
+            <form method="post" action="{% url 'forum:create_post' %}" aria-labelledby="form-heading" novalidate>
+                {% csrf_token %}
+
+                <div class="mb-3">
+                    <label for="id_title" class="form-label fw-medium">
+                        Discussion Title <span class="text-danger" aria-hidden="true">*</span>
+                        <span class="visually-hidden">(required)</span>
+                    </label>
+                    <input type="text" name="title" maxlength="100" class="form-control rounded-pill" 
+                           required id="id_title" aria-required="true"
+                           placeholder="Enter a clear, specific title"
+                           aria-describedby="title-help">
+                    <div id="title-help" class="form-text">
+                        Choose a clear, specific title for your discussion (100 characters max)
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="id_desc" class="form-label fw-medium">
+                        Your Message <span class="text-danger" aria-hidden="true">*</span>
+                        <span class="visually-hidden">(required)</span>
+                    </label>
+                    <textarea name="desc" cols="40" rows="6" class="form-control rounded-3" 
+                            required id="id_desc" aria-required="true"
+                            placeholder="Share your experience or question..."
+                            aria-describedby="desc-help"></textarea>
+                    <div id="desc-help" class="form-text">
+                        Share your experience, question, or advice (2000 characters max)
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="id_category" class="form-label fw-medium">
+                        Category <span class="text-danger" aria-hidden="true">*</span>
+                        <span class="visually-hidden">(required)</span>
+                    </label>
+                    <select name="category" id="id_category" class="form-select rounded-pill" required aria-required="true">
+                        <option value="" disabled selected>Select a category</option>
+                        {% for value, name in post_category_choices %}
+                            <option value="{{ value }}">{{ name }}</option>
+                        {% endfor %}
+                    </select>
+                    <div id="category-help" class="form-text">
+                        Choose a category to help others find your discussion
+                    </div>
+                </div>
+                
+                <div class="d-flex justify-content-between mt-4">
+                    <a href="{% url 'forum:parent_forum' %}" class="btn btn-outline-secondary rounded-pill px-4">
+                        <i class="fa-solid fa-arrow-left me-2" aria-hidden="true"></i>Back
+                    </a>
+                    <button type="submit" class="btn btn-primary rounded-pill px-4">
+                        <i class="fa-solid fa-paper-plane me-2" aria-hidden="true"></i>Post Discussion
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock content %}
 
 {% block extra_js %}
     {{ block.super }}

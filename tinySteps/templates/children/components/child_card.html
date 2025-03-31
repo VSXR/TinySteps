@@ -71,7 +71,7 @@
             </div>
             
             <div class="mt-3 d-flex justify-content-between align-items-center">
-                <a href="{% url 'child_detail' child.id %}" class="btn btn-primary rounded-pill px-3" aria-label="{% blocktrans with name=child.name %}View {{ name }}'s profile{% endblocktrans %}">
+                <a href="{% url 'children:child_detail' child.id %}" class="btn btn-primary rounded-pill px-3">
                     <i class="fa-solid fa-child fa-fw me-1" aria-hidden="true"></i>
                     {% trans "Profile" %}
                 </a>
@@ -87,32 +87,32 @@
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0" aria-labelledby="dropdownMenuButton-{{ child.id }}">
                         <li>
-                            <a class="dropdown-item d-flex align-items-center" href="{% url 'edit_child' child.id %}">
+                           <a class="dropdown-item d-flex align-items-center" href="{% url 'children:edit_child' child.id %}">
                                 <i class="fa-solid fa-pen-to-square fa-fw me-2 text-primary" aria-hidden="true"></i>
                                 {% trans "Edit Profile" %}
                             </a>
                         </li>
                         <li>
-                            <a class="dropdown-item d-flex align-items-center" href="{% url 'child_calendar' child.id %}">
+                            <a class="dropdown-item d-flex align-items-center" href="{% url 'children:child_calendar' child.id %}">
                                 <i class="fa-solid fa-calendar-days fa-fw me-2 text-success" aria-hidden="true"></i>
                                 {% trans "Calendar" %}
                             </a>
                         </li>
                         <li>
-                            <a class="dropdown-item d-flex align-items-center" href="{% url 'child_vaccine_card' child.id %}">
+                            <a class="dropdown-item d-flex align-items-center" href="{% url 'children:child_vaccine_card' child.id %}">
                                 <i class="fa-solid fa-syringe fa-fw me-2 text-warning" aria-hidden="true"></i>
                                 {% trans "Vaccines" %}
                             </a>
                         </li>
                         <li>
-                            <a class="dropdown-item d-flex align-items-center" href="{% url 'child_milestones' child.id %}">
+                            <a class="dropdown-item d-flex align-items-center" href="{% url 'children:child_milestones' child.id %}">
                                 <i class="fa-solid fa-flag fa-fw me-2 text-info" aria-hidden="true"></i>
                                 {% trans "Milestones" %}
                             </a>
                         </li>
                         <li><hr class="dropdown-divider"></li>
                         <li>
-                            <a class="dropdown-item d-flex align-items-center text-danger" href="{% url 'delete_child' child.id %}">
+                            <a class="dropdown-item d-flex align-items-center text-danger" href="{% url 'children:delete_child' child.id %}">
                                 <i class="fa-solid fa-trash-alt fa-fw me-2" aria-hidden="true"></i>
                                 {% trans "Delete" %}
                             </a>

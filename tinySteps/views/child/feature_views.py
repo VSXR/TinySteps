@@ -20,7 +20,7 @@ def child_milestone(request, child_id):
             milestone = form.save(commit=False)
             milestone.child = child
             milestone.save()
-            return redirect('child_milestone', child_id=child_id)
+            return redirect('children:child_milestones', child_id=child_id)
     else:
         form = Milestone_Form()
     
@@ -104,7 +104,7 @@ class YourChild_Calendar_View(LoginRequiredMixin, View):
             event = form.save(commit=False)
             event.child = child
             event.save()
-            return redirect('child_calendar', child_id=child_id)
+            return redirect('children:child_calendar', child_id=child_id)
         
         context = {
             'child': child,
@@ -130,7 +130,7 @@ class YourChild_VaccineCard_View(LoginRequiredMixin, View):
             'form': form
         }
         
-        return render(request, 'children/features/vaccines/manage.html', context)
+        return render(request, 'children/features/vaccines/index.html', context)
     
     def post(self, request, child_id):
         """Process vaccine form submission"""
@@ -142,7 +142,7 @@ class YourChild_VaccineCard_View(LoginRequiredMixin, View):
             vaccine = form.save(commit=False)
             vaccine.vaccine_card = vaccine_card
             vaccine.save()
-            return redirect('child_vaccine_card', child_id=child_id)
+            return redirect('children:child_vaccine_card', child_id=child_id)
         
         context = {
             'child': child,

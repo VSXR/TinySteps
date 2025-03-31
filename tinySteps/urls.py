@@ -20,11 +20,11 @@ urlpatterns = [
     # Auth routes
     *AuthUrl_Factory.create_urls(),
     
-    # Children routes
-    *ChildUrl_Factory.create_urls(),
+    # Children routes - add prefix here
+    path('children/', include((ChildUrl_Factory.create_urls(), 'children'))),
     
-    # Forum routes
-    *ForumUrl_Factory.create_urls(),
+    # Forum routes - add prefix here
+    path('forum/', include((ForumUrl_Factory.create_urls(), 'forum'))),
     
     # Guide routes - primary URLs
     path('guides/', guide_views.guides_page, name='guides'),

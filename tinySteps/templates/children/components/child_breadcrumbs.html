@@ -9,7 +9,7 @@
             </a>
         </li>
         <li class="breadcrumb-item">
-            <a href="{% url 'your_children' %}" class="text-decoration-none d-flex align-items-center">
+            <a href="{% url 'children:your_children' %}" class="text-decoration-none d-flex align-items-center">
                 <i class="fa-solid fa-child me-1" aria-hidden="true"></i>
                 <span>{% trans "Your Children" %}</span>
             </a>
@@ -22,7 +22,9 @@
                 </li>
             {% else %}
                 <li class="breadcrumb-item">
-                    <a href="{% url 'child_detail' child.id %}" class="text-decoration-none">{{ child.name }}</a>
+                    <a href="{% url 'children:child_detail' child.id %}" class="text-decoration-none">
+                        {{ child.name }}
+                    </a>
                 </li>
                 
                 {% if feature_type %}

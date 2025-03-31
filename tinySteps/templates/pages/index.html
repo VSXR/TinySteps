@@ -167,11 +167,7 @@
                         </li>
                     </ul>
                     <div class="text-center mt-4">
-                        <a
-                            href="{% url 'your_children' %}"
-                            class="btn btn-outline-primary"
-                            aria-label="{% trans 'View child profile features' %}"
-                        >
+                        <a href="{% url 'children:your_children' %}" class="btn btn-outline-primary" aria-label="{% trans 'View child profile features' %}">
                             {% trans "Explore Child Profiles" %}
                         </a>
                     </div>
@@ -387,11 +383,7 @@
                             <ul class="list-unstyled">
                                 {% for post in latest_posts|slice:":3" %}
                                     <li class="mb-3 pb-2 border-bottom text-center">
-                                        <a
-                                            href="{% url 'view_post' post.id %}"
-                                            class="text-decoration-none"
-                                            aria-label="{% trans 'View forum post:' %} {{ post.title }}"
-                                        >
+                                        <a href="{% url 'forum:view_post' post.id %}" class="text-decoration-none" aria-label="{% trans 'View forum post:' %} {{ post.title }}">
                                             <h4 class="h6 mb-1">{{ post.title }}</h4>
                                         </a>
                                         <small class="text-muted d-block text-center">{{ post.created_at|date:"d M Y" }}</small>
@@ -410,11 +402,7 @@
                             </div>
                         {% endif %}
                         <div class="text-center mt-3">
-                            <a
-                                href="{% url 'parent_forum' %}"
-                                class="btn btn-primary"
-                                aria-label="{% trans 'Go to the parents forum' %}"
-                            >
+                            <a href="{% url 'forum:parent_forum' %}" class="btn btn-primary" aria-label="{% trans 'Go to the parents forum' %}">
                                 {% trans "Visit Forum" %}
                             </a>
                         </div>

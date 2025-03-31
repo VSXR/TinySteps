@@ -1,0 +1,8 @@
+.alert {
+    transition: all 0.3s ease-in-out;
+    opacity: 1;
+}
+
+.growth-status-container {
+    min-height: 150px;
+}

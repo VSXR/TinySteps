@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load i18n %}
+{% load custom_filters %}
+
+{% block title %}
+    {% trans "Parents Forum" %} - {% trans "Tiny Steps" %}
+{% endblock %}
+
+{% block main_contents %}
+<main id="main-content" role="main">
+    <div class="container py-4">
+        {% block breadcrumbs %}
+            {% include 'forum/components/breadcrumbs.html' with view_type=view_type %}
+        {% endblock %}
+        
+        {% block page_header %}
+            {% include "forum/components/page_header.html" with title=title|default:"Parents Forum" subtitle=subtitle|default:"Connect with other parents, share experiences, and ask questions" %}
+        {% endblock %}
+        
+        <div class="row g-4">
+            <!-- Sidebar Column -->
+            {% block sidebar_column %}
+                <div class="col-lg-3 col-md-4">
+                    <div class="sticky-top pt-3" style="top: 1rem; z-index: 1000;">
+                        {% include "forum/components/sidebar.html" with active_section="forum" %}
+                    </div>
+                </div>
+            {% endblock %}
+            
+            <!-- Main Content Column -->
+            <div class="{% block main_column_classes %}col-lg-9 col-md-8{% endblock %}">
+                <!-- Tools Area (Optional: if we need it, WE NEED TO DEVELOP IT!) -->
+                {% block tools_area %}{% endblock %}
+                
+                <!-- Search Filters -->
+                {% block search_filters %}
+                    <div class="card border-0 shadow-sm rounded-4 mb-4">
+                        <div class="card-header bg-light border-0 pt-3">
+                            <h2 class="h5 mb-0">{% trans "Filter Discussions" %}</h2>
+                        </div>
+                        <div class="card-body p-3">
+                            <form method="get" class="row g-3 align-items-end" role="search">
+                                <div class="col-lg-4 col-md-6 col-sm-12">
+                                    <label for="search" class="form-label">{% trans "Search" %}</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text rounded-start-pill" aria-hidden="true">
+                                            <i class="fa-solid fa-search"></i>
+                                        </span>
+                                        <input type="text" class="form-control rounded-end-pill" id="search" name="q" 
+                                               value="{{ request.GET.q }}" placeholder="{% trans 'Keywords...' %}"
+                                               aria-label="{% trans 'Search discussions' %}">
+                                    </div>
+                                </div>
+                                
+                                <div class="col-lg-4 col-md-6 col-sm-12">
+                                    <label for="category" class="form-label">{% trans "Category" %}</label>
+                                    <select class="form-select rounded-pill" id="category" name="category" aria-label="{% trans 'Select category' %}">
+                                        <option value="">{% trans "All Categories" %}</option>
+                                        {% for value, name in forum_categories %}
+                                            <option value="{{ value }}" {% if request.GET.category == value %}selected{% endif %}>
+                                                {{ name }}
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                
+                                <div class="col-lg-2 col-md-3 col-sm-12">
+                                    <button type="submit" class="btn btn-primary rounded-pill w-100">
+                                        <i class="fa-solid fa-filter me-1" aria-hidden="true"></i> {% trans "Filter" %}
+                                    </button>
+                                </div>
+                                
+                                {% if request.GET.q or request.GET.category %}
+                                <div class="col-lg-2 col-md-3 col-sm-12">
+                                    <a href="{% url 'forum:parent_forum' %}" class="btn btn-outline-secondary rounded-pill w-100">
+                                        <i class="fa-solid fa-times me-1" aria-hidden="true"></i> {% trans "Clear" %}
+                                    </a>
+                                </div>
+                                {% endif %}
+                            </form>
+                        </div>
+                    </div>
+                {% endblock %}
+                
+                <!-- Main Content -->
+                {% block content %}
+                    <!-- Main content goes here in child templates -->
+                {% endblock %}
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock main_contents %}

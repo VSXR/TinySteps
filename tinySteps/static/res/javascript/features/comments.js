@@ -63,115 +63,62 @@ function createCommentElement(comment) {
     return commentDiv;
 }
 
-// Add a new comment
-async function addComment(postId, commentText) {
-    if (!commentText.trim()) {
-        showError('Comment text is required.');
-        return;
-    }
+// Function to add a comment and update the UI
+async function addComment(postId, text) {
+    showLoading('Posting comment...');
     
     try {
-        showLoading('Posting your comment...');
-        await api.addForumComment(postId, commentText);
+        const response = await fetch(commentForm.action, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            body: new URLSearchParams({
+                'content': text
+            })
+        });
         
-        // Reload comments to show the new one
-        const comments = await api.getForumPostComments(postId);
-        displayComments(comments);
-        
-        hideLoading();
-        showSuccess('Comment posted successfully!');
-        
-        // Scroll to the comments section
-        const commentsHeading = document.getElementById('comments-heading');
-        if (commentsHeading) {
-            commentsHeading.scrollIntoView({ behavior: 'smooth' });
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
         }
         
-        return true;
+        // Refresh page to show new comment
+        window.location.reload();
     } catch (error) {
         hideLoading();
-        showError('Failed to post your comment. Please try again.');
-        console.error('Error posting comment:', error);
-        return false;
+        showError('Failed to post comment. Please try again.');
+        throw error;
     }
 }
 
 // Setup comment form submission
 function setupCommentForm() {
     const commentForm = document.getElementById('comment-form');
-    if (!commentForm) {
-        console.warn('Comment form not found on page');
-        return;
-    }
+    if (!commentForm) return;
     
     commentForm.addEventListener('submit', async function(event) {
         event.preventDefault();
         
-        const postId = window.location.pathname.split('/').filter(Boolean).pop();
-        const commentContent = this.querySelector('textarea[name="content"]').value.trim();
-        const csrfToken = this.querySelector('input[name="csrfmiddlewaretoken"]').value;
-        const actionUrl = this.getAttribute('action');
-        
+        const commentContent = document.getElementById('comment-content').value.trim();
         if (!commentContent) {
             showError('Please enter a comment');
             return;
         }
         
+        const postId = window.location.pathname.split('/').filter(Boolean)[2]; // Extract post ID from URL
+        
         try {
-            showLoading('Posting your comment...');
-            
-            // Send the comment via fetch instead of api module
-            const response = await fetch(actionUrl, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                    'X-CSRFToken': csrfToken
-                },
-                body: new URLSearchParams({
-                    'content': commentContent
-                })
-            });
-            
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            
-            const data = await response.json();
-            
-            if (data.success) {
-                hideLoading();
-                showSuccess('Comment posted successfully!');
-                
-                // Reload comments to show the new one
-                try {
-                    const comments = await api.getForumPostComments(postId);
-                    displayComments(comments);
-                } catch (error) {
-                    console.error('Error refreshing comments:', error);
-                    // If API call fails, just reload the page
-                    window.location.reload();
-                    return;
-                }
-                
-                // Reset the form
-                this.reset();
-                
-                // Scroll to the comments section
-                const commentsHeading = document.getElementById('comments-heading');
-                if (commentsHeading) {
-                    commentsHeading.scrollIntoView({ behavior: 'smooth' });
-                }
-            } else {
-                hideLoading();
-                showError(data.error || 'Error posting comment');
-            }
+            await addComment(postId, commentContent);
+            this.reset(); // Clear the form
         } catch (error) {
-            hideLoading();
-            console.error('Error:', error);
-            showError('Error submitting comment. Please try again.');
+            console.error("Error adding comment:", error);
         }
     });
 }
+
+
 
 export {
     loadComments,

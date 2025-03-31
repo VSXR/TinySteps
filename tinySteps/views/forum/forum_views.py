@@ -1,19 +1,41 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, redirect, get_object_or_404
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+from django.http import JsonResponse
+from django.shortcuts import render, redirect
 from django.utils.translation import gettext as _
 
 from tinySteps.forms import ForumPost_Form, ForumComment_Form
-from tinySteps.services import Forum_Service
 from tinySteps.models import ParentsForum_Model
+from tinySteps.services import Forum_Service
 
 def parents_forum_page(request):
     """Main forum page"""
     service = Forum_Service()
-    posts = service.get_posts()
+    category = request.GET.get('category', '')
+    query = request.GET.get('q', '')
+    
+    if category or query:
+        posts_list = service.search_posts(query, category)
+    else:
+        posts_list = service.get_posts()
+    
+    # Pagination
+    page = request.GET.get('page', 1)
+    paginator = Paginator(posts_list, 4)  # We show 4 posts per page
+    
+    try:
+        posts = paginator.page(page)
+    except PageNotAnInteger:
+        posts = paginator.page(1)
+    except EmptyPage:
+        posts = paginator.page(paginator.num_pages)
     
     context = {
         'posts': posts,
+        'forum_categories': service.get_categories(),
+        'category_counts': service.get_category_counts(),
+        'view_type': 'list'
     }
     
     return render(request, 'forum/index.html', context)
@@ -24,7 +46,16 @@ def search_posts(request):
     query = request.GET.get('q', '')
     category = request.GET.get('category', '')
     
-    posts = service.search_posts(query, category)
+    posts_list = service.search_posts(query, category)
+    page = request.GET.get('page', 1)
+    paginator = Paginator(posts_list, 10)  # we show 10 posts per page
+    
+    try:
+        posts = paginator.page(page)
+    except PageNotAnInteger:
+        posts = paginator.page(1)
+    except EmptyPage:
+        posts = paginator.page(paginator.num_pages)
     
     context = {
         'posts': posts,
@@ -46,7 +77,7 @@ def view_post(request, post_id):
         if content:
             service.add_comment(post_id, request.user, content)
             messages.success(request, _("Your comment has been added."))
-            return redirect('view_post', post_id=post_id)
+            return redirect('forum:view_post', post_id=post_id)
     
     comments = service.get_post_comments(post_id)
     form = ForumComment_Form()
@@ -71,7 +102,7 @@ def add_post(request):
                                       form.cleaned_data['desc'], 
                                       form.cleaned_data['category'])
             messages.success(request, _("Your post has been published."))
-            return redirect('view_post', post_id=post.id)
+            return redirect('forum:view_post', post_id=post.id)
     else:
         form = ForumPost_Form()
     
@@ -91,7 +122,7 @@ def edit_post(request, post_id):
     # Check if user is the author
     if post.author != request.user:
         messages.error(request, _("You don't have permission to edit this post."))
-        return redirect('view_post', post_id=post_id)
+        return redirect('forum:view_post', post_id=post_id)
     
     if request.method == 'POST':
         form = ForumPost_Form(request.POST, instance=post)
@@ -100,7 +131,7 @@ def edit_post(request, post_id):
                               form.cleaned_data['desc'], 
                               form.cleaned_data['category'])
             messages.success(request, _("Your post has been updated."))
-            return redirect('view_post', post_id=post_id)
+            return redirect('forum:view_post', post_id=post_id)
     else:
         form = ForumPost_Form(instance=post)
     
@@ -120,12 +151,12 @@ def delete_post(request, post_id):
     
     if not (post.author == request.user or request.user.is_staff or request.user.is_superuser):
         messages.error(request, _("You don't have permission to delete this post."))
-        return redirect('view_post', post_id=post_id)
+        return redirect('forum:view_post', post_id=post_id)
     
     if request.method == 'POST':
         service.delete_post(post_id)
         messages.success(request, _("Your post has been deleted."))
-        return redirect('parent_forum')
+        return redirect('forum:parent_forum')
     
     return render(request, 'forum/posts/delete.html', {'post': post})
 
@@ -133,19 +164,40 @@ def delete_post(request, post_id):
 def add_post_comment(request, post_id):
     """Add a comment to a forum post"""
     if request.method == 'POST':
-        form = ForumComment_Form(request.POST)
-        if form.is_valid():
+        content = request.POST.get('content', '')
+        
+        if not content.strip():
+            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                return JsonResponse({'success': False, 'error': 'Comment text is required'})
+            messages.error(request, _("Comment text is required"))
+            return redirect('forum:view_post', post_id=post_id)
+            
+        try:
             service = Forum_Service()
-            service.add_comment(post_id, form.cleaned_data, request.user)
-            messages.success(request, _("Your comment has been added."))
+            comment = service.add_comment(
+                post_id,
+                request.user,
+                content
+            )
+            
+            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                return JsonResponse({'success': True})
+            
+            messages.success(request, _("Comment added successfully"))
+            return redirect('forum:view_post', post_id=post_id)
+                
+        except ValueError as e:
+            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                return JsonResponse({'success': False, 'error': str(e)})
+            messages.error(request, str(e))
+            return redirect('forum:view_post', post_id=post_id)
     
-    return redirect('view_post', post_id=post_id)
+    return redirect('forum:view_post', post_id=post_id)
 
 @login_required
 def forum_post_like_toggle(request, post_id):
-    """Toggle like status for a forum post"""
-    service = Forum_Service()
-    service.toggle_like(post_id, request.user)
-    
-    # Return to the previous page after toggling like (goes to forum home if no referer!)
-    return redirect(request.META.get('HTTP_REFERER', 'parent_forum'))
+    pass
+
+@login_required
+def categories(request):
+    pass

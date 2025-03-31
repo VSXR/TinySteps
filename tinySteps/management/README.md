@@ -1,0 +1,1 @@
+python manage.py generate_all_content --children=5 --posts=20 --parent_guides=10 --nutrition_guides=10 --approved

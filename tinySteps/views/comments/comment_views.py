@@ -30,7 +30,7 @@ def add_comment(request, content_type, object_id):
             elif content_type == 'nutrition_guide':
                 return redirect('nutrition_guide_details', pk=object_id)
             elif content_type == 'forum_post':
-                return redirect('view_post', post_id=object_id)
+                return redirect('forum:view_post', post_id=object_id)
             else:
                 return redirect('guides')
                 
@@ -45,26 +45,22 @@ def add_comment(request, content_type, object_id):
 def delete_comment(request, comment_id):
     """Delete a comment"""
     if request.method == 'POST':
-        try:
-            success = comment_service.delete_comment(comment_id, request.user)
+        success = comment_service.delete_comment(comment_id, request.user)
+        
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
             if success:
-                messages.success(request, _("Comment deleted successfully"))
-                if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-                    return JsonResponse({'success': True})
-                return redirect(request.META.get('HTTP_REFERER', '/'))
+                return JsonResponse({'success': True})
             else:
-                messages.error(request, _("Cannot delete comment"))
-                if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-                    return JsonResponse({'success': False, 'error': 'Cannot delete comment'})
-                return redirect(request.META.get('HTTP_REFERER', '/'))
-        except Exception as e:
-            messages.error(request, str(e))
-            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-                return JsonResponse({'success': False, 'error': str(e)})
-            return redirect(request.META.get('HTTP_REFERER', '/'))
+                return JsonResponse({'success': False, 'error': _("You don't have permission to delete this comment")})
+        
+        # For non-AJAX requests
+        if success:
+            messages.success(request, _("Comment deleted successfully"))
+        else:
+            messages.error(request, _("You don't have permission to delete this comment"))
+        return redirect(request.META.get('HTTP_REFERER', '/'))
     
-    messages.error(request, _("Invalid request"))
-    return redirect('guides')
+    return redirect(request.META.get('HTTP_REFERER', '/'))
 
 def list_comments(request, content_type, object_id):
     """List comments for a content object in JSON format if we need it"""

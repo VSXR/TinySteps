@@ -43,7 +43,7 @@
                                             </div>
                                             <div>
                                                 <h4 class="fs-6 mb-0">
-                                                    <a href="{% url 'your_child' child.id %}" class="text-decoration-none">
+                                                    <a href="{% url 'children:child_detail' child.id %}" class="text-decoration-none">
                                                         {{ child.name }}
                                                     </a>
                                                 </h4>
@@ -145,7 +145,7 @@
                                 </div>
                                 
                                 <div class="d-flex justify-content-between mt-4">
-                                    <a href="{% url 'your_children' %}" class="btn btn-outline-secondary" aria-label="{% trans "Cancel and return to your children page" %}">
+                                    <a href="{% url 'children:your_children' %}" class="btn btn-outline-secondary" aria-label="{% trans "Cancel and return to your children page" %}">
                                         {% trans "Cancel" %}
                                     </a>
                                     <button type="submit" class="btn btn-primary" aria-label="{% trans "Add this child to your profile" %}">
