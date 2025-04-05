@@ -9,9 +9,11 @@
 
 {% block main_contents %}
 <main id="main-content" role="main">
-    <div class="container py-4">
+    <div class="container mt-5 mb-4">
         {% block breadcrumbs %}
-            {% include 'forum/components/breadcrumbs.html' with view_type=view_type %}
+            {% if view_type != "list" and view_type %}
+                {% include 'forum/components/breadcrumbs.html' with view_type=view_type %}
+            {% endif %}
         {% endblock %}
         
         {% block page_header %}
