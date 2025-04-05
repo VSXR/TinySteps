@@ -38,20 +38,16 @@ def child_calendar(request, child_id):
     """View for displaying and managing a child's calendar"""
     child = get_object_or_404(YourChild_Model, pk=child_id, user=request.user)
     
-    # Get upcoming reminders
-    today = date.today()
-    next_week = today + timedelta(days=7)
+    child_service = Child_Service()
+    event_stats = child_service.get_event_statistics(child_id, request.user)
     
-    upcoming_reminders = CalendarEvent_Model.objects.filter(
-        child=child,
-        date__gte=today,
-        date__lte=next_week,
-        has_reminder=True
-    ).order_by('date', 'time')
+    upcoming_reminders = child_service.get_upcoming_reminders(child_id, request.user, days=7)
     
     context = {
         'child': child,
-        'upcoming_reminders': upcoming_reminders
+        'upcoming_reminders': upcoming_reminders,
+        'event_stats': event_stats,
+        'event_types': dict(CalendarEvent_Model.TYPE_CHOICES)
     }
     
     return render(request, 'children/features/calendar/index.html', context)

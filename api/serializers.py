@@ -129,14 +129,10 @@ class VaccineCard_Serializer(serializers.ModelSerializer):
 # PLANNING SERIALIZERS
 ###########################################################################
 class CalendarEvent_Serializer(serializers.ModelSerializer):
-    event_color = serializers.SerializerMethodField()
-    
+    """Serializer for calendar events"""
     class Meta:
         model = CalendarEvent_Model
-        fields = ['id', 'child', 'title', 'type', 'date', 'time', 'location', 'description', 
-                  'has_reminder', 'reminder_minutes', 'created_at', 'updated_at',
-                  'event_color']
-        read_only_fields = ['id', 'created_at', 'updated_at']
-    
-    def get_event_color(self, obj):
-        return obj.get_event_color()
+        fields = [
+            'id', 'title', 'type', 'date', 'time', 'location', 
+            'description', 'has_reminder', 'reminder_minutes', 'child'
+        ]

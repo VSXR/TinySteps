@@ -3,6 +3,8 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.urls import reverse
 from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
+
 
 class YourChild_Model(models.Model):
     """Model for children"""
@@ -90,6 +92,13 @@ class Vaccine_Model(models.Model):
     def __str__(self):
         return f"{self.name} - {self.date}"
 
+
+
+
+
+
+
+
 class CalendarEvent_Model(models.Model):
     """Model for calendar events"""
     TYPE_CHOICES = (
@@ -116,16 +125,6 @@ class CalendarEvent_Model(models.Model):
         verbose_name = _("Calendar Event")
         verbose_name_plural = _("Calendar Events")
         ordering = ["date", "time"]
-    
-    def get_event_color(self):
-        color_map = {
-            'doctor': '#2196f3',
-            'vaccine': '#ff9800',
-            'milestone': '#4caf50',
-            'feeding': '#9c27b0',
-            'other': '#757575',
-        }
-        return color_map.get(self.type, '#757575')
-    
+
     def __str__(self):
         return f"{self.title} - {self.date}"

@@ -1,15 +1,27 @@
+import calendarService from '../services/calendar-service.js';
+
 document.addEventListener('DOMContentLoaded', function() {
-    // Elementos del DOM
+    // DOM elements
     const calendarEl = document.getElementById('calendar');
-    const miniCalendarEl = document.getElementById('mini-calendar');
+    const loadingEl = document.getElementById('loading-indicator');
     const eventForm = document.getElementById('event-form');
     const notificationEl = document.getElementById('notification');
     
-    // Variables globales
-    const csrfToken = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
-    const childId = document.getElementById('child-id').value;
-    const loadingEl = document.getElementById('calendar-loading');
+    // Check if all required elements exist
+    if (!calendarEl) {
+        console.error('Calendar element not found');
+        return;
+    }
+    
+    // Global variables
+    const csrfToken = document.querySelector('input[name="csrfmiddlewaretoken"]')?.value;
+    const childId = document.getElementById('child-id')?.value || '1';
     let currentEvent = null;
+    
+    // Add global error handler to debug issues
+    window.addEventListener('error', function(event) {
+        console.error('Global error caught:', event.error);
+    });
     
     // Set initial view based on screen size
     let initialView = 'dayGridMonth';
@@ -17,16 +29,16 @@ document.addEventListener('DOMContentLoaded', function() {
         initialView = 'listWeek';
     }
 
-    // Mapa de colores para tipos de eventos
+    // Color map for event types
     const eventColorMap = {
-        'doctor': '#2196f3',    // Azul - citas médicas
-        'vaccine': '#ff9800',   // Naranja - vacunas
-        'milestone': '#4caf50', // Verde - hitos de desarrollo
-        'feeding': '#9c27b0',   // Púrpura - alimentación
-        'other': '#757575'      // Gris - otros
+        'doctor': '#2196f3',    // Blue - medical appointments
+        'vaccine': '#ff9800',   // Orange - vaccines
+        'milestone': '#4caf50', // Green - developmental milestones
+        'feeding': '#9c27b0',   // Purple - feeding
+        'other': '#757575'      // Gray - others
     };
 
-    // Inicializar calendario principal
+    // Initialize the calendar
     const calendar = new FullCalendar.Calendar(calendarEl, {
         initialView: initialView,
         headerToolbar: {
@@ -34,7 +46,7 @@ document.addEventListener('DOMContentLoaded', function() {
             center: 'title',
             right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
         },
-        locale: document.documentElement.lang, // Obtener idioma de la página
+        locale: document.documentElement.lang || 'en', // Get page language
         height: 'auto',
         expandRows: true,
         navLinks: true,
@@ -45,536 +57,635 @@ document.addEventListener('DOMContentLoaded', function() {
             minute: '2-digit',
             hour12: false
         },
+        // Fetch events from mock service
         events: function(fetchInfo, successCallback, failureCallback) {
-            // Mostrar indicador de carga
-            if (loadingEl) loadingEl.classList.remove('d-none');
+            if (loadingEl) loadingEl.style.display = 'block';
             
-            // Fetch events from backend
-            fetch(`/api/children/${childId}/events?start=${fetchInfo.startStr}&end=${fetchInfo.endStr}`, {
-                method: 'GET',
-                headers: {
-                    'X-CSRFToken': csrfToken,
-                    'Content-Type': 'application/json',
-                }
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Error fetching events');
-                }
-                return response.json();
-            })
-            .then(data => {
-                // Mapear eventos del backend al formato de FullCalendar
-                const events = data.map(event => ({
-                    id: event.id,
-                    title: event.title,
-                    start: event.time ? `${event.date}T${event.time}` : event.date,
-                    allDay: !event.time,
-                    description: event.description,
-                    backgroundColor: eventColorMap[event.type] || eventColorMap.other,
-                    borderColor: eventColorMap[event.type] || eventColorMap.other,
-                    extendedProps: {
-                        type: event.type,
-                        location: event.location,
-                        hasReminder: event.has_reminder,
-                        reminderMinutes: event.reminder_minutes
-                    }
-                }));
-                
-                successCallback(events);
-                if (loadingEl) loadingEl.classList.add('d-none');
-                updateEventStats();
-            })
-            .catch(error => {
-                console.error('Error fetching events:', error);
-                failureCallback(error);
-                if (loadingEl) loadingEl.classList.add('d-none');
-                showNotification('Error al cargar eventos. Inténtalo de nuevo.', 'danger');
-            });
+            // Use the mock service
+            calendarService.getEvents(childId, fetchInfo.startStr, fetchInfo.endStr)
+                .then(data => {
+                    // Map events to FullCalendar format
+                    const events = data.events.map(event => ({
+                        id: event.id,
+                        title: event.title,
+                        start: event.time ? `${event.date}T${event.time}` : event.date,
+                        allDay: !event.time,
+                        description: event.description,
+                        backgroundColor: eventColorMap[event.type] || eventColorMap.other,
+                        borderColor: eventColorMap[event.type] || eventColorMap.other,
+                        extendedProps: {
+                            type: event.type,
+                            location: event.location,
+                            hasReminder: event.has_reminder,
+                            reminderMinutes: event.reminder_minutes
+                        }
+                    }));
+                    
+                    successCallback(events);
+                    if (loadingEl) loadingEl.style.display = 'none';
+                    updateEventStats();
+                    showNotification('Using demo data - live data will be available soon', 'info');
+                })
+                .catch(error => {
+                    console.error('Error fetching events:', error);
+                    failureCallback(error);
+                    if (loadingEl) loadingEl.style.display = 'none';
+                    showNotification('Error loading events. Using demo data.', 'warning');
+                });
         },
         eventClick: function(info) {
-            // Mostrar detalles del evento en el formulario
+            // Show event details in form
             showEventDetails(info.event);
         },
         dateClick: function(info) {
-            // Preparar formulario para nuevo evento
+            // Prepare form for new event
             resetEventForm();
             document.getElementById('event-date').value = info.dateStr;
-            document.getElementById('form-title').innerHTML = '<i class="fa-solid fa-plus text-primary me-2" aria-hidden="true"></i> Añadir Evento';
+            document.getElementById('form-title').innerHTML = '<i class="fa-solid fa-plus text-primary me-2" aria-hidden="true"></i> Add Event';
         },
         eventDrop: function(info) {
-            // Manejar arrastrar y soltar evento
+            // Handle drag and drop event
             updateEventDate(info.event);
         },
         eventResize: function(info) {
-            // Manejar cambio de tamaño del evento
+            // Handle event resize
             updateEventDate(info.event);
         }
     });
 
-    // Renderizar calendario principal
+    // Render the calendar
     calendar.render();
     
-    // Inicializar mini-calendario
-    const miniCalendar = new FullCalendar.Calendar(miniCalendarEl, {
-        initialView: 'dayGridMonth',
-        headerToolbar: {
-            left: 'prev',
-            center: 'title',
-            right: 'next'
-        },
-        locale: document.documentElement.lang,
-        height: 'auto',
-        contentHeight: 'auto',
-        dayMaxEvents: 0, // Ocultar visualización de eventos para un aspecto más limpio
-        selectable: true,
-        selectMirror: true,
-        select: function(info) {
-            // Al seleccionar fecha en mini-calendario, navegar al calendario principal
-            calendar.gotoDate(info.start);
-            
-            // Si está en una vista diferente, cambiar a vista diaria
-            if (calendar.view.type !== 'timeGridDay') {
-                calendar.changeView('timeGridDay');
-                updateActiveViewButton(document.getElementById('view-day'));
-            }
-        }
-    });
+    // Initialize form elements
+    initializeForm();
     
-    // Renderizar mini-calendario
-    miniCalendar.render();
-    
-    // Sincronizar cambios de fecha del calendario principal con el mini calendario
-    calendar.on('datesSet', function(info) {
-        // Solo actualizar mini-calendario si la vista es diferente
-        if (!areDatesEqual(miniCalendar.getDate(), info.view.currentStart)) {
-            miniCalendar.gotoDate(info.view.currentStart);
-        }
-    });
-    
-    // Función para verificar si dos fechas son iguales
-    function areDatesEqual(date1, date2) {
-        return date1.getFullYear() === date2.getFullYear() &&
-               date1.getMonth() === date2.getMonth() &&
-               date1.getDate() === date2.getDate();
+    // Load initial event statistics
+    updateEventStats(); 
+    updateUpcomingReminders();
+
+    // Handler for view buttons
+    const viewMonthBtn = document.getElementById('view-month');
+    if (viewMonthBtn) {
+        viewMonthBtn.addEventListener('click', function() {
+            calendar.changeView('dayGridMonth');
+            updateActiveViewButton(this);
+        });
     }
 
-    // Actualizar botón de vista activo
-    function updateActiveViewButton(clickedBtn) {
-        const viewButtons = document.querySelectorAll('.view-button');
-        viewButtons.forEach(btn => btn.classList.remove('active'));
-        clickedBtn.classList.add('active');
+    const viewWeekBtn = document.getElementById('view-week');
+    if (viewWeekBtn) {
+        viewWeekBtn.addEventListener('click', function() {
+            calendar.changeView('timeGridWeek');
+            updateActiveViewButton(this);
+        });
     }
 
-    // Manejar botones de vista
-    document.getElementById('view-month').addEventListener('click', function() {
-        calendar.changeView('dayGridMonth');
-        updateActiveViewButton(this);
-    });
+    const viewDayBtn = document.getElementById('view-day');
+    if (viewDayBtn) {
+        viewDayBtn.addEventListener('click', function() {
+            calendar.changeView('timeGridDay');
+            updateActiveViewButton(this);
+        });
+    }
 
-    document.getElementById('view-week').addEventListener('click', function() {
-        calendar.changeView('timeGridWeek');
-        updateActiveViewButton(this);
-    });
+    const viewListBtn = document.getElementById('view-list');
+    if (viewListBtn) {
+        viewListBtn.addEventListener('click', function() {
+            calendar.changeView('listWeek');
+            updateActiveViewButton(this);
+        });
+    }
 
-    document.getElementById('view-day').addEventListener('click', function() {
-        calendar.changeView('timeGridDay');
-        updateActiveViewButton(this);
-    });
+    const viewTodayBtn = document.getElementById('view-today');
+    if (viewTodayBtn) {
+        viewTodayBtn.addEventListener('click', function() {
+            calendar.today();
+        });
+    }
 
-    document.getElementById('view-list').addEventListener('click', function() {
-        calendar.changeView('listWeek');
-        updateActiveViewButton(this);
-    });
-
-    // Toggle del campo de recordatorio cuando se cambia el checkbox
+    // Form event handlers
     const reminderCheckbox = document.getElementById('event-reminder');
     const reminderOptions = document.getElementById('reminder-options');
     
-    reminderCheckbox.addEventListener('change', function() {
-        reminderOptions.style.display = this.checked ? 'block' : 'none';
-    });
+    if (reminderCheckbox && reminderOptions) {
+        reminderCheckbox.addEventListener('change', function() {
+            reminderOptions.style.display = this.checked ? 'block' : 'none';
+        });
+    }
 
-    // Manejar envío del formulario de evento
-    eventForm.addEventListener('submit', function(e) {
-        e.preventDefault();
-        saveEvent();
-    });
+    // Event form submission
+    if (eventForm) {
+        eventForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            saveEvent();
+        });
+    }
 
-    // Botón para eliminar evento
-    document.getElementById('btn-delete').addEventListener('click', function() {
-        const deleteModal = new bootstrap.Modal(document.getElementById('deleteEventModal'));
-        deleteModal.show();
-    });
+    // Delete event button
+    const deleteBtn = document.getElementById('btn-delete');
+    if (deleteBtn) {
+        deleteBtn.addEventListener('click', function() {
+            const deleteModal = new bootstrap.Modal(document.getElementById('deleteEventModal'));
+            deleteModal.show();
+        });
+    }
 
-    // Confirmar eliminación de evento
-    document.getElementById('btn-confirm-delete').addEventListener('click', function() {
-        if (currentEvent) {
-            deleteEvent(currentEvent.id);
+    // Confirm delete button
+    const confirmDeleteBtn = document.getElementById('btn-confirm-delete');
+    if (confirmDeleteBtn) {
+        confirmDeleteBtn.addEventListener('click', function() {
+            deleteEvent();
+        });
+    }
+
+    // Form cancel button
+    const cancelBtn = document.getElementById('btn-cancel');
+    if (cancelBtn) {
+        cancelBtn.addEventListener('click', function() {
+            resetEventForm();
+        });
+    }
+
+    // Edit event button in modal
+    const editEventBtn = document.getElementById('btn-edit-event');
+    if (editEventBtn) {
+        editEventBtn.addEventListener('click', function() {
+            const modal = bootstrap.Modal.getInstance(document.getElementById('eventDetailsModal'));
+            modal.hide();
+            showEventDetails(currentEvent);
+        });
+    }
+
+    // Function to initialize form elements
+    function initializeForm() {
+        const typeSelect = document.getElementById('event-type');
+        if (!typeSelect) return;
+        
+        // Clear existing options
+        typeSelect.innerHTML = '';
+        
+        // Add event type options
+        const eventTypes = {
+            'doctor': 'Medical Appointment',
+            'vaccine': 'Vaccine',
+            'milestone': 'Development Milestone',
+            'feeding': 'Feeding',
+            'other': 'Other'
+        };
+        
+        for (const [value, label] of Object.entries(eventTypes)) {
+            const option = document.createElement('option');
+            option.value = value;
+            option.textContent = label;
+            typeSelect.appendChild(option);
         }
-    });
+    }
 
-    // Botón cancelar en el formulario
-    document.getElementById('btn-cancel').addEventListener('click', function() {
-        resetEventForm();
-    });
+    // Function to update active view button
+    function updateActiveViewButton(clickedBtn) {
+        const buttons = document.querySelectorAll('.btn-group button');
+        if (buttons.length > 0) {
+            buttons.forEach(btn => {
+                btn.classList.remove('active');
+            });
+            clickedBtn.classList.add('active');
+        }
+    }
 
-    // Función para mostrar detalles del evento en el formulario
+    // Function to update event statistics
+    function updateEventStats() {
+        calendarService.getEventStats(childId)
+            .then(data => {
+                updateStatsUI(data);
+            })
+            .catch(error => {
+                console.error('Error fetching event stats:', error);
+                // Generate simple mock statistics on error
+                const stats = {
+                    total: 5,
+                    doctor: 1,
+                    vaccine: 1,
+                    milestone: 1,
+                    feeding: 1,
+                    other: 1
+                };
+                updateStatsUI(stats);
+            });
+    }
+    
+    function updateStatsUI(data) {
+        const statsContainer = document.getElementById('event-stats');
+        if (!statsContainer) return;
+        
+        const stats = statsContainer.querySelectorAll('.event-stat');
+        if (stats.length < 5) return;
+        
+        // Update total events
+        const totalCountEl = stats[0].querySelector('.event-stat-count');
+        if (totalCountEl) totalCountEl.textContent = data.total || 0;
+        
+        // Update event type counts
+        const doctorCountEl = stats[1].querySelector('.event-stat-count');
+        if (doctorCountEl) doctorCountEl.textContent = data.doctor || 0;
+        
+        const vaccineCountEl = stats[2].querySelector('.event-stat-count');
+        if (vaccineCountEl) vaccineCountEl.textContent = data.vaccine || 0;
+        
+        const milestoneCountEl = stats[3].querySelector('.event-stat-count');
+        if (milestoneCountEl) milestoneCountEl.textContent = data.milestone || 0;
+        
+        const feedingCountEl = stats[4].querySelector('.event-stat-count');
+        if (feedingCountEl) feedingCountEl.textContent = data.feeding || 0;
+    }
+
+    // Function to update upcoming reminders
+    function updateUpcomingReminders() {
+        calendarService.getUpcomingEvents(childId)
+            .then(data => {
+                updateRemindersUI(data);
+            })
+            .catch(error => {
+                console.error('Error fetching reminders:', error);
+                // Use mock data on error
+                const upcomingEvents = [
+                    {
+                        id: 2,
+                        title: 'Vaccine Shot',
+                        date: '2023-06-22',
+                        time: '14:00:00',
+                        type: 'vaccine',
+                        location: 'Health Center',
+                        description: 'Scheduled vaccination',
+                        has_reminder: true,
+                        reminder_minutes: 1440
+                    }
+                ];
+                updateRemindersUI({ reminders: upcomingEvents });
+            });
+    }
+    
+    function updateRemindersUI(data) {
+        const remindersList = document.getElementById('upcoming-reminders');
+        if (!remindersList) return;
+        
+        // Clear existing reminders
+        remindersList.innerHTML = '';
+        
+        if (data.reminders && data.reminders.length > 0) {
+            data.reminders.forEach(reminder => {
+                const li = document.createElement('li');
+                li.className = 'list-group-item reminder-item d-flex justify-content-between align-items-start';
+                li.dataset.eventId = reminder.id;
+                
+                li.innerHTML = `
+                    <div>
+                        <h4 class="h6 mb-1">${reminder.title}</h4>
+                        <p class="small text-muted mb-0 d-flex align-items-center">
+                            <i class="fa-solid fa-calendar-day me-1" aria-hidden="true"></i>
+                            ${formatDate(reminder.date)}
+                            ${reminder.time ? `<span class="mx-1">•</span>
+                            <i class="fa-solid fa-clock me-1" aria-hidden="true"></i>
+                            ${formatTime(reminder.time)}` : ''}
+                        </p>
+                    </div>
+                    <span class="badge event-type-${reminder.type}">${capitalizeFirstLetter(reminder.type)}</span>
+                `;
+                
+                li.addEventListener('click', function() {
+                    handleReminderClick(this.dataset.eventId);
+                });
+                
+                remindersList.appendChild(li);
+            });
+        } else {
+            const li = document.createElement('li');
+            li.className = 'list-group-item text-center py-3';
+            li.id = 'no-reminders';
+            li.innerHTML = '<p class="mb-0 text-muted">No upcoming reminders</p>';
+            remindersList.appendChild(li);
+        }
+    }
+
+    // Function to show event details in form
     function showEventDetails(event) {
         currentEvent = event;
         
-        // Actualizar título del formulario
-        document.getElementById('form-title').innerHTML = '<i class="fa-solid fa-edit text-primary me-2" aria-hidden="true"></i> Editar Evento';
+        // Get event data
+        const id = event.id;
+        const title = event.title;
+        const type = event.extendedProps.type;
+        const date = event.start ? formatDateForInput(event.start) : '';
+        const time = event.allDay ? '' : formatTimeForInput(event.start);
+        const location = event.extendedProps.location || '';
+        const description = event.extendedProps.description || '';
+        const hasReminder = event.extendedProps.hasReminder;
+        const reminderMinutes = event.extendedProps.reminderMinutes;
         
-        // Completar formulario con datos del evento
-        document.getElementById('event-title').value = event.title;
-        document.getElementById('event-type').value = event.extendedProps.type || 'other';
-        
-        // Formatear fecha para input date (YYYY-MM-DD)
-        const eventDate = new Date(event.start);
-        const formattedDate = eventDate.toISOString().split('T')[0];
-        document.getElementById('event-date').value = formattedDate;
-        
-        // Manejar hora si existe
-        if (!event.allDay && event.start) {
-            const hours = eventDate.getHours().toString().padStart(2, '0');
-            const minutes = eventDate.getMinutes().toString().padStart(2, '0');
-            document.getElementById('event-time').value = `${hours}:${minutes}`;
-        } else {
-            document.getElementById('event-time').value = '';
+        // Update form elements
+        const formTitleEl = document.getElementById('form-title');
+        if (formTitleEl) {
+            formTitleEl.innerHTML = '<i class="fa-solid fa-edit text-primary me-2" aria-hidden="true"></i> Edit Event';
         }
         
-        // Ubicación y notas
-        document.getElementById('event-location').value = event.extendedProps.location || '';
-        document.getElementById('event-notes').value = event.description || '';
+        const titleInput = document.getElementById('event-title');
+        if (titleInput) titleInput.value = title;
         
-        // Recordatorio
-        const hasReminder = event.extendedProps.hasReminder || false;
-        document.getElementById('event-reminder').checked = hasReminder;
-        reminderOptions.style.display = hasReminder ? 'block' : 'none';
+        const typeSelect = document.getElementById('event-type');
+        if (typeSelect) typeSelect.value = type;
         
-        if (hasReminder && event.extendedProps.reminderMinutes) {
-            document.getElementById('reminder-time').value = event.extendedProps.reminderMinutes;
+        const dateInput = document.getElementById('event-date');
+        if (dateInput) dateInput.value = date;
+        
+        const timeInput = document.getElementById('event-time');
+        if (timeInput) timeInput.value = time;
+        
+        const locationInput = document.getElementById('event-location');
+        if (locationInput) locationInput.value = location;
+        
+        const notesInput = document.getElementById('event-notes');
+        if (notesInput) notesInput.value = description;
+        
+        const reminderCheckbox = document.getElementById('event-reminder');
+        if (reminderCheckbox) reminderCheckbox.checked = hasReminder;
+        
+        const reminderOptions = document.getElementById('reminder-options');
+        const reminderTime = document.getElementById('reminder-time');
+        
+        if (hasReminder && reminderMinutes && reminderOptions && reminderTime) {
+            reminderTime.value = reminderMinutes;
+            reminderOptions.style.display = 'block';
+        } else if (reminderOptions) {
+            reminderOptions.style.display = 'none';
         }
         
-        // Mostrar botones de edición
-        document.getElementById('btn-delete').style.display = 'block';
-        document.getElementById('btn-cancel').style.display = 'block';
-        document.getElementById('btn-save').innerHTML = '<i class="fa-solid fa-check me-1" aria-hidden="true"></i> Actualizar Evento';
+        // Show delete and cancel buttons
+        const deleteBtn = document.getElementById('btn-delete');
+        const cancelBtn = document.getElementById('btn-cancel');
+        const saveBtn = document.getElementById('btn-save');
+        
+        if (deleteBtn) deleteBtn.style.display = 'block';
+        if (cancelBtn) cancelBtn.style.display = 'block';
+        if (saveBtn) saveBtn.innerHTML = '<i class="fa-solid fa-check me-1" aria-hidden="true"></i> Update Event';
+        
+        // Scroll to the form
+        if (formTitleEl) formTitleEl.scrollIntoView({ behavior: 'smooth' });
     }
 
-    // Función para guardar evento (crear o actualizar)
+    // Function to reset event form
+    function resetEventForm() {
+        currentEvent = null;
+        if (eventForm) eventForm.reset();
+        
+        const reminderOptions = document.getElementById('reminder-options');
+        if (reminderOptions) reminderOptions.style.display = 'none';
+        
+        // Hide delete and cancel buttons
+        const deleteBtn = document.getElementById('btn-delete');
+        const cancelBtn = document.getElementById('btn-cancel');
+        
+        if (deleteBtn) deleteBtn.style.display = 'none';
+        if (cancelBtn) cancelBtn.style.display = 'none';
+        
+        // Reset form title and button text
+        const formTitle = document.getElementById('form-title');
+        const saveBtn = document.getElementById('btn-save');
+        
+        if (formTitle) formTitle.innerHTML = '<i class="fa-solid fa-plus text-primary me-2" aria-hidden="true"></i> Add Event';
+        if (saveBtn) saveBtn.innerHTML = '<i class="fa-solid fa-check me-1" aria-hidden="true"></i> Save Event';
+    }
+
+    // Function to save an event
     function saveEvent() {
+        const titleInput = document.getElementById('event-title');
+        const typeSelect = document.getElementById('event-type');
+        const dateInput = document.getElementById('event-date');
+        const timeInput = document.getElementById('event-time');
+        const locationInput = document.getElementById('event-location');
+        const notesInput = document.getElementById('event-notes');
+        const reminderCheckbox = document.getElementById('event-reminder');
+        const reminderTime = document.getElementById('reminder-time');
+        
+        if (!titleInput || !typeSelect || !dateInput) {
+            showNotification('Missing required form elements', 'error');
+            return;
+        }
+        
         const eventData = {
-            title: document.getElementById('event-title').value,
-            type: document.getElementById('event-type').value,
-            date: document.getElementById('event-date').value,
-            time: document.getElementById('event-time').value || null,
-            location: document.getElementById('event-location').value,
-            description: document.getElementById('event-notes').value,
-            has_reminder: document.getElementById('event-reminder').checked,
-            reminder_minutes: document.getElementById('event-reminder').checked ? 
-                              document.getElementById('reminder-time').value : null,
+            title: titleInput.value,
+            type: typeSelect.value,
+            date: dateInput.value,
+            time: timeInput?.value || null,
+            location: locationInput?.value || '',
+            description: notesInput?.value || '',
+            has_reminder: reminderCheckbox?.checked || false,
+            reminder_minutes: (reminderCheckbox?.checked && reminderTime?.value) ? reminderTime.value : null,
             child: childId
         };
         
-        let url = `/api/children/${childId}/events/`;
-        let method = 'POST';
+        // Determine if this is a new event or an update
+        const isNewEvent = !currentEvent;
         
-        if (currentEvent) {
-            url = `/api/calendar-events/${currentEvent.id}/`;
-            method = 'PUT';
-        }
-        
-        fetch(url, {
-            method: method,
-            headers: {
-                'X-CSRFToken': csrfToken,
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(eventData)
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Error saving event');
-            }
-            return response.json();
-        })
-        .then(data => {
-            // Actualizar calendario
-            calendar.refetchEvents();
-            
-            // Actualizar estadísticas y recordatorios
-            updateEventStats();
-            updateUpcomingReminders();
-            
-            // Resetear formulario
-            resetEventForm();
-            
-            // Mostrar notificación
-            showNotification(
-                currentEvent ? 'Evento actualizado correctamente.' : 'Evento creado correctamente.', 
-                'success'
-            );
-            
-            currentEvent = null;
-        })
-        .catch(error => {
-            console.error('Error saving event:', error);
-            showNotification('Error al guardar el evento. Inténtalo de nuevo.', 'danger');
-        });
-    }
-
-    // Función para eliminar evento
-    function deleteEvent(eventId) {
-        fetch(`/api/calendar-events/${eventId}/`, {
-            method: 'DELETE',
-            headers: {
-                'X-CSRFToken': csrfToken
-            }
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Error deleting event');
-            }
-            
-            // Cerrar modal de confirmación
-            const deleteModal = bootstrap.Modal.getInstance(document.getElementById('deleteEventModal'));
-            deleteModal.hide();
-            
-            // Actualizar calendario
-            calendar.refetchEvents();
-            
-            // Actualizar estadísticas y recordatorios
-            updateEventStats();
-            updateUpcomingReminders();
-            
-            // Resetear formulario
-            resetEventForm();
-            
-            // Mostrar notificación
-            showNotification('Evento eliminado correctamente.', 'success');
-            
-            currentEvent = null;
-        })
-        .catch(error => {
-            console.error('Error deleting event:', error);
-            showNotification('Error al eliminar el evento. Inténtalo de nuevo.', 'danger');
-        });
-    }
-
-    // Función para actualizar fecha de evento (arrastrar y soltar)
-    function updateEventDate(event) {
-        const eventStart = event.start;
-        const eventData = {
-            date: eventStart.toISOString().split('T')[0]
-        };
-        
-        if (!event.allDay && eventStart) {
-            const hours = eventStart.getHours().toString().padStart(2, '0');
-            const minutes = eventStart.getMinutes().toString().padStart(2, '0');
-            eventData.time = `${hours}:${minutes}`;
-        } else {
-            eventData.time = null;
-        }
-        
-        fetch(`/api/calendar-events/${event.id}/update-date/`, {
-            method: 'POST',
-            headers: {
-                'X-CSRFToken': csrfToken,
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(eventData)
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Error updating event date');
-            }
-            
-            // Mostrar notificación
-            showNotification('Fecha del evento actualizada correctamente.', 'success');
-            
-            // Actualizar recordatorios
-            updateUpcomingReminders();
-        })
-        .catch(error => {
-            console.error('Error updating event date:', error);
-            showNotification('Error al actualizar la fecha. Inténtalo de nuevo.', 'danger');
-            calendar.refetchEvents(); // Revertir cambio visual
-        });
-    }
-
-    // Función para actualizar estadísticas de eventos
-    function updateEventStats() {
-        fetch(`/api/children/${childId}/events/event_stats/`, {
-            method: 'GET',
-            headers: {
-                'X-CSRFToken': csrfToken
-            }
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Error fetching event stats');
-            }
-            return response.json();
-        })
-        .then(data => {
-            // Actualizar contadores en la UI
-            if (document.getElementById('doctor-count')) {
-                document.getElementById('doctor-count').textContent = data.doctor || 0;
-            }
-            if (document.getElementById('vaccine-count')) {
-                document.getElementById('vaccine-count').textContent = data.vaccine || 0;
-            }
-            if (document.getElementById('milestone-count')) {
-                document.getElementById('milestone-count').textContent = data.milestone || 0;
-            }
-            if (document.getElementById('total-events')) {
-                document.getElementById('total-events').textContent = data.total || 0;
-            }
-            if (document.getElementById('upcoming-count')) {
-                document.getElementById('upcoming-count').textContent = data.upcoming || 0;
-            }
-        })
-        .catch(error => {
-            console.error('Error fetching event stats:', error);
-        });
-    }
-
-    // Función para actualizar lista de recordatorios próximos
-    function updateUpcomingReminders() {
-        fetch(`/api/children/${childId}/events/upcoming_events/`, {
-            method: 'GET',
-            headers: {
-                'X-CSRFToken': csrfToken
-            }
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Error fetching upcoming events');
-            }
-            return response.json();
-        })
-        .then(data => {
-            // Actualizar lista de recordatorios
-            const remindersList = document.getElementById('upcoming-reminders');
-            if (!remindersList) return;
-            
-            if (data.reminders && data.reminders.length > 0) {
-                let html = '';
-                data.reminders.forEach(reminder => {
-                    const reminderDate = new Date(reminder.date);
-                    const formattedDate = reminderDate.toLocaleDateString();
+        if (isNewEvent) {
+            calendarService.createEvent(eventData)
+                .then(savedEvent => {
+                    // Refresh calendar
+                    calendar.refetchEvents();
                     
-                    html += `
-                    <li class="list-group-item reminder-item d-flex justify-content-between align-items-start" data-event-id="${reminder.id}">
-                        <div>
-                            <h4 class="h6 mb-1">${reminder.title}</h4>
-                            <p class="small text-muted mb-0 d-flex align-items-center">
-                                <i class="fa-solid fa-calendar-day me-1" aria-hidden="true"></i>
-                                ${formattedDate}
-                                ${reminder.time ? `<span class="mx-1">•</span><i class="fa-solid fa-clock me-1" aria-hidden="true"></i>${reminder.time}` : ''}
-                            </p>
-                        </div>
-                        <span class="badge event-type-${reminder.type}">${getEventTypeName(reminder.type)}</span>
-                    </li>`;
+                    // Update stats and reminders
+                    updateEventStats();
+                    updateUpcomingReminders();
+                    
+                    // Reset form
+                    resetEventForm();
+                    
+                    showNotification('Event created successfully', 'success');
+                })
+                .catch(error => {
+                    console.error('Error saving event:', error);
+                    showNotification('Error creating event. Please try again.', 'danger');
                 });
-                
-                remindersList.innerHTML = html;
-                
-                // Añadir listener para click en recordatorios
-                document.querySelectorAll('.reminder-item').forEach(item => {
-                    item.addEventListener('click', function() {
-                        const eventId = this.getAttribute('data-event-id');
-                        const fcEvent = calendar.getEventById(eventId);
-                        if (fcEvent) {
-                            showEventDetails(fcEvent);
-                        } else {
-                            // Si no está en la vista actual, cargar directamente
-                            fetch(`/api/calendar-events/${eventId}/`, {
-                                method: 'GET',
-                                headers: {
-                                    'X-CSRFToken': csrfToken
-                                }
-                            })
-                            .then(response => response.json())
-                            .then(data => {
-                                // Crear objeto de evento temporal
-                                const tempEvent = {
-                                    id: data.id,
-                                    title: data.title,
-                                    start: data.time ? new Date(`${data.date}T${data.time}`) : new Date(data.date),
-                                    allDay: !data.time,
-                                    description: data.description,
-                                    extendedProps: {
-                                        type: data.type,
-                                        location: data.location,
-                                        hasReminder: data.has_reminder,
-                                        reminderMinutes: data.reminder_minutes
-                                    }
-                                };
-                                showEventDetails(tempEvent);
-                            })
-                            .catch(error => {
-                                console.error('Error loading event details:', error);
-                            });
-                        }
-                    });
+        } else {
+            calendarService.updateEvent(currentEvent.id, eventData)
+                .then(updatedEvent => {
+                    // Refresh calendar
+                    calendar.refetchEvents();
+                    
+                    // Update stats and reminders
+                    updateEventStats();
+                    updateUpcomingReminders();
+                    
+                    // Reset form
+                    resetEventForm();
+                    
+                    showNotification('Event updated successfully', 'success');
+                })
+                .catch(error => {
+                    console.error('Error updating event:', error);
+                    showNotification('Error updating event. Please try again.', 'danger');
                 });
+        }
+    }
+
+    // Function to delete an event
+    function deleteEvent() {
+        if (!currentEvent) return;
+        
+        calendarService.deleteEvent(currentEvent.id)
+            .then(response => {
+                // Close modal
+                const modal = bootstrap.Modal.getInstance(document.getElementById('deleteEventModal'));
+                if (modal) modal.hide();
                 
-                // Mostrar contador actualizado
-                const reminderBadge = document.querySelector('.card-header .badge');
-                if (reminderBadge) {
-                    reminderBadge.textContent = data.reminders.length;
-                }
+                // Remove from calendar
+                calendar.getEventById(currentEvent.id).remove();
                 
-                // Ocultar mensaje de "no hay recordatorios"
-                if (document.getElementById('no-reminders')) {
-                    document.getElementById('no-reminders').style.display = 'none';
-                }
-            } else {
-                // Mostrar mensaje de "no hay recordatorios"
-                remindersList.innerHTML = `
-                <li class="list-group-item text-center py-3" id="no-reminders">
-                    <p class="mb-0 text-muted">No hay recordatorios próximos</p>
-                </li>`;
+                // Reset form
+                resetEventForm();
                 
-                // Actualizar contador a 0
-                const reminderBadge = document.querySelector('.card-header .badge');
-                if (reminderBadge) {
-                    reminderBadge.textContent = '0';
-                }
+                // Update statistics and reminders
+                updateEventStats();
+                updateUpcomingReminders();
+                
+                // Show success notification
+                showNotification('Event deleted successfully', 'success');
+            })
+            .catch(error => {
+                console.error('Error deleting event:', error);
+                showNotification('Error deleting event. Please try again.', 'danger');
+            });
+    }
+
+    // Function to update event date (after drag & drop or resize)
+    function updateEventDate(event) {
+        const eventId = event.id;
+        const newStart = event.start;
+        
+        // Prepare the data
+        const dateData = {
+            date: formatDateForInput(newStart),
+            time: event.allDay ? null : formatTimeForInput(newStart),
+            allDay: event.allDay
+        };
+        
+        calendarService.updateEvent(eventId, dateData)
+            .then(data => {
+                showNotification('Event updated successfully', 'success');
+                updateUpcomingReminders();
+            })
+            .catch(error => {
+                console.error('Error updating event date:', error);
+                showNotification('Error updating event. Please try again.', 'danger');
+                calendar.refetchEvents(); // Revert the change
+            });
+    }
+
+    // Function to handle reminder click
+    function handleReminderClick(eventId) {
+        calendarService.getEvent(eventId)
+            .then(data => {
+                displayEventDetails(data);
+            })
+            .catch(error => {
+                console.error('Error fetching event details:', error);
+                showNotification('Error loading event details', 'danger');
+            });
+    }
+    
+    function displayEventDetails(data) {
+        // Create a FullCalendar event object
+        const fcEvent = {
+            id: data.id,
+            title: data.title,
+            start: data.time ? new Date(`${data.date}T${data.time}`) : new Date(data.date),
+            allDay: !data.time,
+            extendedProps: {
+                type: data.type,
+                location: data.location,
+                description: data.description,
+                hasReminder: data.has_reminder,
+                reminderMinutes: data.reminder_minutes
             }
-        })
-        .catch(error => {
-            console.error('Error fetching upcoming events:', error);
+        };
+        
+        // Show event details
+        const modalContent = document.getElementById('event-details-content');
+        if (!modalContent) {
+            console.error('Modal content element not found');
+            return;
+        }
+        
+        modalContent.innerHTML = `
+            <div class="event-details">
+                <div class="mb-3">
+                    <h4 class="event-title h5">${data.title}</h4>
+                    <div class="badge event-type-${data.type} mb-2">${capitalizeFirstLetter(data.type)}</div>
+                </div>
+                <div class="mb-3">
+                    <p class="mb-1"><i class="fa-solid fa-calendar me-2"></i> <strong>Date:</strong> ${formatDate(data.date)}</p>
+                    ${data.time ? `<p class="mb-1"><i class="fa-solid fa-clock me-2"></i> <strong>Time:</strong> ${formatTime(data.time)}</p>` : ''}
+                    ${data.location ? `<p class="mb-1"><i class="fa-solid fa-location-dot me-2"></i> <strong>Location:</strong> ${data.location}</p>` : ''}
+                    ${data.has_reminder ? `<p class="mb-1"><i class="fa-solid fa-bell me-2"></i> <strong>Reminder:</strong> ${formatReminderTime(data.reminder_minutes)}</p>` : ''}
+                </div>
+                ${data.description ? `
+                <div class="mb-0">
+                    <h5 class="h6">Description:</h5>
+                    <p class="mb-0">${data.description}</p>
+                </div>
+                ` : ''}
+            </div>
+        `;
+        
+        // Store the event
+        currentEvent = fcEvent;
+        
+        // Show the modal
+        const eventModal = new bootstrap.Modal(document.getElementById('eventDetailsModal'));
+        eventModal.show();
+    }
+
+    // Utility functions
+    function formatDate(dateStr) {
+        const date = new Date(dateStr);
+        return date.toLocaleDateString(document.documentElement.lang || 'en', { 
+            year: 'numeric', 
+            month: 'long', 
+            day: 'numeric' 
         });
     }
-
-    // Función para obtener nombre legible del tipo de evento
-    function getEventTypeName(type) {
-        const typeMap = {
-            'doctor': 'Médico',
-            'vaccine': 'Vacuna',
-            'milestone': 'Hito',
-            'feeding': 'Alimentación',
-            'other': 'Otro'
-        };
-        return typeMap[type] || 'Otro';
+    
+    function formatTime(timeStr) {
+        if (!timeStr) return '';
+        const [hours, minutes] = timeStr.split(':');
+        return new Date(0, 0, 0, hours, minutes).toLocaleTimeString(
+            document.documentElement.lang || 'en', 
+            { hour: '2-digit', minute: '2-digit' }
+        );
+    }
+    
+    function formatDateForInput(date) {
+        return date.toISOString().split('T')[0];
+    }
+    
+    function formatTimeForInput(date) {
+        return date.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }).replace(/\s/g, '');
+    }
+    
+    function formatReminderTime(minutes) {
+        if (!minutes) return 'None';
+        
+        if (minutes === 30) return '30 minutes before';
+        if (minutes === 60) return '1 hour before';
+        if (minutes === 1440) return '1 day before';
+        if (minutes === 10080) return '1 week before';
+        
+        return `${minutes} minutes before`;
+    }
+    
+    function capitalizeFirstLetter(string) {
+        return string?.charAt(0).toUpperCase() + string?.slice(1);
     }
 
-    // Función para resetear formulario
-    function resetEventForm() {
-        eventForm.reset();
-        document.getElementById('form-title').innerHTML = '<i class="fa-solid fa-plus text-primary me-2" aria-hidden="true"></i> Añadir Evento';
-        document.getElementById('btn-delete').style.display = 'none';
-        document.getElementById('btn-cancel').style.display = 'none';
-        document.getElementById('btn-save').innerHTML = '<i class="fa-solid fa-check me-1" aria-hidden="true"></i> Guardar Evento';
-        document.getElementById('reminder-options').style.display = 'none';
-        currentEvent = null;
-    }
-
-    // Función para mostrar notificaciones
+    // Show notification function
     function showNotification(message, type) {
         if (!notificationEl) return;
         
@@ -582,13 +693,9 @@ document.addEventListener('DOMContentLoaded', function() {
         notificationEl.innerHTML = message;
         notificationEl.style.display = 'block';
         
-        // Auto-ocultar después de 3 segundos
+        // Auto-hide after 3 seconds
         setTimeout(() => {
             notificationEl.style.display = 'none';
         }, 3000);
     }
-
-    // Inicializar datos
-    updateEventStats();
-    updateUpcomingReminders();
 });

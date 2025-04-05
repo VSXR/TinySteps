@@ -48,13 +48,19 @@ urlpatterns = [
     path('my-children/', views.CurrentUserChildren_View.as_view(), name='current-user-children'),
     path('search/', views.Search_View.as_view(), name='search'),
 
-    # Additional calendar endpoints (for updating event dates)
+    # Calendar event API endpoints
+    path('children/<int:child_pk>/events/', 
+         views.ChildCalendarEvents_ViewSet.as_view({'get': 'list', 'post': 'create'}), 
+         name='child-calendar-events'),
     path('children/<int:child_pk>/events/upcoming_events/', 
          views.ChildCalendarEvents_ViewSet.as_view({'get': 'upcoming_events'}), 
          name='child-upcoming-events'),
     path('children/<int:child_pk>/events/event_stats/', 
          views.ChildCalendarEvents_ViewSet.as_view({'get': 'event_stats'}), 
          name='child-event-stats'),
+    path('calendar-events/<int:pk>/', 
+         views.CalendarEvent_ViewSet.as_view({'get': 'retrieve', 'put': 'update', 'delete': 'destroy'}), 
+         name='calendar-event-detail'),
     path('calendar-events/<int:pk>/update-date/', 
          views.CalendarEvent_ViewSet.as_view({'post': 'update_date'}), 
          name='calendar-event-update-date'),

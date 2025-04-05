@@ -14,7 +14,7 @@ child_service = ChildService_Factory.create_service()
 @login_required
 def your_children(request):
     """View to display all children of the logged-in user"""
-    children_list = YourChild_Model.objects.filter(user=request.user)
+    children_list = YourChild_Model.objects.filter(user=request.user).order_by('name')
     
     # Pagination
     page = request.GET.get('page', 1)

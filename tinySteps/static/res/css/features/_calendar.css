@@ -237,6 +237,16 @@
     background-color: #f8f9fa;
 }
 
+/* Calendar Nav */
+.calendar-nav-btn {
+    transition: all 0.2s ease;
+}
+
+.calendar-nav-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1);
+}
+
 /* FullCalendar Customizations */
 .fc-daygrid-day-number {
     font-weight: 500;
@@ -261,4 +271,33 @@
 .fc-toolbar-title {
     font-size: 1.5rem !important;
     color: #333;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .event-stat {
+        min-width: 100px;
+        padding: 12px 15px;
+    }
+    
+    .event-stat-count {
+        font-size: 22px;
+    }
+    
+    .event-stat-label {
+        font-size: 12px;
+    }
+    
+    .event-legends {
+        justify-content: center;
+    }
+    
+    .fc-toolbar {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .fc-toolbar-title {
+        font-size: 1.2rem !important;
+    }
 }

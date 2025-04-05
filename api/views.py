@@ -1,13 +1,14 @@
-from datetime import date, timedelta
-from django.shortcuts import get_object_or_404
+from datetime import datetime, timedelta
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
-from django.db.models import Q, Count
-from rest_framework import viewsets, permissions, status, generics, filters
+from django.db.models import Count, Q
+from django.shortcuts import get_object_or_404
+from django.utils import timezone
+from rest_framework import generics, permissions, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.exceptions import ValidationError
 
 from .serializers import (
     User_Serializer,
@@ -447,132 +448,126 @@ class ChildVaccine_ViewSet(viewsets.ModelViewSet):
 ###########################################################################
 # CALENDAR EVENTS
 ###########################################################################
-# Añade estos viewsets a tu archivo de vistas
-class ChildCalendarEvents_ViewSet(viewsets.ModelViewSet):
-    """
-    ViewSet for managing calendar events for a specific child
-    """
-    serializer_class = CalendarEvent_Serializer
-    permission_classes = [permissions.IsAuthenticated]
+class ChildCalendarEvents_ViewSet(LoginRequiredMixin, viewsets.ViewSet):
+    """ViewSet for calendar events by child"""
     
-    def get_queryset(self):
-        """Get all events for the specified child"""
-        child_pk = self.kwargs['child_pk']
-        # Filter by date range if provided in query params
-        start_date = self.request.query_params.get('start')
-        end_date = self.request.query_params.get('end')
+    def list(self, request, child_pk=None):
+        """Get events for a specific child in a date range"""
+        child = get_object_or_404(YourChild_Model, pk=child_pk, user=request.user)
         
-        queryset = CalendarEvent_Model.objects.filter(child_id=child_pk, child__user=self.request.user)
+        # Parse date range parameters
+        start_date = request.query_params.get('start')
+        end_date = request.query_params.get('end')
+        
+        events = CalendarEvent_Model.objects.filter(child=child)
         
         if start_date:
-            queryset = queryset.filter(date__gte=start_date)
+            try:
+                start = datetime.strptime(start_date.split('T')[0], '%Y-%m-%d').date()
+                events = events.filter(date__gte=start)
+            except (ValueError, IndexError):
+                pass
+                
         if end_date:
-            queryset = queryset.filter(date__lte=end_date)
-            
-        return queryset.order_by('date', 'time')
+            try:
+                end = datetime.strptime(end_date.split('T')[0], '%Y-%m-%d').date()
+                events = events.filter(date__lte=end)
+            except (ValueError, IndexError):
+                pass
+        
+        serializer = CalendarEvent_Serializer(events, many=True)
+        return Response(serializer.data)
     
-    def perform_create(self, serializer):
-        """Ensure the event is created for the correct child"""
-        child_pk = self.kwargs['child_pk']
-        child = get_object_or_404(YourChild_Model, id=child_pk, user=self.request.user)
-        serializer.save(child=child)
+    def create(self, request, child_pk=None):
+        """Create a new event for a child"""
+        child = get_object_or_404(YourChild_Model, pk=child_pk, user=request.user)
+        
+        # Add child to request data
+        data = request.data.copy()
+        data['child'] = child.id
+        
+        serializer = CalendarEvent_Serializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
     @action(detail=False, methods=['get'])
     def upcoming_events(self, request, child_pk=None):
-        """Get upcoming events and reminders for a child"""
-        child = get_object_or_404(YourChild_Model, id=child_pk, user=request.user)
-        today = date.today()
-        next_week = today + timedelta(days=7)
+        """Get upcoming events with reminders for a child"""
+        child = get_object_or_404(YourChild_Model, pk=child_pk, user=request.user)
+        today = timezone.now().date()
         
-        # Get upcoming events in the next week
-        upcoming_events = CalendarEvent_Model.objects.filter(
+        # Get events in the next 7 days
+        end_date = today + timedelta(days=7)
+        events = CalendarEvent_Model.objects.filter(
             child=child,
             date__gte=today,
-            date__lte=next_week
+            date__lte=end_date
         ).order_by('date', 'time')
         
-        # Events with reminders enabled
-        upcoming_reminders = upcoming_events.filter(has_reminder=True)
-        
-        # Serialize data
-        events_serializer = self.get_serializer(upcoming_events, many=True)
-        reminders_serializer = self.get_serializer(upcoming_reminders, many=True)
-        
-        return Response({
-            'events': events_serializer.data,
-            'reminders': reminders_serializer.data
-        })
+        serializer = CalendarEvent_Serializer(events, many=True)
+        return Response({'reminders': serializer.data})
     
     @action(detail=False, methods=['get'])
     def event_stats(self, request, child_pk=None):
-        """Return event statistics for dashboard"""
-        child = get_object_or_404(YourChild_Model, id=child_pk, user=request.user)
+        """Get event statistics for a child"""
+        child = get_object_or_404(YourChild_Model, pk=child_pk, user=request.user)
         
-        # Count events by type
-        event_counts = CalendarEvent_Model.objects.filter(child=child)\
-            .values('type')\
-            .annotate(count=Count('id'))
+        # Get counts by type
+        event_counts = CalendarEvent_Model.objects.filter(child=child).values('type').annotate(count=Count('id'))
         
-        # Create dictionary for easy access
-        stats = {
-            'doctor': 0,
-            'vaccine': 0,
-            'milestone': 0,
-            'feeding': 0,
-            'other': 0,
-            'total': 0
-        }
-        
-        for item in event_counts:
-            stats[item['type']] = item['count']
-        
-        # Calculate total
+        # Format as a dictionary
+        stats = {item['type']: item['count'] for item in event_counts}
         stats['total'] = sum(stats.values())
-        
-        # Upcoming events count
-        today = date.today()
-        upcoming_count = CalendarEvent_Model.objects.filter(
-            child=child, 
-            date__gte=today
-        ).count()
-        
-        stats['upcoming'] = upcoming_count
         
         return Response(stats)
 
-class CalendarEvent_ViewSet(viewsets.ModelViewSet):
-    """
-    API endpoint for managing calendar events
-    """
-    serializer_class = CalendarEvent_Serializer
-    permission_classes = [permissions.IsAuthenticated]
+class CalendarEvent_ViewSet(LoginRequiredMixin, viewsets.ViewSet):
+    """ViewSet for individual calendar events"""
     
-    def get_queryset(self):
-        """Return events the current user has access to"""
-        return CalendarEvent_Model.objects.filter(child__user=self.request.user)
+    def retrieve(self, request, pk=None):
+        """Get a specific event"""
+        event = get_object_or_404(CalendarEvent_Model, pk=pk, child__user=request.user)
+        serializer = CalendarEvent_Serializer(event)
+        return Response(serializer.data)
+    
+    def update(self, request, pk=None):
+        """Update a specific event"""
+        event = get_object_or_404(CalendarEvent_Model, pk=pk, child__user=request.user)
+        serializer = CalendarEvent_Serializer(event, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def destroy(self, request, pk=None):
+        """Delete a specific event"""
+        event = get_object_or_404(CalendarEvent_Model, pk=pk, child__user=request.user)
+        event.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
     
     @action(detail=True, methods=['post'])
     def update_date(self, request, pk=None):
-        """
-        Update only the date/time of an event (for drag & drop in calendar)
-        """
-        event = get_object_or_404(self.get_queryset(), pk=pk)
+        """Update the date/time of an event (for drag & drop)"""
+        event = get_object_or_404(CalendarEvent_Model, pk=pk, child__user=request.user)
         
-        # Extract data from request
-        new_date = request.data.get('date')
-        new_time = request.data.get('time')
+        # Extract date and time from request
+        date = request.data.get('date')
+        time = request.data.get('time')
         all_day = request.data.get('allDay', False)
         
-        if new_date:
-            event.date = new_date
-            
-        if not all_day and new_time:
-            event.time = new_time
-        elif all_day:
+        if date:
+            event.date = date
+        
+        if all_day:
             event.time = None
-            
+        elif time:
+            event.time = time
+        
         event.save()
-        serializer = self.get_serializer(event)
+        
+        serializer = CalendarEvent_Serializer(event)
         return Response(serializer.data)
 
 ###########################################################################
