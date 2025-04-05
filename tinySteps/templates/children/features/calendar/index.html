@@ -119,78 +119,74 @@
                 <div class="card-body">
                 <form id="event-form">
                     <div class="mb-3">
-                    <label for="event-title" class="form-label">{% trans "Title" %} <span class="text-danger">*</span></label>
-                    <input type="text" class="form-control rounded-pill" id="event-title" required aria-describedby="title-help">
-                    <div id="title-help" class="form-text">{% trans "Enter a clear title for the event" %}</div>
+                        <label for="event-title" class="form-label">{% trans "Title" %} <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control rounded-pill" id="event-title" required>
                     </div>
                     
                     <div class="mb-3">
-                    <label for="event-type" class="form-label">{% trans "Event Type" %} <span class="text-danger">*</span></label>
-                    <select class="form-select rounded-pill" id="event-type" aria-describedby="type-help" required>
-                        <option value="doctor">{% trans "Medical Appointment" %}</option>
-                        <option value="vaccine">{% trans "Vaccination" %}</option>
-                        <option value="milestone">{% trans "Milestone" %}</option>
-                        <option value="feeding">{% trans "Feeding" %}</option>
-                        <option value="other">{% trans "Other" %}</option>
-                    </select>
-                    <div id="type-help" class="form-text">{% trans "Select the type of event" %}</div>
+                        <label for="event-type" class="form-label">{% trans "Type" %} <span class="text-danger">*</span></label>
+                        <select class="form-select rounded-pill" id="event-type" required>
+                            {% for value, name in event_types.items %}
+                                <option value="{{ value }}">{{ name }}</option>
+                            {% endfor %}
+                        </select>
                     </div>
                     
                     <div class="mb-3">
-                    <label for="event-date" class="form-label">{% trans "Date" %} <span class="text-danger">*</span></label>
-                    <input type="date" class="form-control rounded-pill" id="event-date" required>
+                        <label for="event-date" class="form-label">{% trans "Date" %} <span class="text-danger">*</span></label>
+                        <input type="date" class="form-control rounded-pill" id="event-date" required>
                     </div>
                     
                     <div class="mb-3">
-                    <label for="event-time" class="form-label">{% trans "Time" %}</label>
-                    <input type="time" class="form-control rounded-pill" id="event-time">
-                    <div class="form-text">{% trans "Leave empty for all-day events" %}</div>
+                        <label for="event-time" class="form-label">{% trans "Time" %}</label>
+                        <input type="time" class="form-control rounded-pill" id="event-time">
+                        <div class="form-text">{% trans "Leave empty for all-day events" %}</div>
                     </div>
                     
                     <div class="mb-3">
-                    <label for="event-location" class="form-label">{% trans "Location" %}</label>
-                    <input type="text" class="form-control rounded-pill" id="event-location">
+                        <label for="event-location" class="form-label">{% trans "Location" %}</label>
+                        <input type="text" class="form-control rounded-pill" id="event-location">
                     </div>
                     
                     <div class="mb-3">
-                    <label for="event-notes" class="form-label">{% trans "Notes" %}</label>
-                    <textarea class="form-control rounded-3" id="event-notes" rows="3"></textarea>
+                        <label for="event-notes" class="form-label">{% trans "Notes" %}</label>
+                        <textarea class="form-control rounded-3" id="event-notes" rows="3"></textarea>
                     </div>
                     
                     <!-- Add reminder checkbox -->
                     <div class="mb-3 form-check">
-                    <input type="checkbox" class="form-check-input" id="event-reminder">
-                    <label class="form-check-label" for="event-reminder">{% trans "Set reminder" %}</label>
+                        <input type="checkbox" class="form-check-input" id="event-reminder">
+                        <label class="form-check-label" for="event-reminder">{% trans "Set reminder" %}</label>
                     </div>
                     
                     <!-- Reminder options (hidden by default) -->
                     <div id="reminder-options" class="mb-3" style="display: none;">
-                    <label for="reminder-time" class="form-label">{% trans "Remind me" %}</label>
-                    <select class="form-select rounded-pill" id="reminder-time">
-                        <option value="30">30 {% trans "minutes before" %}</option>
-                        <option value="60">1 {% trans "hour before" %}</option>
-                        <option value="1440">1 {% trans "day before" %}</option>
-                        <option value="10080">1 {% trans "week before" %}</option>
-                    </select>
+                        <label for="reminder-time" class="form-label">{% trans "Remind me" %}</label>
+                        <select class="form-select rounded-pill" id="reminder-time">
+                            <option value="30">30 {% trans "minutes before" %}</option>
+                            <option value="60">1 {% trans "hour before" %}</option>
+                            <option value="1440">1 {% trans "day before" %}</option>
+                            <option value="10080">1 {% trans "week before" %}</option>
+                        </select>
                     </div>
                     
                     <!-- Form buttons -->
                     <div class="d-flex flex-column flex-sm-row justify-content-between form-buttons gap-2">
-                    <div>
-                        <button type="button" id="btn-delete" class="btn btn-danger rounded-pill" 
-                          aria-label="{% trans 'Delete event' %}" style="display: none;">
-                        <i class="fa-solid fa-trash me-1" aria-hidden="true"></i> {% trans "Delete" %}
-                        </button>
-                    </div>
-                    <div class="d-flex flex-column flex-sm-row gap-2">
-                        <button type="button" id="btn-cancel" class="btn btn-outline-secondary rounded-pill" 
-                          aria-label="{% trans 'Cancel event editing' %}" style="display: none;">
-                        {% trans "Cancel" %}
-                        </button>
-                        <button type="submit" id="btn-save" class="btn btn-primary rounded-pill px-4">
-                        <i class="fa-solid fa-check me-1" aria-hidden="true"></i> {% trans "Save Event" %}
-                        </button>
-                    </div>
+                        <div>
+                            <button type="button" id="btn-delete" class="btn btn-danger rounded-pill" 
+                                aria-label="{% trans 'Delete event' %}" style="display: none;">
+                                <i class="fa-solid fa-trash me-1" aria-hidden="true"></i> {% trans "Delete" %}
+                            </button>
+                        </div>
+                        <div class="d-flex flex-column flex-sm-row gap-2">
+                            <button type="button" id="btn-cancel" class="btn btn-outline-secondary rounded-pill" 
+                                aria-label="{% trans 'Cancel event editing' %}" style="display: none;">
+                                {% trans "Cancel" %}
+                            </button>
+                            <button type="submit" id="btn-save" class="btn btn-primary rounded-pill px-4">
+                                <i class="fa-solid fa-check me-1" aria-hidden="true"></i> {% trans "Save Event" %}
+                            </button>
+                        </div>
                     </div>
                 </form>
                 </div>
@@ -199,11 +195,10 @@
             <!-- Upcoming events -->
             <div class="card border-0 shadow-sm rounded-4 mb-4">
                 <div class="card-header bg-light border-0 d-flex justify-content-between align-items-center pt-3">
-                <h3 class="h5 mb-0 d-flex align-items-center">
-                    <i class="fa-solid fa-calendar-check text-primary me-2" aria-hidden="true"></i>
-                    {% trans "Upcoming Events" %}
-                </h3>
-                <span class="badge rounded-pill bg-secondary" id="upcoming-events-count">0</span>
+                    <h3 class="h5 mb-0 d-flex align-items-center">
+                        <i class="fa-solid fa-calendar-alt text-secondary me-2" aria-hidden="true"></i> {% trans "Upcoming Events" %}
+                    </h3>
+                    <span class="badge rounded-pill bg-secondary" id="upcoming-events-count">0</span>
                 </div>
                 <ul class="list-group list-group-flush" id="upcoming-events" role="list">
                 <li class="list-group-item text-center py-3" id="no-events">
@@ -215,11 +210,10 @@
             <!-- Upcoming reminders -->
             <div class="card border-0 shadow-sm rounded-4 mb-4">
                 <div class="card-header bg-light border-0 d-flex justify-content-between align-items-center pt-3">
-                <h3 class="h5 mb-0 d-flex align-items-center">
-                    <i class="fa-solid fa-bell text-primary me-2" aria-hidden="true"></i>
-                    {% trans "Reminders" %}
-                </h3>
-                <span class="badge rounded-pill bg-primary" aria-label="{% trans 'Number of reminders:' %} {{ upcoming_reminders|length }}">{{ upcoming_reminders|length|default:0 }}</span>
+                    <h3 class="h5 mb-0 d-flex align-items-center">
+                        <i class="fa-solid fa-bell text-primary me-2" aria-hidden="true"></i> {% trans "Reminders" %}
+                    </h3>
+                    <span class="badge rounded-pill bg-primary" aria-label="{% trans 'Number of reminders:' %} {{ upcoming_reminders|length }}">{{ upcoming_reminders|length|default:0 }}</span>
                 </div>
                 <ul class="list-group list-group-flush" id="upcoming-reminders" role="list">
                 {% if upcoming_reminders %}
@@ -254,12 +248,50 @@
         <div class="modal fade" id="eventDetailsModal" tabindex="-1" aria-labelledby="eventDetailsModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content rounded-4 border-0 shadow">
-                    <div class="modal-header">
+                    <div class="modal-header bg-light">
                         <h5 class="modal-title" id="eventDetailsModalLabel">{% trans "Event Details" %}</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% trans 'Close' %}"></button>
                     </div>
                     <div class="modal-body" id="event-details-content">
-                        <!-- Event details will be inserted here!! -->
+                        <div class="event-view-container">
+                            <div class="event-title-row d-flex align-items-center mb-3">
+                                <div class="event-type-indicator me-3" id="event-type-dot" style="width: 15px; height: 15px; border-radius: 50%;"></div>
+                                <h4 class="h5 mb-0" id="event-modal-title"></h4>
+                            </div>
+                            
+                            <div class="event-details">
+                                <div class="mb-3" id="event-date-container">
+                                    <label class="fw-bold text-muted small mb-1">{% trans "Date and Time" %}</label>
+                                    <div class="d-flex align-items-center">
+                                        <i class="fa-regular fa-calendar me-2 text-muted" aria-hidden="true"></i>
+                                        <span id="event-modal-date"></span>
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-3" id="event-location-container" style="display: none;">
+                                    <label class="fw-bold text-muted small mb-1">{% trans "Location" %}</label>
+                                    <div class="d-flex align-items-center">
+                                        <i class="fa-solid fa-location-dot me-2 text-muted" aria-hidden="true"></i>
+                                        <span id="event-modal-location"></span>
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-3" id="event-reminder-container" style="display: none;">
+                                    <label class="fw-bold text-muted small mb-1">{% trans "Reminder" %}</label>
+                                    <div class="d-flex align-items-center">
+                                        <i class="fa-solid fa-bell me-2 text-muted" aria-hidden="true"></i>
+                                        <span id="event-modal-reminder"></span>
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-3" id="event-description-container" style="display: none;">
+                                    <label class="fw-bold text-muted small mb-1">{% trans "Description" %}</label>
+                                    <div class="p-3 bg-light rounded-3">
+                                        <p class="mb-0" id="event-modal-description"></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-outline-secondary rounded-pill" data-bs-dismiss="modal">{% trans "Close" %}</button>
@@ -302,7 +334,8 @@
     <!-- FullCalendar library -->
     <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
-    
+    <!-- Chart.js for analytics -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <!-- Our Calendar.js-->
     <script src="{% static 'res/javascript/features/calendar.js' %}" type="module"></script>
 {% endblock extra_js %}

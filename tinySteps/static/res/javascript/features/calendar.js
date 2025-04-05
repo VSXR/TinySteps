@@ -266,6 +266,50 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    // Add empty calendar button handler
+    const addFirstEventBtn = document.getElementById('add-first-event-btn');
+    if (addFirstEventBtn) {
+        addFirstEventBtn.addEventListener('click', function() {
+            resetEventForm();
+            const dateInput = document.getElementById('event-date');
+            if (dateInput) dateInput.valueAsDate = new Date();
+            
+            const formTitle = document.getElementById('form-title');
+            if (formTitle) formTitle.innerHTML = '<i class="fa-solid fa-plus text-primary me-2" aria-hidden="true"></i> Add Event';
+            
+            // Scroll to the form
+            const formCard = document.querySelector('.card:has(#event-form)');
+            if (formCard) formCard.scrollIntoView({ behavior: 'smooth' });
+        });
+    }
+    
+    // Initialize analytics
+    if (typeof Chart !== 'undefined') {
+        initializeAnalytics();
+        
+        // Add event handlers to update analytics
+        calendar.on('eventAdd', updateAnalytics);
+        calendar.on('eventChange', updateAnalytics);
+        calendar.on('eventRemove', updateAnalytics);
+        
+        // Initial update after events are loaded
+        setTimeout(updateAnalytics, 2000);
+    }
+    
+    // Setup export functionality
+    setupExport();
+    
+    // Add a Chart.js script if not already present
+    if (typeof Chart === 'undefined') {
+        const script = document.createElement('script');
+        script.src = 'https://cdn.jsdelivr.net/npm/chart.js';
+        script.onload = function() {
+            initializeAnalytics();
+            setTimeout(updateAnalytics, 2000);
+        };
+        document.head.appendChild(script);
+    }
+
     // Function to initialize form elements
     function initializeForm() {
         const typeSelect = document.getElementById('event-type');
@@ -524,57 +568,71 @@ document.addEventListener('DOMContentLoaded', function() {
     </style>
     `);
     
-    // Function to show event details in dialog
+    // Function to show event details in dialog - improve this implementation
     function showEventDetailsDialog(event) {
         // Get event details
         const title = event.title;
         const type = event.extendedProps.type;
         const date = event.start ? formatDate(event.start.toISOString().split('T')[0]) : '';
-        const time = event.allDay ? 'All day' : formatTime(event.start.toTimeString().slice(0, 5));
-        const location = event.extendedProps.location || 'Not specified';
-        const description = event.extendedProps.description || 'No description';
+        const time = event.allDay ? '{% trans "All day" %}' : formatTime(event.start.toTimeString().slice(0, 5));
+        const location = event.extendedProps.location || '';
+        const description = event.extendedProps.description || '';
         const hasReminder = event.extendedProps.hasReminder;
         const reminderMinutes = event.extendedProps.reminderMinutes;
         
-        // Format the type for display
-        const typeDisplay = type.charAt(0).toUpperCase() + type.slice(1);
+        // Update modal elements
+        const modalTitle = document.getElementById('event-modal-title');
+        if (modalTitle) modalTitle.textContent = title;
         
-        // Generate the modal content
-        const detailsContent = document.getElementById('event-details-content');
-        if (detailsContent) {
-            detailsContent.innerHTML = `
-                <div class="event-details">
-                    <div class="mb-3 pb-2 border-bottom">
-                        <h4 class="event-title mb-1">${title}</h4>
-                        <span class="badge ${getBadgeColorForEventType(type)}">${typeDisplay}</span>
-                    </div>
-                    
-                    <div class="mb-3">
-                        <p class="mb-1"><i class="fa-solid fa-calendar-day me-2"></i><strong>Date:</strong> ${date}</p>
-                        <p class="mb-1"><i class="fa-solid fa-clock me-2"></i><strong>Time:</strong> ${time}</p>
-                        <p class="mb-1"><i class="fa-solid fa-location-dot me-2"></i><strong>Location:</strong> ${location}</p>
-                    </div>
-                    
-                    <div class="mb-3">
-                        <p class="mb-1"><strong>Description:</strong></p>
-                        <p class="bg-light p-2 rounded">${description}</p>
-                    </div>
-                    
-                    ${hasReminder ? `
-                    <div class="alert alert-info">
-                        <i class="fa-solid fa-bell me-2"></i>Reminder set for ${formatReminderTime(reminderMinutes)} before the event
-                    </div>
-                    ` : ''}
-                </div>
-            `;
+        const modalDate = document.getElementById('event-modal-date');
+        if (modalDate) modalDate.textContent = `${date}${event.allDay ? '' : ' • ' + time}`;
+        
+        // Set the dot color based on event type
+        const typeDot = document.getElementById('event-type-dot');
+        if (typeDot) typeDot.style.backgroundColor = eventColorMap[type] || eventColorMap.other;
+        
+        // Handle location display
+        const locationContainer = document.getElementById('event-location-container');
+        const modalLocation = document.getElementById('event-modal-location');
+        if (locationContainer && modalLocation) {
+            if (location) {
+                locationContainer.style.display = 'block';
+                modalLocation.textContent = location;
+            } else {
+                locationContainer.style.display = 'none';
+            }
         }
+        
+        // Handle description display
+        const descriptionContainer = document.getElementById('event-description-container');
+        const modalDescription = document.getElementById('event-modal-description');
+        if (descriptionContainer && modalDescription) {
+            if (description) {
+                descriptionContainer.style.display = 'block';
+                modalDescription.textContent = description;
+            } else {
+                descriptionContainer.style.display = 'none';
+            }
+        }
+        
+        // Handle reminder display
+        const reminderContainer = document.getElementById('event-reminder-container');
+        const modalReminder = document.getElementById('event-modal-reminder');
+        if (reminderContainer && modalReminder) {
+            if (hasReminder && reminderMinutes) {
+                reminderContainer.style.display = 'block';
+                modalReminder.textContent = formatReminderTime(reminderMinutes);
+            } else {
+                reminderContainer.style.display = 'none';
+            }
+        }
+        
+        // Store current event for editing
+        currentEvent = event;
         
         // Show the modal
         const modal = new bootstrap.Modal(document.getElementById('eventDetailsModal'));
         modal.show();
-        
-        // Set the current event to allow editing from the modal
-        currentEvent = event;
     }
 
     // Function to show event details in form
@@ -747,6 +805,11 @@ document.addEventListener('DOMContentLoaded', function() {
                     updateUpcomingReminders();
                     updateUpcomingEvents();
                     
+                    // Update analytics if available
+                    if (typeof updateAnalytics === 'function') {
+                        updateAnalytics();
+                    }
+                    
                     // Reset form
                     resetEventForm();
                     
@@ -779,6 +842,11 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                     updateUpcomingReminders();
                     updateUpcomingEvents();
+                    
+                    // Update analytics if available
+                    if (typeof updateAnalytics === 'function') {
+                        updateAnalytics();
+                    }
                     
                     // Reset form
                     resetEventForm();
@@ -832,6 +900,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 updateUpcomingReminders();
                 updateUpcomingEvents();
                 
+                // Update analytics if available
+                if (typeof updateAnalytics === 'function') {
+                    updateAnalytics();
+                }
+                
                 // Show success notification
                 showNotification('Event deleted successfully', 'success');
             })
@@ -860,6 +933,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 showNotification('Event updated successfully', 'success');
                 updateUpcomingReminders();
                 updateUpcomingEvents();
+                
+                // Update analytics if available
+                if (typeof updateAnalytics === 'function') {
+                    updateAnalytics();
+                }
             })
             .catch(error => {
                 console.error('Error updating event date:', error);
@@ -986,5 +1064,163 @@ document.addEventListener('DOMContentLoaded', function() {
         setTimeout(() => {
             notificationEl.style.display = 'none';
         }, 3000);
+    }
+    
+    // Add this function to initialize analytics charts
+    function initializeAnalytics() {
+        // Check if Chart.js is loaded
+        if (typeof Chart === 'undefined') {
+            console.warn('Chart.js is not loaded. Analytics features will be disabled.');
+            return;
+        }
+        
+        // Type distribution chart
+        const typeCtx = document.getElementById('eventTypeChart');
+        if (typeCtx) {
+            const typeChart = new Chart(typeCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Medical', 'Vaccines', 'Milestones', 'Feeding', 'Other'],
+                    datasets: [{
+                        data: [0, 0, 0, 0, 0], // Will be updated with real data
+                        backgroundColor: [
+                            '#2196f3', // Medical - Blue
+                            '#ff9800', // Vaccines - Orange
+                            '#4caf50', // Milestones - Green
+                            '#9c27b0', // Feeding - Purple
+                            '#757575'  // Other - Gray
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                        }
+                    }
+                }
+            });
+            
+            // Store chart reference for later updates
+            window.typeChart = typeChart;
+        }
+        
+        // Monthly distribution chart
+        const monthlyCtx = document.getElementById('monthlyEventChart');
+        if (monthlyCtx) {
+            const monthlyChart = new Chart(monthlyCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                    datasets: [{
+                        label: 'Events',
+                        data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], // Will be updated with real data
+                        backgroundColor: 'rgba(33, 150, 243, 0.7)', // Blue
+                        borderColor: 'rgba(33, 150, 243, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 1,
+                                precision: 0
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Store chart reference
+            window.monthlyChart = monthlyChart;
+        }
+    }
+
+    // Add this function to update analytics based on current events
+    function updateAnalytics() {
+        const events = calendar.getEvents();
+        
+        // Update type distribution chart
+        if (window.typeChart) {
+            const typeCounts = {
+                'doctor': 0,
+                'vaccine': 0,
+                'milestone': 0,
+                'feeding': 0,
+                'other': 0
+            };
+            
+            events.forEach(event => {
+                const type = event.extendedProps.type || 'other';
+                if (typeCounts[type] !== undefined) {
+                    typeCounts[type]++;
+                } else {
+                    typeCounts.other++;
+                }
+            });
+            
+            window.typeChart.data.datasets[0].data = [
+                typeCounts.doctor,
+                typeCounts.vaccine,
+                typeCounts.milestone,
+                typeCounts.feeding,
+                typeCounts.other
+            ];
+            window.typeChart.update();
+        }
+        
+        // Update monthly distribution chart
+        if (window.monthlyChart) {
+            const monthlyCounts = Array(12).fill(0);
+            
+            events.forEach(event => {
+                if (event.start) {
+                    const month = event.start.getMonth();
+                    monthlyCounts[month]++;
+                }
+            });
+            
+            window.monthlyChart.data.datasets[0].data = monthlyCounts;
+            window.monthlyChart.update();
+        }
+    }
+
+    // Add export functionality
+    function setupExport() {
+        const exportBtn = document.getElementById('exportCalendarBtn');
+        if (exportBtn) {
+            exportBtn.addEventListener('click', function() {
+                const events = calendar.getEvents();
+                const exportData = events.map(event => ({
+                    title: event.title,
+                    type: event.extendedProps.type || 'other',
+                    date: event.start ? event.start.toISOString().split('T')[0] : '',
+                    time: event.allDay ? null : event.start ? event.start.toTimeString().slice(0, 5) : null,
+                    allDay: event.allDay,
+                    location: event.extendedProps.location || '',
+                    description: event.extendedProps.description || '',
+                    hasReminder: event.extendedProps.hasReminder || false,
+                    reminderMinutes: event.extendedProps.reminderMinutes || null
+                }));
+                
+                // Create download link
+                const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportData, null, 2));
+                const downloadAnchor = document.createElement('a');
+                downloadAnchor.setAttribute("href", dataStr);
+                downloadAnchor.setAttribute("download", `calendar-export-${childId}-${new Date().toISOString().slice(0,10)}.json`);
+                document.body.appendChild(downloadAnchor);
+                downloadAnchor.click();
+                downloadAnchor.remove();
+                
+                showNotification('Calendar data exported successfully', 'success');
+            });
+        }
     }
 });
