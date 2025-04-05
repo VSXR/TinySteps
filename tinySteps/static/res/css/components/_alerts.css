@@ -1,0 +1,36 @@
+/* Alert/messages styles */
+
+ul.messages {
+    list-style-type: none;
+    margin: var(--space-lg) 0;
+    padding: var(--space-sm);
+}
+
+ul.messages li {
+    border: 1px solid #ccc;
+    border-radius: var(--radius-md);
+    margin-bottom: var(--space-sm);
+    padding: var(--space-sm);
+}
+
+ul.messages li.success {
+    background-color: var(--success-bg);
+    color: var(--success-text);
+}
+
+ul.messages li.error {
+    background-color: var(--error-bg);
+    color: var(--error-text);
+}
+
+/* Empty state */
+.empty-state {
+    padding: 2rem 1rem;
+}
+
+.empty-state i {
+    font-size: 2.5rem;
+    opacity: 0.6;
+    margin-bottom: 1rem;
+    color: #6c757d;
+}

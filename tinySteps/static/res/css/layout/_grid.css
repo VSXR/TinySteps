@@ -1,0 +1,19 @@
+/* Grid system */
+
+/* Layout Containers */
+.col-lg-8 {
+    margin-bottom: var(--space-md);
+}
+
+.col-md-8 {
+    margin-bottom: var(--space-md);
+    padding-top: var(--space-lg);
+}
+
+/* Make the sidebar sticky on larger screens */
+@media (min-width: 992px) {
+    .sticky-lg-top {
+        position: sticky;
+        top: 2rem;
+    }
+}

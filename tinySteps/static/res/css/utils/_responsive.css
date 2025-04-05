@@ -1,0 +1,261 @@
+/* Media queries */
+
+/* Small screens (mobile) */
+@media (max-width: 576px) {
+    /* Footer adjustments */
+    .footer-nav-link {
+        padding: 6px;
+    }
+    
+    .footer-link-text {
+        font-size: 12px;
+    }
+    
+    .footer-nav-link[aria-label="Request Information"] .footer-link-text {
+        font-size: 0;
+    }
+    
+    .footer-nav-link[aria-label="Request Information"] .footer-link-text::after {
+        content: "INFO";
+        font-size: 12px;
+    }
+    
+    .footer-nav-link[aria-label="Parents Forum"] .footer-link-text {
+        font-size: 0;
+    }
+    
+    .footer-nav-link[aria-label="Parents Forum"] .footer-link-text::after {
+        content: "FORUM";
+        font-size: 12px;
+    }
+    
+    /* Navbar adjustments */
+    .navbar-brand.navName {
+        max-width: 120px;
+    }
+    
+    .nav-link i {
+        font-size: 1.1rem;
+        min-width: 20px;
+    }
+    
+    /* Font sizing */
+    h1 {
+        font-size: 16px;
+    }
+    
+    p {
+        font-size: 14px;
+    }
+}
+
+/* Medium screens (tablets) */
+@media (min-width: 577px) and (max-width: 991px) {
+    /* Navigation - Tablet specific */
+    .navbar-collapse {
+        max-height: 75vh;
+        overflow-y: auto;
+    }
+    
+    .nav-link {
+        border-radius: var(--radius-sm);
+        padding: 0.75rem 1rem;
+    }
+    
+    .nav-link:hover,
+    .nav-link:focus {
+        background-color: rgba(255, 255, 255, 0.1);
+    }
+    
+    /* Footer */
+    .footer-nav {
+        gap: var(--space-xs);
+    }
+    
+    .footer-nav-item {
+        font-size: 15px;
+        margin: 3px;
+    }
+    
+    /* Font sizes */
+    .footer-link-text,
+    .footer-nav-link i,
+    .nav-text {
+        font-size: 14px;
+    }
+    
+    /* Images */
+    .imgWeb {
+        max-width: 50%;
+    }
+
+    .imgWeb-logo {
+        max-width: 50%;
+    }
+    
+    /* Content */
+    .container-fluid {
+        padding-left: var(--space-sm);
+        padding-right: var(--space-sm);
+    }
+    
+    .specific-paragraphs {
+        margin-bottom: var(--space-md);
+    }
+    
+    /* Typography */
+    .navName {
+        font-size: clamp(1.5rem, 4vw, 2rem);
+    }
+    
+    .navbar-brand.navName {
+        max-width: 150px;
+    }
+}
+
+/* Mobile & tablet navigation */
+@media (max-width: 991px) {
+    html, body {
+        overflow-x: hidden;
+        position: relative;
+        width: 100%;
+    }
+    
+    /* Fixed navbar positioning! */
+    header {
+        transition: all 0.3s ease;
+    }
+    
+    /* Handle sticky navbar menu */
+    .sticky-navbar .navbar-collapse {
+        max-height: calc(100vh - 56px);
+        position: fixed;
+        top: 56px; /* Height of the navbar */
+        transition: top 0.3s ease;
+    }
+    
+    /* Prevent body scrolling when menu is open */
+    body.navbar-open {
+        height: 100%;
+        overflow: hidden;
+        position: fixed;
+        width: 100%;
+    }
+
+    /* Base navbar collapse styling */
+    .navbar-collapse {
+        background-color: var(--primary-color);
+        left: 0;
+        max-height: calc(100vh - 56px);
+        overflow-y: auto;
+        padding: 1rem;
+        position: fixed;
+        right: 0;
+        top: 56px;
+        transform: translateX(0);
+        transition: transform 0.3s ease, top 0.3s ease;
+        width: 100%;
+        z-index: 1030;
+    }
+    
+    /* Animation for collapsing */
+    .navbar-collapse.collapsing {
+        height: auto !important;
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+    }
+    
+    /* Animation for expanding */
+    .navbar-collapse.show {
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transform: translateX(0);
+    }
+    
+    /* Container adjustments */
+    .container-fluid {
+        max-width: 100%;
+        padding-left: 15px;
+        padding-right: 15px;
+        width: 100%;
+    }
+    
+    /* Navbar padding */
+    .navbar {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+
+    .navbar-nav .nav-item button.nav-link {
+        padding: 0.75rem 1rem;
+    }
+    
+    .navbar-nav .nav-item .btn-logout:hover,
+    .navbar-nav .nav-item .btn-logout:focus {
+        background-color: transparent;
+    }
+}
+
+/* Large screens (desktops) */
+@media (min-width: 992px) {
+    .navName {
+        font-size: clamp(1.5rem, 2vw, 2.5rem);
+    }
+    
+    .nav-link {
+        font-size: clamp(1rem, 1.5vw, 1.25rem);
+        padding: var(--space-sm) var(--space-md);
+    }
+    
+    .nav-item {
+        text-align: center;
+    }
+}
+
+/* Extra large screens */
+@media (min-width: 1400px) {
+    .container-fluid {
+        margin: 0 auto;
+        max-width: 1320px;
+    }
+    
+    h1 {
+        font-size: 36px;
+    }
+    
+    p {
+        font-size: 18px;
+    }
+    
+    .nav-item.social::before {
+        display: none;
+    }
+}
+
+/* Calendar responsiveness */
+@media (max-width: 768px) {
+    .event-stat {
+        min-width: 100px;
+        padding: 12px 15px;
+    }
+    
+    .event-stat-count {
+        font-size: 22px;
+    }
+    
+    .event-stat-label {
+        font-size: 12px;
+    }
+    
+    .event-legends {
+        justify-content: center;
+    }
+    
+    .fc-toolbar {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .fc-toolbar-title {
+        font-size: 1.2rem !important;
+    }
+}

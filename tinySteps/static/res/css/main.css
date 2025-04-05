@@ -1,0 +1,39 @@
+/* Main CSS Import File */
+
+/* Base styles */
+@import 'base/_variables.css';
+@import 'base/_reset.css';
+@import 'base/_typography.css';
+@import 'base/_accessibility.css';
+@import 'base/_animations.css';
+
+/* Layout styles */
+@import 'layout/_grid.css';
+@import 'layout/_containers.css';
+@import 'layout/_header.css';
+@import 'layout/_footer.css';
+
+/* Component styles */
+@import 'components/_buttons.css';
+@import 'components/_forms.css';
+@import 'components/_cards.css';
+@import 'components/_alerts.css';
+@import 'components/_badges.css';
+@import 'components/_modals.css';
+
+/* Feature styles */
+@import 'features/_calendar.css';
+@import 'features/_forum.css';
+@import 'features/_vaccine-card.css';
+
+/* Page styles */
+@import 'pages/_home.css';
+@import 'pages/_about.css';
+@import 'pages/_contact.css';
+@import 'pages/_error.css';
+@import 'pages/_children.css';
+@import 'pages/_guides.css';
+
+/* Utilities */
+@import 'utils/_helpers.css';
+@import 'utils/_responsive.css';

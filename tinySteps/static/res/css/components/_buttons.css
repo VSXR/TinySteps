@@ -1,0 +1,146 @@
+/* Button styles */
+
+.enlaceRepo {
+    background-color: var(--link-color);
+    border: black 2px solid;
+    border-radius: var(--radius-md);
+    color: var(--text-light);
+    display: inline-block;
+    font-size: 15px;
+    margin: var(--space-lg);
+    padding: 25px var(--space-lg);
+    text-align: center;
+    text-decoration: none;
+    transition: background-color var(--transition-fast) ease-in-out;
+}
+
+.enlaceRepo:hover {
+    background-color: var(--link-hover);
+}
+
+.view-destination-btn {
+    margin: var(--space-lg) 0;
+    padding-bottom: var(--space-sm);
+    padding-top: var(--space-sm);
+}
+
+/* Post Likes */
+.like-button {
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.like-button.liked {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+    color: white;
+}
+
+.like-button:hover {
+    transform: scale(1.05);
+}
+
+.like-button i {
+    transition: transform 0.2s ease;
+}
+
+.like-button:hover i {
+    transform: scale(1.2);
+}
+
+.like-button.liked i {
+    color: white;
+}
+
+/* Child Action Buttons */
+.child-action-btn {
+    transition: all 0.2s ease;
+}
+
+.child-action-btn:hover {
+    transform: translateY(-2px);
+}
+
+/* Child Options Menu Button */
+.btn-options-menu {
+    width: 40px !important;
+    height: 40px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border-radius: 50% !important;
+    background-color: #f8f9fa;
+    transition: all 0.2s ease-in-out;
+    padding: 0 !important;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    border: none !important;
+    outline: none;
+    overflow: hidden;
+    min-width: 40px !important;
+    min-height: 40px !important;
+    max-width: 40px !important;
+    max-height: 40px !important;
+    position: relative;
+}
+
+.btn-options-menu::after {
+    display: none !important;
+    content: none !important;
+}
+
+.btn-options-menu i {
+    font-size: 1.2rem;
+    color: #6c757d;
+    line-height: 1;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.btn-options-menu:hover {
+    background-color: #e9ecef;
+    transform: scale(1.1);
+    box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+}
+
+/* Custom pill button styles */
+.btn-outline-primary.rounded-pill:hover,
+.btn-primary.rounded-pill {
+    box-shadow: 0 4px 8px rgba(13, 110, 253, 0.25);
+}
+
+.btn-outline-secondary.rounded-pill:hover,
+.btn-secondary.rounded-pill {
+    box-shadow: 0 4px 8px rgba(108, 117, 125, 0.25);
+}
+
+.btn-outline-danger.rounded-pill:hover,
+.btn-danger.rounded-pill {
+    box-shadow: 0 4px 8px rgba(220, 53, 69, 0.25);
+}
+
+/* Calendar Nav */
+.calendar-nav-btn {
+    transition: all 0.2s ease;
+}
+
+.calendar-nav-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Vaccine filter buttons */
+.filter-button {
+    transition: all 0.2s;
+}
+
+.filter-button:hover {
+    transform: translateY(-2px);
+}
+
+.filter-button.active {
+    font-weight: 500;
+}

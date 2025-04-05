@@ -1,0 +1,98 @@
+/* Card components */
+
+.list-group {
+    margin: var(--space-lg);
+    padding-bottom: var(--space-sm);
+    padding-top: var(--space-sm);
+}
+
+.list-group-item {
+    align-items: center;
+    color: var(--link-color);
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+}
+
+.post-title {
+    border: none !important;
+    outline: none !important;
+    color: var(--link-color);
+    font-weight: 500;
+    text-decoration: none;
+    transition: color var(--transition-fast);
+}
+
+.post-title:hover {
+    color: var(--link-hover);
+    text-decoration: underline;
+}
+
+/* Guide Card Styles */
+.content-lift {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.content-lift:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+}
+
+/* Forum Cards */
+.forum-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.forum-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+}
+
+/* Child Cards */
+.child-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border-radius: 0.75rem;
+    overflow: hidden;
+}
+
+.child-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+}
+
+/* Resource Cards */
+.resource-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border-radius: 1rem;
+    overflow: hidden;
+}
+
+.resource-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+}
+
+/* Child Milestone Cards */
+.milestone-card {
+    transition: all 0.2s ease;
+    border-radius: 0.5rem;
+}
+
+.milestone-card:hover {
+    background-color: rgba(0, 0, 0, 0.02);
+}
+
+.milestone-date {
+    font-size: 0.85rem;
+    color: #6c757d;
+}
+
+/* Vaccine card styling */
+.vaccine-card {
+    transition: all 0.2s ease;
+}
+
+.vaccine-card:hover {
+    transform: translateX(5px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1) !important;
+}

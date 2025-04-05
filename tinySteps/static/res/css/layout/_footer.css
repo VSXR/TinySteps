@@ -1,0 +1,110 @@
+/* Footer styles */
+
+footer {
+    background-color: var(--primary-color);
+    flex-shrink: 0;
+    padding: var(--space-sm);
+    width: 100%;
+}
+
+.sticky-footer {
+    margin-top: auto;
+    position: relative;
+}
+
+/* Footer Navigation */
+.footer-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+    justify-content: center;
+}
+
+.footer-nav-item {
+    align-items: center;
+    color: var(--text-light);
+    display: flex;
+    font-size: 17px;
+    font-weight: bold;
+    margin: var(--space-xs);
+    padding: var(--space-xs);
+    text-decoration: none;
+}
+
+.footer-nav-link {
+    align-items: center;
+    border-radius: var(--radius-md);
+    color: var(--text-light);
+    display: flex;
+    padding: 8px;
+    text-decoration: none;
+    transition: background-color var(--transition-fast), color var(--transition-fast);
+}
+
+.footer-nav-link:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    color: var(--text-dark);
+}
+
+.footer-nav-link:focus {
+    color: var(--text-light);
+    outline: 2px solid var(--text-light);
+}
+
+.footer-nav-link i {
+    font-size: 16px;
+    margin-right: 6px;
+}
+
+.footer-link-text {
+    display: inline-block;
+}
+
+.border-bottom {
+    padding-bottom: var(--space-sm);
+}
+
+.footerContainer a {
+    color: var(--text-light);
+}
+
+/* Footer Author Info */
+.madeContainer {
+    align-items: center;
+    display: flex;
+    height: 100%;
+    justify-content: center;
+}
+
+.madeBy {
+    color: var(--text-light);
+    font-size: 15px;
+    font-weight: bold;
+    opacity: 1;
+    padding-top: 25px;
+    text-align: center;
+    text-decoration: none;
+}
+
+.madeBy:hover, 
+.madeBy:focus {
+    color: var(--text-light);
+    text-decoration: underline;
+}
+
+.footerAuthorText {
+    color: var(--text-light);
+    font-size: 15px;
+    font-weight: bold;
+    opacity: 1;
+    padding-top: var(--space-lg);
+    text-align: center;
+    text-decoration: none;
+}
+
+.copyright {
+    color: var(--text-light);
+    font-size: 15px;
+    font-weight: bold;
+    opacity: 1;
+}

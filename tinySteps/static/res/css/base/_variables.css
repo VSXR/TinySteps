@@ -1,0 +1,30 @@
+/* CSS Variables (colors, spacing, etc.) */
+
+:root {
+    /* Colors */
+    --primary-color: rgb(186, 1, 25);
+    --text-light: #ffffff;
+    --text-dark: #000000;
+    --link-color: #007BFF;
+    --link-hover: #439eff;
+    --bg-light: #f8f9fa;
+    --border-light: #dee2e6;
+    --success-bg: #d4edda;
+    --success-text: #155724;
+    --error-bg: #f8d7da;
+    --error-text: #721c24;
+    
+    /* Spacing */
+    --space-xs: 5px;
+    --space-sm: 10px;
+    --space-md: 15px;
+    --space-lg: 20px;
+    --space-xl: 30px;
+    
+    /* Border radius */
+    --radius-sm: 3px;
+    --radius-md: 5px;
+    
+    /* Transitions */
+    --transition-fast: 0.3s;
+}

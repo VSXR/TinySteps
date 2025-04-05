@@ -1,0 +1,33 @@
+/* CSS resets and normalizations */
+
+/* Font imports */
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&display=swap&font-display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Roboto&display=swap&font-display=swap");
+
+/* Reset */
+* {
+    box-sizing: border-box;
+    font-family: "Poppins", sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+/* Base HTML elements */
+html {
+    overflow-x: hidden;
+    scroll-behavior: smooth;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    min-height: 100vh;
+    overflow-x: hidden;
+    padding: 0;
+}
+
+/* Mobile Navigation - Prevent horizontal shifting! */
+body.navbar-open {
+    overflow: hidden;
+}

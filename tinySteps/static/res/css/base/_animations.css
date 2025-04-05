@@ -1,0 +1,36 @@
+/* Common animations */
+
+/* Content lift effect */
+.content-lift {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.content-lift:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+}
+
+.transition-300 {
+    transition: all 0.3s ease;
+}
+
+/* Animated Underline */
+.custom-underline {
+    position: relative;
+}
+
+.custom-underline::after {
+    background-color: var(--text-light);
+    bottom: 0;
+    content: '';
+    height: 2px;
+    left: 0;
+    position: absolute;
+    transition: width var(--transition-fast) ease;
+    width: 0;
+}
+
+.custom-underline:hover::after,
+.custom-underline:focus::after,
+.custom-underline.active::after {
+    width: 100%;
+}

@@ -1,0 +1,264 @@
+/* Calendar feature styles */
+
+/* Calendar Container */
+.calendar-container {
+    border-radius: 0.5rem;
+    overflow: hidden;
+    background-color: white;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    padding: 15px;
+    margin-bottom: 20px;
+    min-height: 500px;
+}
+
+/* Calendar Day Styling */
+.calendar-day {
+    height: 80px;
+    overflow: hidden;
+    position: relative;
+    transition: background-color 0.2s;
+}
+
+.calendar-day:hover {
+    background-color: rgba(0, 0, 0, 0.02);
+}
+
+.calendar-day.today {
+    background-color: rgba(13, 110, 253, 0.1);
+    font-weight: bold;
+}
+
+.calendar-day.empty {
+    background-color: #f8f9fa;
+}
+
+.calendar-day .day-number {
+    position: absolute;
+    top: 5px;
+    right: 8px;
+    font-size: 0.85rem;
+}
+
+/* Event Dots */
+.event-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: 3px;
+}
+
+.event-list {
+    margin-top: 20px;
+    font-size: 0.75rem;
+}
+
+.event-item {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 2px;
+    padding: 2px 4px;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.event-item:hover {
+    transform: translateX(2px);
+}
+
+/* Event Types */
+.event-type-doctor {
+    background-color: #2196f3;
+}
+.event-type-vaccine {
+    background-color: #ff9800;
+}
+.event-type-milestone {
+    background-color: #4caf50;
+}
+.event-type-feeding {
+    background-color: #9c27b0;
+}
+.event-type-other {
+    background-color: #757575;
+}
+
+/* Legend dots */
+.legend-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+/* Current day highlight */
+.current-month-title {
+    font-weight: 600;
+}
+
+/* Mini Calendar Styles */
+.mini-calendar-container {
+    margin-bottom: 20px;
+}
+
+#mini-calendar {
+    font-size: 0.9rem;
+}
+
+#mini-calendar .fc-toolbar-title {
+    font-size: 1rem !important;
+}
+
+#mini-calendar .fc-col-header-cell {
+    padding: 2px;
+}
+
+#mini-calendar .fc-daygrid-day {
+    min-height: 30px;
+    cursor: pointer;
+}
+
+#mini-calendar .fc-daygrid-day-top {
+    justify-content: center;
+    margin-top: 2px;
+}
+
+#mini-calendar .fc-daygrid-day-number {
+    padding: 3px;
+    text-align: center;
+    float: none;
+}
+
+#mini-calendar .fc-day-today {
+    background-color: #e8f4fe !important;
+}
+
+#mini-calendar .fc-toolbar {
+    margin-bottom: 0.5rem;
+}
+
+#mini-calendar .fc-toolbar button {
+    padding: 0.2rem 0.5rem;
+}
+
+#mini-calendar .fc-view-harness {
+    min-height: 220px;
+}
+
+/* Event Stats */
+.event-stats-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.event-stat {
+    color: white;
+    border-radius: 10px;
+    padding: 15px 20px;
+    min-width: 120px;
+    text-align: center;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16);
+    transition: transform 0.2s ease-in-out;
+}
+
+.event-stat:hover {
+    transform: translateY(-5px);
+}
+
+.event-stat-count {
+    font-size: 28px;
+    font-weight: bold;
+    line-height: 1.2;
+}
+
+.event-stat-label {
+    font-size: 14px;
+    opacity: 0.9;
+}
+
+/* Event Legend */
+.event-legends {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 15px;
+    padding: 10px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+}
+
+.event-legend-item {
+    display: flex;
+    align-items: center;
+    margin-right: 15px;
+    font-size: 14px;
+}
+
+.legend-color {
+    display: inline-block;
+    width: 15px;
+    height: 15px;
+    border-radius: 4px;
+    margin-right: 5px;
+}
+
+.calendar-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.calendar-view-buttons {
+    margin-right: 10px;
+}
+
+/* Reminder items */
+.reminder-item {
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.reminder-item:hover {
+    background-color: #f8f9fa;
+}
+
+.upcoming-event-item {
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.upcoming-event-item:hover {
+    background-color: #f8f9fa;
+}
+
+/* FullCalendar Customizations */
+.fc-daygrid-day-number {
+    font-weight: 500;
+}
+
+.fc-daygrid-day-events {
+    min-height: 20px;
+}
+
+.fc-event {
+    border: none;
+    padding: 3px 5px;
+    cursor: pointer;
+    border-radius: 4px;
+    margin-bottom: 2px;
+}
+
+.fc-list-event {
+    cursor: pointer;
+}
+
+.fc-toolbar-title {
+    font-size: 1.5rem !important;
+    color: #333;
+}

@@ -1,0 +1,21 @@
+/* Form styles */
+
+.search-area {
+    max-width: 550px;
+}
+
+/* Discussion content styling */
+.post-content {
+    font-size: 1.05rem;
+    line-height: 1.7;
+}
+
+.post-content p {
+    margin-bottom: 1rem;
+}
+
+/* Comment section */
+.comment-list {
+    max-height: 500px;
+    overflow-y: auto;
+}

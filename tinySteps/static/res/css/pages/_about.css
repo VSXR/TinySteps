@@ -1,0 +1,25 @@
+/* About page styles */
+
+.image-container {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    width: 100%;
+    margin: 0 auto;
+}
+
+.imgWeb {
+    border: var(--text-dark) 3px solid;
+    border-radius: var(--radius-sm);
+    display: block;
+    height: auto;
+    margin: var(--space-lg) auto;
+    max-width: 25%;
+}
+
+.imgWeb-logo {
+    display: block;
+    height: auto;
+    margin: var(--space-lg) auto;
+    max-width: 25%;
+}
