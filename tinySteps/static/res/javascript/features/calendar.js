@@ -58,53 +58,61 @@ document.addEventListener('DOMContentLoaded', function() {
             hour12: false
         },
         events: function(fetchInfo, successCallback, failureCallback) {
-        if (loadingEl) loadingEl.style.display = 'block';
-        
-        calendarService.getEvents(childId, fetchInfo.startStr, fetchInfo.endStr)
-            .then(data => {
-                console.log('Events received:', data.events, 'count:', data.events.length); // Enhanced debug log
-                if (loadingEl) loadingEl.style.display = 'none';
-                
-                const events = data.events.map(event => ({
-                    id: event.id,
-                    title: event.title,
-                    start: event.time ? `${event.date}T${event.time}` : event.date,
-                    allDay: !event.time,
-                    backgroundColor: eventColorMap[event.type] || eventColorMap.other,
-                    borderColor: eventColorMap[event.type] || eventColorMap.other,
-                    extendedProps: {
-                        type: event.type,
-                        location: event.location,
-                        description: event.description,
-                        hasReminder: event.has_reminder,
-                        reminderMinutes: event.reminder_minutes
-                    }
-                }));
+            if (loadingEl) loadingEl.style.display = 'block';
+            
+            calendarService.getEvents(childId, fetchInfo.startStr, fetchInfo.endStr)
+                .then(data => {
+                    console.log('Events received:', data.events, 'count:', data.events.length);
+                    if (loadingEl) loadingEl.style.display = 'none';
+                    
+                    const events = data.events.map(event => ({
+                        id: event.id,
+                        title: event.title,
+                        start: event.time ? `${event.date}T${event.time}` : event.date,
+                        allDay: !event.time,
+                        backgroundColor: eventColorMap[event.type] || eventColorMap.other,
+                        borderColor: eventColorMap[event.type] || eventColorMap.other,
+                        extendedProps: {
+                            type: event.type,
+                            location: event.location,
+                            description: event.description,
+                            hasReminder: event.has_reminder,
+                            reminderMinutes: event.reminder_minutes
+                        }
+                    }));
 
-                successCallback(events);
-                
-                // Get the current visible events (including any that might have been added manually)
-                const allVisibleEvents = calendar.getEvents().length;
-                console.log('All visible calendar events after update:', allVisibleEvents);
-                
-                // Permanently disable empty calendar message
-                const emptyMessage = document.getElementById('empty-calendar-message');
-                if (emptyMessage) {
-                    emptyMessage.remove(); // Completely remove from DOM
-                    // Or alternatively:
-                    // emptyMessage.style.display = 'none !important';
-                }
-            })
-            .catch(error => {
-                console.error('Error fetching events:', error);
-                if (loadingEl) loadingEl.style.display = 'none';
-                failureCallback(error);
-                showNotification('Error loading events', 'danger');
-            });
+                    successCallback(events);
+                    
+                    // Hide empty message
+                    const emptyMessage = document.getElementById('empty-calendar-message');
+                    if (emptyMessage) {
+                        if (events.length > 0) {
+                            emptyMessage.style.display = 'none';
+                        } else {
+                            emptyMessage.style.display = 'flex';
+                        }
+                    }
+                    
+                    // Update the upcoming events list
+                    updateUpcomingEvents();
+                    
+                })
+                .catch(error => {
+                    console.error('Error fetching events:', error);
+                    if (loadingEl) loadingEl.style.display = 'none';
+                    failureCallback(error);
+                    showNotification('Error loading events', 'danger');
+                });
         },
         eventClick: function(info) {
             // Show event details in form
             showEventDetails(info.event);
+        },
+        eventDidMount: function(info) {
+            // Add double-click handler to show event details in dialog
+            info.el.addEventListener('dblclick', function() {
+                showEventDetailsDialog(info.event);
+            });
         },
         dateClick: function(info) {
             // Prepare form for new event
@@ -422,6 +430,69 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+    // Function to update the list of upcoming non-reminder events
+    function updateUpcomingEvents() {
+        const upcomingList = document.getElementById('upcoming-events');
+        const countBadge = document.getElementById('upcoming-events-count');
+        
+        if (!upcomingList || !countBadge) return;
+        
+        // Get all events
+        const allEvents = calendar.getEvents();
+        
+        // Filter for future events without reminders
+        const now = new Date();
+        const upcomingNonReminderEvents = allEvents.filter(event => {
+            const eventDate = event.start;
+            return eventDate > now && !event.extendedProps.hasReminder;
+        }).sort((a, b) => a.start - b.start).slice(0, 5); // Get the next 5 events
+        
+        // Update the badge count
+        countBadge.textContent = upcomingNonReminderEvents.length;
+        
+        // Clear the list
+        upcomingList.innerHTML = '';
+        
+        if (upcomingNonReminderEvents.length === 0) {
+            // Show "no events" message
+            const li = document.createElement('li');
+            li.className = 'list-group-item text-center py-3';
+            li.id = 'no-events';
+            li.innerHTML = '<p class="mb-0 text-muted">No upcoming events without reminders</p>';
+            upcomingList.appendChild(li);
+            return;
+        }
+        
+        // Add each event to the list
+        upcomingNonReminderEvents.forEach(event => {
+            const li = document.createElement('li');
+            li.className = 'list-group-item event-item d-flex justify-content-between align-items-start';
+            li.dataset.eventId = event.id;
+            
+            const badgeColorClass = getBadgeColorForEventType(event.extendedProps.type);
+            
+            li.innerHTML = `
+                <div>
+                    <h4 class="h6 mb-1">${event.title}</h4>
+                    <p class="small text-muted mb-0 d-flex align-items-center">
+                        <i class="fa-solid fa-calendar-day me-1" aria-hidden="true"></i>
+                        ${formatDate(event.start.toISOString().split('T')[0])}
+                        ${!event.allDay ? `<span class="mx-1">•</span>
+                        <i class="fa-solid fa-clock me-1" aria-hidden="true"></i>
+                        ${formatTime(event.start.toTimeString().slice(0, 5))}` : ''}
+                    </p>
+                </div>
+                <span class="badge ${badgeColorClass}">${capitalizeFirstLetter(event.extendedProps.type)}</span>
+            `;
+            
+            li.addEventListener('click', function() {
+                showEventDetailsDialog(event);
+            });
+            
+            upcomingList.appendChild(li);
+        });
+    }
+
     // Helper function to get badge color class based on event type
     function getBadgeColorForEventType(type) {
         const badgeClasses = {
@@ -453,7 +524,58 @@ document.addEventListener('DOMContentLoaded', function() {
     </style>
     `);
     
-    
+    // Function to show event details in dialog
+    function showEventDetailsDialog(event) {
+        // Get event details
+        const title = event.title;
+        const type = event.extendedProps.type;
+        const date = event.start ? formatDate(event.start.toISOString().split('T')[0]) : '';
+        const time = event.allDay ? 'All day' : formatTime(event.start.toTimeString().slice(0, 5));
+        const location = event.extendedProps.location || 'Not specified';
+        const description = event.extendedProps.description || 'No description';
+        const hasReminder = event.extendedProps.hasReminder;
+        const reminderMinutes = event.extendedProps.reminderMinutes;
+        
+        // Format the type for display
+        const typeDisplay = type.charAt(0).toUpperCase() + type.slice(1);
+        
+        // Generate the modal content
+        const detailsContent = document.getElementById('event-details-content');
+        if (detailsContent) {
+            detailsContent.innerHTML = `
+                <div class="event-details">
+                    <div class="mb-3 pb-2 border-bottom">
+                        <h4 class="event-title mb-1">${title}</h4>
+                        <span class="badge ${getBadgeColorForEventType(type)}">${typeDisplay}</span>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <p class="mb-1"><i class="fa-solid fa-calendar-day me-2"></i><strong>Date:</strong> ${date}</p>
+                        <p class="mb-1"><i class="fa-solid fa-clock me-2"></i><strong>Time:</strong> ${time}</p>
+                        <p class="mb-1"><i class="fa-solid fa-location-dot me-2"></i><strong>Location:</strong> ${location}</p>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <p class="mb-1"><strong>Description:</strong></p>
+                        <p class="bg-light p-2 rounded">${description}</p>
+                    </div>
+                    
+                    ${hasReminder ? `
+                    <div class="alert alert-info">
+                        <i class="fa-solid fa-bell me-2"></i>Reminder set for ${formatReminderTime(reminderMinutes)} before the event
+                    </div>
+                    ` : ''}
+                </div>
+            `;
+        }
+        
+        // Show the modal
+        const modal = new bootstrap.Modal(document.getElementById('eventDetailsModal'));
+        modal.show();
+        
+        // Set the current event to allow editing from the modal
+        currentEvent = event;
+    }
 
     // Function to show event details in form
     function showEventDetails(event) {
@@ -623,6 +745,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         console.log('New event has a reminder, updating reminders list');
                     }
                     updateUpcomingReminders();
+                    updateUpcomingEvents();
                     
                     // Reset form
                     resetEventForm();
@@ -655,6 +778,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         console.log('Reminder settings changed, updating reminders list');
                     }
                     updateUpcomingReminders();
+                    updateUpcomingEvents();
                     
                     // Reset form
                     resetEventForm();
@@ -706,6 +830,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     console.log('Deleted event had a reminder, updating reminders list');
                 }
                 updateUpcomingReminders();
+                updateUpcomingEvents();
                 
                 // Show success notification
                 showNotification('Event deleted successfully', 'success');
@@ -734,6 +859,7 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(data => {
                 showNotification('Event updated successfully', 'success');
                 updateUpcomingReminders();
+                updateUpcomingEvents();
             })
             .catch(error => {
                 console.error('Error updating event date:', error);

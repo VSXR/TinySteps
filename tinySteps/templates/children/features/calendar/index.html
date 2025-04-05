@@ -22,11 +22,11 @@
         <!-- Messages Container -->
         <div class="row">
             <div class="col">
-                <div id="messages-container" class="messages mb-3" role="alert" aria-live="polite">
-                    {% if messages %}
-                        {% include 'partials/messages.html' %}
-                    {% endif %}
-                </div>
+            <div id="messages-container" class="messages mb-3" role="alert" aria-live="polite">
+                {% if messages %}
+                {% include 'partials/messages.html' %}
+                {% endif %}
+            </div>
             </div>
         </div>
 
@@ -34,203 +34,219 @@
         <div class="row">
             <!-- Calendar (left) -->
             <div class="col-lg-8">
-                <div class="card border-0 shadow-sm rounded-4 mb-4">
-                    <div class="card-header bg-light border-0 pt-3">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <h2 class="h4 mb-0 d-flex align-items-center">
-                                <i class="fa-solid fa-calendar-days text-primary me-2" aria-hidden="true"></i>
-                                {% trans "Calendar" %}
-                            </h2>
-                        </div>
+            <div class="card border-0 shadow-sm rounded-4 mb-4">
+                <div class="card-header bg-light border-0 pt-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h2 class="h4 mb-0 d-flex align-items-center">
+                    <i class="fa-solid fa-calendar-days text-primary me-2" aria-hidden="true"></i>
+                    {% trans "Calendar" %}
+                    </h2>
+                </div>
+                </div>
+                <div class="card-body p-3">
+                <!-- Event statistics summary -->
+                <div class="event-stats-container mb-3" id="event-stats">
+                    <div class="event-stat bg-primary">
+                    <div class="event-stat-count">0</div>
+                    <div class="event-stat-label">{% trans "Total" %}</div>
                     </div>
-                    <div class="card-body p-3">
-                        <!-- Event statistics summary -->
-                        <div class="event-stats-container mb-3" id="event-stats">
-                            <div class="event-stat bg-primary">
-                                <div class="event-stat-count">0</div>
-                                <div class="event-stat-label">{% trans "Total" %}</div>
-                            </div>
-                            <div class="event-stat" style="background-color: #2196f3;">
-                                <div class="event-stat-count">0</div>
-                                <div class="event-stat-label">{% trans "Medical" %}</div>
-                            </div>
-                            <div class="event-stat" style="background-color: #ff9800;">
-                                <div class="event-stat-count">0</div>
-                                <div class="event-stat-label">{% trans "Vaccines" %}</div>
-                            </div>
-                            <div class="event-stat" style="background-color: #4caf50;">
-                                <div class="event-stat-count">0</div>
-                                <div class="event-stat-label">{% trans "Milestones" %}</div>
-                            </div>
-                            <div class="event-stat" style="background-color: #9c27b0;">
-                                <div class="event-stat-count">0</div>
-                                <div class="event-stat-label">{% trans "Feeding" %}</div>
-                            </div>
-                        </div>
-                        
-                        <!-- Calendar container -->
-                        <div id="calendar-container" class="bg-white rounded-3 calendar-container">
-                            <div id="loading-indicator" class="text-center p-5">
-                                <div class="spinner-border text-primary" role="status">
-                                    <span class="visually-hidden">{% trans "Loading..." %}</span>
-                                </div>
-                                <p class="mt-2">{% trans "Loading events..." %}</p>
-                            </div>
-                            <div id="calendar" class="position-relative"></div>
-                        </div>
-
-                        <!-- Event type legends -->
-                        <div class="event-legends mt-3">
-                            <div class="event-legend-item">
-                                <span class="legend-color" style="background-color: #2196f3;"></span>
-                                <span>{% trans "Medical" %}</span>
-                            </div>
-                            <div class="event-legend-item">
-                                <span class="legend-color" style="background-color: #ff9800;"></span>
-                                <span>{% trans "Vaccine" %}</span>
-                            </div>
-                            <div class="event-legend-item">
-                                <span class="legend-color" style="background-color: #4caf50;"></span>
-                                <span>{% trans "Milestone" %}</span>
-                            </div>
-                            <div class="event-legend-item">
-                                <span class="legend-color" style="background-color: #9c27b0;"></span>
-                                <span>{% trans "Feeding" %}</span>
-                            </div>
-                            <div class="event-legend-item">
-                                <span class="legend-color" style="background-color: #757575;"></span>
-                                <span>{% trans "Other" %}</span>
-                            </div>
-                        </div>
+                    <div class="event-stat" style="background-color: #2196f3;">
+                    <div class="event-stat-count">0</div>
+                    <div class="event-stat-label">{% trans "Medical" %}</div>
+                    </div>
+                    <div class="event-stat" style="background-color: #ff9800;">
+                    <div class="event-stat-count">0</div>
+                    <div class="event-stat-label">{% trans "Vaccines" %}</div>
+                    </div>
+                    <div class="event-stat" style="background-color: #4caf50;">
+                    <div class="event-stat-count">0</div>
+                    <div class="event-stat-label">{% trans "Milestones" %}</div>
+                    </div>
+                    <div class="event-stat" style="background-color: #9c27b0;">
+                    <div class="event-stat-count">0</div>
+                    <div class="event-stat-label">{% trans "Feeding" %}</div>
                     </div>
                 </div>
+                
+                <!-- Calendar container -->
+                <div id="calendar-container" class="bg-white rounded-3 calendar-container">
+                    <div id="loading-indicator" class="text-center p-5">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">{% trans "Loading..." %}</span>
+                    </div>
+                    <p class="mt-2">{% trans "Loading events..." %}</p>
+                    </div>
+                    <div id="calendar" class="position-relative"></div>
+                </div>
+
+                <!-- Event type legends -->
+                <div class="event-legends mt-3">
+                    <div class="event-legend-item">
+                    <span class="legend-color" style="background-color: #2196f3;"></span>
+                    <span>{% trans "Medical" %}</span>
+                    </div>
+                    <div class="event-legend-item">
+                    <span class="legend-color" style="background-color: #ff9800;"></span>
+                    <span>{% trans "Vaccine" %}</span>
+                    </div>
+                    <div class="event-legend-item">
+                    <span class="legend-color" style="background-color: #4caf50;"></span>
+                    <span>{% trans "Milestone" %}</span>
+                    </div>
+                    <div class="event-legend-item">
+                    <span class="legend-color" style="background-color: #9c27b0;"></span>
+                    <span>{% trans "Feeding" %}</span>
+                    </div>
+                    <div class="event-legend-item">
+                    <span class="legend-color" style="background-color: #757575;"></span>
+                    <span>{% trans "Other" %}</span>
+                    </div>
+                </div>
+                </div>
+            </div>
             </div>
 
             <!-- Sidebar (right) - Event form and reminders -->
             <div class="col-lg-4">
-                <!-- Event form -->
-                <div class="card border-0 shadow-sm rounded-4 mb-4">
-                    <div class="card-header bg-light border-0 pt-3">
-                        <h2 class="h4 mb-0 d-flex align-items-center" id="form-title">
-                            <i class="fa-solid fa-plus text-primary me-2" aria-hidden="true"></i>
-                            {% trans "Add Event" %}
-                        </h2>
-                    </div>
-                    <div class="card-body">
-                        <form id="event-form">
-                            <div class="mb-3">
-                                <label for="event-title" class="form-label">{% trans "Title" %} <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control rounded-pill" id="event-title" required aria-describedby="title-help">
-                                <div id="title-help" class="form-text">{% trans "Enter a clear title for the event" %}</div>
-                            </div>
-                            
-                            <div class="mb-3">
-                                <label for="event-type" class="form-label">{% trans "Event Type" %} <span class="text-danger">*</span></label>
-                                <select class="form-select rounded-pill" id="event-type" aria-describedby="type-help" required>
-                                    <option value="doctor">{% trans "Medical Appointment" %}</option>
-                                    <option value="vaccine">{% trans "Vaccination" %}</option>
-                                    <option value="milestone">{% trans "Milestone" %}</option>
-                                    <option value="feeding">{% trans "Feeding" %}</option>
-                                    <option value="other">{% trans "Other" %}</option>
-                                </select>
-                                <div id="type-help" class="form-text">{% trans "Select the type of event" %}</div>
-                            </div>
-                            
-                            <div class="mb-3">
-                                <label for="event-date" class="form-label">{% trans "Date" %} <span class="text-danger">*</span></label>
-                                <input type="date" class="form-control rounded-pill" id="event-date" required>
-                            </div>
-                            
-                            <div class="mb-3">
-                                <label for="event-time" class="form-label">{% trans "Time" %}</label>
-                                <input type="time" class="form-control rounded-pill" id="event-time">
-                                <div class="form-text">{% trans "Leave empty for all-day events" %}</div>
-                            </div>
-                            
-                            <div class="mb-3">
-                                <label for="event-location" class="form-label">{% trans "Location" %}</label>
-                                <input type="text" class="form-control rounded-pill" id="event-location">
-                            </div>
-                            
-                            <div class="mb-3">
-                                <label for="event-notes" class="form-label">{% trans "Notes" %}</label>
-                                <textarea class="form-control rounded-3" id="event-notes" rows="3"></textarea>
-                            </div>
-                            
-                            <!-- Add reminder checkbox -->
-                            <div class="mb-3 form-check">
-                                <input type="checkbox" class="form-check-input" id="event-reminder">
-                                <label class="form-check-label" for="event-reminder">{% trans "Set reminder" %}</label>
-                            </div>
-                            
-                            <!-- Reminder options (hidden by default) -->
-                            <div id="reminder-options" class="mb-3" style="display: none;">
-                                <label for="reminder-time" class="form-label">{% trans "Remind me" %}</label>
-                                <select class="form-select rounded-pill" id="reminder-time">
-                                    <option value="30">30 {% trans "minutes before" %}</option>
-                                    <option value="60">1 {% trans "hour before" %}</option>
-                                    <option value="1440">1 {% trans "day before" %}</option>
-                                    <option value="10080">1 {% trans "week before" %}</option>
-                                </select>
-                            </div>
-                            
-                            <!-- Form buttons -->
-                            <div class="d-flex flex-column flex-sm-row justify-content-between form-buttons gap-2">
-                                <div>
-                                    <button type="button" id="btn-delete" class="btn btn-danger rounded-pill" 
-                                          aria-label="{% trans 'Delete event' %}" style="display: none;">
-                                        <i class="fa-solid fa-trash me-1" aria-hidden="true"></i> {% trans "Delete" %}
-                                    </button>
-                                </div>
-                                <div class="d-flex flex-column flex-sm-row gap-2">
-                                    <button type="button" id="btn-cancel" class="btn btn-outline-secondary rounded-pill" 
-                                          aria-label="{% trans 'Cancel event editing' %}" style="display: none;">
-                                        {% trans "Cancel" %}
-                                    </button>
-                                    <button type="submit" id="btn-save" class="btn btn-primary rounded-pill px-4">
-                                        <i class="fa-solid fa-check me-1" aria-hidden="true"></i> {% trans "Save Event" %}
-                                    </button>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
+            <!-- Event form -->
+            <div class="card border-0 shadow-sm rounded-4 mb-4">
+                <div class="card-header bg-light border-0 pt-3">
+                <h2 class="h4 mb-0 d-flex align-items-center" id="form-title">
+                    <i class="fa-solid fa-plus text-primary me-2" aria-hidden="true"></i>
+                    {% trans "Add Event" %}
+                </h2>
                 </div>
+                <div class="card-body">
+                <form id="event-form">
+                    <div class="mb-3">
+                    <label for="event-title" class="form-label">{% trans "Title" %} <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control rounded-pill" id="event-title" required aria-describedby="title-help">
+                    <div id="title-help" class="form-text">{% trans "Enter a clear title for the event" %}</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                    <label for="event-type" class="form-label">{% trans "Event Type" %} <span class="text-danger">*</span></label>
+                    <select class="form-select rounded-pill" id="event-type" aria-describedby="type-help" required>
+                        <option value="doctor">{% trans "Medical Appointment" %}</option>
+                        <option value="vaccine">{% trans "Vaccination" %}</option>
+                        <option value="milestone">{% trans "Milestone" %}</option>
+                        <option value="feeding">{% trans "Feeding" %}</option>
+                        <option value="other">{% trans "Other" %}</option>
+                    </select>
+                    <div id="type-help" class="form-text">{% trans "Select the type of event" %}</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                    <label for="event-date" class="form-label">{% trans "Date" %} <span class="text-danger">*</span></label>
+                    <input type="date" class="form-control rounded-pill" id="event-date" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                    <label for="event-time" class="form-label">{% trans "Time" %}</label>
+                    <input type="time" class="form-control rounded-pill" id="event-time">
+                    <div class="form-text">{% trans "Leave empty for all-day events" %}</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                    <label for="event-location" class="form-label">{% trans "Location" %}</label>
+                    <input type="text" class="form-control rounded-pill" id="event-location">
+                    </div>
+                    
+                    <div class="mb-3">
+                    <label for="event-notes" class="form-label">{% trans "Notes" %}</label>
+                    <textarea class="form-control rounded-3" id="event-notes" rows="3"></textarea>
+                    </div>
+                    
+                    <!-- Add reminder checkbox -->
+                    <div class="mb-3 form-check">
+                    <input type="checkbox" class="form-check-input" id="event-reminder">
+                    <label class="form-check-label" for="event-reminder">{% trans "Set reminder" %}</label>
+                    </div>
+                    
+                    <!-- Reminder options (hidden by default) -->
+                    <div id="reminder-options" class="mb-3" style="display: none;">
+                    <label for="reminder-time" class="form-label">{% trans "Remind me" %}</label>
+                    <select class="form-select rounded-pill" id="reminder-time">
+                        <option value="30">30 {% trans "minutes before" %}</option>
+                        <option value="60">1 {% trans "hour before" %}</option>
+                        <option value="1440">1 {% trans "day before" %}</option>
+                        <option value="10080">1 {% trans "week before" %}</option>
+                    </select>
+                    </div>
+                    
+                    <!-- Form buttons -->
+                    <div class="d-flex flex-column flex-sm-row justify-content-between form-buttons gap-2">
+                    <div>
+                        <button type="button" id="btn-delete" class="btn btn-danger rounded-pill" 
+                          aria-label="{% trans 'Delete event' %}" style="display: none;">
+                        <i class="fa-solid fa-trash me-1" aria-hidden="true"></i> {% trans "Delete" %}
+                        </button>
+                    </div>
+                    <div class="d-flex flex-column flex-sm-row gap-2">
+                        <button type="button" id="btn-cancel" class="btn btn-outline-secondary rounded-pill" 
+                          aria-label="{% trans 'Cancel event editing' %}" style="display: none;">
+                        {% trans "Cancel" %}
+                        </button>
+                        <button type="submit" id="btn-save" class="btn btn-primary rounded-pill px-4">
+                        <i class="fa-solid fa-check me-1" aria-hidden="true"></i> {% trans "Save Event" %}
+                        </button>
+                    </div>
+                    </div>
+                </form>
+                </div>
+            </div>
 
-                <!-- Upcoming reminders -->
-                <div class="card border-0 shadow-sm rounded-4 mb-4">
-                    <div class="card-header bg-light border-0 d-flex justify-content-between align-items-center pt-3">
-                        <h3 class="h5 mb-0 d-flex align-items-center">
-                            <i class="fa-solid fa-bell text-primary me-2" aria-hidden="true"></i>
-                            {% trans "Reminders" %}
-                        </h3>
-                        <span class="badge rounded-pill bg-primary" aria-label="{% trans 'Number of reminders:' %} {{ upcoming_reminders|length }}">{{ upcoming_reminders|length|default:0 }}</span>
-                    </div>
-                    <ul class="list-group list-group-flush" id="upcoming-reminders" role="list">
-                        {% if upcoming_reminders %}
-                            {% for reminder in upcoming_reminders %}
-                                <li class="list-group-item reminder-item d-flex justify-content-between align-items-start" data-event-id="{{ reminder.id }}">
-                                    <div>
-                                        <h4 class="h6 mb-1">{{ reminder.title }}</h4>
-                                        <p class="small text-muted mb-0 d-flex align-items-center">
-                                            <i class="fa-solid fa-calendar-day me-1" aria-hidden="true"></i>
-                                            {{ reminder.date|date:"d M Y" }}
-                                            {% if reminder.time %}
-                                                <span class="mx-1">•</span>
-                                                <i class="fa-solid fa-clock me-1" aria-hidden="true"></i>
-                                                {{ reminder.time|time:"H:i" }}
-                                            {% endif %}
-                                        </p>
-                                    </div>
-                                    <span class="badge event-type-{{ reminder.type }}">{{ reminder.type|title }}</span>
-                                </li>
-                            {% endfor %}
-                        {% else %}
-                            <li class="list-group-item text-center py-3" id="no-reminders">
-                                <p class="mb-0 text-muted">{% trans "No upcoming reminders" %}</p>
-                            </li>
-                        {% endif %}
-                    </ul>
+            <!-- Upcoming events -->
+            <div class="card border-0 shadow-sm rounded-4 mb-4">
+                <div class="card-header bg-light border-0 d-flex justify-content-between align-items-center pt-3">
+                <h3 class="h5 mb-0 d-flex align-items-center">
+                    <i class="fa-solid fa-calendar-check text-primary me-2" aria-hidden="true"></i>
+                    {% trans "Upcoming Events" %}
+                </h3>
+                <span class="badge rounded-pill bg-secondary" id="upcoming-events-count">0</span>
                 </div>
+                <ul class="list-group list-group-flush" id="upcoming-events" role="list">
+                <li class="list-group-item text-center py-3" id="no-events">
+                    <p class="mb-0 text-muted">{% trans "No upcoming events without reminders" %}</p>
+                </li>
+                </ul>
+            </div>
+
+            <!-- Upcoming reminders -->
+            <div class="card border-0 shadow-sm rounded-4 mb-4">
+                <div class="card-header bg-light border-0 d-flex justify-content-between align-items-center pt-3">
+                <h3 class="h5 mb-0 d-flex align-items-center">
+                    <i class="fa-solid fa-bell text-primary me-2" aria-hidden="true"></i>
+                    {% trans "Reminders" %}
+                </h3>
+                <span class="badge rounded-pill bg-primary" aria-label="{% trans 'Number of reminders:' %} {{ upcoming_reminders|length }}">{{ upcoming_reminders|length|default:0 }}</span>
+                </div>
+                <ul class="list-group list-group-flush" id="upcoming-reminders" role="list">
+                {% if upcoming_reminders %}
+                    {% for reminder in upcoming_reminders %}
+                    <li class="list-group-item reminder-item d-flex justify-content-between align-items-start" data-event-id="{{ reminder.id }}">
+                        <div>
+                        <h4 class="h6 mb-1">{{ reminder.title }}</h4>
+                        <p class="small text-muted mb-0 d-flex align-items-center">
+                            <i class="fa-solid fa-calendar-day me-1" aria-hidden="true"></i>
+                            {{ reminder.date|date:"d M Y" }}
+                            {% if reminder.time %}
+                            <span class="mx-1">•</span>
+                            <i class="fa-solid fa-clock me-1" aria-hidden="true"></i>
+                            {{ reminder.time|time:"H:i" }}
+                            {% endif %}
+                        </p>
+                        </div>
+                        <span class="badge event-type-{{ reminder.type }}">{{ reminder.type|title }}</span>
+                    </li>
+                    {% endfor %}
+                {% else %}
+                    <li class="list-group-item text-center py-3" id="no-reminders">
+                    <p class="mb-0 text-muted">{% trans "No upcoming reminders" %}</p>
+                    </li>
+                {% endif %}
+                </ul>
+            </div>
             </div>
         </div>
 
