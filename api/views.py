@@ -1,8 +1,9 @@
-from datetime import datetime, timedelta
+import logging
+from datetime import timedelta
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
-from django.db.models import Count, Q
+from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from rest_framework import generics, permissions, status, viewsets
@@ -37,6 +38,8 @@ from tinySteps.models import (
     Vaccine_Model,
     CalendarEvent_Model,
 )
+
+logger = logging.getLogger(__name__)
 
 ###########################################################################
 # CUSTOM PERMISSIONS
@@ -452,123 +455,195 @@ class ChildCalendarEvents_ViewSet(LoginRequiredMixin, viewsets.ViewSet):
     """ViewSet for calendar events by child"""
     
     def list(self, request, child_pk=None):
-        """Get events for a specific child in a date range"""
-        child = get_object_or_404(YourChild_Model, pk=child_pk, user=request.user)
+        """Get all events for a child"""
+        logger.info(f"Fetching events for child ID: {child_pk}, User: {request.user.username}")
         
-        # Parse date range parameters
-        start_date = request.query_params.get('start')
-        end_date = request.query_params.get('end')
-        
-        events = CalendarEvent_Model.objects.filter(child=child)
-        
-        if start_date:
-            try:
-                start = datetime.strptime(start_date.split('T')[0], '%Y-%m-%d').date()
-                events = events.filter(date__gte=start)
-            except (ValueError, IndexError):
-                pass
+        try:
+            child = get_object_or_404(YourChild_Model, pk=child_pk, user=request.user)
+            logger.debug(f"Child found: {child.name} (ID: {child.id})")
+            
+            # Get optional date range filters
+            start_date_str = request.query_params.get('start')
+            end_date_str = request.query_params.get('end')
+            logger.debug(f"Date range filters - Start: {start_date_str}, End: {end_date_str}")
+            
+            # Filter events by date range if provided
+            events = CalendarEvent_Model.objects.filter(child=child)
+            
+            if start_date_str:
+                # Extract just the date part (YYYY-MM-DD) from the ISO8601 string
+                if 'T' in start_date_str:
+                    start_date = start_date_str.split('T')[0]
+                else:
+                    start_date = start_date_str
+                events = events.filter(date__gte=start_date)
+                logger.debug(f"Filtered by start date: {start_date}, Events count: {events.count()}")
                 
-        if end_date:
-            try:
-                end = datetime.strptime(end_date.split('T')[0], '%Y-%m-%d').date()
-                events = events.filter(date__lte=end)
-            except (ValueError, IndexError):
-                pass
+            if end_date_str:
+                # Extract just the date part (YYYY-MM-DD) from the ISO8601 string
+                if 'T' in end_date_str:
+                    end_date = end_date_str.split('T')[0]
+                else:
+                    end_date = end_date_str
+                events = events.filter(date__lte=end_date)
+                logger.debug(f"Filtered by end date: {end_date}, Events count: {events.count()}")
+            
+            serializer = CalendarEvent_Serializer(events, many=True)
+            logger.info(f"Returning {len(serializer.data)} events for child {child_pk}")
+            return Response({'events': serializer.data})
         
-        serializer = CalendarEvent_Serializer(events, many=True)
-        return Response(serializer.data)
+        except Exception as e:
+            logger.error(f"Error fetching events for child {child_pk}: {str(e)}", exc_info=True)
+            return Response(
+                {'error': f"Failed to retrieve events: {str(e)}"}, 
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
     
     def create(self, request, child_pk=None):
         """Create a new event for a child"""
-        child = get_object_or_404(YourChild_Model, pk=child_pk, user=request.user)
+        logger.info(f"Creating new event for child ID: {child_pk}, User: {request.user.username}")
+        logger.debug(f"Request data: {request.data}")
         
-        # Add child to request data
-        data = request.data.copy()
-        data['child'] = child.id
-        
-        serializer = CalendarEvent_Serializer(data=data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
+        try:
+            child = get_object_or_404(YourChild_Model, pk=child_pk, user=request.user)
+            logger.debug(f"Child found: {child.name} (ID: {child.id})")
+            
+            # Add child to request data
+            data = request.data.copy()
+            data['child'] = child.id
+            
+            serializer = CalendarEvent_Serializer(data=data)
+            if serializer.is_valid():
+                event = serializer.save()
+                logger.info(f"Event created successfully. Event ID: {event.id}")
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            else:
+                logger.warning(f"Invalid event data: {serializer.errors}")
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+                
+        except Exception as e:
+            logger.error(f"Error creating event for child {child_pk}: {str(e)}", exc_info=True)
+            return Response(
+                {'error': f"Failed to create event: {str(e)}"}, 
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+
     @action(detail=False, methods=['get'])
     def upcoming_events(self, request, child_pk=None):
-        """Get upcoming events with reminders for a child"""
-        child = get_object_or_404(YourChild_Model, pk=child_pk, user=request.user)
-        today = timezone.now().date()
+        """Get upcoming events with reminders"""
+        logger.info(f"Fetching upcoming events for child ID: {child_pk}")
         
-        # Get events in the next 7 days
-        end_date = today + timedelta(days=7)
-        events = CalendarEvent_Model.objects.filter(
-            child=child,
-            date__gte=today,
-            date__lte=end_date
-        ).order_by('date', 'time')
-        
-        serializer = CalendarEvent_Serializer(events, many=True)
-        return Response({'reminders': serializer.data})
+        try:
+            child = get_object_or_404(YourChild_Model, pk=child_pk, user=request.user)
+            today = timezone.now().date()
+            
+            # Get events in the next 30 days with reminders
+            events = CalendarEvent_Model.objects.filter(
+                child=child,
+                date__gte=today,
+                date__lte=today + timedelta(days=30),
+                has_reminder=True
+            ).order_by('date', 'time')
+            
+            logger.debug(f"Found {events.count()} upcoming events with reminders")
+            serializer = CalendarEvent_Serializer(events, many=True)
+            return Response({'reminders': serializer.data})
+            
+        except Exception as e:
+            logger.error(f"Error fetching upcoming events for child {child_pk}: {str(e)}", exc_info=True)
+            return Response(
+                {'error': f"Failed to retrieve upcoming events: {str(e)}"}, 
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
     
     @action(detail=False, methods=['get'])
     def event_stats(self, request, child_pk=None):
         """Get event statistics for a child"""
-        child = get_object_or_404(YourChild_Model, pk=child_pk, user=request.user)
+        logger.info(f"Fetching event statistics for child ID: {child_pk}")
         
-        # Get counts by type
-        event_counts = CalendarEvent_Model.objects.filter(child=child).values('type').annotate(count=Count('id'))
-        
-        # Format as a dictionary
-        stats = {item['type']: item['count'] for item in event_counts}
-        stats['total'] = sum(stats.values())
-        
-        return Response(stats)
+        try:
+            child = get_object_or_404(YourChild_Model, pk=child_pk, user=request.user)
+            
+            stats = {
+                'total': CalendarEvent_Model.objects.filter(child=child).count(),
+                'doctor': CalendarEvent_Model.objects.filter(child=child, type='doctor').count(),
+                'vaccine': CalendarEvent_Model.objects.filter(child=child, type='vaccine').count(),
+                'milestone': CalendarEvent_Model.objects.filter(child=child, type='milestone').count(),
+                'feeding': CalendarEvent_Model.objects.filter(child=child, type='feeding').count(),
+                'other': CalendarEvent_Model.objects.filter(child=child, type='other').count(),
+            }
+            
+            logger.debug(f"Event statistics: {stats}")
+            return Response(stats)
+            
+        except Exception as e:
+            logger.error(f"Error fetching event stats for child {child_pk}: {str(e)}", exc_info=True)
+            return Response(
+                {'error': f"Failed to retrieve event statistics: {str(e)}"}, 
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
 
 class CalendarEvent_ViewSet(LoginRequiredMixin, viewsets.ViewSet):
     """ViewSet for individual calendar events"""
     
     def retrieve(self, request, pk=None):
         """Get a specific event"""
-        event = get_object_or_404(CalendarEvent_Model, pk=pk, child__user=request.user)
-        serializer = CalendarEvent_Serializer(event)
-        return Response(serializer.data)
+        logger.info(f"Retrieving event ID: {pk} for user: {request.user.username}")
+        
+        try:
+            event = get_object_or_404(CalendarEvent_Model, pk=pk, child__user=request.user)
+            serializer = CalendarEvent_Serializer(event)
+            logger.debug(f"Event retrieved successfully: {event.title}")
+            return Response(serializer.data)
+            
+        except Exception as e:
+            logger.error(f"Error retrieving event {pk}: {str(e)}", exc_info=True)
+            return Response(
+                {'error': f"Failed to retrieve event: {str(e)}"}, 
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
     
     def update(self, request, pk=None):
         """Update a specific event"""
-        event = get_object_or_404(CalendarEvent_Model, pk=pk, child__user=request.user)
-        serializer = CalendarEvent_Serializer(event, data=request.data, partial=True)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        logger.info(f"Updating event ID: {pk} for user: {request.user.username}")
+        logger.debug(f"Update data: {request.data}")
+        
+        try:
+            event = get_object_or_404(CalendarEvent_Model, pk=pk, child__user=request.user)
+            serializer = CalendarEvent_Serializer(event, data=request.data, partial=True)
+            
+            if serializer.is_valid():
+                updated_event = serializer.save()
+                logger.info(f"Event updated successfully: {updated_event.title}")
+                return Response(serializer.data)
+            else:
+                logger.warning(f"Invalid update data: {serializer.errors}")
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+                
+        except Exception as e:
+            logger.error(f"Error updating event {pk}: {str(e)}", exc_info=True)
+            return Response(
+                {'error': f"Failed to update event: {str(e)}"}, 
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
     
     def destroy(self, request, pk=None):
         """Delete a specific event"""
-        event = get_object_or_404(CalendarEvent_Model, pk=pk, child__user=request.user)
-        event.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
-    
-    @action(detail=True, methods=['post'])
-    def update_date(self, request, pk=None):
-        """Update the date/time of an event (for drag & drop)"""
-        event = get_object_or_404(CalendarEvent_Model, pk=pk, child__user=request.user)
+        logger.info(f"Deleting event ID: {pk} for user: {request.user.username}")
         
-        # Extract date and time from request
-        date = request.data.get('date')
-        time = request.data.get('time')
-        all_day = request.data.get('allDay', False)
-        
-        if date:
-            event.date = date
-        
-        if all_day:
-            event.time = None
-        elif time:
-            event.time = time
-        
-        event.save()
-        
-        serializer = CalendarEvent_Serializer(event)
-        return Response(serializer.data)
+        try:
+            event = get_object_or_404(CalendarEvent_Model, pk=pk, child__user=request.user)
+            event_title = event.title  # Save for logging
+            event.delete()
+            logger.info(f"Event '{event_title}' (ID: {pk}) deleted successfully")
+            return Response(status=status.HTTP_204_NO_CONTENT)
+            
+        except Exception as e:
+            logger.error(f"Error deleting event {pk}: {str(e)}", exc_info=True)
+            return Response(
+                {'error': f"Failed to delete event: {str(e)}"}, 
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
 
 ###########################################################################
 # SEARCH

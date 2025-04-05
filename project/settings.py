@@ -316,6 +316,10 @@ LOGGING = {
             'format': '{levelname} {message}',
             'style': '{',
         },
+        'json': {
+            '()': 'pythonjsonlogger.jsonlogger.JsonFormatter',
+            'format': '%(asctime)s %(name)s %(levelname)s %(message)s',
+        },
     },
     'filters': {
         'require_debug_true': {
@@ -353,8 +357,10 @@ LOGGING = {
         'development': {
             'level': 'DEBUG',
             'filters': ['require_debug_true'],
-            'class': 'logging.FileHandler',
+            'class': 'logging.handlers.RotatingFileHandler',  # Changed from FileHandler
             'filename': BASE_DIR / 'logs' / 'development.log',
+            'maxBytes': 10485760,  # 10MB
+            'backupCount': 5,
             'formatter': 'standard',
         },
         'production': {
@@ -368,8 +374,10 @@ LOGGING = {
         },
         'sql': {
             'level': 'DEBUG',
-            'class': 'logging.FileHandler',
+            'class': 'logging.handlers.RotatingFileHandler',  # Changed from FileHandler
             'filename': BASE_DIR / 'logs' / 'sql.log',
+            'maxBytes': 10485760,  # 10MB
+            'backupCount': 5,
             'formatter': 'standard',
         },
         'mail_admins': {
@@ -397,7 +405,7 @@ LOGGING = {
             'propagate': False,
         },
         'django.db.backends': {
-            'handlers': ['sql'],
+            'handlers': ['console'],
             'level': 'DEBUG' if DEBUG else 'INFO',
             'propagate': False,
         },
@@ -410,7 +418,7 @@ LOGGING = {
             'propagate': False,
         },
         
-        # Your application loggers
+        # Our application loggers
         'tinySteps': {
             'handlers': ['console', 'development', 'production'],
             'level': 'DEBUG',

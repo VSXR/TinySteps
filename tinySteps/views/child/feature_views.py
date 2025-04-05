@@ -42,12 +42,13 @@ def child_calendar(request, child_id):
     event_stats = child_service.get_event_statistics(child_id, request.user)
     
     upcoming_reminders = child_service.get_upcoming_reminders(child_id, request.user, days=7)
+    event_types = dict(CalendarEvent_Model._meta.get_field('type').choices)
     
     context = {
         'child': child,
         'upcoming_reminders': upcoming_reminders,
         'event_stats': event_stats,
-        'event_types': dict(CalendarEvent_Model.TYPE_CHOICES)
+        'event_types': event_types
     }
     
     return render(request, 'children/features/calendar/index.html', context)

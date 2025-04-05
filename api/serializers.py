@@ -132,7 +132,6 @@ class CalendarEvent_Serializer(serializers.ModelSerializer):
     """Serializer for calendar events"""
     class Meta:
         model = CalendarEvent_Model
-        fields = [
-            'id', 'title', 'type', 'date', 'time', 'location', 
-            'description', 'has_reminder', 'reminder_minutes', 'child'
-        ]
+        fields = ['id', 'child', 'title', 'type', 'date', 'time', 'location', 
+                 'description', 'has_reminder', 'reminder_minutes', 'created_at']
+        read_only_fields = ['id', 'created_at']

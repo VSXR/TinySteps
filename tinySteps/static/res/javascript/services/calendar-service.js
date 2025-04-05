@@ -1,166 +1,182 @@
-/**
- * Calendar Service - Provides mock data for the calendar
- */
 class CalendarService {
-  constructor() {
-    this.mockEvents = [
-      {
-        id: 1,
-        title: 'Doctor Appointment',
-        date: '2023-06-15',
-        time: '10:30:00',
-        type: 'doctor',
-        location: 'Pediatric Clinic',
-        description: 'Regular check-up',
-        has_reminder: true,
-        reminder_minutes: 60
-      },
-      {
-        id: 2,
-        title: 'Vaccine Shot',
-        date: '2023-06-22',
-        time: '14:00:00',
-        type: 'vaccine',
-        location: 'Health Center',
-        description: 'Scheduled vaccination',
-        has_reminder: true,
-        reminder_minutes: 1440
-      },
-      {
-        id: 3,
-        title: 'First Steps!',
-        date: '2023-06-10',
-        time: null,
-        type: 'milestone',
-        location: '',
-        description: 'Baby started walking!',
-        has_reminder: false,
-        reminder_minutes: null
-      },
-      {
-        id: 4,
-        title: 'Introduce Solid Foods',
-        date: '2023-06-18',
-        time: '12:00:00',
-        type: 'feeding',
-        location: 'Home',
-        description: 'Start introducing pureed vegetables',
-        has_reminder: true,
-        reminder_minutes: 30
-      },
-      {
-        id: 5,
-        title: 'Playdate',
-        date: '2023-06-25',
-        time: '16:00:00',
-        type: 'other',
-        location: 'Community Park',
-        description: 'Socializing with other babies',
-        has_reminder: true,
-        reminder_minutes: 120
-      }
-    ];
-  }
-
-  // Fetch events in a given date range
-  async getEvents(childId, start, end) {
-    // Simulate network delay
-    await new Promise(resolve => setTimeout(resolve, 500));
-    
-    // Get the current date to replace event dates with dates relative to now
-    const today = new Date();
-    const currentMonth = today.getMonth();
-    const currentYear = today.getFullYear();
-    
-    // Clone and adjust mock events to current month
-    const adjustedEvents = this.mockEvents.map(event => {
-      const eventDate = new Date(event.date);
-      // Keep the day but use current month and year
-      const newDate = new Date(currentYear, currentMonth, eventDate.getDate());
-      
-      // Format the date as 'YYYY-MM-DD'
-      const formattedDate = newDate.toISOString().split('T')[0];
-      
-      return {
-        ...event,
-        date: formattedDate
-      };
-    });
-    
-    return {
-      events: adjustedEvents
-    };
-  }
-
-  // Get upcoming events
-  async getUpcomingEvents(childId) {
-    await new Promise(resolve => setTimeout(resolve, 300));
-    return {
-      reminders: this.mockEvents.filter(event => event.has_reminder).slice(0, 3)
-    };
-  }
-
-  // Get event statistics
-  async getEventStats(childId) {
-    await new Promise(resolve => setTimeout(resolve, 200));
-    return {
-      total: this.mockEvents.length,
-      doctor: this.mockEvents.filter(e => e.type === 'doctor').length,
-      vaccine: this.mockEvents.filter(e => e.type === 'vaccine').length,
-      milestone: this.mockEvents.filter(e => e.type === 'milestone').length,
-      feeding: this.mockEvents.filter(e => e.type === 'feeding').length,
-      other: this.mockEvents.filter(e => e.type === 'other').length
-    };
-  }
-
-  // Create a new event
-  async createEvent(eventData) {
-    await new Promise(resolve => setTimeout(resolve, 400));
-    const newId = Math.max(...this.mockEvents.map(e => e.id)) + 1;
-    const newEvent = {
-      id: newId,
-      ...eventData
-    };
-    this.mockEvents.push(newEvent);
-    return newEvent;
-  }
-
-  // Update an existing event
-  async updateEvent(id, eventData) {
-    await new Promise(resolve => setTimeout(resolve, 300));
-    const index = this.mockEvents.findIndex(e => e.id == id);
-    if (index !== -1) {
-      this.mockEvents[index] = {
-        ...this.mockEvents[index],
-        ...eventData
-      };
-      return this.mockEvents[index];
+    constructor() {
+        this.apiBaseUrl = '/api'; // Base URL for the API
     }
-    throw new Error('Event not found');
-  }
 
-  // Delete an event
-  async deleteEvent(id) {
-    await new Promise(resolve => setTimeout(resolve, 300));
-    const index = this.mockEvents.findIndex(e => e.id == id);
-    if (index !== -1) {
-      this.mockEvents.splice(index, 1);
-      return { success: true };
+    // Helper method to get CSRF token
+    getCsrfToken() {
+        return document.querySelector('input[name="csrfmiddlewaretoken"]')?.value;
     }
-    throw new Error('Event not found');
-  }
 
-  // Get a specific event
-  async getEvent(id) {
-    await new Promise(resolve => setTimeout(resolve, 200));
-    const event = this.mockEvents.find(e => e.id == id);
-    if (event) {
-      return event;
+    // Fetch events from API
+    async getEvents(childId, start, end) {
+        try {
+            console.log(`Fetching events for child ${childId} from ${start} to ${end}`);
+            let url = `${this.apiBaseUrl}/children/${childId}/events/`;
+            if (start && end) {
+                url += `?start=${start}&end=${end}`;
+            }
+            
+            const response = await fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': this.getCsrfToken()
+                }
+            });
+            
+            if (!response.ok) {
+                throw new Error(`API error: ${response.status}`);
+            }
+            
+            return await response.json();
+        } catch (error) {
+            console.error('Error fetching events:', error);
+            return { events: [] }; // Return empty events on error
+        }
     }
-    throw new Error('Event not found');
-  }
+
+    // Create a new event
+    async createEvent(eventData) {
+        try {
+            console.log('Creating event with data:', eventData);
+            const response = await fetch(`${this.apiBaseUrl}/children/${eventData.child}/events/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': this.getCsrfToken()
+                },
+                body: JSON.stringify(eventData)
+            });
+            
+            if (!response.ok) {
+                throw new Error(`API error: ${response.status}`);
+            }
+            
+            return await response.json();
+        } catch (error) {
+            console.error('Error creating event:', error);
+            throw error;
+        }
+    }
+
+    // Update an existing event
+    async updateEvent(id, eventData) {
+        try {
+            const response = await fetch(`${this.apiBaseUrl}/calendar-events/${id}/`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': this.getCsrfToken()
+                },
+                body: JSON.stringify(eventData)
+            });
+            
+            if (!response.ok) {
+                throw new Error(`API error: ${response.status}`);
+            }
+            
+            return await response.json();
+        } catch (error) {
+            console.error('Error updating event:', error);
+            throw error;
+        }
+    }
+
+    // Delete an event
+    async deleteEvent(id) {
+        try {
+            const response = await fetch(`${this.apiBaseUrl}/calendar-events/${id}/`, {
+                method: 'DELETE',
+                headers: {
+                    'X-CSRFToken': this.getCsrfToken()
+                }
+            });
+            
+            if (!response.ok) {
+                throw new Error(`API error: ${response.status}`);
+            }
+            
+            return { success: true };
+        } catch (error) {
+            console.error('Error deleting event:', error);
+            throw error;
+        }
+    }
+
+    // Get a specific event
+    async getEvent(id) {
+        try {
+            const response = await fetch(`${this.apiBaseUrl}/calendar-events/${id}/`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': this.getCsrfToken()
+                }
+            });
+            
+            if (!response.ok) {
+                throw new Error(`API error: ${response.status}`);
+            }
+            
+            return await response.json();
+        } catch (error) {
+            console.error('Error fetching event:', error);
+            throw error;
+        }
+    }
+
+    // Get upcoming events
+    async getUpcomingEvents(childId) {
+        try {
+            const response = await fetch(`${this.apiBaseUrl}/children/${childId}/events/upcoming_events/`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': this.getCsrfToken()
+                }
+            });
+            
+            if (!response.ok) {
+                throw new Error(`API error: ${response.status}`);
+            }
+            
+            return await response.json();
+        } catch (error) {
+            console.error('Error fetching upcoming events:', error);
+            return { reminders: [] };
+        }
+    }
+
+    // Get event statistics
+    async getEventStats(childId) {
+        try {
+            const response = await fetch(`${this.apiBaseUrl}/children/${childId}/events/event_stats/`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': this.getCsrfToken()
+                }
+            });
+            
+            if (!response.ok) {
+                throw new Error(`API error: ${response.status}`);
+            }
+            
+            return await response.json();
+        } catch (error) {
+            console.error('Error fetching event stats:', error);
+            return {
+                total: 0,
+                doctor: 0,
+                vaccine: 0,
+                milestone: 0,
+                feeding: 0,
+                other: 0
+            };
+        }
+    }
 }
 
-// Export a single instance
 const calendarService = new CalendarService();
 export default calendarService;

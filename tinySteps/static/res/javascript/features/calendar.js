@@ -46,7 +46,7 @@ document.addEventListener('DOMContentLoaded', function() {
             center: 'title',
             right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
         },
-        locale: document.documentElement.lang || 'en', // Get page language
+        locale: document.documentElement.lang || 'en', 
         height: 'auto',
         expandRows: true,
         navLinks: true,
@@ -57,41 +57,50 @@ document.addEventListener('DOMContentLoaded', function() {
             minute: '2-digit',
             hour12: false
         },
-        // Fetch events from mock service
         events: function(fetchInfo, successCallback, failureCallback) {
-            if (loadingEl) loadingEl.style.display = 'block';
-            
-            // Use the mock service
-            calendarService.getEvents(childId, fetchInfo.startStr, fetchInfo.endStr)
-                .then(data => {
-                    // Map events to FullCalendar format
-                    const events = data.events.map(event => ({
-                        id: event.id,
-                        title: event.title,
-                        start: event.time ? `${event.date}T${event.time}` : event.date,
-                        allDay: !event.time,
+        if (loadingEl) loadingEl.style.display = 'block';
+        
+        calendarService.getEvents(childId, fetchInfo.startStr, fetchInfo.endStr)
+            .then(data => {
+                console.log('Events received:', data.events, 'count:', data.events.length); // Enhanced debug log
+                if (loadingEl) loadingEl.style.display = 'none';
+                
+                const events = data.events.map(event => ({
+                    id: event.id,
+                    title: event.title,
+                    start: event.time ? `${event.date}T${event.time}` : event.date,
+                    allDay: !event.time,
+                    backgroundColor: eventColorMap[event.type] || eventColorMap.other,
+                    borderColor: eventColorMap[event.type] || eventColorMap.other,
+                    extendedProps: {
+                        type: event.type,
+                        location: event.location,
                         description: event.description,
-                        backgroundColor: eventColorMap[event.type] || eventColorMap.other,
-                        borderColor: eventColorMap[event.type] || eventColorMap.other,
-                        extendedProps: {
-                            type: event.type,
-                            location: event.location,
-                            hasReminder: event.has_reminder,
-                            reminderMinutes: event.reminder_minutes
-                        }
-                    }));
-                    
-                    successCallback(events);
-                    if (loadingEl) loadingEl.style.display = 'none';
-                    updateEventStats();
-                    showNotification('Using demo data - live data will be available soon', 'info');
-                })
-                .catch(error => {
-                    console.error('Error fetching events:', error);
-                    failureCallback(error);
-                    if (loadingEl) loadingEl.style.display = 'none';
-                    showNotification('Error loading events. Using demo data.', 'warning');
-                });
+                        hasReminder: event.has_reminder,
+                        reminderMinutes: event.reminder_minutes
+                    }
+                }));
+
+                successCallback(events);
+                
+                // Get the current visible events (including any that might have been added manually)
+                const allVisibleEvents = calendar.getEvents().length;
+                console.log('All visible calendar events after update:', allVisibleEvents);
+                
+                // Permanently disable empty calendar message
+                const emptyMessage = document.getElementById('empty-calendar-message');
+                if (emptyMessage) {
+                    emptyMessage.remove(); // Completely remove from DOM
+                    // Or alternatively:
+                    // emptyMessage.style.display = 'none !important';
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching events:', error);
+                if (loadingEl) loadingEl.style.display = 'none';
+                failureCallback(error);
+                showNotification('Error loading events', 'danger');
+            });
         },
         eventClick: function(info) {
             // Show event details in form
@@ -100,8 +109,11 @@ document.addEventListener('DOMContentLoaded', function() {
         dateClick: function(info) {
             // Prepare form for new event
             resetEventForm();
-            document.getElementById('event-date').value = info.dateStr;
-            document.getElementById('form-title').innerHTML = '<i class="fa-solid fa-plus text-primary me-2" aria-hidden="true"></i> Add Event';
+            const dateInput = document.getElementById('event-date');
+            if (dateInput) dateInput.value = info.dateStr;
+            
+            const formTitle = document.getElementById('form-title');
+            if (formTitle) formTitle.innerHTML = '<i class="fa-solid fa-plus text-primary me-2" aria-hidden="true"></i> Add Event';
         },
         eventDrop: function(info) {
             // Handle drag and drop event
@@ -115,6 +127,20 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Render the calendar
     calendar.render();
+
+    // Check if we need to hide the empty message based on existing events
+    setTimeout(() => {
+        const hasEvents = calendar.getEvents().length > 0;
+        const emptyMessage = document.getElementById('empty-calendar-message');
+        
+        if (hasEvents && emptyMessage) {
+            console.log('Initial check: Calendar has events, hiding empty message');
+            emptyMessage.style.display = 'none';
+        } else if (emptyMessage) {
+            console.log('Initial check: Calendar is empty, showing empty message');
+            emptyMessage.style.display = 'flex';
+        }
+    }, 1000); // Wait for calendar to fully initialize
     
     // Initialize form elements
     initializeForm();
@@ -175,9 +201,25 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Event form submission
     if (eventForm) {
+        // Add a flag to track if submission is in progress
+        let isSubmitting = false;
+        
         eventForm.addEventListener('submit', function(e) {
             e.preventDefault();
-            saveEvent();
+            
+            // Prevent multiple submissions
+            if (isSubmitting) {
+                console.log('Submission already in progress, ignoring duplicate submit');
+                return;
+            }
+            
+            isSubmitting = true;
+            saveEvent().finally(() => {
+                // Reset submission flag when complete (whether success or error)
+                setTimeout(() => {
+                    isSubmitting = false;
+                }, 500); // Small delay to prevent accidental double-clicks
+            });
         });
     }
 
@@ -211,7 +253,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (editEventBtn) {
         editEventBtn.addEventListener('click', function() {
             const modal = bootstrap.Modal.getInstance(document.getElementById('eventDetailsModal'));
-            modal.hide();
+            if (modal) modal.hide();
             showEventDetails(currentEvent);
         });
     }
@@ -262,12 +304,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.error('Error fetching event stats:', error);
                 // Generate simple mock statistics on error
                 const stats = {
-                    total: 5,
-                    doctor: 1,
-                    vaccine: 1,
-                    milestone: 1,
-                    feeding: 1,
-                    other: 1
+                    total: 0,
+                    doctor: 0,
+                    vaccine: 0,
+                    milestone: 0,
+                    feeding: 0,
+                    other: 0
                 };
                 updateStatsUI(stats);
             });
@@ -298,35 +340,46 @@ document.addEventListener('DOMContentLoaded', function() {
         if (feedingCountEl) feedingCountEl.textContent = data.feeding || 0;
     }
 
-    // Function to update upcoming reminders
+    // Function to update upcoming reminders with improved reliability
     function updateUpcomingReminders() {
+        console.log('Updating upcoming reminders for child ID:', childId);
+        
+        // Show a subtle loading indicator on the reminders section
+        const reminderHeader = document.querySelector('.card-header .badge');
+        if (reminderHeader) {
+            reminderHeader.classList.add('pulse-animation');
+        }
+        
         calendarService.getUpcomingEvents(childId)
             .then(data => {
+                console.log(`Received ${data.reminders?.length || 0} upcoming reminders`);
                 updateRemindersUI(data);
+                
+                // Update the count badge in the header
+                if (reminderHeader) {
+                    reminderHeader.textContent = data.reminders?.length || 0;
+                    reminderHeader.classList.remove('pulse-animation');
+                }
             })
             .catch(error => {
                 console.error('Error fetching reminders:', error);
-                // Use mock data on error
-                const upcomingEvents = [
-                    {
-                        id: 2,
-                        title: 'Vaccine Shot',
-                        date: '2023-06-22',
-                        time: '14:00:00',
-                        type: 'vaccine',
-                        location: 'Health Center',
-                        description: 'Scheduled vaccination',
-                        has_reminder: true,
-                        reminder_minutes: 1440
-                    }
-                ];
-                updateRemindersUI({ reminders: upcomingEvents });
+                // Use empty reminders on error
+                updateRemindersUI({ reminders: [] });
+                
+                if (reminderHeader) {
+                    reminderHeader.textContent = '0';
+                    reminderHeader.classList.remove('pulse-animation');
+                }
             });
     }
-    
+
+    // Improved updateRemindersUI function with better styling
     function updateRemindersUI(data) {
         const remindersList = document.getElementById('upcoming-reminders');
-        if (!remindersList) return;
+        if (!remindersList) {
+            console.error('Reminders list element not found');
+            return;
+        }
         
         // Clear existing reminders
         remindersList.innerHTML = '';
@@ -336,6 +389,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 const li = document.createElement('li');
                 li.className = 'list-group-item reminder-item d-flex justify-content-between align-items-start';
                 li.dataset.eventId = reminder.id;
+                
+                // Improve the styling of reminder items with custom badges based on type
+                const badgeColorClass = getBadgeColorForEventType(reminder.type);
                 
                 li.innerHTML = `
                     <div>
@@ -348,7 +404,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             ${formatTime(reminder.time)}` : ''}
                         </p>
                     </div>
-                    <span class="badge event-type-${reminder.type}">${capitalizeFirstLetter(reminder.type)}</span>
+                    <span class="badge ${badgeColorClass}">${capitalizeFirstLetter(reminder.type)}</span>
                 `;
                 
                 li.addEventListener('click', function() {
@@ -365,6 +421,39 @@ document.addEventListener('DOMContentLoaded', function() {
             remindersList.appendChild(li);
         }
     }
+
+    // Helper function to get badge color class based on event type
+    function getBadgeColorForEventType(type) {
+        const badgeClasses = {
+            'doctor': 'bg-primary',
+            'vaccine': 'bg-warning text-dark',
+            'milestone': 'bg-success',
+            'feeding': 'bg-purple',
+            'other': 'bg-secondary'
+        };
+        
+        return badgeClasses[type] || 'bg-secondary';
+    }
+
+    // Add this CSS to make the badge pulse when updating
+    document.head.insertAdjacentHTML('beforeend', `
+    <style>
+        .pulse-animation {
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+        .bg-purple {
+            background-color: #9c27b0;
+            color: white;
+        }
+    </style>
+    `);
+    
+    
 
     // Function to show event details in form
     function showEventDetails(event) {
@@ -456,6 +545,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Function to save an event
     function saveEvent() {
+        console.log('===== DEBUGGING STEPS =====');
+        console.log('Step 1: Beginning saveEvent function');
+    
         const titleInput = document.getElementById('event-title');
         const typeSelect = document.getElementById('event-type');
         const dateInput = document.getElementById('event-date');
@@ -466,8 +558,8 @@ document.addEventListener('DOMContentLoaded', function() {
         const reminderTime = document.getElementById('reminder-time');
         
         if (!titleInput || !typeSelect || !dateInput) {
-            showNotification('Missing required form elements', 'error');
-            return;
+            showNotification('Missing required form elements', 'danger');
+            return Promise.resolve();
         }
         
         const eventData = {
@@ -478,40 +570,90 @@ document.addEventListener('DOMContentLoaded', function() {
             location: locationInput?.value || '',
             description: notesInput?.value || '',
             has_reminder: reminderCheckbox?.checked || false,
-            reminder_minutes: (reminderCheckbox?.checked && reminderTime?.value) ? reminderTime.value : null,
+            reminder_minutes: reminderCheckbox?.checked ? (reminderTime?.value || 30) : null,
             child: childId
         };
+        
+        console.log('Saving event:', eventData);
         
         // Determine if this is a new event or an update
         const isNewEvent = !currentEvent;
         
         if (isNewEvent) {
-            calendarService.createEvent(eventData)
+            // Check for duplicates before saving
+            const allEvents = calendar.getEvents();
+            const isDuplicate = allEvents.some(existingEvent => {
+                // Improved duplicate detection
+                if (!existingEvent.id) return false; // Skip temporary events
+                
+                const sameTitle = existingEvent.title === eventData.title;
+                const sameDate = existingEvent.startStr.substring(0, 10) === eventData.date;
+                
+                // More reliable time comparison
+                let sameTime;
+                if (eventData.time) {
+                    const eventTimeStr = eventData.time.substring(0, 5);
+                    const existingTimeStr = existingEvent.startStr.includes('T') ? 
+                        existingEvent.startStr.split('T')[1].substring(0, 5) : '';
+                    sameTime = existingTimeStr === eventTimeStr;
+                } else {
+                    sameTime = existingEvent.allDay === true;
+                }
+                
+                return sameTitle && sameDate && sameTime;
+            });
+            
+            if (isDuplicate) {
+                showNotification('An event with the same title, date and time already exists', 'warning');
+                return Promise.resolve(); // Return resolved promise to continue chain
+            }
+            
+            return calendarService.createEvent(eventData)
                 .then(savedEvent => {
-                    // Refresh calendar
+                    console.log('Event saved successfully:', savedEvent);
+                    // Refresh calendar to show the new event
                     calendar.refetchEvents();
                     
-                    // Update stats and reminders
+                    // Hide empty message when we create an event
+                    forceHideEmptyMessage();
+                    
+                    // Update stats and reminders (with specific focus on reminders if it has one)
                     updateEventStats();
+                    if (eventData.has_reminder) {
+                        console.log('New event has a reminder, updating reminders list');
+                    }
                     updateUpcomingReminders();
                     
                     // Reset form
                     resetEventForm();
                     
+                    // Show success notification
                     showNotification('Event created successfully', 'success');
                 })
                 .catch(error => {
                     console.error('Error saving event:', error);
                     showNotification('Error creating event. Please try again.', 'danger');
+                    throw error; // Re-throw to continue promise chain
                 });
         } else {
-            calendarService.updateEvent(currentEvent.id, eventData)
+            // For update, no duplicate check needed
+            return calendarService.updateEvent(currentEvent.id, eventData)
                 .then(updatedEvent => {
                     // Refresh calendar
                     calendar.refetchEvents();
                     
-                    // Update stats and reminders
+                    // Make sure empty message is hidden
+                    forceHideEmptyMessage();
+                    
+                    // Update stats and reminders (with specific focus on reminders if changed)
                     updateEventStats();
+                    const reminderChanged = 
+                        currentEvent.extendedProps.hasReminder !== eventData.has_reminder || 
+                        currentEvent.extendedProps.reminderMinutes !== eventData.reminder_minutes;
+                        
+                    if (reminderChanged) {
+                        console.log('Reminder settings changed, updating reminders list');
+                    }
                     updateUpcomingReminders();
                     
                     // Reset form
@@ -522,7 +664,19 @@ document.addEventListener('DOMContentLoaded', function() {
                 .catch(error => {
                     console.error('Error updating event:', error);
                     showNotification('Error updating event. Please try again.', 'danger');
+                    throw error; // Re-throw to continue promise chain
                 });
+        }
+    }
+
+    function forceHideEmptyMessage() {
+        console.log('Forcing hide of empty message');
+        const emptyMessage = document.getElementById('empty-calendar-message');
+        if (emptyMessage) {
+            emptyMessage.style.display = 'none';
+            console.log('Empty message hidden');
+        } else {
+            console.log('Empty message element not found');
         }
     }
 
@@ -536,14 +690,21 @@ document.addEventListener('DOMContentLoaded', function() {
                 const modal = bootstrap.Modal.getInstance(document.getElementById('deleteEventModal'));
                 if (modal) modal.hide();
                 
+                // Check if event had a reminder before removing
+                const hadReminder = currentEvent.extendedProps.hasReminder;
+                
                 // Remove from calendar
-                calendar.getEventById(currentEvent.id).remove();
+                const event = calendar.getEventById(currentEvent.id);
+                if (event) event.remove();
                 
                 // Reset form
                 resetEventForm();
                 
-                // Update statistics and reminders
+                // Update statistics and reminders (with specific focus on reminders if it had one)
                 updateEventStats();
+                if (hadReminder) {
+                    console.log('Deleted event had a reminder, updating reminders list');
+                }
                 updateUpcomingReminders();
                 
                 // Show success notification
@@ -553,7 +714,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.error('Error deleting event:', error);
                 showNotification('Error deleting event. Please try again.', 'danger');
             });
+    
     }
+    
 
     // Function to update event date (after drag & drop or resize)
     function updateEventDate(event) {

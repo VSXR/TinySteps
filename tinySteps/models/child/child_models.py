@@ -96,35 +96,67 @@ class Vaccine_Model(models.Model):
 
 
 
-
-
-
 class CalendarEvent_Model(models.Model):
-    """Model for calendar events"""
-    TYPE_CHOICES = (
-        ('doctor', _("Medical Appointment")),
+    """Model for child calendar events"""
+    
+    TYPE_CHOICES = [
+        ('doctor', _("Doctor Appointment")),
         ('vaccine', _("Vaccine")),
         ('milestone', _("Development Milestone")),
         ('feeding', _("Feeding")),
         ('other', _("Other")),
-    )
+    ]
+    
+    STATUS_CHOICES = [
+        ('pending', _("Pending")),
+        ('completed', _("Completed")),
+        ('cancelled', _("Cancelled")),
+    ]
     
     child = models.ForeignKey(YourChild_Model, on_delete=models.CASCADE, related_name='events')
-    title = models.CharField(_("Title"), max_length=255)
-    type = models.CharField(_("Type"), max_length=20, choices=TYPE_CHOICES, default='other')
-    date = models.DateField(_("Date"))
-    time = models.TimeField(_("Time"), null=True, blank=True)
-    location = models.CharField(_("Location"), max_length=255, null=True, blank=True)
-    description = models.TextField(_("Description"), blank=True, null=True)
-    has_reminder = models.BooleanField(_("Has reminder"), default=False)
-    reminder_minutes = models.IntegerField(_("Reminder minutes"), null=True, blank=True)
-    created_at = models.DateTimeField(_("Created at"), auto_now_add=True)
-    updated_at = models.DateTimeField(_("Updated at"), auto_now=True)
+    title = models.CharField(max_length=255, verbose_name=_("Title"))
+    type = models.CharField(max_length=20, choices=TYPE_CHOICES, verbose_name=_("Type"))
+
+    # Date and time information
+    date = models.DateField(verbose_name=_("Date"))
+    time = models.TimeField(null=True, blank=True, verbose_name=_("Time"))
+    is_all_day = models.BooleanField(default=False, verbose_name=_("All day event"))
     
+    # Event details
+    location = models.CharField(max_length=255, null=True, blank=True, verbose_name=_("Location"))
+    description = models.TextField(null=True, blank=True, verbose_name=_("Description"))
+    
+    # Event status
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending', verbose_name=_("Status"))
+    
+    # Reminder settings
+    has_reminder = models.BooleanField(default=False, verbose_name=_("Has reminder"))
+    reminder_minutes = models.IntegerField(null=True, blank=True, verbose_name=_("Reminder minutes"))
+    reminder_sent = models.BooleanField(default=False, verbose_name=_("Reminder sent"))
+    
+    # Timestamps
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Created at"))
+    updated_at = models.DateTimeField(auto_now=True, verbose_name=_("Updated at"))
+
     class Meta:
+        ordering = ["date", "time"]
         verbose_name = _("Calendar Event")
         verbose_name_plural = _("Calendar Events")
-        ordering = ["date", "time"]
+        indexes = [
+            models.Index(fields=['child', 'date']),
+            models.Index(fields=['type']),
+            models.Index(fields=['status']),
+        ]
 
     def __str__(self):
         return f"{self.title} - {self.date}"
+        
+    def is_upcoming(self):
+        """Check if the event is in the future"""
+        from django.utils import timezone
+        today = timezone.now().date()
+        return self.date >= today
+        
+    def get_absolute_url(self):
+        """Get the URL for this event"""
+        return reverse('children:event_detail', kwargs={'child_id': self.child.id, 'event_id': self.pk})
