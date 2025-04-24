@@ -1,89 +1,137 @@
 {% load static %} 
 {% load i18n %}
 
-<footer class="footerContainer sticky-footer mt-auto py-3 text-white">
-    <nav aria-label="{% trans 'Footer Navigation' %}">
-        <ul class="nav footer-nav justify-content-center border-bottom pb-3">
-            <li class="footer-nav-item">
-                <a
-                    href="{% url 'index' %}"
-                    class="footer-nav-link"
-                    aria-label="{% trans 'Home' %}"
-                >
-                    <i class="fa-solid fa-house" aria-hidden="true"></i>
-                    <span class="footer-link-text">{% trans "HOME" %}</span>
-                </a>
-            </li>
-            <li class="footer-nav-item">
-                <a
-                    href="{% url 'children:your_children' %}"
-                    class="footer-nav-link"
-                    aria-label="{% trans 'Your Children' %}"
-                >
-                    <i class="fa-solid fa-baby" aria-hidden="true"></i>
-                    <span class="footer-link-text">{% trans "YOUR CHILDREN" %}</span>
-                </a>
-            </li>
-            <li class="footer-nav-item">
-                <a
-                    href="{% url 'forum:parent_forum' %}"
-                    class="footer-nav-link"
-                    aria-label="{% trans 'Parents Forum' %}"
-                >
-                    <i class="fa-solid fa-comments" aria-hidden="true"></i>
-                    <span class="footer-link-text">{% trans "PARENTS FORUM" %}</span>
-                </a>
-            </li>
-            <li class="footer-nav-item">
-                <a
-                    href="{% url 'guides' %}"
-                    class="footer-nav-link"
-                    aria-label="{% trans 'Guides' %}"
-                >
-                    <i class="fa-solid fa-book" aria-hidden="true"></i>
-                    <span class="footer-link-text">{% trans "GUIDES" %}</span>
-                </a>
-            </li>
-            <li class="footer-nav-item">
-                <a
-                    href="{% url 'contact' %}"
-                    class="footer-nav-link"
-                    aria-label="{% trans 'Contact' %}"
-                >
-                    <i class="fa-solid fa-envelope" aria-hidden="true"></i>
-                    <span class="footer-link-text">{% trans "CONTACT" %}</span>
-                </a>
-            </li>
-            <li class="footer-nav-item">
-                <a
-                    href="{% url 'about' %}"
-                    class="footer-nav-link"
-                    aria-label="{% trans 'About Us' %}"
-                >
-                    <i class="fa-solid fa-users" aria-hidden="true"></i>
-                    <span class="footer-link-text">{% trans "ABOUT US" %}</span>
-                </a>
-            </li>
-        </ul>
-    </nav>
-
-    <!-- Copyright information -->
-    <div class="footerAuthorText text-center mt-3">
-        <div class="madeContainer">
-            <p>
-                <small>{% trans "© 2025 TinySteps. All rights reserved." %}</small>
-            </p>
+<footer class="footerContainer sticky-footer mt-auto py-5 text-white">
+    <div class="container">
+        <!-- Footer main sections -->
+        <div class="row mb-4">
+            <!-- Logo and description -->
+            <div class="col-lg-4 mb-4 mb-lg-0">
+                <div class="d-flex align-items-center mb-3">
+                    <img src="{% static 'res/img/logo/tinySteps-logo.png' %}" alt="Tiny Steps Logo" width="40" height="40" class="me-2">
+                    <h5 class="mb-0 text-white">{% trans "Tiny Steps" %}</h5>
+                </div>
+                <p class="mb-3">{% trans "Supporting parents with tools and resources for child development, ensuring every step of your child's journey is celebrated." %}</p>
+                
+                <!-- Social Media -->
+                <div class="social-links mb-3">
+                    <h6 class="mb-2">{% trans "Connect With Us" %}</h6>
+                    <div class="d-flex gap-3">
+                        <a href="#" class="social-icon" aria-label="Facebook">
+                            <i class="fa-brands fa-facebook-f" aria-hidden="true"></i>
+                        </a>
+                        <a href="#" class="social-icon" aria-label="Twitter">
+                            <i class="fa-brands fa-twitter" aria-hidden="true"></i>
+                        </a>
+                        <a href="#" class="social-icon" aria-label="Instagram">
+                            <i class="fa-brands fa-instagram" aria-hidden="true"></i>
+                        </a>
+                        <a href="#" class="social-icon" aria-label="YouTube">
+                            <i class="fa-brands fa-youtube" aria-hidden="true"></i>
+                        </a>
+                        <a href="#" class="social-icon" aria-label="Pinterest">
+                            <i class="fa-brands fa-pinterest-p" aria-hidden="true"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Quick Links -->
+            <div class="col-6 col-lg-2 mb-4 mb-lg-0">
+                <h6 class="mb-3 text-white">{% trans "Navigation" %}</h6>
+                <ul class="list-unstyled footer-links">
+                    <li><a href="{% url 'index' %}">{% trans "Home" %}</a></li>
+                    <li><a href="{% url 'children:your_children' %}">{% trans "Your Children" %}</a></li>
+                    <li><a href="{% url 'forum:parent_forum' %}">{% trans "Parents Forum" %}</a></li>
+                    <li><a href="{% url 'guides' %}">{% trans "Guides" %}</a></li>
+                    <li><a href="{% url 'contact' %}">{% trans "Contact" %}</a></li>
+                    <li><a href="{% url 'about' %}">{% trans "About Us" %}</a></li>
+                </ul>
+            </div>
+            
+            <!-- Resources -->
+            <div class="col-6 col-lg-2 mb-4 mb-lg-0">
+                <h6 class="mb-3 text-white">{% trans "Resources" %}</h6>
+                <ul class="list-unstyled footer-links">
+                    <li><a href="#">{% trans "Milestone Guide" %}</a></li>
+                    <li><a href="#">{% trans "Nutrition Calculator" %}</a></li>
+                    <li><a href="#">{% trans "Vaccination Schedule" %}</a></li>
+                    <li><a href="#">{% trans "Growth Charts" %}</a></li>
+                    <li><a href="#">{% trans "Sleep Tracker" %}</a></li>
+                    <li><a href="#">{% trans "Development Tips" %}</a></li>
+                </ul>
+            </div>
+            
+            <!-- Newsletter Signup -->
+            <div class="col-lg-4">
+                <h6 class="mb-3 text-white">{% trans "Stay Updated" %}</h6>
+                <p class="small mb-3">{% trans "Subscribe to our newsletter for the latest parenting tips, guides, and app updates." %}</p>
+                <form class="mb-3">
+                    <div class="input-group">
+                        <input type="email" class="form-control form-control-main rounded-start" placeholder="Your email address" aria-label="Email address" required>
+                        <button class="btn btn-light" type="submit">
+                            <i class="fa-solid fa-paper-plane" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                    <div class="form-text text-white-50 small mt-2">
+                        {% trans "We respect your privacy. Unsubscribe at any time." %}
+                    </div>
+                </form>
+                
+                <!-- App Download Links -->
+                <div class="app-downloads">
+                    <h6 class="mb-2">{% trans "Get Our App" %}</h6>
+                    <div class="d-flex gap-2">
+                        <a href="#" class="app-badge">
+                            <img src="{% static 'res/img/others/app-store-download-svg.svg' %}" alt="Download on App Store" height="35">
+                        </a>
+                        <a href="#" class="app-badge">
+                            <img src="{% static 'res/img/others/google-play-download-svg.svg' %}" alt="Get it on Google Play" height="35">
+                        </a>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="madeContainer">
-            <a
-                href="https://github.com/VSXR"
-                class="madeBy"
-                rel="noopener noreferrer"
-                target="_blank"
-                aria-label="Made by TinySteps - Visit GitHub profile"
-            >
-                {% trans "- MADE BY TINY STEPS -" %}
-            </a>
+        
+        <!-- Secondary links -->
+        <div class="row border-top pt-4 mt-2">
+            <div class="col-12 text-center mb-4">
+                <!-- First row of links -->
+                <ul class="nav footer-nav-horizontal justify-content-center mb-2">
+                    <li class="footer-nav-item">
+                        <a href="{% url 'pages:terms' %}" class="footer-nav-link">
+                            <span class="footer-link-text small">{% trans "Terms and Conditions" %}</span>
+                        </a>
+                    </li>
+                    <li class="footer-nav-item">
+                        <a href="{% url 'pages:privacy' %}" class="footer-nav-link">
+                            <span class="footer-link-text small">{% trans "Privacy Policy" %}</span>
+                        </a>
+                    </li>
+                    <li class="footer-nav-item">
+                        <a href="{% url 'pages:cookies' %}" class="footer-nav-link">
+                            <span class="footer-link-text small">{% trans "Cookie Policy" %}</span>
+                        </a>
+                    </li>
+                </ul>
+                
+                <!-- Second row of links -->
+                <ul class="nav footer-nav-horizontal justify-content-center mb-3">
+                    <li class="footer-nav-item">
+                        <a href="{% url 'pages:accessibility' %}" class="footer-nav-link">
+                            <span class="footer-link-text small">{% trans "Accessibility" %}</span>
+                        </a>
+                    </li>
+                    <li class="footer-nav-item">
+                        <a href="{% url 'pages:help_center' %}" class="footer-nav-link">
+                            <span class="footer-link-text small">{% trans "Help Center" %}</span>
+                        </a>
+                    </li>
+                </ul>
+                
+                <!-- Copyright notice -->
+                <p class="small text-white-50 mt-2 mb-0">{% trans "© 2025 TinySteps. All rights reserved." %}</p>
+            </div>
         </div>
     </div>
 </footer>

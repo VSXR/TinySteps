@@ -1,16 +1,20 @@
-/* Common animations */
+/* ===== ANIMATIONS & TRANSITIONS ===== */
+
+/* Transition utilities */
+.transition-300 {
+    transition: all 0.3s ease;
+}
+
+/* ===== HOVER EFFECTS ===== */
 
 /* Content lift effect */
 .content-lift {
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-.content-lift:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
 }
 
-.transition-300 {
-    transition: all 0.3s ease;
+.content-lift:hover {
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1) !important;
+    transform: translateY(-5px);
 }
 
 /* Animated Underline */

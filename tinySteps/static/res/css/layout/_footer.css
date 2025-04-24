@@ -1,110 +1,343 @@
-/* Footer styles */
-
+/* ==============================================
+    1. MAIN FOOTER STRUCTURE
+============================================== */
 footer {
-    background-color: var(--primary-color);
-    flex-shrink: 0;
-    padding: var(--space-sm);
-    width: 100%;
+     background-color: var(--primary-color);
+     color: var(--text-light);
+     flex-shrink: 0;
+     padding: var(--space-sm);
+     width: 100%;
 }
 
 .sticky-footer {
-    margin-top: auto;
-    position: relative;
-}
-
-/* Footer Navigation */
-.footer-nav {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-sm);
-    justify-content: center;
-}
-
-.footer-nav-item {
-    align-items: center;
-    color: var(--text-light);
-    display: flex;
-    font-size: 17px;
-    font-weight: bold;
-    margin: var(--space-xs);
-    padding: var(--space-xs);
-    text-decoration: none;
-}
-
-.footer-nav-link {
-    align-items: center;
-    border-radius: var(--radius-md);
-    color: var(--text-light);
-    display: flex;
-    padding: 8px;
-    text-decoration: none;
-    transition: background-color var(--transition-fast), color var(--transition-fast);
-}
-
-.footer-nav-link:hover {
-    background-color: rgba(255, 255, 255, 0.2);
-    color: var(--text-dark);
-}
-
-.footer-nav-link:focus {
-    color: var(--text-light);
-    outline: 2px solid var(--text-light);
-}
-
-.footer-nav-link i {
-    font-size: 16px;
-    margin-right: 6px;
-}
-
-.footer-link-text {
-    display: inline-block;
+     margin-top: auto;
+     position: relative;
 }
 
 .border-bottom {
-    padding-bottom: var(--space-sm);
+     padding-bottom: var(--space-sm);
 }
 
-.footerContainer a {
-    color: var(--text-light);
+.footerContainer {
+     background-color: var(--primary-color-dark);
+     color: var(--text-light);
 }
 
-/* Footer Author Info */
+/* ==============================================
+    2. FOOTER NAVIGATION 
+============================================== */
+/* Primary Footer Navigation */
+.footer-nav {
+     display: flex;
+     flex-wrap: wrap;
+     gap: var(--space-sm);
+     justify-content: center;
+}
+
+.footer-nav-item {
+     align-items: center;
+     color: var(--text-light);
+     display: flex;
+     font-size: 14px;
+     font-weight: 500;
+     margin: var(--space-xs);
+     padding: var(--space-xs);
+     text-decoration: none;
+}
+
+.footer-nav-link {
+     align-items: center;
+     border-radius: var(--radius-md);
+     color: var(--text-light);
+     display: flex;
+     padding: 6px 8px;
+     text-decoration: none;
+     transition: background-color var(--transition-fast), color var(--transition-fast);
+}
+
+.footer-nav-link:hover {
+     background-color: rgba(255, 255, 255, 0.2);
+     color: var(--text-dark);
+}
+
+.footer-nav-link:focus {
+     color: var(--text-light);
+     outline: 2px solid var(--text-light);
+}
+
+.footer-nav-link i {
+     font-size: 16px;
+     margin-right: 6px;
+}
+
+.footer-link-text {
+     display: inline-block;
+}
+
+/* Horizontal Footer Navigation */
+.footer-nav-horizontal {
+     display: flex;
+     flex-wrap: wrap;
+     gap: 0.5rem;
+     justify-content: center;
+}
+
+.footer-nav-horizontal .footer-nav-item {
+     margin: 0;
+     padding: 0;
+}
+
+.footer-nav-horizontal .footer-nav-link {
+     border-radius: var(--radius-md);
+     color: var(--text-light);
+     display: flex;
+     padding: 6px 12px;
+     text-decoration: none;
+     transition: all 0.3s ease;
+}
+
+.footer-nav-horizontal .footer-nav-link:hover {
+     background-color: rgba(255, 255, 255, 0.1);
+     transform: translateY(-2px);
+}
+
+/* Secondary Footer Navigation */
+.footer-nav.flex-column .footer-nav-item {
+     margin: 0.1rem 0;
+     padding: 0.1rem 0;
+}
+
+.footer-nav.flex-column .footer-nav-link {
+     justify-content: center;
+     padding: 0.3rem 0.5rem;
+}
+
+.footer-nav.flex-column .footer-nav-link:hover {
+     transform: translateX(3px);
+}
+
+/* ==============================================
+    3. FOOTER LINKS LIST
+============================================== */
+.footer-links {
+     margin: 0;
+     padding: 0;
+}
+
+.footer-links li {
+     margin-bottom: 0.3rem;
+}
+
+.footer-links a {
+     color: rgba(255, 255, 255, 0.7);
+     display: block;
+     font-size: 14px;
+     padding: 0.3rem 0;
+     text-decoration: none;
+     transition: all 0.3s ease;
+}
+
+.footer-links a:hover {
+     color: white;
+     transform: translateX(5px);
+}
+
+/* ==============================================
+    4. AUTHOR INFO & COPYRIGHT
+============================================== */
 .madeContainer {
-    align-items: center;
-    display: flex;
-    height: 100%;
-    justify-content: center;
+     align-items: center;
+     display: flex;
+     height: 100%;
+     justify-content: center;
 }
 
 .madeBy {
-    color: var(--text-light);
-    font-size: 15px;
-    font-weight: bold;
-    opacity: 1;
-    padding-top: 25px;
-    text-align: center;
-    text-decoration: none;
+     color: var(--text-light);
+     font-size: 15px;
+     font-weight: bold;
+     opacity: 0.8;
+     padding-top: 25px;
+     text-align: center;
+     text-decoration: none;
+     transition: opacity var(--transition-fast), transform var(--transition-fast);
 }
 
 .madeBy:hover, 
 .madeBy:focus {
-    color: var(--text-light);
-    text-decoration: underline;
+     color: var(--text-light);
+     opacity: 1;
+     text-decoration: underline;
+     transform: translateY(-2px);
 }
 
 .footerAuthorText {
-    color: var(--text-light);
-    font-size: 15px;
-    font-weight: bold;
-    opacity: 1;
-    padding-top: var(--space-lg);
-    text-align: center;
-    text-decoration: none;
+     color: var(--text-light);
+     font-size: 15px;
+     font-weight: bold;
+     opacity: 1;
+     padding-top: var(--space-lg);
+     text-align: center;
+     text-decoration: none;
 }
 
 .copyright {
-    color: var(--text-light);
-    font-size: 15px;
-    font-weight: bold;
-    opacity: 1;
+     color: var(--text-light);
+     font-size: 15px;
+     font-weight: bold;
+     opacity: 1;
+}
+
+/* ==============================================
+    5. SOCIAL MEDIA ICONS
+============================================== */
+.social-links {
+     display: flex;
+     flex-direction: column;
+}
+
+.social-icon {
+     align-items: center;
+     background-color: rgba(255, 255, 255, 0.1);
+     border-radius: 50%;
+     color: white;
+     display: inline-flex;
+     height: 36px;
+     justify-content: center;
+     transition: all 0.3s ease;
+     width: 36px;
+}
+
+.social-icon:hover {
+     background-color: rgba(255, 255, 255, 0.2);
+     color: white;
+     text-decoration: none;
+     transform: translateY(-3px);
+}
+
+/* ==============================================
+    6. NEWSLETTER FORM
+============================================== */
+footer .form-control {
+     background-color: rgba(255, 255, 255, 0.15);
+     border: 1px solid rgba(255, 255, 255, 0.2);
+     color: var(--text-light);
+}
+
+footer .form-control:focus {
+     background-color: rgba(255, 255, 255, 0.2);
+     border-color: rgba(255, 255, 255, 0.3);
+     box-shadow: 0 0 0 0.25rem rgba(255, 255, 255, 0.15);
+     color: var(--text-light);
+}
+
+/* ==============================================
+    7. APP DOWNLOAD BADGES
+============================================== */
+.app-downloads {
+     margin-top: 1.5rem;
+}
+
+.app-badge {
+     display: inline-block;
+     transition: all 0.3s ease;
+}
+
+.app-badge:hover {
+     opacity: 0.9;
+     transform: translateY(-3px);
+}
+
+/* ==============================================
+    8. NOTIFICATION ELEMENTS
+============================================== */
+.notification-icon {
+     align-items: center;
+     display: flex;
+     height: 40px;
+     justify-content: center;
+     width: 40px;
+}
+
+.notification-dropdown {
+     max-height: 400px;
+     overflow-y: auto;
+     width: 300px;
+}
+
+/* ==============================================
+    9. SEARCH ELEMENTS
+============================================== */
+.search-suggestions .badge {
+     font-weight: normal;
+     padding: 0.5rem 0.8rem;
+     transition: all 0.2s ease;
+}
+
+.search-suggestions .badge:hover {
+     background-color: var(--primary-color-light) !important;
+     color: var(--text-light) !important;
+}
+
+/* ==============================================
+    10. DROPDOWN ENHANCEMENTS
+============================================== */
+.dropdown-menu {
+     border: none;
+     box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+.dropdown-item {
+     padding: 0.5rem 1rem;
+     transition: background-color 0.2s ease;
+}
+
+.dropdown-item:hover {
+     background-color: rgba(var(--primary-color-rgb), 0.1);
+}
+
+.dropdown-item i {
+     text-align: center;
+     width: 20px;
+}
+
+/* ==============================================
+    11. MEDIA QUERIES
+============================================== */
+@media (min-width: 768px) {
+     .footer-nav.justify-content-md-end .footer-nav-link,
+     .footer-nav.justify-content-md-end {
+          justify-content: flex-end;
+     }
+     
+     .footer-nav.justify-content-md-start .footer-nav-link,
+     .footer-nav.justify-content-md-start {
+          justify-content: flex-start;
+     }
+}
+
+@media (max-width: 767.98px) {
+     .footer-links a {
+          padding: 0.4rem 0;
+     }
+     
+     .footer-nav {
+          justify-content: center;
+     }
+     
+     .social-links {
+          margin-bottom: 1.5rem;
+     }
+     
+     .app-downloads {
+          margin-top: 1rem;
+     }
+     
+     .footer-nav-horizontal {
+          gap: 0.2rem;
+     }
+     
+     .footer-nav-horizontal .footer-nav-link {
+          padding: 4px 8px;
+     }
 }

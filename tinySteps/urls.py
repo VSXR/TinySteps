@@ -8,7 +8,7 @@ from tinySteps.views.guides import guide_views, submission_views
 from tinySteps.factories import (
     GuideUrl_Factory, CommentUrl_Factory, AuthUrl_Factory, 
     ChildUrl_Factory, ForumUrl_Factory, AdminUrl_Factory,
-    ContactUrl_Factory, NutritionUrl_Factory
+    ContactUrl_Factory, NutritionUrl_Factory, PagesUrl_Factory
 )
 
 # Main URL patterns
@@ -39,8 +39,11 @@ urlpatterns = [
     *NutritionUrl_Factory.create_urls(),
     
     # Comment routes
-    path('comments/', include((CommentUrl_Factory.create_urls(), 'comments'))),  
-      
+    path('comments/', include((CommentUrl_Factory.create_urls(), 'comments'))),
+    
+    # Pages and policies routes - add prefix here
+    path('pages/', include((PagesUrl_Factory.create_urls(), 'pages'))),
+    
     # Admin routes
     *AdminUrl_Factory.create_urls(),
     

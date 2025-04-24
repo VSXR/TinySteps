@@ -1,0 +1,134 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% trans "Privacy Policy - Tiny Steps" %}{% endblock %}
+
+{% block main_contents %}
+<main id="main-content">
+    <div class="container my-5">
+        <!-- Page Header -->
+        <div class="row mb-5">
+            <div class="col-12 text-center">
+                <h1 class="display-5 fw-bold mb-3">{% trans "Privacy Policy" %}</h1>
+                <p class="lead text-muted">{% trans "Last updated: May 1, 2025" %}</p>
+                <hr class="my-4 w-50 mx-auto opacity-25">
+            </div>
+        </div>
+        
+        <!-- Content Section -->
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="card shadow-sm border-0 rounded-4 mb-5">
+                    <div class="card-body p-4 p-md-5">
+                        <div class="policy-content">
+                            <!-- Introduction Section -->
+                            <section id="introduction" class="mb-5">
+                                <h2 class="h4 mb-4">{% trans "1. Introduction" %}</h2>
+                                <p>{% trans "At Tiny Steps, we take your privacy seriously. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our website and mobile application." %}</p>
+                                <p>{% trans "Please read this privacy policy carefully. If you do not agree with the terms of this privacy policy, please do not access the application." %}</p>
+                                
+                                <div class="policy-image text-center my-4">
+                                    <img src="{% static 'res/img/others/privacy-illustration.jpg' %}" alt="{% trans 'Privacy illustration' %}" class="img-fluid rounded-4 shadow-sm" style="max-height: 250px;">
+                                </div>
+                            </section>
+                            
+                            <!-- Information Collection Section -->
+                            <section id="information" class="mb-5">
+                                <h2 class="h4 mb-4">{% trans "2. Information Collection" %}</h2>
+                                <p>{% trans "We may collect information about you in a variety of ways. The information we may collect via the Application includes:" %}</p>
+                                
+                                <h3 class="h5 mt-4 mb-3">{% trans "2.1 Personal Data" %}</h3>
+                                <p>{% trans "Personally identifiable information, such as your name, shipping address, email address, and telephone number, and demographic information, such as your age, gender, hometown, and interests, that you voluntarily give to us when you register with the Application or when you choose to participate in various activities related to the Application." %}</p>
+                                
+                                <h3 class="h5 mt-4 mb-3">{% trans "2.2 Derivative Data" %}</h3>
+                                <p>{% trans "Information our servers automatically collect when you access the Application, such as your native actions that are integral to the Application, including liking, re-blogging, or replying to a post, as well as other interactions with the Application and other users via server log files." %}</p>
+                            </section>
+
+                            <!-- Information Usage Section -->
+                            <section id="usage" class="mb-5">
+                                <h2 class="h4 mb-4">{% trans "3. Information Usage" %}</h2>
+                                <p>{% trans "Having accurate information about you permits us to provide you with a smooth, efficient, and customized experience. Specifically, we may use information collected about you via the Application to:" %}</p>
+                                <ul class="list-group list-group-flush mb-3">
+                                    <li class="list-group-item">{% trans "Create and manage your account." %}</li>
+                                    <li class="list-group-item">{% trans "Deliver targeted advertising, newsletters, and other information regarding promotions and the Application to you." %}</li>
+                                    <li class="list-group-item">{% trans "Email you regarding your account or activity." %}</li>
+                                    <li class="list-group-item">{% trans "Enable user-to-user communications." %}</li>
+                                    <li class="list-group-item">{% trans "Fulfill and manage your orders for services available through the Application." %}</li>
+                                </ul>
+                            </section>
+
+                            <!-- Information Storage Section -->
+                            <section id="storage" class="mb-5">
+                                <h2 class="h4 mb-4">{% trans "4. Information Storage" %}</h2>
+                                <p>{% trans "We use data storage and security technologies to secure your personal information. Despite our efforts, however, systems and transmission over the Internet cannot be guaranteed to be 100% secure." %}</p>
+                                <p>{% trans "We will retain your information for as long as your account is active or as needed to provide you services. If you wish to cancel your account or request that we no longer use your information, contact us at the email provided in the Contact section." %}</p>
+                            </section>
+
+                            <!-- Information Sharing Section -->
+                            <section id="sharing" class="mb-5">
+                                <h2 class="h4 mb-4">{% trans "5. Information Sharing" %}</h2>
+                                <p>{% trans "We may share information we have collected about you in certain situations. Your information may be disclosed as follows:" %}</p>
+                                <h3 class="h5 mt-4 mb-3">{% trans "5.1 By Law or to Protect Rights" %}</h3>
+                                <p>{% trans "If we believe the release of information about you is necessary to respond to legal process, to investigate or remedy potential violations of our policies, or to protect the rights, property, and safety of others, we may share your information as permitted or required by any applicable law, rule, or regulation." %}</p>
+                                <h3 class="h5 mt-4 mb-3">{% trans "5.2 Third-Party Service Providers" %}</h3>
+                                <p>{% trans "We may share your information with third parties that perform services for us or on our behalf, including payment processing, data analysis, email delivery, hosting services, customer service, and marketing assistance." %}</p>
+                            </section>
+
+                            <!-- Cookies Section -->
+                            <section id="cookies" class="mb-5">
+                                <h2 class="h4 mb-4">{% trans "6. Cookies" %}</h2>
+                                <p>{% trans "We may use cookies, web beacons, tracking pixels, and other tracking technologies on the Application to help customize the Application and improve your experience. When you access the Application, your personal information is not collected through the use of tracking technology." %}</p>
+                                <p>{% trans "You can choose to have your computer warn you each time a cookie is being sent, or you can choose to turn off all cookies. You do this through your browser settings. If you turn cookies off, some features that make your site experience more efficient may not function properly." %}</p>
+                            </section>
+
+                            <!-- Children's Privacy Section -->
+                            <section id="children" class="mb-5">
+                                <h2 class="h4 mb-4">{% trans "7. Children's Privacy" %}</h2>
+                                <p>{% trans "The Application is not directed to anyone under the age of 13. We do not knowingly collect or solicit information from anyone under the age of 13. If we learn that we have collected personal information from a child under age 13, we will delete that information as quickly as possible." %}</p>
+                            </section>
+
+                            <!-- Your Rights Section -->
+                            <section id="rights" class="mb-5">
+                                <h2 class="h4 mb-4">{% trans "8. Your Rights" %}</h2>
+                                <p>{% trans "You have the right to request access to the personal information we collect from you, change that information, or delete it. To request to review, update, or delete your personal information, please submit a request to the contact information provided below." %}</p>
+                            </section>
+
+                            <!-- Changes Section -->
+                            <section id="changes" class="mb-5">
+                                <h2 class="h4 mb-4">{% trans "9. Changes" %}</h2>
+                                <p>{% trans "We may update this Privacy Policy from time to time in our discretion. We will notify you of any material changes to the way we treat personal information by sending a notice to the primary email address specified in your account, by placing a prominent notice on our site, and/or by updating the privacy policy date at the top of this page." %}</p>
+                                <p>{% trans "Your continued use of the Application following the posting of changes to this policy will be deemed your acceptance of those changes." %}</p>
+                            </section>
+        
+                            <!-- Contact Section -->
+                            <section id="contact" class="mb-4">
+                                <h2 class="h4 mb-4">{% trans "10. Contact Us" %}</h2>
+                                <p>{% trans "If you have questions or comments about this Privacy Policy, please contact us at:" %}</p>
+                                <div class="d-flex align-items-center mb-3">
+                                    <i class="fa-solid fa-envelope text-primary me-3 fs-5"></i>
+                                    <span>privacy@tinysteps.com</span>
+                                </div>
+                                <div class="d-flex align-items-center">
+                                    <i class="fa-solid fa-phone text-primary me-3 fs-5"></i>
+                                    <span>+1 (555) 123-4567</span>
+                                </div>
+                            </section>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Print & Download Actions -->
+                <div class="d-flex justify-content-center gap-3 mb-5">
+                    <button class="btn btn-outline-primary" onclick="window.print()">
+                        <i class="fa-solid fa-print me-2"></i>{% trans "Print" %}
+                    </button>
+                    <a href="#" class="btn btn-outline-primary">
+                        <i class="fa-solid fa-file-pdf me-2"></i>{% trans "Download PDF" %}
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock main_contents %}

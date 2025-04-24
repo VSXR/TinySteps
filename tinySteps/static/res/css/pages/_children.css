@@ -1,151 +1,165 @@
-/* Children section styles */
+/* ==========================================================================
+    Children Section Styles
+    ========================================================================== */
 
+/* --------------------------------
+    Card Components
+    -------------------------------- */
 /* Child Cards */
 .child-card {
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    border-radius: 0.75rem;
-    overflow: hidden;
+     transition: transform 0.3s ease, box-shadow 0.3s ease;
+     border-radius: 0.75rem;
+     overflow: hidden;
 }
 
 .child-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+     transform: translateY(-5px);
+     box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
 }
 
-/* CHILD HOVER CARDS ANIMATION */
+/* Element Elevation (Reusable hover effect) */
 .element-elevation {
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
+
 .element-elevation:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+     transform: translateY(-5px);
+     box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
 }
 
-/* Child Profile */
-.child-profile-image {
-    width: 170px;
-    height: 170px;
-    object-fit: cover;
-    border-radius: 50%;
-    border: 4px solid #fff;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-}
-
-.child-gender-badge {
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    transform: translate(25%, 25%);
-    padding: 0.5rem;
-    border: 2px solid #fff;
-}
-
-/* Child Milestone Cards */
+/* Milestone Cards */
 .milestone-card {
-    transition: all 0.2s ease;
-    border-radius: 0.5rem;
+     transition: all 0.2s ease;
+     border-radius: 0.5rem;
 }
 
 .milestone-card:hover {
-    background-color: rgba(0, 0, 0, 0.02);
+     background-color: rgba(0, 0, 0, 0.02);
 }
 
 .milestone-date {
-    font-size: 0.85rem;
-    color: #6c757d;
+     font-size: 0.85rem;
+     color: #6c757d;
+}
+
+/* Empty State */
+.child-empty-state {
+     padding: 3rem 2rem;
+     text-align: center;
+     background-color: rgba(0, 0, 0, 0.02);
+     border-radius: 1rem;
+}
+
+.child-empty-state i {
+     font-size: 3rem;
+     opacity: 0.5;
+     margin-bottom: 1rem;
+}
+
+/* --------------------------------
+    Child Profile Elements
+    -------------------------------- */
+.child-profile-image {
+     width: 170px;
+     height: 170px;
+     object-fit: cover;
+     border-radius: 50%;
+     border: 4px solid #fff;
+     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.child-gender-badge {
+     position: absolute;
+     bottom: 0;
+     right: 0;
+     transform: translate(25%, 25%);
+     padding: 0.5rem;
+     border: 2px solid #fff;
 }
 
 /* Child Stats */
 .child-stat {
-    transition: transform 0.2s;
-    border-radius: 0.5rem;
+     transition: transform 0.2s;
+     border-radius: 0.5rem;
 }
 
 .child-stat:hover {
-    transform: translateY(-3px);
+     transform: translateY(-3px);
 }
 
 /* Child Action Buttons */
 .child-action-btn {
-    transition: all 0.2s ease;
+     transition: all 0.2s ease;
 }
 
 .child-action-btn:hover {
-    transform: translateY(-2px);
+     transform: translateY(-2px);
 }
 
-/* Child Empty State */
-.child-empty-state {
-    padding: 3rem 2rem;
-    text-align: center;
-    background-color: rgba(0, 0, 0, 0.02);
-    border-radius: 1rem;
-}
-
-.child-empty-state i {
-    font-size: 3rem;
-    opacity: 0.5;
-    margin-bottom: 1rem;
-}
-
-/* Milestones Styles */
+/* --------------------------------
+    Timeline & Milestones
+    -------------------------------- */
 .milestone-timeline {
-    position: relative;
-    padding: 10px 0;
+     position: relative;
+     padding: 10px 0;
 }
 
 .timeline-container {
-    position: relative;
+     position: relative;
 }
 
 .timeline-container::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 15px;
-    width: 2px;
-    background-color: #e0e0e0;
+     content: '';
+     position: absolute;
+     top: 0;
+     bottom: 0;
+     left: 15px;
+     width: 2px;
+     background-color: #e0e0e0;
 }
 
 .timeline-item {
-    position: relative;
-    padding-left: 40px;
-    margin-bottom: 20px;
+     position: relative;
+     padding-left: 40px;
+     margin-bottom: 20px;
 }
 
 .timeline-marker {
-    position: absolute;
-    left: 7px;
-    width: 16px;
-    height: 16px;
-    border-radius: 50%;
-    top: 15px;
-    border: 2px solid #fff;
-    box-shadow: 0 0 0 3px rgba(0,0,0,0.1);
+     position: absolute;
+     left: 7px;
+     width: 16px;
+     height: 16px;
+     border-radius: 50%;
+     top: 15px;
+     border: 2px solid #fff;
+     box-shadow: 0 0 0 3px rgba(0,0,0,0.1);
 }
 
 .timeline-marker.bg-success {
-    background-color: #28a745;
+     background-color: #28a745;
 }
 
 .timeline-marker.bg-warning {
-    background-color: #ffc107;
+     background-color: #ffc107;
 }
 
 .timeline-content {
-    padding-bottom: 10px;
+     padding-bottom: 10px;
 }
 
-/* Mobile optimization */
+/* --------------------------------
+    Media Queries
+    -------------------------------- */
 @media (max-width: 767.98px) {
-    .timeline-item {
-        padding-left: 30px;
-    }
-    .timeline-container::before {
-        left: 10px;
-    }
-    .timeline-marker {
-        left: 2px;
-    }
+     .timeline-item {
+          padding-left: 30px;
+     }
+     
+     .timeline-container::before {
+          left: 10px;
+     }
+     
+     .timeline-marker {
+          left: 2px;
+     }
 }

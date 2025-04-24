@@ -1,0 +1,126 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% trans "Terms and Conditions - Tiny Steps" %}{% endblock %}
+
+{% block main_contents %}
+<main id="main-content">
+    <div class="container my-5">
+        <!-- Page Header -->
+        <div class="row mb-5">
+            <div class="col-12 text-center">
+                <h1 class="display-5 fw-bold mb-3">{% trans "Terms and Conditions" %}</h1>
+                <p class="lead text-muted">{% trans "Last updated: May 1, 2025" %}</p>
+                <hr class="my-4 w-50 mx-auto opacity-25">
+            </div>
+        </div>
+        
+        <!-- Content Section -->
+        <div class="row">
+            <!-- Sidebar Navigation -->
+            <div class="col-lg-3 mb-4 mb-lg-0">
+                {% include "pages/policies/components/policy_sidebar.html" with links=policy_links enable_scroll=True show_help=True %}
+            </div>
+
+            
+            <div class="col-lg-9">
+                <div class="card shadow-sm border-0 rounded-4 mb-5">
+                    <div class="card-body p-4 p-md-5">
+                        <div class="policy-content">
+                            <!-- Introduction Section -->
+                            <section id="introduction" class="mb-5">
+                                <h2 class="h4 mb-4">{% trans "1. Introduction" %}</h2>
+                                <p>{% trans "Welcome to Tiny Steps. These Terms and Conditions govern your use of our website and mobile application." %}</p>
+                                <p>{% trans "By accessing or using Tiny Steps, you agree to be bound by these Terms. If you disagree with any part of the terms, you may not access the service." %}</p>
+                                
+                                <div class="policy-image text-center my-4">
+                                    <img src="{% static 'res/img/others/policy-illustration.jpg' %}" alt="{% trans 'Policy illustration' %}" class="img-fluid rounded-4 shadow-sm" style="max-height: 250px;">
+                                </div>
+                            </section>
+                            
+                            <!-- Your Account Section -->
+                            <section id="account" class="mb-5">
+                                <h2 class="h4 mb-4">{% trans "2. Your Account" %}</h2>
+                                <p>{% trans "When you create an account with us, you must provide information that is accurate, complete, and current at all times. Failure to do so constitutes a breach of the Terms, which may result in immediate termination of your account." %}</p>
+                                <p>{% trans "You are responsible for safeguarding the password that you use to access the service and for any activities or actions under your password. You agree not to disclose your password to any third party." %}</p>
+                            </section>
+                            
+                            <!-- Additional sections continue in the same pattern -->
+                            <section id="content" class="mb-5">
+                                <h2 class="h4 mb-4">{% trans "3. User Content" %}</h2>
+                                <p>{% trans "Our service allows you to post, link, store, share and otherwise make available certain information, text, graphics, videos, or other material. By providing User Content, you grant us the right to use, modify, publicly perform, publicly display, reproduce, and distribute such content on and through the service." %}</p>
+                            </section>
+                            
+                            <section id="privacy" class="mb-5">
+                                <h2 class="h4 mb-4">{% trans "4. Privacy" %}</h2>
+                                <p>{% trans "Your privacy is important to us. It is our policy to respect your privacy regarding any information we may collect from you across our website and mobile application." %}</p>
+                                <p>{% trans "We only ask for personal information when we truly need it to provide a service to you. We collect it by fair and lawful means, with your knowledge and consent." %}</p>
+                            </section>
+                            
+                            <!-- Intellectual Property Section -->
+                            <section id="intellectual" class="mb-5">
+                                <h2 class="h4 mb-4">{% trans "5. Intellectual Property" %}</h2>
+                                <p>{% trans "The service and its original content, features, and functionality are and will remain the exclusive property of Tiny Steps and its licensors. The service is protected by copyright, trademark, and other laws." %}</p>
+                                <p>{% trans "Our trademarks and trade dress may not be used in connection with any product or service without the prior written consent of Tiny Steps." %}</p>
+                            </section>
+
+                            <!-- Termination Section -->
+                            <section id="termination" class="mb-5">
+                                <h2 class="h4 mb-4">{% trans "6. Termination" %}</h2>
+                                <p>{% trans "We may terminate or suspend your account immediately, without prior notice or liability, for any reason whatsoever, including without limitation if you breach the Terms." %}</p>
+                                <p>{% trans "Upon termination, your right to use the service will immediately cease. If you wish to terminate your account, you may simply discontinue using the service or delete your account through the app settings." %}</p>
+                            </section>
+
+                            <!-- Disclaimer Section -->
+                            <section id="disclaimer" class="mb-5">
+                                <h2 class="h4 mb-4">{% trans "7. Disclaimer" %}</h2>
+                                <p>{% trans "Your use of the service is at your sole risk. The service is provided on an 'AS IS' and 'AS AVAILABLE' basis. The service is provided without warranties of any kind, whether express or implied." %}</p>
+                                <p>{% trans "Tiny Steps does not warrant that the service will be uninterrupted, timely, secure, or error-free, or that any defects will be corrected." %}</p>
+                            </section>
+
+                            <!-- Limitation of Liability Section -->
+                            <section id="liability" class="mb-5">
+                                <h2 class="h4 mb-4">{% trans "8. Limitation of Liability" %}</h2>
+                                <p>{% trans "In no event shall Tiny Steps, nor its directors, employees, partners, agents, suppliers, or affiliates, be liable for any indirect, incidental, special, consequential or punitive damages, including without limitation, loss of profits, data, use, goodwill, or other intangible losses." %}</p>
+                                <p>{% trans "Tiny Steps shall not be liable for any damage, loss, or injury resulting from hacking, tampering, or unauthorized access or use of the service or your account." %}</p>
+                            </section>
+
+                            <!-- Changes Section -->
+                            <section id="changes" class="mb-5">
+                                <h2 class="h4 mb-4">{% trans "9. Changes" %}</h2>
+                                <p>{% trans "We reserve the right, at our sole discretion, to modify or replace these Terms at any time. If a revision is material we will try to provide at least 30 days' notice prior to any new terms taking effect." %}</p>
+                                <p>{% trans "By continuing to access or use our service after those revisions become effective, you agree to be bound by the revised terms. If you do not agree to the new terms, please stop using the service." %}</p>
+                            </section>
+                            
+                            <!-- Contact Section -->
+                            <section id="contact" class="mb-4">
+                                <h2 class="h4 mb-4">{% trans "10. Contact Us" %}</h2>
+                                <p>{% trans "If you have any questions about these Terms, please contact us at:" %}</p>
+                                <div class="d-flex align-items-center mb-3">
+                                    <i class="fa-solid fa-envelope text-primary me-3 fs-5"></i>
+                                    <span>legal@tinysteps.com</span>
+                                </div>
+                                <div class="d-flex align-items-center">
+                                    <i class="fa-solid fa-phone text-primary me-3 fs-5"></i>
+                                    <span>+1 (555) 123-4567</span>
+                                </div>
+                            </section>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Print & Download Actions -->
+                <div class="d-flex justify-content-center gap-3 mb-5">
+                    <button class="btn btn-outline-primary" onclick="window.print()">
+                        <i class="fa-solid fa-print me-2"></i>{% trans "Print" %}
+                    </button>
+                    <a href="#" class="btn btn-outline-primary">
+                        <i class="fa-solid fa-file-pdf me-2"></i>{% trans "Download PDF" %}
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock main_contents %}

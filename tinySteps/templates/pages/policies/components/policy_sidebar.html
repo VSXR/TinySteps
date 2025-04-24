@@ -1,0 +1,69 @@
+{% load i18n %}
+
+<div class="sticky-top pt-3" style="top: 2rem;">
+    <div class="card shadow-sm border-0 rounded-4 {% if card_class %}{{ card_class }}{% else %}mb-3{% endif %}">
+        <div class="card-header bg-light bg-opacity-75 border-0">
+            <h5 class="mb-0">{% if title %}{{ title }}{% else %}{% trans "Table of Contents" %}{% endif %}</h5>
+        </div>
+        <div class="list-group policy-nav {% if flush %}list-group-flush{% endif %}">
+            {% for link in links %}
+                <a href="#{{ link.id }}" class="list-group-item list-group-item-action">
+                    {% if link.number %}{{ link.number }}. {% endif %}{{ link.title }}
+                </a>
+            {% endfor %}
+        </div>
+    </div>
+    
+    {% if show_help %}
+    <div class="d-none d-lg-block text-center">
+        <div class="alert alert-info rounded-4 shadow-sm">
+            <i class="fa-solid fa-circle-info me-2"></i>
+            {% trans "Scroll to navigate through sections" %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+{% if enable_scroll %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const sections = document.querySelectorAll('.policy-content section');
+        const navItems = document.querySelectorAll('.policy-nav a');
+        
+        function highlightNavItem() {
+            let scrollPosition = window.scrollY + 150;
+            
+            sections.forEach((section, index) => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.offsetHeight;
+                
+                if (scrollPosition >= sectionTop && 
+                    scrollPosition < sectionTop + sectionHeight) {
+                    navItems.forEach(item => {
+                        item.classList.remove('active', 'bg-light');
+                    });
+                    navItems[index].classList.add('active', 'bg-light');
+                }
+            });
+        }
+        
+        // Smooth scrolling for anchor links
+        navItems.forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                
+                window.scrollTo({
+                    top: targetElement.offsetTop - 100,
+                    behavior: 'smooth'
+                });
+            });
+        });
+        
+        window.addEventListener('scroll', highlightNavItem);
+        highlightNavItem(); // Call once to set initial state
+    });
+</script>
+{% endif %}

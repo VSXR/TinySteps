@@ -1,5 +1,4 @@
-/* Container styles */
-
+/* ===== LAYOUT CONTAINERS ===== */
 main {
     flex: 1 0 auto;
     margin-bottom: var(--space-sm);
@@ -24,6 +23,7 @@ aside {
     text-align: center;
 }
 
+/* ===== CONTENT SECTIONS ===== */
 .specific-paragraphs {
     background-color: var(--bg-light);
     border: 1px solid var(--border-light);
@@ -41,17 +41,17 @@ aside {
     margin-top: var(--space-xl);
 }
 
+.hero-section {
+    background: white;
+    border-bottom: none;
+    padding: 3rem 0;
+}
+
 .hero-content {
     padding: 4rem 0;
 }
 
-.hero-section {
-    background: white;
-    padding: 3rem 0;
-    border-bottom: none;
-}
-
-/* Loading indicator styles */
+/* ===== LOADING OVERLAY ===== */
 .loading-overlay {
     align-items: center;
     background-color: rgba(255, 255, 255, 0.8);

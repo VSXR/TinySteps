@@ -39,6 +39,9 @@ from .admin.admin_views import review_guides, approve_guide, reject_guide, admin
 # Contact Views
 from .contact.contact_views import Contact_View
 
+# Policies Views
+from .pages.pages_views import terms_view, privacy_view, cookies_view, accessibility_view, help_center_view
+
 __all__ = [
     # Home views
     'index', 'about', 'page_not_found',
@@ -73,5 +76,8 @@ __all__ = [
     
     # Error views
     'custom_error_400', 'custom_error_403', 'custom_error_404',
-    'custom_error_500', 'database_error_view'
+    'custom_error_500', 'database_error_view',
+
+    # Policies views
+    'terms_view', 'privacy_view', 'cookies_view', 'accessibility_view', 'help_center_view',
 ]

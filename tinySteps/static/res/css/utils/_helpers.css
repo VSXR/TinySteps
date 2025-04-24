@@ -1,11 +1,11 @@
 /* Helper classes */
 
-/* Utility classes */
+/* Margin utilities */
+.mt-auto {
+    margin-top: auto;
+}
+
 .my-3 {
     margin-bottom: var(--space-md);
     margin-top: var(--space-md);
-}
-
-.mt-auto {
-    margin-top: auto;
 }

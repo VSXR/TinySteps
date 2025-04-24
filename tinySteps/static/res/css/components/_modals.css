@@ -1,23 +1,24 @@
 /* Modal styles */
 
-/* Vaccine form */
+/* Form containers */
+.event-form-container {
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    padding: 20px;
+}
+
 .vaccine-form-container {
     position: sticky;
     top: 20px;
 }
 
-.event-form-container {
-    background-color: white;
-    border-radius: 10px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-    margin-bottom: 20px;
-}
-
+/* Form elements */
 #form-title {
-    margin-bottom: 20px;
-    font-size: 1.5rem;
     color: #333;
+    font-size: 1.5rem;
+    margin-bottom: 20px;
 }
 
 .form-buttons {

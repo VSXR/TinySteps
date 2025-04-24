@@ -1,0 +1,195 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% trans "Accessibility Statement - Tiny Steps" %}{% endblock %}
+
+{% block main_contents %}
+<main id="main-content">
+    <div class="container my-5">
+        <!-- Page Header -->
+        <div class="row mb-5">
+            <div class="col-12 text-center">
+            <h1 class="display-5 fw-bold mb-3">{% trans "Accessibility Statement" %}</h1>
+            <p class="lead text-muted">{% trans "Last updated: May 1, 2025" %}</p>
+            <hr class="my-4 w-50 mx-auto opacity-25">
+            </div>
+        </div>
+        
+        <!-- Content Section -->
+        <div class="row justify-content-center">
+            <div class="col-lg-3 mb-4 mb-lg-0">
+                <!-- Policy Navigation Sidebar -->
+                {% include "pages/policies/components/policy_sidebar.html" with links=policy_links enable_scroll=True show_help=True %}
+            </div>
+            <div class="col-lg-9">
+            <div class="card shadow-sm border-0 rounded-4 mb-5">
+                <div class="card-body p-4 p-md-5">
+                <div class="policy-content">
+                    <!-- Introduction Section -->
+                    <section id="our-commitment" class="mb-5">
+                    <h2 class="h4 mb-4">{% trans "Our Commitment to Accessibility" %}</h2>
+                    <p>{% trans "Tiny Steps is committed to ensuring digital accessibility for people with disabilities. We are continually improving the user experience for everyone, and applying the relevant accessibility standards." %}</p>
+                    
+                    <div class="policy-image text-center my-4">
+                        <img src="{% static 'res/img/others/accessibility-illustration.jpg' %}" alt="{% trans 'Accessibility illustration' %}" class="img-fluid rounded-4 shadow-sm" style="max-height: 250px;">
+                    </div>
+                    </section>
+                    
+                    <!-- Conformance Status -->
+                    <section id="conformance-status" class="mb-5">
+                    <h2 class="h4 mb-4">{% trans "Conformance Status" %}</h2>
+                    <p>{% trans "The Web Content Accessibility Guidelines (WCAG) defines requirements for designers and developers to improve accessibility for people with disabilities. It defines three levels of conformance: Level A, Level AA, and Level AAA." %}</p>
+                    <p>{% trans "Tiny Steps is partially conformant with WCAG 2.1 level AA. Partially conformant means that some parts of the content do not fully conform to the accessibility standard." %}</p>
+                    
+                    <div class="alert alert-primary mt-4 d-flex align-items-center" role="alert">
+                        <i class="fa-solid fa-info-circle fs-4 me-3"></i>
+                        <div>
+                        {% trans "We are constantly working to improve our accessibility standards and aim to achieve full WCAG 2.1 Level AA compliance in the near future." %}
+                        </div>
+                    </div>
+                    </section>
+                    
+                    <!-- Accessibility Features -->
+                    <section id="accessibility-features" class="mb-5">
+                    <h2 class="h4 mb-4">{% trans "Accessibility Features" %}</h2>
+                    <p>{% trans "Tiny Steps includes the following accessibility features:" %}</p>
+                    
+                    <div class="row g-4 mt-2">
+                        <div class="col-md-6">
+                        <div class="card h-100 border-0 bg-light">
+                            <div class="card-body">
+                            <h3 class="h5 mb-3">
+                                <i class="fa-solid fa-keyboard text-primary me-2"></i>
+                                {% trans "Keyboard Navigation" %}
+                            </h3>
+                            <p class="mb-0">{% trans "All functions are accessible using a keyboard. We use logical tab orders and visible focus indicators." %}</p>
+                            </div>
+                        </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                        <div class="card h-100 border-0 bg-light">
+                            <div class="card-body">
+                            <h3 class="h5 mb-3">
+                                <i class="fa-solid fa-text-height text-primary me-2"></i>
+                                {% trans "Text Resizing" %}
+                            </h3>
+                            <p class="mb-0">{% trans "All text can be resized up to 200% without loss of content or functionality." %}</p>
+                            </div>
+                        </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                        <div class="card h-100 border-0 bg-light">
+                            <div class="card-body">
+                            <h3 class="h5 mb-3">
+                                <i class="fa-solid fa-universal-access text-primary me-2"></i>
+                                {% trans "ARIA Landmarks" %}
+                            </h3>
+                            <p class="mb-0">{% trans "We use ARIA landmarks throughout our interface to clearly identify regions of the page." %}</p>
+                            </div>
+                        </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                        <div class="card h-100 border-0 bg-light">
+                            <div class="card-body">
+                            <h3 class="h5 mb-3">
+                                <i class="fa-solid fa-closed-captioning text-primary me-2"></i>
+                                {% trans "Alternative Text" %}
+                            </h3>
+                            <p class="mb-0">{% trans "All images have appropriate alternative text, and videos include captions." %}</p>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+                    </section>
+                    
+                    <!-- Feedback -->
+                    <section id="feedback" class="mb-5">
+                    <h2 class="h4 mb-4">{% trans "Feedback" %}</h2>
+                    <p>{% trans "We welcome your feedback on the accessibility of Tiny Steps. Please let us know if you encounter accessibility barriers:" %}</p>
+                    
+                    <div class="d-flex align-items-center mb-3">
+                        <i class="fa-solid fa-envelope text-primary me-3 fs-5"></i>
+                        <span>accessibility@tinysteps.com</span>
+                    </div>
+                    <div class="d-flex align-items-center mb-3">
+                        <i class="fa-solid fa-phone text-primary me-3 fs-5"></i>
+                        <span>+1 (555) 123-4567</span>
+                    </div>
+                    
+                    <p class="mt-4">{% trans "We try to respond to feedback within 2 business days." %}</p>
+                    </section>
+                </div>
+                </div>
+            </div>
+            
+            <!-- Accessibility Tools -->
+            <div class="card shadow-sm border-0 rounded-4 mb-5">
+                <div class="card-header bg-light p-4 border-0 rounded-top-4">
+                <h2 class="h4 mb-0">{% trans "Accessibility Tools" %}</h2>
+                </div>
+                <div class="card-body p-4">
+                <div class="mb-4">
+                    <p>{% trans "You can use these tools to adjust the website to your needs:" %}</p>
+                </div>
+                
+                <div class="accessibility-controls mb-4">
+                    <div class="row g-3">
+                    <!-- Text Size Controls -->
+                                <div class="col-sm-4">
+                                    <div class="card h-100 border-0 bg-light">
+                                        <div class="card-body">
+                                            <h3 class="h6 mb-3">{% trans "Text Size" %}</h3>
+                                            <div class="btn-group w-100" role="group" aria-label="{% trans 'Text size controls' %}">
+                                                <button type="button" class="btn btn-outline-primary btn-sm">A-</button>
+                                                <button type="button" class="btn btn-outline-primary btn-sm">A</button>
+                                                <button type="button" class="btn btn-outline-primary btn-sm">A+</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Contrast Controls -->
+                                <div class="col-sm-4">
+                                    <div class="card h-100 border-0 bg-light">
+                                        <div class="card-body">
+                                            <h3 class="h6 mb-3">{% trans "Contrast" %}</h3>
+                                            <div class="btn-group w-100" role="group" aria-label="{% trans 'Contrast controls' %}">
+                                                <button type="button" class="btn btn-outline-primary btn-sm">
+                                                    <i class="fa-solid fa-circle-half-stroke"></i>
+                                                </button>
+                                                <button type="button" class="btn btn-outline-primary btn-sm">
+                                                    <i class="fa-solid fa-moon"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Line Spacing Controls -->
+                                <div class="col-sm-4">
+                                    <div class="card h-100 border-0 bg-light">
+                                        <div class="card-body">
+                                            <h3 class="h6 mb-3">{% trans "Line Spacing" %}</h3>
+                                            <div class="btn-group w-100" role="group" aria-label="{% trans 'Line spacing controls' %}">
+                                                <button type="button" class="btn btn-outline-primary btn-sm">1x</button>
+                                                <button type="button" class="btn btn-outline-primary btn-sm">1.5x</button>
+                                                <button type="button" class="btn btn-outline-primary btn-sm">2x</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <p class="small text-muted mt-4 mb-0">{% trans "These settings will be saved for your next visit." %}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock main_contents %}

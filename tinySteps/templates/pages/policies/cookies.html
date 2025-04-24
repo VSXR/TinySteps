@@ -1,0 +1,164 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% trans "Cookie Policy - Tiny Steps" %}{% endblock %}
+
+{% block main_contents %}
+<main id="main-content">
+    <div class="container my-5">
+        <!-- Page Header -->
+        <div class="row mb-5">
+            <div class="col-12 text-center">
+                <h1 class="display-5 fw-bold mb-3">{% trans "Cookie Policy" %}</h1>
+                <p class="lead text-muted">{% trans "Last updated: May 1, 2025" %}</p>
+                <hr class="my-4 w-50 mx-auto opacity-25">
+            </div>
+        </div>
+        
+        <!-- Content Section -->
+        <div class="row">
+            <div class="col-lg-3 mb-4 mb-lg-0">
+                <!-- Policy Navigation Sidebar -->
+                {% include "pages/policies/components/policy_sidebar.html" with links=policy_links enable_scroll=True show_help=True %}
+            </div>
+            
+            <div class="col-lg-9">
+                <div class="card shadow-sm border-0 rounded-4 mb-5">
+                    <div class="card-body p-4 p-md-5">
+                        <div class="policy-content">
+                            <!-- Introduction Section -->
+                            <section id="introduction" class="mb-5">
+                                <h2 class="h4 mb-4">{% trans "1. Introduction" %}</h2>
+                                <p>{% trans "This Cookie Policy explains how Tiny Steps uses cookies and similar technologies to recognize you when you visit our website and mobile application. It explains what these technologies are and why we use them, as well as your rights to control our use of them." %}</p>
+                                
+                                <div class="policy-image text-center my-4">
+                                    <img src="{% static 'res/img/others/cookie-illustration.jpg' %}" alt="{% trans 'Cookie illustration' %}" class="img-fluid rounded-4 shadow-sm" style="max-height: 250px;">
+                                </div>
+                            </section>
+                            
+                            <!-- What Are Cookies Section -->
+                            <section id="what-are-cookies" class="mb-5">
+                                <h2 class="h4 mb-4">{% trans "2. What Are Cookies" %}</h2>
+                                <p>{% trans "Cookies are small data files that are placed on your computer or mobile device when you visit a website. Cookies are widely used by website owners in order to make their websites work, or to work more efficiently, as well as to provide reporting information." %}</p>
+                                <p>{% trans "Cookies set by the website owner (in this case, Tiny Steps) are called \"first party cookies\". Cookies set by parties other than the website owner are called \"third party cookies\". Third party cookies enable third party features or functionality to be provided on or through the website (e.g. like advertising, interactive content and analytics). The parties that set these third party cookies can recognize your computer both when it visits the website in question and also when it visits certain other websites." %}</p>
+                            </section>
+                            
+                            <!-- How We Use Cookies Section -->
+                            <section id="how-we-use" class="mb-5">
+                                <h2 class="h4 mb-4">{% trans "3. How We Use Cookies" %}</h2>
+                                <p>{% trans "We use cookies for several reasons. Some cookies are required for technical reasons in order for our website to operate, and we refer to these as \"essential\" or \"strictly necessary\" cookies. Other cookies also enable us to track and target the interests of our users to enhance the experience on our website." %}</p>
+                                <p>{% trans "For example, Tiny Steps uses cookies to:" %}</p>
+                                <ul>
+                                    <li>{% trans "Understand and save user preferences for future visits" %}</li>
+                                    <li>{% trans "Keep track of advertisements and what site users have visited" %}</li>
+                                    <li>{% trans "Compile aggregate data about site traffic and site interactions" %}</li>
+                                    <li>{% trans "Securely remember your login information for our services" %}</li>
+                                </ul>
+                            </section>
+
+                            <!-- Managing Cookies Section -->
+                            <section id="managing-cookies" class="mb-5">
+                                <h2 class="h4 mb-4">{% trans "4. Managing Cookies" %}</h2>
+                                <p>{% trans "You have the right to decide whether to accept or reject cookies. You can exercise your cookie rights by setting your preferences in the Cookie Consent Manager accessible on our website." %}</p>
+                                <p>{% trans "If you choose to reject cookies, you may still use our website though your access to some functionality and areas of our website may be restricted. You may also set or amend your web browser controls to accept or refuse cookies." %}</p>
+                                <p>{% trans "The specific steps to block cookies vary by browser:" %}</p>
+                                <ul>
+                                    <li>{% trans "Chrome: Settings > Privacy and Security > Cookies and other site data" %}</li>
+                                    <li>{% trans "Firefox: Options > Privacy and Security > Cookies and Site Data" %}</li>
+                                    <li>{% trans "Safari: Preferences > Privacy > Cookies and website data" %}</li>
+                                    <li>{% trans "Edge: Settings > Cookies and site permissions" %}</li>
+                                </ul>
+                            </section>
+
+                            <!-- Third Party Cookies Section -->
+                            <section id="third-party" class="mb-5">
+                                <h2 class="h4 mb-4">{% trans "5. Third Party Cookies" %}</h2>
+                                <p>{% trans "In some special cases, we also use cookies provided by trusted third parties. The following section details which third party cookies you might encounter through this site:" %}</p>
+                                <ul>
+                                    <li>{% trans "This site uses Google Analytics which is one of the most widespread and trusted analytics solutions on the web for helping us to understand how you use the site and ways that we can improve your experience." %}</li>
+                                    <li>{% trans "We also use social media buttons and/or plugins on this site that allow you to connect with your social network in various ways. For these to work, social media sites will set cookies through our site which may be used to enhance your profile on their site or contribute to the data they hold." %}</li>
+                                    <li>{% trans "We use advertising cookies to show you new advertisements based on what you have previously shown interest in." %}</li>
+                                </ul>
+                            </section>
+
+                            <!-- More Information Section -->
+                            <section id="more-info" class="mb-5">
+                                <h2 class="h4 mb-4">{% trans "6. More Information" %}</h2>
+                                <p>{% trans "We hope that this has clarified things for you, but if there is anything that you aren't sure whether you need or not, it's usually safer to leave cookies enabled in case it does interact with one of the features you use on our site." %}</p>
+                                <p>{% trans "For more general information on cookies, please visit:" %}</p>
+                                <ul>
+                                    <li><a href="https://www.allaboutcookies.org/" target="_blank" rel="noopener">{% trans "AllAboutCookies.org" %}</a></li>
+                                    <li><a href="https://www.cookiesandyou.com/" target="_blank" rel="noopener">{% trans "CookiesAndYou.com" %}</a></li>
+                                </ul>
+                                <p>{% trans "This policy is effective as of the 'Last Updated' date at the top of this page. We may update this Cookie Policy from time to time in order to reflect changes to the cookies we use or for other operational, legal or regulatory reasons." %}</p>
+                            </section>
+
+                            <!-- Contact Section -->
+                            <section id="contact" class="mb-4">
+                                <h2 class="h4 mb-4">{% trans "7. Contact Us" %}</h2>
+                                <p>{% trans "If you have any questions about our use of cookies or other technologies, please contact us at:" %}</p>
+                                <div class="d-flex align-items-center mb-3">
+                                    <i class="fa-solid fa-envelope text-primary me-3 fs-5"></i>
+                                    <span>privacy@tinysteps.com</span>
+                                </div>
+                                <div class="d-flex align-items-center">
+                                    <i class="fa-solid fa-phone text-primary me-3 fs-5"></i>
+                                    <span>+1 (555) 123-4567</span>
+                                </div>
+                            </section>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Cookie Preferences -->
+                <div class="card shadow-sm border-0 rounded-4 mb-5">
+                    <div class="card-body p-4">
+                        <h3 class="h5 mb-3">{% trans "Your Cookie Preferences" %}</h3>
+                        <p>{% trans "You can choose which categories of cookies you allow. Click on the category name for more information." %}</p>
+                        
+                        <div class="cookie-preferences mt-4">
+                            <div class="form-check form-switch mb-3">
+                                <input class="form-check-input" type="checkbox" role="switch" id="essentialCookies" checked disabled>
+                                <label class="form-check-label" for="essentialCookies">
+                                    <strong>{% trans "Essential Cookies" %}</strong>
+                                    <small class="d-block text-muted">{% trans "Required for the website to function properly. Cannot be disabled." %}</small>
+                                </label>
+                            </div>
+                            
+                            <div class="form-check form-switch mb-3">
+                                <input class="form-check-input" type="checkbox" role="switch" id="functionalCookies" checked>
+                                <label class="form-check-label" for="functionalCookies">
+                                    <strong>{% trans "Functional Cookies" %}</strong>
+                                    <small class="d-block text-muted">{% trans "Allow the website to remember choices you make (such as language or region)." %}</small>
+                                </label>
+                            </div>
+                            
+                            <div class="form-check form-switch mb-3">
+                                <input class="form-check-input" type="checkbox" role="switch" id="analyticsCookies" checked>
+                                <label class="form-check-label" for="analyticsCookies">
+                                    <strong>{% trans "Analytics Cookies" %}</strong>
+                                    <small class="d-block text-muted">{% trans "Help us understand how visitors interact with our website." %}</small>
+                                </label>
+                            </div>
+                            
+                            <div class="form-check form-switch mb-3">
+                                <input class="form-check-input" type="checkbox" role="switch" id="marketingCookies">
+                                <label class="form-check-label" for="marketingCookies">
+                                    <strong>{% trans "Marketing Cookies" %}</strong>
+                                    <small class="d-block text-muted">{% trans "Used to track visitors across websites to display relevant advertisements." %}</small>
+                                </label>
+                            </div>
+                            
+                            <div class="mt-4">
+                                <button class="btn btn-primary me-2">{% trans "Save Preferences" %}</button>
+                                <button class="btn btn-outline-secondary">{% trans "Accept All" %}</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock main_contents %}

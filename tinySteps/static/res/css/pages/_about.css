@@ -9,17 +9,17 @@
 }
 
 .imgWeb {
-    border: var(--text-dark) 3px solid;
-    border-radius: var(--radius-sm);
     display: block;
+    max-width: 25%;
     height: auto;
     margin: var(--space-lg) auto;
-    max-width: 25%;
+    border: var(--text-dark) 3px solid;
+    border-radius: var(--radius-sm);
 }
 
 .imgWeb-logo {
     display: block;
+    max-width: 25%;
     height: auto;
     margin: var(--space-lg) auto;
-    max-width: 25%;
 }

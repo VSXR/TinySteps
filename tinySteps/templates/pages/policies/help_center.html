@@ -1,0 +1,291 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% trans "Help Center - Tiny Steps" %}{% endblock %}
+
+{% block main_contents %}
+<main id="main-content">
+    <!-- Hero Section -->
+    <section class="py-5 bg-light rounded-3 mb-5">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-10 text-center">
+                    <h1 class="display-5 fw-bold mb-3">{% trans "How Can We Help You?" %}</h1>
+                    <p class="lead mb-4">{% trans "Find answers to common questions and learn how to make the most of Tiny Steps" %}</p>
+                    
+                    <!-- Search Bar -->
+                    <div class="row justify-content-center">
+                        <div class="col-md-8">
+                            <form class="mb-4">
+                                <div class="input-group">
+                                    <input type="search" class="form-control form-control-lg rounded-start" placeholder="{% trans 'Search for help articles...' %}">
+                                    <button class="btn btn-primary rounded-end px-4" type="submit">
+                                        <i class="fa-solid fa-search me-2"></i>{% trans "Search" %}
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    
+                    <!-- Popular Topics -->
+                    <div class="popular-topics">
+                        <div class="d-flex flex-wrap justify-content-center gap-2">
+                            <a href="#getting-started" class="badge bg-white text-primary rounded-pill px-3 py-2 shadow-sm">
+                                <i class="fa-solid fa-rocket me-1"></i>{% trans "Getting Started" %}
+                            </a>
+                            <a href="#account" class="badge bg-white text-primary rounded-pill px-3 py-2 shadow-sm">
+                                <i class="fa-solid fa-user me-1"></i>{% trans "Account Settings" %}
+                            </a>
+                            <a href="#children" class="badge bg-white text-primary rounded-pill px-3 py-2 shadow-sm">
+                                <i class="fa-solid fa-child me-1"></i>{% trans "Managing Children" %}
+                            </a>
+                            <a href="#milestones" class="badge bg-white text-primary rounded-pill px-3 py-2 shadow-sm">
+                                <i class="fa-solid fa-chart-line me-1"></i>{% trans "Tracking Milestones" %}
+                            </a>
+                            <a href="#forum" class="badge bg-white text-primary rounded-pill px-3 py-2 shadow-sm">
+                                <i class="fa-solid fa-comments me-1"></i>{% trans "Using the Forum" %}
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Main Content -->
+    <div class="container mb-5">
+        <div class="row g-4">
+            <!-- Sidebar Navigation -->
+            <div class="col-lg-3">
+                <nav class="help-nav sticky-top" style="top: 2rem;">
+                    <div class="card shadow-sm border-0 rounded-4 mb-4">
+                        <div class="card-body p-0">
+                            <div class="list-group list-group-flush">
+                                <a href="#getting-started" class="list-group-item list-group-item-action">
+                                    <i class="fa-solid fa-rocket me-2 text-primary"></i>{% trans "Getting Started" %}
+                                </a>
+                                <a href="#account" class="list-group-item list-group-item-action">
+                                    <i class="fa-solid fa-user me-2 text-primary"></i>{% trans "Account & Profile" %}
+                                </a>
+                                <a href="#children" class="list-group-item list-group-item-action">
+                                    <i class="fa-solid fa-child me-2 text-primary"></i>{% trans "Managing Children" %}
+                                </a>
+                                <a href="#tracking" class="list-group-item list-group-item-action">
+                                    <i class="fa-solid fa-chart-line me-2 text-primary"></i>{% trans "Tracking & Tools" %}
+                                </a>
+                                <a href="#forum" class="list-group-item list-group-item-action">
+                                    <i class="fa-solid fa-comments me-2 text-primary"></i>{% trans "Parents Forum" %}
+                                </a>
+                                <a href="#guides" class="list-group-item list-group-item-action">
+                                    <i class="fa-solid fa-book me-2 text-primary"></i>{% trans "Guides & Resources" %}
+                                </a>
+                                <a href="#app" class="list-group-item list-group-item-action">
+                                    <i class="fa-solid fa-mobile-screen me-2 text-primary"></i>{% trans "Mobile App" %}
+                                </a>
+                                <a href="#troubleshooting" class="list-group-item list-group-item-action">
+                                    <i class="fa-solid fa-screwdriver-wrench me-2 text-primary"></i>{% trans "Troubleshooting" %}
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Need More Help Card -->
+                    <div class="card shadow-sm border-0 rounded-4 bg-light">
+                        <div class="card-body p-4 text-center">
+                            <h3 class="h5 mb-3">{% trans "Need More Help?" %}</h3>
+                            <p class="mb-3 small">{% trans "Couldn't find what you're looking for?" %}</p>
+                            <a href="{% url 'contact' %}" class="btn btn-primary w-100">
+                                <i class="fa-solid fa-envelope me-2"></i>{% trans "Contact Support" %}
+                            </a>
+                        </div>
+                    </div>
+                </nav>
+            </div>
+            
+            <!-- Help Content -->
+            <div class="col-lg-9">
+                <!-- Getting Started Section -->
+                <section id="getting-started" class="mb-5">
+                    <h2 class="h3 mb-4 pb-2 border-bottom">{% trans "Getting Started with Tiny Steps" %}</h2>
+                    
+                    <div class="row g-4 mb-4">
+                        <div class="col-md-6">
+                            <div class="card h-100 border-0 shadow-sm help-card">
+                                <div class="card-body p-4">
+                                    <h3 class="h5 mb-3">{% trans "Creating Your Account" %}</h3>
+                                    <p class="mb-3">{% trans "Learn how to sign up and set up your Tiny Steps account." %}</p>
+                                    <a href="#" class="btn btn-sm btn-outline-primary">{% trans "Read More" %}</a>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="card h-100 border-0 shadow-sm help-card">
+                                <div class="card-body p-4">
+                                    <h3 class="h5 mb-3">{% trans "Adding Your First Child" %}</h3>
+                                    <p class="mb-3">{% trans "Step-by-step guide to adding your child's profile and information." %}</p>
+                                    <a href="#" class="btn btn-sm btn-outline-primary">{% trans "Read More" %}</a>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="card h-100 border-0 shadow-sm help-card">
+                                <div class="card-body p-4">
+                                    <h3 class="h5 mb-3">{% trans "Navigating the Dashboard" %}</h3>
+                                    <p class="mb-3">{% trans "Tour of the main features and how to navigate the app interface." %}</p>
+                                    <a href="#" class="btn btn-sm btn-outline-primary">{% trans "Read More" %}</a>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="card h-100 border-0 shadow-sm help-card">
+                                <div class="card-body p-4">
+                                    <h3 class="h5 mb-3">{% trans "Understanding Development Tracking" %}</h3>
+                                    <p class="mb-3">{% trans "How milestone tracking works and what the results mean." %}</p>
+                                    <a href="#" class="btn btn-sm btn-outline-primary">{% trans "Read More" %}</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="text-center">
+                        <a href="#" class="btn btn-outline-primary">
+                            <i class="fa-solid fa-list me-2"></i>{% trans "View All Getting Started Guides" %}
+                        </a>
+                    </div>
+                </section>
+                
+                <!-- Video Tutorials -->
+                <section class="mb-5">
+                    <h2 class="h4 mb-4">{% trans "Video Tutorials" %}</h2>
+                    
+                    <div class="row g-4">
+                        <div class="col-md-4">
+                            <div class="card border-0 shadow-sm tutorial-card">
+                                <img src="{% static 'res/img/others/tutorial-thumbnail-1.jpg' %}" class="card-img-top" alt="{% trans 'Tutorial on creating accounts' %}">
+                                <div class="card-body p-3">
+                                    <h3 class="h6 mb-2">{% trans "Quick Start Guide" %}</h3>
+                                    <p class="small text-muted mb-0">{% trans "3:45 • Beginner" %}</p>
+                                </div>
+                                <a href="#" class="card-link stretched-link" aria-label="{% trans 'Watch Quick Start Guide video' %}"></a>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4">
+                            <div class="card border-0 shadow-sm tutorial-card">
+                                <img src="{% static 'res/img/others/tutorial-thumbnail-2.jpg' %}" class="card-img-top" alt="{% trans 'Tutorial on tracking milestones' %}">
+                                <div class="card-body p-3">
+                                    <h3 class="h6 mb-2">{% trans "Tracking Milestones" %}</h3>
+                                    <p class="small text-muted mb-0">{% trans "4:20 • Intermediate" %}</p>
+                                </div>
+                                <a href="#" class="card-link stretched-link" aria-label="{% trans 'Watch Tracking Milestones video' %}"></a>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4">
+                            <div class="card border-0 shadow-sm tutorial-card">
+                                <img src="{% static 'res/img/others/tutorial-thumbnail-3.jpg' %}" class="card-img-top" alt="{% trans 'Tutorial on growth charts' %}">
+                                <div class="card-body p-3">
+                                    <h3 class="h6 mb-2">{% trans "Understanding Growth Charts" %}</h3>
+                                    <p class="small text-muted mb-0">{% trans "5:10 • Intermediate" %}</p>
+                                </div>
+                                <a href="#" class="card-link stretched-link" aria-label="{% trans 'Watch Understanding Growth Charts video' %}"></a>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- FAQ Accordion -->
+                <section class="mb-5">
+                    <h2 class="h4 mb-4">{% trans "Frequently Asked Questions" %}</h2>
+                    
+                    <div class="accordion shadow-sm rounded-4 overflow-hidden" id="faqAccordion">
+                        <div class="accordion-item border-0">
+                            <h3 class="accordion-header" id="headingOne">
+                                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                    {% trans "Is my data secure and private?" %}
+                                </button>
+                            </h3>
+                            <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    <p>{% trans "Yes, we take data security and privacy very seriously. All your personal information and your child's data are encrypted and stored securely. We never share your information with third parties without your explicit consent." %}</p>
+                                    <p class="mb-0">{% trans "For more information, please read our Privacy Policy." %}</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="accordion-item border-0">
+                            <h3 class="accordion-header" id="headingTwo">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                    {% trans "Can I track multiple children in one account?" %}
+                                </button>
+                            </h3>
+                            <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    <p class="mb-0">{% trans "Yes, Tiny Steps allows you to add and track multiple children under a single account. Each child will have their own profile, growth charts, and milestone tracking." %}</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="accordion-item border-0">
+                            <h3 class="accordion-header" id="headingThree">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                                    {% trans "Is there a mobile app available?" %}
+                                </button>
+                            </h3>
+                            <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    <p class="mb-0">{% trans "Yes, Tiny Steps is available as a mobile app for both iOS and Android devices. You can download it from the App Store or Google Play Store." %}</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="accordion-item border-0">
+                            <h3 class="accordion-header" id="headingFour">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                                    {% trans "How accurate are the growth charts and milestone trackers?" %}
+                                </button>
+                            </h3>
+                            <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    <p>{% trans "Our growth charts are based on the latest WHO and CDC standards, which are widely used by healthcare professionals worldwide." %}</p>
+                                    <p class="mb-0">{% trans "Milestone trackers are developed in consultation with child development experts and follow established guidelines. However, they should be used as a reference only and not as a substitute for professional medical advice." %}</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="accordion-item border-0">
+                            <h3 class="accordion-header" id="headingFive">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
+                                    {% trans "How do I cancel my subscription?" %}
+                                </button>
+                            </h3>
+                            <div id="collapseFive" class="accordion-collapse collapse" aria-labelledby="headingFive" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    <p class="mb-0">{% trans "You can cancel your subscription at any time from your account settings. Go to \"My Account\" > \"Subscription\" and click on \"Cancel Subscription\". Your account will remain active until the end of your current billing period." %}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- Community Support -->
+                <section class="text-center p-4 p-md-5 bg-light rounded-4 shadow-sm mb-5">
+                    <div class="row justify-content-center">
+                        <div class="col-md-10">
+                            <h2 class="h4 mb-3">{% trans "Join Our Community Forum" %}</h2>
+                            <p class="mb-4">{% trans "Connect with other parents, share experiences, and get answers from the Tiny Steps community." %}</p>
+                            <a href="{% url 'forum:parent_forum' %}" class="btn btn-primary">
+                                <i class="fa-solid fa-users me-2"></i>{% trans "Visit Community Forum" %}
+                            </a>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock main_contents %}

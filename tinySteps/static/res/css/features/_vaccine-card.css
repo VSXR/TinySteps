@@ -1,75 +1,91 @@
-/* Vaccine card styles */
+/* ==========================================================================
+    Vaccine Card Components
+    ========================================================================== */
 
-/* Vaccine card styling */
-.vaccine-stat {
-    border-radius: 0.5rem;
-    transition: transform 0.2s;
-}
-
-.vaccine-stat:hover {
-    transform: translateY(-3px);
-}
-
+/* Card base styling */
 .vaccine-card {
-    transition: all 0.2s ease;
+     transition: all 0.2s ease;
 }
 
 .vaccine-card:hover {
-    transform: translateX(5px);
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1) !important;
+     transform: translateX(5px);
+     box-shadow: 0 5px 15px rgba(0,0,0,0.1) !important;
 }
 
+/* Stat elements */
+.vaccine-stat {
+     border-radius: 0.5rem;
+     transition: transform 0.2s;
+}
+
+.vaccine-stat:hover {
+     transform: translateY(-3px);
+}
+
+/* Row elements */
 .vaccine-row {
-    cursor: pointer;
-    transition: background-color 0.2s;
+     cursor: pointer;
+     transition: background-color 0.2s;
 }
 
 .vaccine-row:hover {
-    background-color: rgba(0, 0, 0, 0.03);
+     background-color: rgba(0, 0, 0, 0.03);
 }
 
-/* Vaccine filter buttons */
+/* ==========================================================================
+    Filter Components
+    ========================================================================== */
+
 .filter-button {
-    transition: all 0.2s;
+     transition: all 0.2s;
 }
 
 .filter-button:hover {
-    transform: translateY(-2px);
+     transform: translateY(-2px);
 }
 
 .filter-button.active {
-    font-weight: 500;
+     font-weight: 500;
 }
 
-/* Vaccine form */
+/* ==========================================================================
+    Form Components
+    ========================================================================== */
+
 .vaccine-form-container {
-    position: sticky;
-    top: 20px;
+     position: sticky;
+     top: 20px;
 }
 
-/* Responsive */
-@media (max-width: 768px) {
-    .vaccine-controls {
-        flex-direction: column;
-        width: 100%;
-    }
-    
-    .vaccine-controls .input-group {
-        margin-bottom: 10px;
-    }
-    
-    .btn-group {
-        width: 100%;
-    }
-    
-    .filter-button {
-        flex: 1;
-    }
-}
+/* ==========================================================================
+    Accessibility
+    ========================================================================== */
 
-/* Accesibilidad */
 .vaccine-row:focus,
 .vaccine-item:focus {
-    outline: 2px solid #0d6efd;
-    outline-offset: -2px;
+     outline: 2px solid #0d6efd;
+     outline-offset: -2px;
+}
+
+/* ==========================================================================
+    Responsive Styles
+    ========================================================================== */
+
+@media (max-width: 768px) {
+     .vaccine-controls {
+          flex-direction: column;
+          width: 100%;
+     }
+     
+     .vaccine-controls .input-group {
+          margin-bottom: 10px;
+     }
+     
+     .btn-group {
+          width: 100%;
+     }
+     
+     .filter-button {
+          flex: 1;
+     }
 }

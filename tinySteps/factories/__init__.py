@@ -21,6 +21,9 @@ from .contact.contact_factory import ContactUrl_Factory
 # Nutrition Factories
 from .nutrition.nutrition_factory import NutritionUrl_Factory
 
+# Pages Factories
+from .pages.pages_factory import PagesUrl_Factory
+
 # Guide Factories
 def get_guide_service_factory():
     from .guide.guide_factory import GuideService_Factory
@@ -62,4 +65,7 @@ __all__ = [
     
     # Guide Factories
     'GuideUrl_Factory', 'GuideService_Factory', 'get_guide_service_factory', 'get_guide_url_factory',
+
+    # Pages Factories
+    'PagesUrl_Factory',
 ]

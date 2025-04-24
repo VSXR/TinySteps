@@ -1,4 +1,6 @@
+/* =============== */
 /* Card components */
+/* =============== */
 
 .list-group {
     margin: var(--space-lg);
@@ -58,6 +60,14 @@
 .child-card:hover {
     transform: translateY(-5px);
     box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+}
+
+.card-highlight {
+    border-top: 3px solid var(--accent-2);
+}
+
+.card-featured {
+    border-color: var(--primary-color-light);
 }
 
 /* Resource Cards */
