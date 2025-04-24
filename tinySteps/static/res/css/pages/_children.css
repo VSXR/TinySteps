@@ -163,3 +163,81 @@
           left: 2px;
      }
 }
+
+
+/* Empty child (the parent hasnt added any child) */
+.empty-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 2rem;
+        min-height: 50vh;
+        margin-top: 1rem;
+    }
+    
+    .empty-card {
+        background-color: #f8f9fa;
+        border-radius: 1rem;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+        padding: 3rem 2rem;
+        text-align: center;
+        max-width: 500px;
+        width: 100%;
+        transition: all 0.4s ease;
+    }
+    
+    .empty-icon-wrapper {
+        margin-bottom: 1.5rem;
+        position: relative;
+    }
+    
+    .empty-icon {
+        font-size: 3.5rem;
+        color: var(--bs-primary, #0d6efd);
+        opacity: 0.8;
+        animation: pulse 3s infinite ease-in-out;
+    }
+    
+    .empty-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        color: #212529;
+    }
+    
+    .empty-message {
+        color: #6c757d;
+        margin-bottom: 2rem;
+        line-height: 1.6;
+    }
+    
+    .empty-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background-color: var(--bs-primary, #0d6efd);
+        color: white;
+        border-radius: 2rem;
+        padding: 0.75rem 2rem;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        border: none;
+        box-shadow: 0 4px 10px rgba(13, 110, 253, 0.3);
+    }
+    
+    .empty-button:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 15px rgba(13, 110, 253, 0.4);
+        color: white;
+    }
+    
+    .empty-button i {
+        margin-right: 0.5rem;
+    }
+    
+    @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.1); }
+        100% { transform: scale(1); }
+    }

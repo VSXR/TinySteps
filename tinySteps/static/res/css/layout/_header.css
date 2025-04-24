@@ -136,6 +136,7 @@
      cursor: pointer;
      opacity: 1;
      transition: opacity var(--transition-fast);
+     white-space: nowrap;
 }
 
 .navbar-nav .nav-item .btn-logout:hover {
@@ -155,8 +156,55 @@
      color: #ffc107 !important;
 }
 
+/* =======================
+    7. USERNAME TRUNCATION
+======================== */
+.navbar-nav .ms-auto {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+}
+
+/* Username truncation for authenticated users */
+.navbar-nav .ms-auto .nav-item a .nav-text {
+    max-width: 120px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: inline-block;
+}
+
+/* Make logout button more compact but fully visible */
+.navbar-nav .nav-item .btn-logout {
+    padding-left: 10px;
+    padding-right: 10px;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+}
+
+/* For extremely small screens */
+@media (max-width: 360px) {
+    .navbar-nav .ms-auto .nav-item a .nav-text {
+        max-width: 80px;
+    }
+}
+
+/* Adjust for mobile view */
+@media (max-width: 991px) {
+    /* In mobile view, full username visibility with more space */
+    .navbar-nav .ms-auto .nav-item a .nav-text {
+        max-width: none;
+    }
+    
+    .navbar-nav .ms-auto {
+        flex-direction: column;
+        width: 100%;
+    }
+}
+
 /* =====================
-    7. SOCIAL MEDIA
+    8. SOCIAL MEDIA
 ===================== */
 .social-nav {
      margin-left: 0.5rem;
