@@ -2,7 +2,6 @@ from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from rest_framework_nested import routers
 from . import views
-
 app_name = 'api'
 
 # Main router
@@ -10,7 +9,8 @@ router = DefaultRouter()
 router.register(r'users', views.User_ViewSet, basename='user')
 router.register(r'children', views.YourChild_ViewSet, basename='child')
 router.register(r'vaccine-cards', views.VaccineCard_ViewSet, basename='vaccine-card')
-router.register(r'calendar-events', views.CalendarEvent_ViewSet, basename='calendar-event')  # Updated basename for consistency
+router.register(r'vaccines', views.Vaccine_ViewSet, basename='vaccines')
+router.register(r'calendar-events', views.CalendarEvent_ViewSet, basename='calendar-event')
 router.register(r'milestones', views.Milestone_ViewSet, basename='milestone')
 router.register(r'forums', views.ParentsForum_ViewSet, basename='forum')
 router.register(r'comments', views.Comment_ViewSet, basename='comment')
@@ -21,7 +21,6 @@ router.register(r'info-requests', views.Contact_ViewSet, basename='info-request'
 
 # Nested routers
 children_router = routers.NestedSimpleRouter(router, r'children', lookup='child')
-children_router.register(r'vaccines', views.ChildVaccine_ViewSet, basename='child-vaccine')
 children_router.register(r'events', views.ChildCalendarEvents_ViewSet, basename='child-events')
 children_router.register(r'milestones', views.ChildMilestone_ViewSet, basename='child-milestone')
 

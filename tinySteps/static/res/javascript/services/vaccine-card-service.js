@@ -5,7 +5,8 @@ class VaccineCardService {
 
     // Helper method to get CSRF token
     getCsrfToken() {
-        return document.querySelector('input[name="csrfmiddlewaretoken"]')?.value;
+        return document.querySelector('input[name="csrfmiddlewaretoken"]')?.value 
+            || document.querySelector('meta[name="csrf-token"]')?.content;
     }
 
     // Get all vaccines for a vaccine card
@@ -33,6 +34,7 @@ class VaccineCardService {
     // Add a new vaccine
     async addVaccine(vaccineCardId, vaccineData) {
         try {
+            console.log('Sending vaccine data:', vaccineData);
             const response = await fetch(`${this.apiBaseUrl}/vaccine-cards/${vaccineCardId}/add_vaccine/`, {
                 method: 'POST',
                 headers: {
@@ -42,11 +44,16 @@ class VaccineCardService {
                 body: JSON.stringify(vaccineData)
             });
             
+            const responseData = await response.text();
+            console.log('Raw response:', responseData);
+            
             if (!response.ok) {
+                console.error('API error status:', response.status);
+                console.error('API error text:', responseData);
                 throw new Error(`API error: ${response.status}`);
             }
             
-            return await response.json();
+            return JSON.parse(responseData);
         } catch (error) {
             console.error('Error adding vaccine:', error);
             throw error;

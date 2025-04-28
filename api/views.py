@@ -419,31 +419,66 @@ class VaccineCard_ViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=['get'])
     def vaccines(self, request, pk=None):
         card = self.get_object()
-        vaccines = card.vaccines.all()
+        vaccines = card.vaccines.all().order_by('-date')
         serializer = Vaccine_Serializer(vaccines, many=True)
-        return Response(serializer.data)
+        return Response({'vaccines': serializer.data})
+    
+    @action(detail=True, methods=['post'])
+    def add_vaccine(self, request, pk=None):
+        card = self.get_object()
+        serializer = Vaccine_Serializer(data=request.data)
+        
+        if serializer.is_valid():
+            serializer.save(vaccine_card=card)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    @action(detail=True, methods=['get'])
+    def stats(self, request, pk=None):
+        card = self.get_object()
+        vaccines = card.vaccines.all()
+        
+        total = vaccines.count()
+        administered = vaccines.filter(administered=True).count()
+        pending = total - administered
+        
+        # Upcoming vaccines are those with a next_dose_date in the future
+        today = timezone.now().date()
+        upcoming = vaccines.filter(next_dose_date__gte=today).count()
+        
+        return Response({
+            'total': total,
+            'administered': administered,
+            'pending': pending,
+            'upcoming': upcoming
+        })
+    
+    @action(detail=True, methods=['get'])
+    def upcoming(self, request, pk=None):
+        card = self.get_object()
+        today = timezone.now().date()
+        
+        # Get vaccines with next_dose_date in the future, ordered by date
+        upcoming_vaccines = card.vaccines.filter(
+            next_dose_date__gte=today
+        ).order_by('next_dose_date')
+        
+        serializer = Vaccine_Serializer(upcoming_vaccines, many=True)
+        return Response({'vaccines': serializer.data})
 
-class ChildVaccine_ViewSet(viewsets.ModelViewSet):
-    """
-    ViewSet for managing vaccines for a specific child
-    """
+class Vaccine_ViewSet(viewsets.ModelViewSet):
     serializer_class = Vaccine_Serializer
     permission_classes = [permissions.IsAuthenticated, IsAdminOrOwnerOrReadOnly]
     
     def get_queryset(self):
-        child_id = self.kwargs['child_pk']
-        vaccine_card = get_object_or_404(
-            VaccineCard_Model, 
-            child_id=child_id,
-            child__user=self.request.user
-        )
-        return Vaccine_Model.objects.filter(vaccine_card=vaccine_card)
+        return Vaccine_Model.objects.filter(vaccine_card__child__user=self.request.user)
     
     def perform_create(self, serializer):
-        child_id = self.kwargs['child_pk']
+        vaccine_card_id = self.request.data.get('vaccine_card')
         vaccine_card = get_object_or_404(
             VaccineCard_Model, 
-            child_id=child_id,
+            id=vaccine_card_id, 
             child__user=self.request.user
         )
         serializer.save(vaccine_card=vaccine_card)

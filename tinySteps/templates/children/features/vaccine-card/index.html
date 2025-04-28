@@ -234,6 +234,7 @@
                     </div>
                     <div class="card-body p-3">
                         <form id="vaccine-form">
+                            {% csrf_token %}
                             <input type="hidden" id="vaccine-id" value="">
                             
                             <div class="form-group mb-3">
@@ -371,5 +372,5 @@
 
 {% block extra_js %}
     {{ block.super }}
-    <script src="{% static 'res/javascript/features/vaccine-card.js' %}"></script>
+    <script type="module" src="{% static 'res/javascript/features/vaccine-card.js' %}"></script>
 {% endblock extra_js %}

@@ -14,15 +14,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const vaccineCardId = document.getElementById('vaccine-card-id')?.value;
     let currentVaccine = null;
     
-    // Initialize 
+    // Initialize
     loadVaccines();
     updateVaccineStats();
     updateUpcomingVaccines();
-    
-    // Add global error handler to debug issues
-    window.addEventListener('error', function(event) {
-        console.error('Global error caught:', event.error);
-    });
     
     // === Filter Buttons ===
     const btnFilterAll = document.getElementById('btn-filter-all');
@@ -77,7 +72,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Reset submission flag when complete (whether success or error)
                 setTimeout(() => {
                     isSubmitting = false;
-                }, 500); // Small delay to prevent accidental double-clicks
+                }, 500);
             });
         });
     }
@@ -86,8 +81,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const deleteBtn = document.getElementById('btn-delete');
     if (deleteBtn) {
         deleteBtn.addEventListener('click', function() {
-            const deleteModal = new bootstrap.Modal(document.getElementById('deleteVaccineModal'));
-            deleteModal.show();
+            if (currentVaccine) {
+                const deleteModal = new bootstrap.Modal(document.getElementById('deleteVaccineModal'));
+                deleteModal.show();
+            }
         });
     }
     
@@ -150,18 +147,25 @@ document.addEventListener('DOMContentLoaded', function() {
     function renderVaccines(vaccines) {
         // Clear existing vaccines
         if (vaccineListDesktop) {
-            // Keep the empty state row if no vaccines
+            // Display empty state if no vaccines
             if (vaccines.length === 0) {
                 const emptyState = `
                     <tr>
-                        <td colspan="5" class="text-center py-4">
-                            <div class="empty-state">
-                                <i class="fa-solid fa-syringe fa-2x mb-3 text-primary" aria-hidden="true"></i>
-                                <h3 class="h5 mb-3">No vaccines registered</h3>
-                                <p class="text-muted mb-3">Start recording your child's vaccines</p>
-                                <button id="btn-add-first-vaccine-desktop" class="btn btn-primary rounded-pill px-4">
-                                    <i class="fas fa-plus me-2" aria-hidden="true"></i> Add First Vaccine
-                                </button>
+                        <td colspan="5" class="p-0">
+                            <div class="empty-container mt-3 mb-4">
+                                <div class="empty-card">
+                                    <div class="empty-icon-wrapper">
+                                        <i class="fa-solid fa-syringe empty-icon" aria-hidden="true"></i>
+                                    </div>
+                                    <div class="empty-content">
+                                        <h2 class="empty-title">No Vaccines Registered</h2>
+                                        <p class="empty-message">Start recording your child's vaccines to keep track of their immunization history.</p>
+                                        
+                                        <button id="btn-add-first-vaccine-desktop" class="empty-button">
+                                            <i class="fa-solid fa-plus me-2" aria-hidden="true"></i> Add First Vaccine
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                         </td>
                     </tr>
@@ -245,13 +249,20 @@ document.addEventListener('DOMContentLoaded', function() {
         if (vaccineListMobile) {
             if (vaccines.length === 0) {
                 const emptyState = `
-                    <div class="text-center py-4 empty-state">
-                        <i class="fa-solid fa-syringe fa-2x mb-3 text-primary" aria-hidden="true"></i>
-                        <h3 class="h5 mb-3">No vaccines registered</h3>
-                        <p class="text-muted mb-3">Start recording your child's vaccines</p>
-                        <button id="btn-add-first-vaccine-mobile" class="btn btn-primary rounded-pill px-4">
-                            <i class="fas fa-plus me-2" aria-hidden="true"></i> Add First Vaccine
-                        </button>
+                    <div class="empty-container mt-3 mb-5">
+                        <div class="empty-card">
+                            <div class="empty-icon-wrapper">
+                                <i class="fa-solid fa-syringe empty-icon" aria-hidden="true"></i>
+                            </div>
+                            <div class="empty-content">
+                                <h2 class="empty-title">No Vaccines Registered</h2>
+                                <p class="empty-message">Start recording your child's vaccines to keep track of their immunization history.</p>
+                                
+                                <button id="btn-add-first-vaccine-mobile" class="empty-button">
+                                    <i class="fa-solid fa-plus me-2" aria-hidden="true"></i> Add First Vaccine
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 `;
                 vaccineListMobile.innerHTML = emptyState;
@@ -267,7 +278,7 @@ document.addEventListener('DOMContentLoaded', function() {
             } else {
                 vaccineListMobile.innerHTML = '';
                 
-                // Add each vaccine
+                // Add each vaccine as a card
                 vaccines.forEach((vaccine, index) => {
                     const card = document.createElement('div');
                     card.className = 'card vaccine-card border-0 shadow-sm rounded-3 mb-3 animate-entry';
@@ -354,10 +365,21 @@ document.addEventListener('DOMContentLoaded', function() {
         vaccineRows.forEach(row => row.style.display = '');
         vaccineCards.forEach(card => card.style.display = '');
         
+        // Always remove any existing empty state messages for all filter types
+        const emptyMessagesDesktop = vaccineListDesktop?.querySelector('.empty-filter-message');
+        if (emptyMessagesDesktop) {
+            emptyMessagesDesktop.remove();
+        }
+        
+        const emptyMessagesMobile = vaccineListMobile?.querySelector('.empty-filter-message');
+        if (emptyMessagesMobile) {
+            emptyMessagesMobile.remove();
+        }
+        
+        // Apply filtering logic for administered or pending
         if (filterType === 'administered' || filterType === 'pending') {
-            // Get all vaccine elements
+            // Filter desktop view
             vaccineRows.forEach(row => {
-                const vaccineId = row.dataset.vaccineId;
                 const vaccineSpan = row.querySelector('.badge');
                 const isAdministered = vaccineSpan?.classList.contains('bg-success');
                 
@@ -367,8 +389,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             });
             
+            // Filter mobile view
             vaccineCards.forEach(card => {
-                const vaccineId = card.dataset.vaccineId;
                 const vaccineSpan = card.querySelector('.badge');
                 const isAdministered = vaccineSpan?.classList.contains('bg-success');
                 
@@ -378,9 +400,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             });
         }
-        
-        // Check if we need to show empty state after filtering
-        checkEmptyState();
     }
     
     // Check if we need to show empty state after filtering or searching
@@ -616,8 +635,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 })
                 .catch(error => {
                     console.error('Error saving vaccine:', error);
+                    // Check if there's a response with error details
+                    if (error.response) {
+                        console.error('Server error details:', error.response);
+                    }
                     showNotification('Error creating vaccine. Please try again.', 'danger');
-                    throw error; // Re-throw to continue promise chain
+                    throw error;
                 });
         } else {
             const vaccineId = currentVaccine.id;
@@ -641,8 +664,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 })
                 .catch(error => {
                     console.error('Error updating vaccine:', error);
+                    // Check if there's a response with error details
+                    if (error.response) {
+                        console.error('Server error details:', error.response);
+                    }
                     showNotification('Error updating vaccine. Please try again.', 'danger');
-                    throw error; // Re-throw to continue promise chain
+                    throw error;
                 });
         }
     }
