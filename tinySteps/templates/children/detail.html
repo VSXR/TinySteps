@@ -4,238 +4,227 @@
 {% block title %}{{ child.name }} - {% trans "Tiny Steps" %}{% endblock %} 
 
 {% block main_contents %}
-<main id="main-content">
-    <div class="container my-4 my-md-5">
-        <!-- Breadcrumbs and Page Header -->
-        {% include "children/components/child_breadcrumbs.html" with child=child is_detail=True %}
-        {% include "children/components/page_header.html" with title=child.name subtitle=_("Child profile and development information") %}
-        
-        <!-- Messages Container -->
-        <div class="row mb-4">
-            <div class="col">
-                <div id="messages-container" class="messages" role="alert" aria-live="polite">
-                    {% if messages %} 
-                        {% include 'partials/messages.html' %} 
-                    {% endif %}
-                </div>
-            </div>
-        </div>
+<main id="main-content" class="container-fluid">
+    <!-- Breadcrumbs -->
+    {% include "children/components/child_breadcrumbs.html" %}
 
-        <!-- Child Information Card -->
-        <div class="row g-4 mb-5">
-            <div class="col-lg-4 d-flex">
-                <div class="card border-0 shadow-sm rounded-4 w-100 content-lift d-flex flex-column">
-                    <div class="card-body text-center p-4 flex-grow-1 d-flex flex-column">
-                        <div class="position-relative d-inline-block mb-4">
-                            <img src="{{ child.get_image }}" alt="{{ child.name }}" 
-                                 class="rounded-circle border border-4 border-light shadow child-profile-image" 
-                                 loading="lazy" 
-                                 width="170" height="170">
-                            
-                            {% if child.gender == 'male' %}
-                                <span class="position-absolute bottom-0 end-0 translate-middle badge rounded-pill bg-info p-2 border border-2 border-white child-gender-badge">
-                                    <i class="fa-solid fa-mars fa-lg" aria-hidden="true"></i>
-                                    <span class="visually-hidden">{% trans "Male" %}</span>
-                                </span>
-                            {% elif child.gender == 'female' %}
-                                <span class="position-absolute bottom-0 end-0 translate-middle badge rounded-pill bg-danger p-2 border border-2 border-white child-gender-badge">
-                                    <i class="fa-solid fa-venus fa-lg" aria-hidden="true"></i>
-                                    <span class="visually-hidden">{% trans "Female" %}</span>
-                                </span>
-                            {% endif %}
-                        </div>
+    <!-- Messages Container -->
+    <div id="messages-container" class="messages mb-3" role="alert" aria-live="polite"></div>
 
-                        <h2 class="fs-3 fw-bold text-primary mb-2">
-                            {{ child.name }} {% if child.second_name %}{{ child.second_name }}{% endif %}
-                        </h2>
-                        
-                        <div class="d-flex justify-content-center gap-2 mb-3">
-                            <span class="badge bg-primary rounded-pill px-3 py-2">
-                                <i class="fa-solid fa-cake-candles me-1" aria-hidden="true"></i>
-                                {% blocktrans with age=child.age %}{{ age }} months{% endblocktrans %}
-                            </span>
-                        </div>
-                        
-                        <p class="text-muted mb-4">
-                            <i class="fa-solid fa-calendar-day me-1" aria-hidden="true"></i>
-                            {% blocktrans with date=child.birth_date|date:"F j, Y" %}Born on {{ date }}{% endblocktrans %}
-                        </p>
-
-                        <!-- Quick Actions -->
-                        <div class="d-grid gap-2 mt-auto">
-                            <a href="{% url 'children:edit_child' child.id %}" class="btn btn-outline-primary rounded-pill child-action-btn">
-                                <i class="fa-solid fa-pen-to-square me-2" aria-hidden="true"></i> {% trans "Edit Profile" %}
-                            </a>
-                            <a href="{% url 'children:child_calendar' child.id %}" class="btn btn-outline-info rounded-pill child-action-btn">
-                                <i class="fa-solid fa-calendar me-2" aria-hidden="true"></i> {% trans "View Calendar" %}
-                            </a>
-                            <a href="{% url 'children:child_vaccine_card' child.id %}" class="btn btn-outline-success rounded-pill child-action-btn">
-                                <i class="fa-solid fa-syringe me-2" aria-hidden="true"></i> {% trans "Vaccine Card" %}
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-lg-8 d-flex">
-                <div class="card border-0 shadow-sm rounded-4 w-100 content-lift d-flex flex-column">
-                    <div class="card-header bg-light border-0 py-3">
-                        <h3 class="h5 mb-0 fw-semibold d-flex align-items-center">
-                            <i class="fa-solid fa-circle-info text-primary me-2" aria-hidden="true"></i>
-                            {% trans "Details" %}
-                        </h3>
+    <div class="row g-4">
+        <!-- Left Column: Profile Summary -->
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm rounded-4 h-100">
+                <div class="card-body text-center p-4">
+                    <!-- Profile Photo with Gender Indicator -->
+                    <div class="position-relative d-inline-block mb-3">
+                        <img src="{{ child.get_image }}" alt="{{ child.name }}" 
+                             class="rounded-circle border border-4 border-light shadow" 
+                             width="140" height="140" style="object-fit: cover;">
+                        <span class="position-absolute bottom-0 end-0 translate-middle badge rounded-pill {% if child.gender == 'M' %}bg-info{% else %}bg-danger{% endif %} p-2 border border-2 border-white">
+                            <i class="fa-solid fa-{% if child.gender == 'M' %}mars{% else %}venus{% endif %} fa-lg" aria-hidden="true"></i>
+                            <span class="visually-hidden">{% if child.gender == 'M' %}Male{% else %}Female{% endif %}</span>
+                        </span>
                     </div>
                     
-                    <!-- Child Stats Component -->
-                    {% include "children/components/child_stats.html" with child=child %}
+                    <!-- Child Information -->
+                    <h1 class="h3 fw-bold mb-2">{{ child.name }} {{ child.second_name }}</h1>
+                    
+                    <div class="mb-3">
+                        <span class="badge bg-primary rounded-pill px-3 py-2">
+                            <i class="fa-solid fa-cake-candles me-1" aria-hidden="true"></i> {{ child.age }} months
+                        </span>
+                    </div>
+                    
+                    <p class="text-muted mb-3">
+                        <i class="fa-solid fa-calendar-day me-1" aria-hidden="true"></i> Born on {{ child.birth_date|date:"F j, Y" }}
+                    </p>
 
-                    <div class="card-body p-4 flex-grow-1">
-                        <div class="mt-4">
-                            <h4 class="h6 mb-3 d-flex align-items-center">
-                                <i class="fa-solid fa-book text-primary me-2" aria-hidden="true"></i>
-                                {% blocktrans with name=child.name %}About {{ name }}{% endblocktrans %}
-                            </h4>
-                            <div class="card border-0 shadow-sm bg-light bg-opacity-50 rounded-3">
-                                <div class="card-body p-3">
-                                    {% if child.desc %}
-                                        <p class="mb-0">{{ child.desc }}</p>
-                                    {% else %}
-                                        <p class="text-muted fst-italic mb-0">
-                                            {% trans "No description added yet." %}
-                                            <a href="{% url 'children:edit_child' child.id %}" class="ms-1 text-decoration-none">
-                                                {% trans "Add one now" %}
-                                            </a>
-                                        </p>
-                                    {% endif %}
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="mt-4">
-                            <h4 class="h6 mb-3 d-flex align-items-center">
-                                <i class="fa-solid fa-flag text-warning me-2" aria-hidden="true"></i>
-                                {% trans "Recent Milestones" %}
-                            </h4>
-                            
-                            <!-- Child Milestone Component -->
-                            {% include "children/components/child_milestone.html" with milestones=child.milestone_set.all|dictsortreversed:"date_achieved"|slice:":3" show_actions=False show_add_button=True %}
-                                
-                            {% if child.milestone_set.all %}
-                                <div class="text-center mt-3">
-                                    <a href="{% url 'children:child_milestones' child.id %}" class="btn btn-sm btn-outline-primary rounded-pill px-4">
-                                        <i class="fa-solid fa-list me-1" aria-hidden="true"></i>
-                                        {% trans "View All Milestones" %}
-                                    </a>
-                                </div>
-                            {% endif %}
+                    <!-- Quick Actions - Primary -->
+                    <div class="d-grid gap-2 mb-3">
+                        <a href="{% url 'children:edit_child' child.id %}" class="btn btn-primary rounded-pill" aria-label="Edit {{ child.name }}'s profile details">
+                            <i class="fa-solid fa-pen-to-square me-2" aria-hidden="true"></i> Edit Profile
+                        </a>
+                    </div>
+                    
+                    <!-- Quick Actions - Secondary -->
+                    <div class="d-grid gap-2">
+                        <div class="btn-group">
+                            <a href="{% url 'children:child_calendar' child.id %}" class="btn btn-outline-primary rounded-start-pill" aria-label="View calendar for {{ child.name }}">
+                                <i class="fa-solid fa-calendar me-1" aria-hidden="true"></i> Calendar
+                            </a>
+                            <a href="{% url 'children:child_vaccine_card' child.id %}" class="btn btn-outline-primary" aria-label="View vaccine card for {{ child.name }}">
+                                <i class="fa-solid fa-syringe me-1" aria-hidden="true"></i> Vaccines
+                            </a>
+                            <a href="{% url 'children:child_growth_status' child.id %}" class="btn btn-outline-primary rounded-end-pill" aria-label="View growth charts for {{ child.name }}">
+                                <i class="fa-solid fa-chart-line me-1" aria-hidden="true"></i> Growth
+                            </a>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-
-        <!-- Forum Posts Section -->
-        {% if related_posts %}
-        <div class="row mb-5">
-            <div class="col-12">
-                <div class="card border-0 shadow-sm rounded-4 content-lift">
-                    <div class="card-header bg-light border-0 py-3 d-flex justify-content-between align-items-center">
-                        <h3 class="h5 mb-0 fw-semibold d-flex align-items-center">
-                            <i class="fa-solid fa-comments text-primary me-2" aria-hidden="true"></i>
-                            {% trans "Forum Posts" %}
-                        </h3>
-                        <a href="{% url 'forum:parent_forum' %}" class="btn btn-sm btn-outline-primary rounded-pill">
-                            <i class="fa-solid fa-external-link-alt me-1" aria-hidden="true"></i> 
-                            {% trans "View Forum" %}
-                        </a>
-                    </div>
-                    <div class="card-body p-4">
-                        <div class="list-group list-group-flush">
-                            {% for post in related_posts %}
-                                <div class="list-group-item border-0 bg-light rounded-3 mb-3 p-3">
-                                    <div class="d-flex justify-content-between align-items-start mb-2">
-                                        <h4 class="h6 mb-0">
-                                            <a href="{% url 'forum:view_post' post.id %}" class="text-decoration-none post-title">
-                                                {{ post.title }}
-                                            </a>
-                                        </h4>
-                                        <span class="badge bg-light text-dark rounded-pill">{{ post.created_at|date:"M d" }}</span>
+        
+        <!-- Right Column: Details Tabs -->
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm rounded-4 h-100">
+                <!-- Tabs Navigation -->
+                <div class="card-header bg-light border-0 pt-3 pb-0">
+                    <ul class="nav nav-tabs card-header-tabs" id="childDetailTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active px-4" id="details-tab" data-bs-toggle="tab" data-bs-target="#details" type="button" role="tab" aria-controls="details" aria-selected="true">
+                                <i class="fa-solid fa-circle-info me-2" aria-hidden="true"></i> Details
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link px-4 position-relative" id="milestones-tab" data-bs-toggle="tab" data-bs-target="#milestones" type="button" role="tab" aria-controls="milestones" aria-selected="false">
+                                <i class="fa-solid fa-flag me-2" aria-hidden="true"></i> Milestones
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link px-4 position-relative" id="notes-tab" data-bs-toggle="tab" data-bs-target="#notes" type="button" role="tab" aria-controls="notes" aria-selected="false">
+                                <i class="fa-solid fa-book me-2" aria-hidden="true"></i> Notes
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+                
+                <!-- Tab Content -->
+                <div class="card-body p-4">
+                    <div class="tab-content" id="childDetailTabsContent">
+                        <!-- Details Tab -->
+                        <div class="tab-pane fade show active" id="details" role="tabpanel" aria-labelledby="details-tab">
+                            <!-- Measurements Section -->
+                            <section aria-labelledby="measurements-heading" class="info-section">
+                                <h2 id="measurements-heading" class="info-section-title h5">
+                                    <i class="fa-solid fa-weight-scale text-primary me-2" aria-hidden="true"></i> Physical Measurements
+                                </h2>
+                                
+                                <div class="row g-3 mb-3">
+                                    <div class="col-sm-6">
+                                        <div class="card rounded-4 border-0 bg-white measurement-card h-100">
+                                            <div class="card-body">
+                                                <div class="d-flex justify-content-between align-items-center">
+                                                    <div>
+                                                        <h3 class="h6 text-muted mb-1">Weight</h3>
+                                                        <span class="h4 mb-0 d-block">{{ child.weight|default:"--" }} kg</span>
+                                                    </div>
+                                                    <div class="rounded-circle bg-primary bg-opacity-10 p-2">
+                                                        <i class="fa-solid fa-weight-scale fs-3 text-primary" aria-hidden="true"></i>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <p class="mb-2 small text-muted">{{ post.desc|truncatechars:100 }}</p>
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <a href="{% url 'forum:parent_forum' %}?category={{ post.category }}" class="badge bg-primary rounded-pill text-decoration-none">
-                                            {{ post.get_category_display }}
-                                        </a>
-                                        <div class="btn-group">
-                                            <a class="btn btn-sm btn-outline-secondary rounded-end-0 rounded-start-pill" href="{% url 'forum:view_post' post.id %}">
-                                                <i class="fa-solid fa-eye me-1" aria-hidden="true"></i> 
-                                                {% trans "View" %}
-                                            </a>
-                                            <a class="btn btn-sm btn-outline-primary rounded-0" href="{% url 'forum:edit_post' post.id %}">
-                                                <i class="fa-solid fa-pen-to-square me-1" aria-hidden="true"></i> 
-                                                {% trans "Edit" %}
-                                            </a>
-                                            <a class="btn btn-sm btn-outline-danger rounded-start-0 rounded-end-pill" href="{% url 'forum:delete_post' post.id %}">
-                                                <i class="fa-solid fa-trash me-1" aria-hidden="true"></i>
-                                                {% trans "Delete" %}
-                                            </a>
+                                    
+                                    <div class="col-sm-6">
+                                        <div class="card rounded-4 border-0 bg-white measurement-card h-100">
+                                            <div class="card-body">
+                                                <div class="d-flex justify-content-between align-items-center">
+                                                    <div>
+                                                        <h3 class="h6 text-muted mb-1">Height</h3>
+                                                        <span class="h4 mb-0 d-block">{{ child.height|default:"--" }} cm</span>
+                                                    </div>
+                                                    <div class="rounded-circle bg-primary bg-opacity-10 p-2">
+                                                        <i class="fa-solid fa-ruler-vertical fs-3 text-primary" aria-hidden="true"></i>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            {% empty %}
-                                <div class="text-center py-4">
-                                    <i class="fa-solid fa-comments text-muted opacity-25 display-4 mb-3" aria-hidden="true"></i>
-                                    <p class="mb-3 text-muted">{% trans "No posts related to this child yet." %}</p>
-                                    <a href="{% url 'forum:create_post' %}" class="btn btn-primary rounded-pill">
-                                        <i class="fa-solid fa-plus me-2" aria-hidden="true"></i> {% trans "Create a Post" %}
+                                
+                                <div class="text-center">
+                                    <a href="{% url 'children:child_growth_status' child.id %}" class="btn btn-outline-primary rounded-pill px-4">
+                                        <i class="fa-solid fa-chart-line me-1" aria-hidden="true"></i> View Growth Charts
                                     </a>
                                 </div>
-                            {% endfor %}
+                            </section>
+                            
+                            <!-- About Section -->
+                            <section aria-labelledby="about-heading" class="info-section">
+                                <h2 id="about-heading" class="info-section-title h5">
+                                    <i class="fa-solid fa-book text-primary me-2" aria-hidden="true"></i> About {{ child.name }}
+                                </h2>
+                                
+                                <div class="card border-0 bg-white rounded-4">
+                                    <div class="card-body p-3">
+                                        {% if child.desc %}
+                                            <p class="mb-0">{{ child.desc }}</p>
+                                        {% else %}
+                                            <p class="text-muted fst-italic mb-0">
+                                                No description added yet.
+                                                <a href="{% url 'children:edit_child' child.id %}" class="ms-1 text-decoration-none">Add one now</a>
+                                            </p>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </section>
+                        </div>
+                        
+                        <!-- Milestones Tab -->
+                        <div class="tab-pane fade" id="milestones" role="tabpanel" aria-labelledby="milestones-tab">
+                            <div class="info-section">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h2 class="info-section-title h5 mb-0">
+                                        <i class="fa-solid fa-flag text-primary me-2" aria-hidden="true"></i>
+                                        Recent Milestones
+                                    </h2>
+                                    <a href="{% url 'children:child_milestones' child.id %}" class="btn btn-primary rounded-pill">
+                                        <i class="fa-solid fa-plus me-1" aria-hidden="true"></i> Add Milestone
+                                    </a>
+                                </div>
+                                
+                                <div id="milestones-list" class="milestone-timeline bg-white rounded-4 p-4">
+                                    <!-- Example Milestone or Empty State -->
+                                    <div class="text-center py-4">
+                                        <i class="fa-solid fa-flag text-muted opacity-25 display-4 mb-2" aria-hidden="true"></i>
+                                        <p class="text-muted">No milestones recorded yet.</p>
+                                        <a href="{% url 'children:child_milestones' child.id %}" class="btn btn-outline-primary rounded-pill">
+                                            <i class="fa-solid fa-plus me-1" aria-hidden="true"></i> Add First Milestone
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Notes Tab -->
+                        <div class="tab-pane fade" id="notes" role="tabpanel" aria-labelledby="notes-tab">
+                            <div class="info-section">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h2 class="info-section-title h5 mb-0">
+                                        <i class="fa-solid fa-book text-primary me-2" aria-hidden="true"></i>
+                                        Notes and Observations
+                                    </h2>
+                                    <button type="button" class="btn btn-primary rounded-pill" data-bs-toggle="modal" data-bs-target="#addNoteModal">
+                                        <i class="fa-solid fa-plus me-1" aria-hidden="true"></i> Add Note
+                                    </button>
+                                </div>
+                                
+                                <div id="notes-list" class="bg-white rounded-4 p-4">
+                                    <!-- Example Note or Empty State -->
+                                    <div class="text-center py-4">
+                                        <i class="fa-solid fa-book text-muted opacity-25 display-4 mb-2" aria-hidden="true"></i>
+                                        <p class="text-muted">No notes added yet.</p>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-        {% endif %}
-
-        <!-- Actions Row -->
-        <div class="row mb-4">
-            <div class="col-12">
-                <div class="d-flex justify-content-between">
-                    <a href="{% url 'children:your_children' %}" class="btn btn-outline-secondary rounded-pill px-4">
-                        <i class="fa-solid fa-arrow-left me-2" aria-hidden="true"></i> {% trans "Back to Children" %}
+                
+                <!-- Footer Actions -->
+                <div class="card-footer bg-white border-0 py-3">
+                    <a href="{% url 'children:your_children' %}" class="btn btn-sm btn-outline-secondary rounded-pill px-3">
+                        <i class="fa-solid fa-arrow-left me-1" aria-hidden="true"></i> Back to Children
                     </a>
-                    <div class="dropdown">
-                        <button class="btn btn-primary rounded-pill px-4 dropdown-toggle" type="button" id="moreActions" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="fa-solid fa-ellipsis me-2" aria-hidden="true"></i> {% trans "More Actions" %}
-                        </button>
-                        <ul class="dropdown-menu dropdown-menu-end shadow-sm" aria-labelledby="moreActions">
-                            <li>
-                                <a class="dropdown-item d-flex align-items-center" href="{% url 'children:child_milestones' child.id %}">
-                                    <i class="fa-solid fa-flag me-2 text-warning" aria-hidden="true"></i> {% trans "Add Milestone" %}
-                                </a>
-                            </li>
-                            <li>
-                                <a class="dropdown-item d-flex align-items-center" href="#">
-                                    <i class="fa-solid fa-chart-bar me-2 text-primary" aria-hidden="true"></i> {% trans "Growth Chart" %}
-                                </a>
-                            </li>
-                            <li>
-                                <a class="dropdown-item d-flex align-items-center" href="{% url 'forum:create_post' %}">
-                                    <i class="fa-solid fa-comments me-2 text-success" aria-hidden="true"></i> {% trans "Create Forum Post" %}
-                                </a>
-                            </li>
-                            <li><hr class="dropdown-divider" /></li>
-                            <li>
-                                <a class="dropdown-item d-flex align-items-center text-danger" href="{% url 'children:delete_child' child.id %}">
-                                    <i class="fa-solid fa-trash me-2" aria-hidden="true"></i> {% trans "Delete Profile" %}
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
                 </div>
             </div>
         </div>
     </div>
 </main>
 {% endblock main_contents %}
+
+{% block extra_js %}
+    <script type="module" src="{% static 'res/javascript/child_detail.js' %}"></script>
+{% endblock %}

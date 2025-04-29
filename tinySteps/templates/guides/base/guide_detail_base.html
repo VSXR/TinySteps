@@ -13,10 +13,9 @@
 {% endblock %}
 
 {% block main_contents %}
-<main id="main-content" role="main">
+<main id="main-content" role="main" class="container-fluid">
+    {% include 'guides/components/breadcrumbs.html' with is_detail=True guide=guide section_type=guide.guide_type %}
     <div class="container my-4">
-        {% include 'guides/components/breadcrumbs.html' with is_detail=True guide=guide section_type=guide.guide_type %}
-        
         <div class="row mb-4">
             <div class="col-12">
                 <h1 class="text-center fw-bold fs-3 mb-2">{{ guide.title }}</h1>

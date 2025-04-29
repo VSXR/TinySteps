@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.views import View
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.utils.translation import gettext as _
-from datetime import date, timedelta
+from django.http import JsonResponse
 
 from tinySteps.models import YourChild_Model, VaccineCard_Model, CalendarEvent_Model
 from tinySteps.forms import Milestone_Form, CalendarEvent_Form, Vaccine_Form
@@ -149,3 +149,16 @@ class YourChild_VaccineCard_View(LoginRequiredMixin, View):
         }
         
         return render(request, 'children/features/vaccine/manage.html', context)
+
+@login_required
+def growth_status_view(request, child_id):
+    """View for child growth charts and status"""
+    child = get_object_or_404(YourChild_Model, pk=child_id, user=request.user)
+    
+    # Additional context data
+    context = {
+        'child': child,
+        'active_feature': 'growth'
+    }
+    
+    return render(request, 'children/features/growth-status/index.html', context)

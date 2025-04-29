@@ -197,6 +197,33 @@ class ChildMilestone_ViewSet(viewsets.ModelViewSet):
         child = get_object_or_404(YourChild_Model, id=child_id, user=self.request.user)
         serializer.save(child=child)
 
+class ChildGrowthData_ViewSet(LoginRequiredMixin, viewsets.ViewSet):
+    """ViewSet for child growth data"""
+    permission_classes = [permissions.IsAuthenticated]
+    
+    def get_growth_data(self, request, child_pk=None):
+        """Get growth data for a specific child"""
+        logger.info(f"Fetching growth data for child ID: {child_pk}, User: {request.user.username}")
+        
+        try:
+            child = get_object_or_404(YourChild_Model, pk=child_pk, user=request.user)
+            logger.debug(f"Child found: {child.name} (ID: {child.id})")
+            
+            # Get growth data from child service
+            from tinySteps.services.core.child_service import Child_Service
+            child_service = Child_Service()
+            data = child_service.get_growth_data(child_pk, request.user)
+            
+            logger.debug(f"Growth data retrieved successfully")
+            return Response(data)
+            
+        except Exception as e:
+            logger.error(f"Error fetching growth data for child {child_pk}: {str(e)}", exc_info=True)
+            return Response(
+                {'error': f"Failed to retrieve growth data: {str(e)}"}, 
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+
 ###########################################################################
 # FORUMS AND COMMENTS
 ###########################################################################

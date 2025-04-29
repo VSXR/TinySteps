@@ -1,7 +1,7 @@
 {% load i18n %}
 
-<nav aria-label="{% trans 'Breadcrumb navigation' %}" class="py-2 mb-3 d-none d-md-block">
-    <ol class="breadcrumb bg-light py-2 px-3 rounded-pill shadow-sm mb-0">
+<nav aria-label="{% trans 'Breadcrumb navigation' %}">
+    <ol class="breadcrumb bg-light py-2 px-3 rounded-pill shadow-sm mb-0 border border-light-subtle">
         <li class="breadcrumb-item">
             <a href="{% url 'index' %}" class="text-decoration-none d-flex align-items-center">
                 <i class="fa-solid fa-house-chimney me-1" aria-hidden="true"></i>
@@ -35,6 +35,8 @@
                             <i class="fa-solid fa-syringe me-1" aria-hidden="true"></i> {% trans "Vaccination Card" %}
                         {% elif feature_type == 'milestones' %}
                             <i class="fa-solid fa-flag me-1" aria-hidden="true"></i> {% trans "Milestones" %}
+                        {% elif feature_type == 'growth' %}
+                            <i class="fa-solid fa-chart-line me-1" aria-hidden="true"></i> {% trans "Growth Charts" %}
                         {% elif feature_type == 'edit' %}
                             <i class="fa-solid fa-pen-to-square me-1" aria-hidden="true"></i> {% trans "Edit" %}
                         {% elif feature_type == 'delete' %}

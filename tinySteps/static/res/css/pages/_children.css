@@ -66,6 +66,11 @@
      border-radius: 50%;
      border: 4px solid #fff;
      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+     transition: transform 0.3s ease;
+}
+
+.child-profile-container:hover .child-profile-image {
+    transform: scale(1.05);
 }
 
 .child-gender-badge {
@@ -75,16 +80,18 @@
      transform: translate(25%, 25%);
      padding: 0.5rem;
      border: 2px solid #fff;
+     z-index: 1;
 }
 
 /* Child Stats */
 .child-stat {
-     transition: transform 0.2s;
+     transition: all 0.2s ease;
      border-radius: 0.5rem;
 }
 
 .child-stat:hover {
      transform: translateY(-3px);
+     box-shadow: 0 5px 15px rgba(0,0,0,0.08);
 }
 
 /* Child Action Buttons */
@@ -162,8 +169,49 @@
      .timeline-marker {
           left: 2px;
      }
+     
+     .growth-chart-image {
+          max-height: 200px;
+     }
+     
+     .child-actions-container {
+          flex-direction: column;
+          gap: 0.5rem;
+     }
+     
+     .nav-tabs .nav-link {
+          padding: 0.5rem 1rem;
+          font-size: 0.9rem;
+     }
+     
+     .card-header-tabs {
+          margin-right: 0;
+          margin-left: 0;
+     }
+     
+     .btn-group {
+          width: 100%;
+     }
+     
+     .btn-group .btn {
+          flex: 1;
+     }
 }
 
+@media (max-width: 575.98px) {
+     .chart-tabs .nav-link {
+          padding: 0.5rem;
+     }
+     
+     .modal-dialog {
+          margin: 0.5rem;
+     }
+     
+     .child-profile-image {
+          width: 120px;
+          height: 120px;
+     }
+}
 
 /* Empty child (the parent hasnt added any child) */
 .empty-container {
@@ -240,4 +288,144 @@
         0% { transform: scale(1); }
         50% { transform: scale(1.1); }
         100% { transform: scale(1); }
+    }
+
+/* Growth charts specific styling */
+.growth-chart-image {
+    max-height: 300px;
+    transition: all 0.3s ease;
+}
+
+.growth-chart-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.growth-chart-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1) !important;
+}
+
+.btn-expand {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    opacity: 0.6;
+    transition: opacity 0.3s ease;
+}
+
+.growth-chart-card:hover .btn-expand {
+    opacity: 1;
+}
+
+#modal-chart-image {
+    max-height: 80vh;
+}
+
+/* Ensure ARIA and accessibility */
+[role="img"][aria-label] {
+    max-width: 100%;
+}
+
+/* Responsive adjustments */
+@media (max-width: 767.98px) {
+    .growth-chart-image {
+        max-height: 200px;
+    }
+    
+    .chart-container {
+        height: 250px !important;
+    }
+    
+    .resource-card {
+        margin-bottom: 1rem;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .growth-chart-image {
+        max-height: 150px;
+    }
+    
+    .chart-container {
+        height: 200px !important;
+    }
+}
+
+
+    /* Enhanced tab styles */
+    .nav-tabs .nav-link {
+        color: #6c757d;
+        background-color: #f0f2f5;
+        border: 1px solid rgba(0,0,0,.05);
+        border-bottom: none;
+        margin-right: 4px;
+        transition: all 0.3s ease;
+        position: relative;
+        top: 1px;
+        font-weight: 500;
+    }
+    
+    .nav-tabs .nav-link:hover:not(.active) {
+        background-color: #e9ecef;
+        border-color: rgba(0,0,0,.1);
+        color: #495057;
+    }
+    
+    .nav-tabs .nav-link.active {
+        color: #2d62a3;
+        background-color: #ffffff;
+        border-top: 2px solid #2d62a3;
+        border-bottom: 1px solid #fff;
+        font-weight: 600;
+    }
+
+    /* Section containers */
+    .info-section {
+        padding: 1.25rem;
+        margin-bottom: 1.5rem;
+        background-color: #f8f9fa;
+        border-radius: 0.75rem;
+        border-left: 4px solid #2d62a3;
+    }
+    
+    .info-section-title {
+        color: #2d62a3;
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 1px solid #dee2e6;
+    }
+    
+    .measurement-card {
+        transition: transform 0.2s ease;
+        box-shadow: 0 0.125rem 0.25rem rgba(0,0,0,0.075);
+    }
+    
+    .measurement-card:hover {
+        transform: translateY(-2px);
+    }
+
+    /* Tab indicator for accessibility */
+    .tab-indicator {
+        position: absolute;
+        top: -8px;
+        right: -8px;
+        background: #28a745;
+        color: white;
+        border-radius: 50%;
+        width: 18px;
+        height: 18px;
+        font-size: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0.7; }
+        to { opacity: 1; }
     }

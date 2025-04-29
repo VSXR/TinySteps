@@ -63,4 +63,7 @@ urlpatterns = [
     path('calendar-events/<int:pk>/update-date/', 
          views.CalendarEvent_ViewSet.as_view({'post': 'update_date'}), 
          name='calendar-event-update-date'),
+    path('children/<int:child_pk>/growth-data/', 
+        views.ChildGrowthData_ViewSet.as_view({'get': 'get_growth_data'}), 
+        name='child-growth-data'),
 ]

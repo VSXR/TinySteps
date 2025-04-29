@@ -1,0 +1,285 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% trans "Growth Charts" %} - {{ child.name }} - Tiny Steps{% endblock %}
+
+{% block head_meta %}
+    {{ block.super }}
+    <!-- Meta tags for fallback growth chart data -->
+    <meta name="birth-weight" content="3.5">
+    <meta name="current-weight" content="{{ child.weight|default:'0' }}">
+    <meta name="birth-height" content="50">
+    <meta name="current-height" content="{{ child.height|default:'0' }}">
+{% endblock head_meta %}
+
+{% block main_contents %}
+    <main id="main-content" class="container-fluid">
+        <input type="hidden" id="child-id" value="{{ child.id }}">
+        <input type="hidden" id="child-gender" value="{{ child.gender }}">
+        
+        <!-- Breadcrumbs -->
+        {% include "children/components/child_breadcrumbs.html" with child=child feature_type="growth" %}
+        
+        <!-- Page Header -->
+        <header class="mb-5">
+            <h1 class="h2 mb-3">Growth Charts for {{ child.name }}</h1>
+            <p class="text-muted mb-4 text-center">Track your child's physical development patterns</p>
+        </header>
+        
+        <!-- Messages Container -->
+        <div id="messages-container" class="messages mb-4" role="alert" aria-live="polite"></div>
+        
+        <!-- Child Stats Summary Card -->
+        <div class="row mb-5">
+            <div class="col-12">
+                <div class="card border-0 shadow-sm rounded-4">
+                    <div class="card-body p-4">
+                        <div class="row align-items-center">
+                            <div class="col-md-2 col-sm-4 text-center mb-4 mb-md-0">
+                                <img src="{{ child.get_image }}" alt="{{ child.name }}" 
+                                    class="rounded-circle border border-3 border-light shadow" 
+                                    width="80" height="80" style="object-fit: cover;">
+                            </div>
+                            
+                            <div class="col-md-6 mb-4 mb-md-0">
+                                <h2 class="h5 mb-3">{{ child.name }} {{ child.second_name }}</h2>
+                                <div class="d-flex flex-wrap gap-3 mb-3">
+                                    <span class="badge bg-primary rounded-pill">{{ child.age }} months</span>
+                                    <span class="badge {% if child.gender == 'M' %}bg-info{% else %}bg-danger{% endif %} rounded-pill">
+                                        {% if child.gender == 'M' %}Male{% else %}Female{% endif %}
+                                    </span>
+                                </div>
+                                <p class="mb-0 small">Born on {{ child.birth_date|date:"F j, Y" }}</p>
+                            </div>
+                            
+                            <div class="col-md-4">
+                                <div class="row g-3">
+                                    <div class="col-6">
+                                        <div class="p-3 border rounded-3 text-center h-100">
+                                            <div class="small text-muted mb-2">Weight</div>
+                                            <div class="h5 mb-0">{{ child.weight|default:"--" }} kg</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="p-3 border rounded-3 text-center h-100">
+                                            <div class="small text-muted mb-2">Height</div>
+                                            <div class="h5 mb-0">{{ child.height|default:"--" }} cm</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Child's Growth Data Section -->
+        <section aria-labelledby="growth-data-heading" class="mb-5">
+            <div class="card border-0 shadow-sm rounded-4">
+                <div class="card-header bg-light border-0 pt-4 pb-3">
+                    <h2 id="growth-data-heading" class="h4 mb-0 d-flex align-items-center">
+                        <i class="fa-solid fa-chart-bar text-primary me-3" aria-hidden="true"></i>
+                        {{ child.name }}'s Growth Tracking
+                    </h2>
+                </div>
+                <div class="card-body p-4">
+                    <div class="row g-5">
+                        <!-- Weight Chart -->
+                        <div class="col-md-6">
+                            <div class="border rounded-4 h-100">
+                                <div class="p-4 border-bottom">
+                                    <h3 class="h5 mb-0">Weight over time</h3>
+                                </div>
+                                <div class="p-4">
+                                    <canvas id="weight-percentile-chart" role="img" aria-label="Weight percentile chart for {{ child.name }}"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Height Chart -->
+                        <div class="col-md-6">
+                            <div class="border rounded-4 h-100">
+                                <div class="p-4 border-bottom">
+                                    <h3 class="h5 mb-0">Height over time</h3>
+                                </div>
+                                <div class="p-4">
+                                    <canvas id="height-percentile-chart" role="img" aria-label="Height percentile chart for {{ child.name }}"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Update Measurements CTA -->
+                    <div class="text-center mt-5">
+                        <a href="{% url 'children:edit_child' child.id %}" class="btn btn-primary rounded-pill px-4 py-2">
+                            <i class="fa-solid fa-plus me-2" aria-hidden="true"></i> Update Measurements
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Standard Growth Charts Section -->
+        <section aria-labelledby="standard-charts-heading" class="mb-5">
+            <div class="card border-0 shadow-sm rounded-4">
+                <div class="card-header bg-light border-0 pt-4 pb-3">
+                    <h2 id="standard-charts-heading" class="h4 mb-0 d-flex align-items-center">
+                        <i class="fa-solid fa-chart-line text-primary me-3" aria-hidden="true"></i>
+                        Standard Growth Charts (0-5 Years)
+                    </h2>
+                </div>
+                
+                <div class="card-body p-4">
+                    <!-- Alert about growth charts -->
+                    <div class="alert alert-info bg-opacity-25 mb-5">
+                        <div class="d-flex">
+                            <div class="flex-shrink-0">
+                                <i class="fa-solid fa-info-circle mt-1" aria-hidden="true"></i>
+                            </div>
+                            <div class="ms-3">
+                                <p class="mb-0">These charts represent standard growth patterns based on WHO guidelines. Every child develops at their own pace - these are meant to be general references.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Weight Charts Section -->
+                    <h3 class="h5 mb-4">Weight Charts</h3>
+                    <div class="row g-5 mb-5">
+                        <!-- Weight Chart (Boys) -->
+                        <div class="col-md-6">
+                            <div class="position-relative border rounded-4 shadow-sm overflow-hidden h-100">
+                                <div class="bg-primary bg-opacity-10 p-4 border-bottom">
+                                    <h4 class="h5 mb-0">
+                                        <i class="fa-solid fa-weight-scale text-primary me-3" aria-hidden="true"></i>
+                                        Weight Chart - Boys
+                                    </h4>
+                                </div>
+                                <div class="p-4 text-center">
+                                    <img src="{% static 'res/img/growth/weight-boys-0-5.jpg' %}" 
+                                        alt="Weight chart for boys 0-5 years" 
+                                        class="img-fluid" loading="lazy">
+                                    <button class="btn position-absolute top-0 end-0 m-3 rounded-circle bg-white" 
+                                            aria-label="Expand weight chart for boys" 
+                                            data-chart-type="weight-boys"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#chartModal">
+                                        <i class="fa-solid fa-expand" aria-hidden="true"></i>
+                                    </button>
+                                </div>
+                                
+                                <!-- Current child marker overlay would go here -->
+                            </div>
+                        </div>
+                        
+                        <!-- Weight Chart (Girls) -->
+                        <div class="col-md-6">
+                            <div class="position-relative border rounded-4 shadow-sm overflow-hidden h-100">
+                                <div class="bg-danger bg-opacity-10 p-4 border-bottom">
+                                    <h4 class="h5 mb-0">
+                                        <i class="fa-solid fa-weight-scale text-danger me-3" aria-hidden="true"></i>
+                                        Weight Chart - Girls
+                                    </h4>
+                                </div>
+                                <div class="p-4 text-center">
+                                    <img src="{% static 'res/img/growth/weight-girls-0-5.jpg' %}" 
+                                        alt="Weight chart for girls 0-5 years" 
+                                        class="img-fluid" loading="lazy">
+                                    <button class="btn position-absolute top-0 end-0 m-3 rounded-circle bg-white" 
+                                            aria-label="Expand weight chart for girls" 
+                                            data-chart-type="weight-girls"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#chartModal">
+                                        <i class="fa-solid fa-expand" aria-hidden="true"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Height Charts Section -->
+                    <h3 class="h5 mb-4">Height Charts</h3>
+                    <div class="row g-5">
+                        <!-- Height Chart (Boys) -->
+                        <div class="col-md-6">
+                            <div class="position-relative border rounded-4 shadow-sm overflow-hidden h-100">
+                                <div class="bg-primary bg-opacity-10 p-4 border-bottom">
+                                    <h4 class="h5 mb-0">
+                                        <i class="fa-solid fa-ruler-vertical text-primary me-3" aria-hidden="true"></i>
+                                        Height Chart - Boys
+                                    </h4>
+                                </div>
+                                <div class="p-4 text-center">
+                                    <img src="{% static 'res/img/growth/height-boys-0-5.jpg' %}" 
+                                        alt="Height chart for boys 0-5 years" 
+                                        class="img-fluid" loading="lazy">
+                                    <button class="btn position-absolute top-0 end-0 m-3 rounded-circle bg-white" 
+                                            aria-label="Expand height chart for boys" 
+                                            data-chart-type="height-boys"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#chartModal">
+                                        <i class="fa-solid fa-expand" aria-hidden="true"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Height Chart (Girls) -->
+                        <div class="col-md-6">
+                            <div class="position-relative border rounded-4 shadow-sm overflow-hidden h-100">
+                                <div class="bg-danger bg-opacity-10 p-4 border-bottom">
+                                    <h4 class="h5 mb-0">
+                                        <i class="fa-solid fa-ruler-vertical text-danger me-3" aria-hidden="true"></i>
+                                        Height Chart - Girls
+                                    </h4>
+                                </div>
+                                <div class="p-4 text-center">
+                                    <img src="{% static 'res/img/growth/height-girls-0-5.jpg' %}" 
+                                        alt="Height chart for girls 0-5 years" 
+                                        class="img-fluid" loading="lazy">
+                                    <button class="btn position-absolute top-0 end-0 m-3 rounded-circle bg-white" 
+                                            aria-label="Expand height chart for girls" 
+                                            data-chart-type="height-girls"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#chartModal">
+                                        <i class="fa-solid fa-expand" aria-hidden="true"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Chart Modal -->
+        <div class="modal fade" id="chartModal" tabindex="-1" aria-labelledby="chartModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-xl modal-dialog-centered">
+                <div class="modal-content rounded-4 border-0 shadow">
+                    <div class="modal-header">
+                        <h2 class="modal-title h5" id="chartModalLabel">Growth Chart</h2>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body p-0 text-center">
+                        <img id="modal-chart-image" src="" alt="Enlarged growth chart" class="img-fluid w-100">
+                    </div>
+                    <div class="modal-footer">
+                        <a id="download-chart" href="#" class="btn btn-outline-primary rounded-pill" download>
+                            <i class="fa-solid fa-download me-2" aria-hidden="true"></i> Download Chart
+                        </a>
+                        <button type="button" class="btn btn-primary rounded-pill" data-bs-dismiss="modal">
+                            <i class="fa-solid fa-xmark me-2" aria-hidden="true"></i> Close
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+{% endblock main_contents %}
+
+{% block extra_js %}
+    {{ block.super }}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script type="module" src="{% static 'res/javascript/features/growth-chart.js' %}"></script>
+{% endblock extra_js %}

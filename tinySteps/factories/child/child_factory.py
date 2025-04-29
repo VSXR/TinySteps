@@ -26,6 +26,7 @@ class ChildUrl_Factory:
             path('<int:child_id>/calendar/', feature_views.child_calendar, name='child_calendar'),
             path('<int:child_id>/milestones/', feature_views.child_milestone, name='child_milestones'),
             path('<int:child_id>/vaccine-card/', feature_views.child_vaccine_card, name='child_vaccine_card'),
+            path('<int:child_id>/growth-status/', feature_views.growth_status_view, name='child_growth_status'),
         ]
         
         return urlpatterns

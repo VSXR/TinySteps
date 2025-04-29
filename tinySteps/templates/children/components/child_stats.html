@@ -66,7 +66,7 @@
                                     {% if child.weight and child.height %}
                                         {% trans "Growth data available. View charts for detailed information." %}
                                         <div class="mt-3">
-                                            <a href="#" class="btn btn-sm btn-outline-success rounded-pill px-3">
+                                            <a href="{% url 'children:child_growth_status' child.id %}" class="btn btn-sm btn-outline-success rounded-pill px-3">
                                                 <i class="fa-solid fa-chart-bar me-1" aria-hidden="true"></i> {% trans "View Charts" %}
                                             </a>
                                         </div>

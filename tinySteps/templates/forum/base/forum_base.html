@@ -8,14 +8,13 @@
 {% endblock %}
 
 {% block main_contents %}
-<main id="main-content" role="main">
-    <div class="container mt-5 mb-4">
-        {% block breadcrumbs %}
-            {% if view_type != "list" and view_type %}
-                {% include 'forum/components/breadcrumbs.html' with view_type=view_type %}
-            {% endif %}
-        {% endblock %}
-        
+<main id="main-content" class="container-fluid">
+    {% block breadcrumbs %}
+        {% if view_type != "list" and view_type %}
+            {% include 'forum/components/breadcrumbs.html' with view_type=view_type %}
+        {% endif %}
+    {% endblock %}
+    <div class="container-lg px-4">    
         {% block page_header %}
             {% include "forum/components/page_header.html" with title=title|default:"Parents Forum" subtitle=subtitle|default:"Connect with other parents, share experiences, and ask questions" %}
         {% endblock %}
@@ -32,7 +31,7 @@
             
             <!-- Main Content Column -->
             <div class="{% block main_column_classes %}col-lg-9 col-md-8{% endblock %}">
-                <!-- Tools Area (Optional: if we need it, WE NEED TO DEVELOP IT!) -->
+                <!-- Tools Area (Optional) -->
                 {% block tools_area %}{% endblock %}
                 
                 <!-- Search Filters -->

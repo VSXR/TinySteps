@@ -397,9 +397,6 @@ class Child_Service:
     def get_recommended_vaccines(self, child_id, user):
         """
         Get recommended vaccines based on child's age
-        
-        This is a placeholder method - in a real application, you would implement
-        logic based on your country's vaccination schedule.
         """
         child = self.get_child_by_id(child_id, user)
         today = timezone.now().date()
@@ -413,7 +410,6 @@ class Child_Service:
         age_months = age_days // 30
         recommendations = []
         
-        # Example logic based on a simplified schedule
         if age_months <= 2:
             recommendations.append({
                 'name': 'Hepatitis B (HepB)',
@@ -438,3 +434,25 @@ class Child_Service:
         
         
         return recommendations
+    
+    # ===== Growth Data Methods =====
+    def get_growth_data(self, child_id, user):
+        """Get growth data for a child"""
+        child = self.get_child_by_id(child_id, user)
+        
+        estimated_birth_weight = 3.5
+        estimated_birth_height = 50.0
+        
+        # Basic data structure
+        data = {
+            'birthWeight': estimated_birth_weight,
+            'currentWeight': child.weight or 0.0,
+            'birthHeight': estimated_birth_height,
+            'currentHeight': child.height or 0.0,
+            'birthDate': child.birth_date.strftime('%Y-%m-%d') if child.birth_date else None,
+            'currentDate': timezone.now().strftime('%Y-%m-%d'),
+            'gender': child.gender,
+            'ageMonths': child.age
+        }
+        
+        return data
