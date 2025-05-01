@@ -20,10 +20,10 @@ urlpatterns = [
     # Auth routes
     *AuthUrl_Factory.create_urls(),
     
-    # Children routes - add prefix here
+    # Children routes
     path('children/', include((ChildUrl_Factory.create_urls(), 'children'))),
     
-    # Forum routes - add prefix here
+    # Forum routes
     path('forum/', include((ForumUrl_Factory.create_urls(), 'forum'))),
     
     # Guide routes - primary URLs
@@ -41,7 +41,7 @@ urlpatterns = [
     # Comment routes
     path('comments/', include((CommentUrl_Factory.create_urls(), 'comments'))),
     
-    # Pages and policies routes - add prefix here
+    # Pages and policies routes
     path('pages/', include((PagesUrl_Factory.create_urls(), 'pages'))),
     
     # Admin routes

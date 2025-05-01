@@ -1,0 +1,114 @@
+{% load static %} 
+{% load i18n %}
+
+<div class="row g-4 card-view" role="list" id="children-list-heading">
+    {% for child in children %}
+        <div class="col-md-6 col-lg-4 col-xl-3" role="listitem">
+            <div class="card h-100 border-0 shadow-sm rounded-4 child-card" data-age="{{ child.age }}">
+                <div class="position-relative">
+                    <div class="child-banner position-relative">
+                        <div class="bg-{% if child.gender == 'M' %}primary{% else %}danger{% endif %} bg-opacity-25 text-center py-3">
+                            <div class="position-relative d-inline-block">
+                                <img src="{{ child.get_image }}" alt="{{ child.name }}" 
+                                    class="rounded-circle border border-3 border-white shadow" 
+                                    width="100" height="100" style="object-fit: cover;" loading="lazy">
+                                <span class="position-absolute bottom-0 end-0 translate-middle badge rounded-pill {% if child.gender == 'M' %}bg-info{% else %}bg-danger{% endif %} p-2 border border-2 border-white">
+                                    <i class="fa-solid fa-{% if child.gender == 'M' %}mars{% else %}venus{% endif %} fa-lg" aria-hidden="true"></i>
+                                    <span class="visually-hidden">{% if child.gender == 'M' %}{% trans "Male" %}{% else %}{% trans "Female" %}{% endif %}</span>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="position-absolute bottom-0 start-50 translate-middle-x mb-n3">
+                            <span class="badge bg-{% if child.age < 12 %}primary{% elif child.age < 36 %}success{% else %}warning{% endif %} rounded-pill px-3 py-2 shadow-sm">
+                                <i class="fa-solid fa-cake-candles me-1" aria-hidden="true"></i>
+                                {% blocktrans with age=child.age %}{{ age }} months{% endblocktrans %}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body text-center pt-4">
+                    <h3 class="h5 mb-1">
+                        <a href="{% url 'children:child_detail' child.id %}" class="child-name text-decoration-none">
+                            {{ child.name }}{% if child.second_name %} {{ child.second_name }}{% endif %}
+                        </a>
+                    </h3>
+                    <p class="text-muted small mb-3">{% trans "Born" %}: {{ child.birth_date|date:"F j, Y" }}</p>
+                    
+                    <div class="d-flex justify-content-center gap-2 mb-2">
+                        {% if child.weight %}
+                            <span class="badge bg-light text-dark px-2">
+                                <i class="fa-solid fa-weight-scale text-primary me-1" aria-hidden="true"></i>
+                                {{ child.weight }} kg
+                            </span>
+                        {% endif %}
+                        
+                        {% if child.height %}
+                            <span class="badge bg-light text-dark px-2">
+                                <i class="fa-solid fa-ruler-vertical text-primary me-1" aria-hidden="true"></i>
+                                {{ child.height }} cm
+                            </span>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="card-footer bg-white border-0 pt-0">
+                    <a href="{% url 'children:child_detail' child.id %}" class="btn btn-primary rounded-pill w-100">
+                        <i class="fa-solid fa-eye me-2" aria-hidden="true"></i>{% trans "View Child" %}
+                    </a>
+                </div>
+            </div>
+        </div>
+    {% empty %}
+        <div class="col-12 text-center py-5">
+            <div class="text-muted">
+                <i class="fa-solid fa-search fa-3x mb-3 opacity-25" aria-hidden="true"></i>
+                <h3 class="h5">{% trans "No children found" %}</h3>
+                <p>{% trans "Try a different search term or add a new child" %}</p>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+
+<!-- Pagination -->
+{% if children.paginator.num_pages > 1 %}
+    <nav aria-label="{% trans 'Children pagination' %}" class="mt-4 section-spacing">
+        <ul class="pagination justify-content-center flex-wrap">
+            {% if children.has_previous %}
+                <li class="page-item">
+                    <a class="page-link rounded-pill px-3" href="?page=1{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}" aria-label="{% trans 'First page' %}">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link rounded-pill px-3" href="?page={{ children.previous_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}" aria-label="{% trans 'Previous page' %}">
+                        <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+                    </a>
+                </li>
+            {% endif %}
+            
+            {% for num in children.paginator.page_range %}
+                {% if num == children.number %}
+                    <li class="page-item active">
+                        <span class="page-link rounded-pill px-3">{{ num }}</span>
+                    </li>
+                {% elif num > children.number|add:"-3" and num < children.number|add:"3" %}
+                    <li class="page-item">
+                        <a class="page-link rounded-pill px-3" href="?page={{ num }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}">{{ num }}</a>
+                    </li>
+                {% endif %}
+            {% endfor %}
+            
+            {% if children.has_next %}
+                <li class="page-item">
+                    <a class="page-link rounded-pill px-3" href="?page={{ children.next_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}" aria-label="{% trans 'Next page' %}">
+                        <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+                    </a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link rounded-pill px-3" href="?page={{ children.paginator.num_pages }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}" aria-label="{% trans 'Last page' %}">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            {% endif %}
+        </ul>
+    </nav>
+{% endif %}

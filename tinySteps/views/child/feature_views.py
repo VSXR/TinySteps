@@ -4,6 +4,10 @@ from django.views import View
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.utils.translation import gettext as _
 from django.http import JsonResponse
+from django.views.decorators.http import require_GET
+from django.db.models import Count
+from django.utils import timezone
+from datetime import timedelta
 
 from tinySteps.models import YourChild_Model, VaccineCard_Model, CalendarEvent_Model
 from tinySteps.forms import Milestone_Form, CalendarEvent_Form, Vaccine_Form
@@ -150,6 +154,100 @@ class YourChild_VaccineCard_View(LoginRequiredMixin, View):
         
         return render(request, 'children/features/vaccine/manage.html', context)
 
+
+# OTHERS 
+@require_GET
+@login_required
+def get_child_statistics(request):
+    """
+    API endpoint to retrieve statistics for the child dashboard.
+    """
+    try:
+        from tinySteps.models import YourChild_Model, VaccineCard_Model, CalendarEvent_Model
+        from django.utils import timezone
+        from datetime import timedelta
+        
+        # Get basic child statistics
+        total_children = YourChild_Model.objects.filter(user=request.user).count()
+        
+        # Get vaccine statistics - with robust error handling
+        vaccine_count = 0
+        try:
+            children_with_vaccines = YourChild_Model.objects.filter(
+                user=request.user, 
+                vaccinecard__isnull=False
+            ).count()
+            
+            if children_with_vaccines > 0:
+                from django.db.models import Count
+                # Check if 'vaccines' is a valid related name
+                if hasattr(VaccineCard_Model, 'vaccines'):
+                    vaccine_query = VaccineCard_Model.objects.filter(
+                        child__user=request.user,
+                        child__isnull=False
+                    ).aggregate(
+                        total_vaccines=Count('vaccines')
+                    )
+                    vaccine_count = vaccine_query.get('total_vaccines', 0) or 0
+                else:
+                    # Try alternate approach if the related name isn't 'vaccines'
+                    from django.apps import apps
+                    Vaccine_Model = apps.get_model('tinySteps', 'Vaccine_Model')
+                    vaccine_count = Vaccine_Model.objects.filter(
+                        vaccine_card__child__user=request.user
+                    ).count()
+        except Exception as ve:
+            # Log the specific vaccine-related error but continue
+            import logging
+            logging.error(f"Vaccine statistics error: {str(ve)}")
+        
+        # Get upcoming events
+        upcoming_events = 0
+        try:
+            next_week = timezone.now() + timedelta(days=7)
+            upcoming_events = CalendarEvent_Model.objects.filter(
+                child__user=request.user,
+                date__gte=timezone.now(),
+                date__lte=next_week
+            ).count()
+        except Exception as ee:
+            # Log event-related error but continue
+            import logging
+            logging.error(f"Event statistics error: {str(ee)}")
+        
+        # Get recent milestones
+        recent_milestones = 0
+        try:
+            from tinySteps.models import Milestone_Model
+            last_month = timezone.now() - timedelta(days=30)
+            recent_milestones = Milestone_Model.objects.filter(
+                child__user=request.user,
+                achieved_date__gte=last_month
+            ).count()
+        except Exception as me:
+            # Log milestone-related error but continue
+            import logging
+            logging.error(f"Milestone statistics error: {str(me)}")
+            
+        # Return response with field names matching what the frontend expects
+        return JsonResponse({
+            'status': 'success',
+            'total_children': total_children,
+            'vaccines_up_to_date': vaccine_count,
+            'upcoming_events': upcoming_events,
+            'recent_milestones': recent_milestones
+        })
+        
+    except Exception as e:
+        import traceback
+        import logging
+        logging.error(f"Child statistics API error: {str(e)}\n{traceback.format_exc()}")
+        return JsonResponse({
+            'status': 'error',
+            'message': str(e),
+            'details': traceback.format_exc()
+        }, status=500)
+    
 @login_required
 def growth_status_view(request, child_id):
     """View for child growth charts and status"""

@@ -5,15 +5,16 @@
 {% block title %}{% trans "My Profile - Tiny Steps" %}{% endblock %}
 
 {% block main_contents %}
-<main id="main-content">
+<!-- Skip link for keyboard users -->
+<a href="#profile-main-content" class="skip-link visually-hidden-focusable">{% trans "Skip to main content" %}</a>
     <div class="container my-4 my-md-5">
         <!-- Page Header -->
-        {% include "accounts/components/page_header.html" with title="My Profile" subtitle="Manage your account settings and view your activity" %}
+        {% include "accounts/components/page_header.html" with title="My Profile" subtitle="Manage your account settings and view your development journey" %}
         
         <!-- Messages Container -->
         <div class="row mb-4">
             <div class="col">
-                <div id="messages-container" class="messages" role="alert" aria-live="polite">
+                <div id="messages-container" class="messages" role="alert" aria-live="polite" aria-atomic="true">
                     {% if messages %}
                         {% include 'partials/messages.html' %}
                     {% endif %}
@@ -21,15 +22,15 @@
             </div>
         </div>
 
-        <!-- Main Content -->
-        <div class="row g-4 mb-5">
-            <!-- Profile Information -->
-            <div class="col-12 col-lg-4">
-                <div class="card border-0 shadow-sm rounded-4 h-100 content-lift">
-                    <div class="card-header bg-light border-0 py-3" id="profile-info-header">
+        <!-- Main Profile Section -->
+        <div id="profile-main-content" class="row g-4 mb-5" role="region" aria-label="{% trans 'Profile Information' %}">
+            <!-- Profile Information Card -->
+            <div class="col-12 col-lg-4 d-flex">
+                <div class="card border-0 shadow-sm rounded-4 w-100 content-lift">
+                    <div class="card-header bg-primary bg-opacity-10 border-0 py-3 rounded-top-4" id="profile-info-header">
                         <h2 class="h5 mb-0 fw-semibold d-flex align-items-center">
                             <i class="fa-solid fa-user-circle text-primary me-2" aria-hidden="true"></i>
-                            {% trans "Profile Information" %}
+                            <span>{% trans "Profile Information" %}</span>
                         </h2>
                     </div>
                     <div class="card-body p-4">
@@ -38,58 +39,226 @@
                 </div>
             </div>
 
-            <!-- Children Summary -->
-            <div class="col-12 col-lg-8">
-                <div class="card border-0 shadow-sm rounded-4 h-100 content-lift">
-                    <div class="card-header bg-light border-0 py-3" id="children-section-header">
-                        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
-                            <h2 class="h5 mb-0 fw-semibold d-flex align-items-center">
-                                <i class="fa-solid fa-child text-primary me-2" aria-hidden="true"></i>
-                                {% trans "My Children" %}
-                            </h2>
-                            <a href="{% url 'children:add_child' %}" class="btn btn-sm btn-primary rounded-pill px-3" aria-label="{% trans 'Add a new child' %}">
-                                <i class="fa-solid fa-plus me-1" aria-hidden="true"></i> {% trans "Add Child" %}
-                            </a>
-                        </div>
+            <!-- Children Summary Card -->
+            <div class="col-12 col-lg-8 d-flex">
+                <div class="card border-0 shadow-sm rounded-4 w-100 content-lift">
+                    <div class="card-header bg-primary bg-opacity-10 border-0 py-3 rounded-top-4 d-flex justify-content-between align-items-center flex-wrap gap-2" id="children-section-header">
+                        <h2 class="h5 mb-0 fw-semibold d-flex align-items-center">
+                            <i class="fa-solid fa-child text-primary me-2" aria-hidden="true"></i>
+                            <span>{% trans "My Children" %}</span>
+                        </h2>
+                        <a href="{% url 'children:add_child' %}" class="btn btn-primary rounded-pill px-3" aria-label="{% trans 'Add a new child' %}">
+                            <i class="fa-solid fa-plus me-1" aria-hidden="true"></i> {% trans "Add Child" %}
+                        </a>
                     </div>
                     <div class="card-body p-4">
                         {% if user.children.all %}
-                            <div class="row row-cols-1 row-cols-sm-2 row-cols-xl-3 g-4" aria-labelledby="children-section-header">
+                            <div class="row row-cols-1 row-cols-sm-2 row-cols-xl-3 g-4" role="list" aria-labelledby="children-section-header">
                                 {% for child in user.children.all %}
-                                    <div class="col">
+                                    <div class="col" role="listitem">
                                         {% include "accounts/components/child_mini_card.html" with child=child %}
                                     </div>
                                 {% endfor %}
                             </div>
                         {% else %}
-                            <div class="text-center py-5">
-                                <div class="mb-4">
-                                    <i class="fa-solid fa-child text-muted opacity-25 display-1" aria-hidden="true"></i>
+                            <div class="text-center py-4 empty-container" aria-live="polite">
+                                <div class="empty-icon-wrapper mb-4">
+                                    <i class="fa-solid fa-child-reaching empty-icon" aria-hidden="true"></i>
                                 </div>
-                                <h3 class="h5 mb-3 text-muted">{% trans "You haven't added any children yet" %}</h3>
-                                <p class="text-muted mb-4">{% trans "Start tracking your child's development journey by adding their profile." %}</p>
-                                <a href="{% url 'children:add_child' %}" class="btn btn-primary rounded-pill px-4" aria-label="{% trans 'Add your first child' %}">
+                                <h3 class="empty-title">{% trans "No Children Added Yet" %}</h3>
+                                <p class="empty-message">{% trans "Start tracking your child's development journey by adding their profile." %}</p>
+                                <a href="{% url 'children:add_child' %}" class="btn btn-primary btn-lg rounded-pill px-4 shadow-sm" aria-label="{% trans 'Add your first child' %}">
                                     <i class="fa-solid fa-plus me-2" aria-hidden="true"></i> {% trans "Add Your First Child" %}
                                 </a>
                             </div>
                         {% endif %}
                     </div>
+                    {% if user.children.all %}
+                    <div class="card-footer bg-transparent border-0 pt-0 pb-4 px-4 text-center">
+                        <a href="{% url 'children:your_children' %}" class="btn btn-outline-primary rounded-pill px-4" aria-label="{% trans 'View all your children' %}">
+                            <i class="fa-solid fa-th-list me-2" aria-hidden="true"></i>{% trans "View All Children" %}
+                        </a>
+                    </div>
+                    {% endif %}
                 </div>
             </div>
         </div>
                 
-        <!-- Forum Activity and Account Actions -->
+        <!-- Activity & Actions Section -->
         <div class="row g-4 mb-5">
             <!-- Forum Activity -->
-            <div class="col-12 col-lg-8">
-                {% include "accounts/components/forum_activity_card.html" %}
+            <div class="col-12 col-lg-8 d-flex">
+            {% include "accounts/components/forum_activity_card.html" with user=user %}
             </div>
             
             <!-- Account Actions -->
-            <div class="col-12 col-lg-4">
-                {% include "accounts/components/account_actions_card.html" %}
+            <div class="col-12 col-lg-4 d-flex">
+                <div class="card border-0 shadow-sm rounded-4 w-100 content-lift">
+                    <div class="card-header bg-primary bg-opacity-10 border-0 py-3 rounded-top-4" id="account-actions-header">
+                        <h2 class="h5 mb-0 fw-semibold d-flex align-items-center">
+                            <i class="fa-solid fa-gear text-primary me-2" aria-hidden="true"></i>
+                            <span>{% trans "Account Settings" %}</span>
+                        </h2>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="d-flex flex-column gap-3" aria-labelledby="account-actions-header">
+                            <a href="{% url 'password_reset' %}" class="d-flex align-items-center text-decoration-none text-body bg-light rounded-pill p-3">
+                                <span class="icon-wrapper bg-primary bg-opacity-10 rounded-circle p-0 me-3 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                                    <i class="fa-solid fa-key text-primary" aria-hidden="true"></i>
+                                </span>
+                                <div class="flex-grow-1">
+                                    <h3 class="h6 mb-1 fw-semibold">{% trans "Change Password" %}</h3>
+                                    <p class="small text-muted mb-0">{% trans "Update your account password" %}</p>
+                                </div>
+                                <i class="fa-solid fa-chevron-right text-primary" aria-hidden="true"></i>
+                            </a>
+                            
+                            <a href="#" class="d-flex align-items-center text-decoration-none text-body bg-light rounded-pill p-3">
+                                <span class="icon-wrapper bg-primary bg-opacity-10 rounded-circle p-0 me-3 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                                    <i class="fa-solid fa-shield-alt text-primary" aria-hidden="true"></i>
+                                </span>
+                                <div class="flex-grow-1">
+                                    <h3 class="h6 mb-1 fw-semibold">{% trans "Privacy Settings" %}</h3>
+                                    <p class="small text-muted mb-0">{% trans "Manage your data and privacy" %}</p>
+                                </div>
+                                <i class="fa-solid fa-chevron-right text-primary" aria-hidden="true"></i>
+                            </a>
+                            
+                            <a href="#" class="d-flex align-items-center text-decoration-none text-body bg-light rounded-pill p-3">
+                                <span class="icon-wrapper bg-primary bg-opacity-10 rounded-circle p-0 me-3 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                                    <i class="fa-solid fa-bell text-primary" aria-hidden="true"></i>
+                                </span>
+                                <div class="flex-grow-1">
+                                    <h3 class="h6 mb-1 fw-semibold">{% trans "Notification Settings" %}</h3>
+                                    <p class="small text-muted mb-0">{% trans "Control your notifications" %}</p>
+                                </div>
+                                <i class="fa-solid fa-chevron-right text-primary" aria-hidden="true"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="card-footer bg-transparent border-0 p-4">
+                        <form method="post" action="{% url 'logout' %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-outline-danger rounded-pill w-100" aria-label="{% trans 'Logout from your account' %}">
+                                <i class="fa-solid fa-sign-out-alt me-2" aria-hidden="true"></i>{% trans "Logout" %}
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div></div>
+
+        <!-- Recommended Activities Section -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card border-0 shadow-sm rounded-4">
+                    <div class="card-header bg-primary bg-opacity-10 border-0 py-3 rounded-top-4">
+                        <h2 class="h5 mb-0 fw-semibold d-flex align-items-center">
+                            <i class="fa-solid fa-star text-primary me-2" aria-hidden="true"></i>
+                            <span>{% trans "Recommended For You" %}</span>
+                        </h2>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="row row-cols-1 row-cols-md-3 g-4">
+                            <!-- Recommended Guides -->
+                            <div class="col">
+                                <div class="card h-100 border-0 shadow-sm rounded-4 element-elevation">
+                                    <div class="card-body p-4 text-center">
+                                        <div class="mb-3">
+                                            <span class="d-inline-block rounded-circle bg-primary bg-opacity-10 p-3">
+                                                <i class="fa-solid fa-book fa-2x text-primary" aria-hidden="true"></i>
+                                            </span>
+                                        </div>
+                                        <h3 class="h5 mb-3">{% trans "Recommended Guides" %}</h3>
+                                        <p class="text-muted mb-4">{% trans "Discover personalized parenting guides based on your children's ages." %}</p>
+                                        <a href="{% url 'guides' %}" class="btn btn-outline-primary rounded-pill">
+                                            <i class="fa-solid fa-book-open me-2" aria-hidden="true"></i>
+                                            {% trans "Explore Guides" %}
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Upcoming Events -->
+                            <div class="col">
+                                <div class="card h-100 border-0 shadow-sm rounded-4 element-elevation">
+                                    <div class="card-body p-4 text-center">
+                                        <div class="mb-3">
+                                            <span class="d-inline-block rounded-circle bg-primary bg-opacity-10 p-3">
+                                                <i class="fa-solid fa-calendar-check fa-2x text-primary" aria-hidden="true"></i>
+                                            </span>
+                                        </div>
+                                        <h3 class="h5 mb-3">{% trans "Upcoming Events" %}</h3>
+                                        <p class="text-muted mb-4">{% trans "View upcoming checkups, vaccinations, and developmental milestones." %}</p>
+                                        {% if user.children.all %}
+                                            <a href="{% url 'children:child_calendar' user.children.first.id %}" class="btn btn-outline-primary rounded-pill">
+                                                <i class="fa-solid fa-calendar-alt me-2" aria-hidden="true"></i>
+                                                {% trans "View Calendar" %}
+                                            </a>
+                                        {% else %}
+                                            <a href="{% url 'children:add_child' %}" class="btn btn-outline-primary rounded-pill">
+                                                <i class="fa-solid fa-plus me-2" aria-hidden="true"></i>
+                                                {% trans "Add Child First" %}
+                                            </a>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Community Forum -->
+                            <div class="col">
+                                <div class="card h-100 border-0 shadow-sm rounded-4 element-elevation">
+                                    <div class="card-body p-4 text-center">
+                                        <div class="mb-3">
+                                            <span class="d-inline-block rounded-circle bg-primary bg-opacity-10 p-3">
+                                                <i class="fa-solid fa-comments fa-2x text-primary" aria-hidden="true"></i>
+                                            </span>
+                                        </div>
+                                        <h3 class="h5 mb-3">{% trans "Community Forum" %}</h3>
+                                        <p class="text-muted mb-4">{% trans "Connect with other parents and share your experiences and questions." %}</p>
+                                        <a href="{% url 'forum:parent_forum' %}" class="btn btn-outline-primary rounded-pill">
+                                            <i class="fa-solid fa-users me-2" aria-hidden="true"></i>
+                                            {% trans "Join Discussion" %}
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-</main>
 {% endblock main_contents %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add hover effects to cards
+        const cards = document.querySelectorAll('.element-elevation');
+        cards.forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.classList.add('shadow');
+                this.style.transform = 'translateY(-5px)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.classList.remove('shadow');
+                this.style.transform = 'translateY(0)';
+            });
+        });
+        
+        // Announce screen reader messages for better accessibility
+        const messages = document.querySelectorAll('.alert');
+        if (messages.length > 0) {
+            const messageContainer = document.getElementById('messages-container');
+            if (messageContainer) {
+                setTimeout(() => {
+                    messages.forEach(message => {
+                        if (message.classList.contains('alert-success')) {
+                            message.setAttribute('role', 'status');
+                        }
+                    });
+                }, 1000);
+            }
+        }
+    });
+</script>
+{% endblock extra_js %}

@@ -1,16 +1,16 @@
 {% load i18n %}
 
-<div class="card border-0 shadow-sm rounded-4 h-100 content-lift">
-    <div class="card-header bg-light border-0 py-3" id="forum-activity-header">
-        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
-            <h2 class="h5 mb-0 fw-semibold d-flex align-items-center">
-                <i class="fa-solid fa-comments text-primary me-2" aria-hidden="true"></i>
-                {% trans "My Forum Activity" %}
-            </h2>
-            <a href="{% url 'forum:parent_forum' %}" class="btn btn-sm btn-outline-primary rounded-pill px-3" aria-label="{% trans 'Navigate to forums' %}">
-                <i class="fa-solid fa-external-link-alt me-1" aria-hidden="true"></i> {% trans "Go to Forum" %}
-            </a>
-        </div>
+<div class="card border-0 shadow-sm rounded-4 w-100 content-lift transition-effect">
+    <div class="card-header bg-primary bg-opacity-10 border-0 py-3 rounded-top-4 d-flex justify-content-between align-items-center flex-wrap gap-3" id="forum-activity-header">
+        <h2 class="h5 mb-0 fw-semibold d-flex align-items-center">
+            <span class="icon-circle bg-primary bg-opacity-25 p-2 me-3 rounded-circle">
+                <i class="fa-solid fa-comments text-primary" aria-hidden="true"></i>
+            </span>
+            <span>{% trans "Your Forum Activity" %}</span>
+        </h2>
+        <a href="{% url 'forum:parent_forum' %}" class="btn btn-primary rounded-pill px-4 btn-sm-hover-effect" aria-label="{% trans 'Go to forum' %}">
+            <i class="fa-solid fa-external-link-alt me-2" aria-hidden="true"></i> {% trans "Visit Forum" %}
+        </a>
     </div>
     <div class="card-body p-4">
         {% if user.forum_posts.all %}

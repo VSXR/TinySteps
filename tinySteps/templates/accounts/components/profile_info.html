@@ -28,7 +28,10 @@
         </div>
     </div>
     
-    <a href="#" class="btn btn-outline-primary rounded-pill px-4" aria-label="{% trans 'Edit your profile information' %}">
-        <i class="fa-solid fa-pen-to-square me-2" aria-hidden="true"></i> {% trans "Edit Profile" %}
-    </a>
+    <div class="card-footer bg-transparent border-0 pt-0 pb-4 px-4">
+        <a href="#" class="btn btn-outline-primary rounded-pill w-100" aria-describedby="edit-profile-desc">
+            <i class="fa-solid fa-user-edit me-2" aria-hidden="true"></i>{% trans "Edit Profile" %}
+        </a>
+        <div id="edit-profile-desc" class="form-text text-center mt-2">{% trans "Update your personal information and preferences" %}</div>
+    </div>
 </div>

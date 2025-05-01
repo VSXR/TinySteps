@@ -12,6 +12,7 @@ from .child.core_views import your_children, your_child
 from .child.form_views import YourChild_Add_View, YourChild_Delete_View, YourChild_UpdateDetails_View
 from .child.feature_views import (
     child_milestone, child_calendar, child_vaccine_card,
+    get_child_statistics, growth_status_view,
     YourChild_Calendar_View, YourChild_VaccineCard_View
 )
 
@@ -55,7 +56,8 @@ __all__ = [
     # Child views
     'your_children', 'your_child', 'YourChild_Add_View', 'YourChild_Delete_View',
     'YourChild_UpdateDetails_View', 'child_milestone', 'child_calendar', 'child_vaccine_card',
-    'YourChild_Calendar_View', 'YourChild_VaccineCard_View',
+    'YourChild_Calendar_View', 'YourChild_VaccineCard_View', 'get_child_statistics', 'growth_status_view',
+
     
     # Forum views
     'parents_forum_page', 'search_posts', 'view_post', 'add_post',

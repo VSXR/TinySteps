@@ -14,22 +14,35 @@ child_service = ChildService_Factory.create_service()
 @login_required
 def your_children(request):
     """View to display all children of the logged-in user"""
-    children_list = YourChild_Model.objects.filter(user=request.user).order_by('name')
+    children = YourChild_Model.objects.filter(user=request.user).order_by('name')
     
-    # Pagination
+    # Handle search
+    search_query = request.GET.get('search', '')
+    if search_query:
+        children = children.filter(name__icontains=search_query)
+    
+    # Paginate results
+    paginator = Paginator(children, 8)  # Show 8 children per page
     page = request.GET.get('page', 1)
-    paginator = Paginator(children_list, 6)  # We show 6 children per page
     
     try:
-        children = paginator.page(page)
+        children_page = paginator.page(page)
     except PageNotAnInteger:
-        children = paginator.page(1)
+        children_page = paginator.page(1)
     except EmptyPage:
-        children = paginator.page(paginator.num_pages)
+        children_page = paginator.page(paginator.num_pages)
     
+    # Statistics data
     context = {
-        'children': children,
+        'children': children_page,
+        'search_query': search_query,
+        'total_children': children.count(),
+        # You can add more statistics here as needed
     }
+    
+    # Check if it's an AJAX request
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        return render(request, 'partials/AJAX.html', context)
     
     return render(request, 'children/list.html', context)
 
@@ -98,6 +111,11 @@ def delete_child(request, child_id):
     if request.method == 'POST':
         child_service.delete_child(child_id, request.user)
         messages.success(request, _("{name}'s profile has been deleted.").format(name=child.name))
+        
+        # Get the next URL from form submission or use default
+        next_url = request.POST.get('next')
+        if next_url:
+            return redirect(next_url)
         return redirect('children:your_children')
     
     context = {

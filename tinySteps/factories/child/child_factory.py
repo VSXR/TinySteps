@@ -1,4 +1,5 @@
 from django.urls import path, include
+from django.http import JsonResponse
 
 class ChildService_Factory:
     @staticmethod
@@ -12,8 +13,17 @@ class ChildUrl_Factory:
     def create_urls():
         """Create URLs for child-related functionality"""
         from tinySteps.views.child import core_views, feature_views
+        from django.contrib.auth.decorators import login_required
         
-        # Define URL patterns WITHOUT the children/ prefix
+        # Debug view to check URL routing
+        @login_required
+        def debug_view(request):
+            return JsonResponse({
+                'status': 'ok',
+                'message': 'Debug endpoint working correctly',
+                'user': str(request.user)
+            })
+        
         urlpatterns = [
             # Child core URLs
             path('', core_views.your_children, name='your_children'),
@@ -27,6 +37,12 @@ class ChildUrl_Factory:
             path('<int:child_id>/milestones/', feature_views.child_milestone, name='child_milestones'),
             path('<int:child_id>/vaccine-card/', feature_views.child_vaccine_card, name='child_vaccine_card'),
             path('<int:child_id>/growth-status/', feature_views.growth_status_view, name='child_growth_status'),
+
+            # Child statistics API
+            path('statistics/', feature_views.get_child_statistics, name='child_statistics_api'),
+            
+            # Debug endpoint
+            path('debug/', debug_view, name='debug_endpoint'),
         ]
         
         return urlpatterns

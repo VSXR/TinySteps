@@ -4,160 +4,521 @@
 
 {% block title %}{% trans "Your Children - Tiny Steps" %}{% endblock %}
 
-{% block main_contents %}
-    <main id="main-content">
-        <div class="container mt-5 mb-4">
-            <!-- Page Header -->
-            {% include "children/components/page_header.html" with title=_("Your Children") subtitle=_("Manage your children's information and track their development") %}
-
-            <!-- Messages Container -->
-            <div class="row">
-                <div class="col">
-                    <div id="messages-container" class="messages mb-3" role="alert" aria-live="polite">
-                        {% if messages %}
-                            {% include 'partials/messages.html' %}
-                        {% endif %}
-                    </div>
-                </div>
+{% block main_contents %}  
+<div class="container py-5">
+    <!-- Improved header section with background -->
+    <div class="mb-5 position-relative rounded-4 overflow-hidden">
+        <div class="bg-primary bg-opacity-10 p-5">
+            <div class="text-center">
+                <h1 class="display-5 fw-bold mb-2">{% trans "Your Children" %}</h1>
+                <p class="lead text-muted">{% trans "Manage and track your children's development" %}</p>
             </div>
-
-            <!-- Add Child Button -->
-            <div class="row mb-4">
-                <div class="col text-end">
-                    <a href="{% url 'children:add_child' %}" class="btn btn-primary rounded-pill shadow-sm" aria-label="{% trans 'Add a new child' %}">
-                        <i class="fa-solid fa-plus me-2" aria-hidden="true"></i> {% trans "Add Child" %}
-                    </a>
-                </div>
-            </div>
-
-            <!-- Children List with Pagination -->
-            <section aria-labelledby="children-list-heading" class="mb-5">
-                <h3 id="children-list-heading" class="visually-hidden">{% trans "Your Children List" %}</h3>
-                <div class="row">
-                    {% if children %}
-                        {% for child in children %}
-                            <div class="col-md-6 col-lg-4 mb-4">
-                                {% include "children/components/child_card.html" with child=child %}
-                            </div>
-                        {% endfor %}
+        </div>
+    </div>
+    
+    <!-- Search and Filters with improved aesthetics and size adjustments -->
+    <div class="row justify-content-center mb-4">
+        <div class="col-lg-11 col-xl-10">
+            <div class="card border-0 shadow-sm rounded-4 hover-shadow">
+                <div class="card-body p-3 p-md-4">
+                    <div class="row g-3">
+                        <!-- Search form with reduced size -->
+                        <div class="col-md-6">
+                            <form method="get" action="{% url 'children:your_children' %}" class="mb-0">
+                                <div class="input-group shadow-sm rounded-pill overflow-hidden">
+                                    <span class="input-group-text bg-white border-0 ps-3">
+                                        <i class="fa-solid fa-search text-primary" aria-hidden="true"></i>
+                                    </span>
+                                    <input type="search" id="search-children" name="search" 
+                                           class="form-control border-0 py-2" 
+                                           placeholder="{% trans 'Search by name...' %}" 
+                                           value="{{ search_query|default:'' }}"
+                                           aria-label="{% trans 'Search children' %}">
+                                    <button type="submit" class="btn btn-primary px-3 rounded-end-pill">
+                                        {% trans "Search" %}
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
                         
-                        <!-- Pagination -->
-                        {% if children.paginator.num_pages > 1 %}
-                            <div class="col-12">
-                                <nav aria-label="{% trans 'Children navigation' %}" class="mt-4">
-                                    <ul class="pagination justify-content-center">
-                                        {% if children.has_previous %}
-                                            <li class="page-item">
-                                                <a class="page-link rounded-pill px-3" href="?page=1" aria-label="{% trans 'First page' %}">
-                                                    <span aria-hidden="true">&laquo;</span>
-                                                </a>
-                                            </li>
-                                            <li class="page-item">
-                                                <a class="page-link rounded-pill px-3" href="?page={{ children.previous_page_number }}" aria-label="{% trans 'Previous page' %}">
-                                                    <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
-                                                </a>
-                                            </li>
-                                        {% endif %}
-                                        
-                                        <li class="page-item active">
-                                            <span class="page-link rounded-pill px-3">
-                                                {% blocktrans with current=children.number total=children.paginator.num_pages %}{{ current }} of {{ total }}{% endblocktrans %}
-                                            </span>
-                                        </li>
-                                        
-                                        {% if children.has_next %}
-                                            <li class="page-item">
-                                                <a class="page-link rounded-pill px-3" href="?page={{ children.next_page_number }}" aria-label="{% trans 'Next page' %}">
-                                                    <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
-                                                </a>
-                                            </li>
-                                            <li class="page-item">
-                                                <a class="page-link rounded-pill px-3" href="?page={{ children.paginator.num_pages }}" aria-label="{% trans 'Last page' %}">
-                                                    <span aria-hidden="true">&raquo;</span>
-                                                </a>
-                                            </li>
-                                        {% endif %}
-                                    </ul>
-                                </nav>
-                            </div>
-                        {% endif %}
-                    {% else %}
-                        {% include "children/components/empty_state.html" with message=_("You haven't added any children yet. Click the 'Add Child' button to get started!") show_button=True %}
-                    {% endif %}
-                </div>
-            </section>
-
-            <!-- Help Section -->
-            <section aria-labelledby="help-section-heading" class="mt-5">
-                <div class="row">
-                    <div class="col-12">
-                        <div class="card border-0 shadow-sm rounded-4 bg-light bg-opacity-75">
-                            <div class="card-header bg-transparent border-0 pt-4">
-                                <h3 id="help-section-heading" class="fs-4 mb-0 text-primary text-center">
-                                    <i class="fa-solid fa-circle-info me-2" aria-hidden="true"></i>
-                                    {% trans "Managing Your Children" %}
-                                </h3>
-                            </div>
-                            <div class="card-body">
-                                <p class="lead text-center text-muted mb-4">{% trans "In this section, you can:" %}</p>
-                                <div class="row justify-content-center">
-                                    <div class="col-lg-10">
-                                        <div class="row row-cols-1 row-cols-md-2 g-4 mb-4">
-                                            <div class="col">
-                                                <div class="card h-100 border-light element-elevation">
-                                                    <div class="text-center py-3">
-                                                        <i class="fa-solid fa-circle-plus fs-1 text-primary" aria-hidden="true"></i>
-                                                    </div>
-                                                    <div class="card-body text-center">
-                                                        <h4 class="fs-6">{% trans "Add information about your children" %}</h4>
-                                                        <p class="text-muted small">{% trans "Create profiles with important details about your children" %}</p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col">
-                                                <div class="card h-100 border-light element-elevation">
-                                                    <div class="text-center py-3">
-                                                        <i class="fa-solid fa-flag fs-1 text-warning" aria-hidden="true"></i>
-                                                    </div>
-                                                    <div class="card-body text-center">
-                                                        <h4 class="fs-6">{% trans "Track important milestones in their development" %}</h4>
-                                                        <p class="text-muted small">{% trans "Record and celebrate your child's developmental achievements" %}</p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col">
-                                                <div class="card h-100 border-light element-elevation">
-                                                    <div class="text-center py-3">
-                                                        <i class="fa-solid fa-syringe fs-1 text-success" aria-hidden="true"></i>
-                                                    </div>
-                                                    <div class="card-body text-center">
-                                                        <h4 class="fs-6">{% trans "Keep a record of vaccinations and health check-ups" %}</h4>
-                                                        <p class="text-muted small">{% trans "Maintain a comprehensive health record for your children" %}</p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col">
-                                                <div class="card h-100 border-light element-elevation">
-                                                    <div class="text-center py-3">
-                                                        <i class="fa-solid fa-calendar-days fs-1 text-info" aria-hidden="true"></i>
-                                                    </div>
-                                                    <div class="card-body text-center">
-                                                        <h4 class="fs-6">{% trans "Manage their schedules and appointments" %}</h4>
-                                                        <p class="text-muted small">{% trans "Keep track of important dates and activities" %}</p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="alert alert-info bg-opacity-25 text-center mb-0 mx-md-5">
-                                    <p class="mb-0">{% blocktrans %}Each child's profile gives you access to their detailed information and helps you track their growth journey.{% endblocktrans %}</p>
-                                </div>
+                        <!-- Filter buttons with compact styling -->
+                        <div class="col-md-6 d-flex justify-content-md-end align-items-center">
+                            <div class="filter-buttons p-1 bg-light rounded-pill shadow-sm" role="group" aria-label="{% trans 'Filter children by age' %}">
+                                <button type="button" class="btn btn-sm btn-outline-primary filter-btn active rounded-pill px-2 px-sm-3 py-1 me-1" data-filter="all">
+                                    <i class="fa-solid fa-users me-1" aria-hidden="true"></i> <span class="d-none d-sm-inline">{% trans "All" %}</span>
+                                </button>
+                                <button type="button" class="btn btn-sm btn-outline-primary filter-btn rounded-pill px-2 px-sm-3 py-1 me-1" data-filter="infants">
+                                    <i class="fa-solid fa-baby me-1" aria-hidden="true"></i> <span class="d-none d-sm-inline">{% trans "Infants" %}</span><span class="d-inline d-sm-none">0-12m</span>
+                                </button>
+                                <button type="button" class="btn btn-sm btn-outline-primary filter-btn rounded-pill px-2 px-sm-3 py-1" data-filter="toddlers">
+                                    <i class="fa-solid fa-child me-1" aria-hidden="true"></i> <span class="d-none d-sm-inline">{% trans "Toddlers" %}</span><span class="d-inline d-sm-none">1-3y</span>
+                                </button>
                             </div>
                         </div>
                     </div>
                 </div>
-            </section>
+            </div>
         </div>
-    </main>
+    </div>
+    <!-- Action buttons and count with improved UI -->
+    <div class="row mb-4 align-items-center">
+        <div class="col-md-6">
+            <div class="d-flex align-items-center">
+                <span class="badge bg-primary rounded-circle d-flex align-items-center justify-content-center me-2" style="width: 36px; height: 36px;">
+                    <span class="h6 mb-0">{{ children.paginator.count }}</span>
+                </span>
+                <p class="text-muted mb-0 fw-medium">
+                    {% blocktrans %}children registered{% endblocktrans %}
+                </p>
+            </div>
+        </div>
+        <div class="col-md-6 d-flex justify-content-md-end align-items-center mt-3 mt-md-0">
+            <div class="d-flex gap-3">
+                <!-- View toggle buttons with improved styling -->
+                <div class="btn-group shadow-sm overflow-hidden rounded-pill">
+                    <button type="button" class="btn btn-light active px-3 py-2" id="card-view-btn" aria-label="{% trans 'Card view' %}">
+                        <i class="fa-solid fa-th text-primary" aria-hidden="true"></i>
+                        <span class="ms-2 d-none d-sm-inline">{% trans "Cards" %}</span>
+                    </button>
+                    <button type="button" class="btn btn-light px-3 py-2" id="list-view-btn" aria-label="{% trans 'List view' %}">
+                        <i class="fa-solid fa-list text-primary" aria-hidden="true"></i>
+                        <span class="ms-2 d-none d-sm-inline">{% trans "List" %}</span>
+                    </button>
+                </div>
+                <a href="{% url 'children:add_child' %}" class="btn btn-primary rounded-pill px-4 shadow-sm hover-lift">
+                    <i class="fa-solid fa-plus me-2" aria-hidden="true"></i>{% trans "Add New Child" %}
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content Area with animations -->
+    <div class="row">
+        <div class="col-12 section-spacing fade-in-up">
+            {% if children %}
+                <!-- Children grid with enhanced visuals -->
+                <div class="row g-4 card-view" role="list" id="children-list-heading">
+                    {% for child in children %}
+                        <div class="col-md-6 col-lg-4 col-xl-3 fade-in-item" role="listitem">
+                            <div class="card h-100 border-0 shadow-sm rounded-4 child-card element-elevation" data-age="{{ child.age }}">
+                                <!-- Banner with color gradient background based on gender -->
+                                <div class="position-relative">
+                                    <div class="child-banner position-relative">
+                                        <div class="{% if child.gender == 'M' %}bg-primary-gradient{% else %}bg-danger-gradient{% endif %} text-center py-4 w-100">
+                                            <div class="position-relative d-block">
+                                                <img src="{{ child.get_image }}" alt="{{ child.name }}" 
+                                                    class="rounded-circle border border-4 border-white shadow" 
+                                                    loading="lazy">
+                                                <span class="position-absolute bottom-0 end-0 translate-middle badge rounded-circle {% if child.gender == 'M' %}bg-info{% else %}bg-danger{% endif %} p-2 border border-3 border-white">
+                                                    <i class="fa-solid fa-{% if child.gender == 'M' %}mars{% else %}venus{% endif %} fa-lg" aria-hidden="true"></i>
+                                                    <span class="visually-hidden">{% if child.gender == 'M' %}{% trans "Male" %}{% else %}{% trans "Female" %}{% endif %}</span>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="position-absolute bottom-0 start-50 translate-middle-x mb-n3">
+                                            <span class="badge {% if child.age < 12 %}bg-primary{% elif child.age < 36 %}bg-success{% else %}bg-warning{% endif %} rounded-pill px-3 py-2 shadow-sm">
+                                                <i class="fa-solid fa-cake-candles me-1" aria-hidden="true"></i>
+                                                {% blocktrans with age=child.age %}{{ age }} months{% endblocktrans %}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-body text-center pt-5 px-4">
+                                    <h3 class="h4 mb-1 fw-bold">
+                                        <a href="{% url 'children:child_detail' child.id %}" class="child-name text-decoration-none stretched-link text-primary">
+                                            {{ child.name }}{% if child.second_name %} {{ child.second_name }}{% endif %}
+                                        </a>
+                                    </h3>
+                                    <p class="text-muted small mb-3">{% trans "Born" %}: {{ child.birth_date|date:"F j, Y" }}</p>
+                                    
+                                    <div class="d-flex justify-content-center gap-2 mb-3">
+                                        {% if child.weight %}
+                                            <span class="badge bg-light text-dark rounded-pill px-3 py-2">
+                                                <i class="fa-solid fa-weight-scale text-primary me-1" aria-hidden="true"></i>
+                                                {{ child.weight }} kg
+                                            </span>
+                                        {% endif %}
+                                        
+                                        {% if child.height %}
+                                            <span class="badge bg-light text-dark rounded-pill px-3 py-2">
+                                                <i class="fa-solid fa-ruler-vertical text-primary me-1" aria-hidden="true"></i>
+                                                {{ child.height }} cm
+                                            </span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <!-- Action buttons footer -->
+                                <div class="card-footer border-0 bg-transparent pb-4 px-4">
+                                    <div class="d-grid gap-2">
+                                        <a href="{% url 'children:child_detail' child.id %}" class="btn btn-primary rounded-pill shadow-sm" aria-hidden="true">
+                                            <i class="fa-solid fa-eye me-2" aria-hidden="true"></i>{% trans "View Details" %}
+                                        </a>
+                                        <a href="{% url 'children:child_milestones' child.id %}" class="btn btn-outline-primary rounded-pill btn-sm">
+                                            <i class="fa-solid fa-chart-line me-1" aria-hidden="true"></i>{% trans "Track Progress" %}
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% empty %}
+                        <div class="col-12">
+                            <div class="alert alert-warning">
+                                No children to display
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+                
+                <!-- Enhanced pagination with modern styling -->
+                {% if children.paginator.num_pages > 1 %}
+                    <nav aria-label="{% trans 'Children pagination' %}" class="mt-5">
+                        <ul class="pagination pagination-lg justify-content-center flex-wrap gap-2">
+                            {% if children.has_previous %}
+                                <li class="page-item">
+                                    <a class="page-link rounded-circle shadow-sm" href="?page=1{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}" aria-label="{% trans 'First page' %}">
+                                        <i class="fa-solid fa-angle-double-left" aria-hidden="true"></i>
+                                    </a>
+                                </li>
+                                <li class="page-item">
+                                    <a class="page-link rounded-circle shadow-sm" href="?page={{ children.previous_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}" aria-label="{% trans 'Previous page' %}">
+                                        <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+                                    </a>
+                                </li>
+                            {% endif %}
+                            
+                            {% for num in children.paginator.page_range %}
+                                {% if num == children.number %}
+                                    <li class="page-item active">
+                                        <span class="page-link rounded-circle shadow-sm">{{ num }}</span>
+                                    </li>
+                                {% elif num > children.number|add:"-3" and num < children.number|add:"3" %}
+                                    <li class="page-item">
+                                        <a class="page-link rounded-circle shadow-sm" href="?page={{ num }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}">{{ num }}</a>
+                                    </li>
+                                {% endif %}
+                            {% endfor %}
+                            
+                            {% if children.has_next %}
+                                <li class="page-item">
+                                    <a class="page-link rounded-circle shadow-sm" href="?page={{ children.next_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}" aria-label="{% trans 'Next page' %}">
+                                        <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+                                    </a>
+                                </li>
+                                <li class="page-item">
+                                    <a class="page-link rounded-circle shadow-sm" href="?page={{ children.paginator.num_pages }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}" aria-label="{% trans 'Last page' %}">
+                                        <i class="fa-solid fa-angle-double-right" aria-hidden="true"></i>
+                                    </a>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </nav>
+                {% endif %}
+            {% else %}
+                <!-- Improved empty state with illustrations -->
+                <div class="empty-container mt-5 mb-5">
+                    <div class="empty-card p-5 bg-white shadow-sm">
+                        <div class="empty-icon-wrapper mb-4">
+                            <i class="fa-solid fa-child-reaching empty-icon pulse-animation" aria-hidden="true"></i>
+                        </div>
+                        <div class="empty-content">
+                            <h2 class="empty-title display-6 fw-bold text-primary mb-3">{% trans "No Children Added Yet" %}</h2>
+                            <p class="empty-message lead mb-4">{% trans "You haven't added any children yet. Click the button below to get started with tracking your child's growth and development." %}</p>
+                            
+                            <a href="{% url 'children:add_child' %}" class="btn btn-primary btn-lg rounded-pill px-5 py-3 shadow-sm hover-lift-lg">
+                                <i class="fa-solid fa-plus me-2" aria-hidden="true"></i> {% trans "Add Your First Child" %}
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
 {% endblock main_contents %}
+
+{% block extra_js %}
+<script type="module">
+    import { ChildrenListPage } from "{% static 'res/javascript/pages/child-list-page.js' %}";
+    
+    // Set visible immediately on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize CSS animations and transitions
+        document.querySelectorAll('.fade-in-item').forEach((item, index) => {
+            item.style.animation = `fadeInUp 0.5s ease forwards ${0.1 + (index * 0.05)}s`;
+            item.style.opacity = '0';
+        });
+        
+        const cardViewBtn = document.getElementById('card-view-btn');
+        const listViewBtn = document.getElementById('list-view-btn');
+        const childrenContainer = document.querySelector('[role="list"]');
+        
+        // Initialize the ChildrenListPage
+        const childrenPage = new ChildrenListPage();
+        childrenPage.init();
+        
+        // Enhanced view toggle with smooth transitions
+        if (cardViewBtn && listViewBtn && childrenContainer) {
+            cardViewBtn.addEventListener('click', function() {
+                // First apply transition
+                document.querySelectorAll('[role="listitem"]').forEach(item => {
+                    item.style.transition = 'all 0.3s ease-in-out';
+                });
+                
+                // Then apply class changes after a short delay
+                setTimeout(() => {
+                    childrenContainer.classList.remove('list-view');
+                    childrenContainer.classList.add('card-view');
+                    cardViewBtn.classList.add('active');
+                    listViewBtn.classList.remove('active');
+                    
+                    document.querySelectorAll('[role="listitem"]').forEach(item => {
+                        item.classList.remove('col-12');
+                        item.classList.add('col-md-6', 'col-lg-4', 'col-xl-3');
+                    });
+                }, 50);
+            });
+            
+            listViewBtn.addEventListener('click', function() {
+                // First apply transition
+                document.querySelectorAll('[role="listitem"]').forEach(item => {
+                    item.style.transition = 'all 0.3s ease-in-out';
+                });
+                
+                // Then apply class changes after a short delay
+                setTimeout(() => {
+                    childrenContainer.classList.remove('card-view');
+                    childrenContainer.classList.add('list-view');
+                    cardViewBtn.classList.remove('active');
+                    listViewBtn.classList.add('active');
+                    
+                    document.querySelectorAll('[role="listitem"]').forEach(item => {
+                        item.classList.remove('col-md-6', 'col-lg-4', 'col-xl-3');
+                        item.classList.add('col-12');
+                    });
+                }, 50);
+            });
+        }
+        
+        // Filter buttons enhancement
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        filterButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                filterButtons.forEach(btn => btn.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Add slight animation to cards when filtering
+                document.querySelectorAll('.child-card').forEach(card => {
+                    card.style.transition = 'all 0.3s ease';
+                });
+            });
+        });
+        
+        // Add hover effects to action buttons
+        document.querySelectorAll('.hover-lift').forEach(button => {
+            button.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-3px)';
+                this.style.boxShadow = '0 5px 15px rgba(0,0,0,0.1)';
+            });
+            
+            button.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+                this.style.boxShadow = '0 2px 5px rgba(0,0,0,0.08)';
+            });
+        });
+        
+        // Add extra lift effect to larger buttons
+        document.querySelectorAll('.hover-lift-lg').forEach(button => {
+            button.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-5px)';
+                this.style.boxShadow = '0 10px 25px rgba(0,0,0,0.15)';
+            });
+            
+            button.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+                this.style.boxShadow = '0 2px 5px rgba(0,0,0,0.08)';
+            });
+        });
+    });
+</script>
+
+<!-- Add custom CSS for enhanced aesthetics -->
+<style>
+    .fade-in-up {
+        animation: fadeInUp 0.5s ease-out forwards;
+    }
+    
+    .fade-in-item {
+        opacity: 0;
+    }
+    
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    .pulse-animation {
+        animation: pulse 2s infinite ease-in-out;
+    }
+    
+    @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.1); }
+        100% { transform: scale(1); }
+    }
+    
+    /* Gradientes mejorados con mayor cobertura */
+    .bg-primary-gradient {
+        background: linear-gradient(135deg, #0d6efd 0%, #4d96ff 100%);
+        min-height: 200px; /* Mayor altura para mejor cobertura */
+    }
+    
+    .bg-danger-gradient {
+        background: linear-gradient(135deg, #dc3545 0%, #ff758f 100%);
+        min-height: 200px; /* Mayor altura para mejor cobertura */
+    }
+    
+    .hover-shadow {
+        transition: box-shadow 0.3s ease;
+    }
+    
+    .hover-shadow:hover {
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1) !important;
+    }
+    
+    /* Mejora para la foto del niño - expandida */
+    .child-banner .position-relative {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+    }
+    
+    .child-banner img {
+        width: 150px !important; /* Imagen más grande */
+        height: 150px !important;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+    }
+    
+    .child-banner img:hover {
+        transform: scale(1.05);
+    }
+    
+    /* Botón centrado de ver detalles */
+    .card-footer .d-grid {
+        display: flex !important;
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .card-footer .btn-primary {
+        min-width: 80%;
+        margin: 0 auto;
+    }
+    
+    /* Enhanced list view styling */
+    .list-view .child-card {
+        display: flex !important;
+        flex-direction: row;
+        align-items: center;
+        padding: 0;
+        overflow: hidden;
+        transition: all 0.3s ease;
+    }
+    
+    .list-view .child-card .position-relative {
+        width: 180px;
+        min-width: 180px;
+        height: auto;
+        margin-right: 0;
+    }
+    
+    .list-view .child-card .child-banner {
+        height: 100%;
+        width: 100%;
+    }
+    
+    /* Ajuste para la vista de lista - photo container expandido */
+    .list-view .child-card .child-banner .bg-primary-gradient,
+    .list-view .child-card .child-banner .bg-danger-gradient {
+        height: 100%;
+        min-height: 170px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+    }
+    
+    .list-view .child-card .child-banner img {
+        width: 120px !important;
+        height: 120px !important;
+    }
+    
+    .list-view .child-card .card-body {
+        text-align: left;
+        padding: 1.5rem;
+    }
+    
+    .list-view .child-card .card-footer {
+        width: auto;
+        margin-left: auto;
+        padding: 1.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .list-view .child-card .card-footer .btn {
+        width: 100%;
+    }
+    
+    .list-view .child-card .card-footer .btn-outline-primary {
+        display: none;
+    }
+    
+    /* Responsive adjustments for list view */
+    @media (max-width: 767.98px) {
+        .list-view .child-card {
+            flex-direction: column;
+        }
+        
+        .list-view .child-card .position-relative {
+            width: 100%;
+        }
+        
+        .list-view .child-card .card-body {
+            width: 100%;
+            text-align: center;
+        }
+        
+        .list-view .child-card .card-footer {
+            width: 100%;
+            padding: 1rem 1.5rem 1.5rem;
+        }
+        
+        .filter-buttons {
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .filter-buttons .btn {
+            margin-bottom: 0.5rem;
+        }
+    }
+    
+    /* Nuevo estilo para resaltar la tarjeta al pasar el cursor */
+    .child-card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .child-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15) !important;
+    }
+</style>
+{% endblock %}

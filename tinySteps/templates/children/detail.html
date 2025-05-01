@@ -61,6 +61,44 @@
                             </a>
                         </div>
                     </div>
+
+                    <!-- Danger Zone -->
+                    <div class="mt-4 pt-3 border-top">
+                        <h5 class="text-danger mb-3">
+                            <i class="fa-solid fa-triangle-exclamation me-2" aria-hidden="true"></i> Danger Zone
+                        </h5>
+                        <div class="d-grid">
+                            <button type="button" class="btn btn-danger rounded-pill" data-bs-toggle="modal" data-bs-target="#deleteChildModal">
+                                <i class="fa-solid fa-trash-alt me-2" aria-hidden="true"></i> Delete Child
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Delete Child Modal -->
+                    <div class="modal fade" id="deleteChildModal" tabindex="-1" aria-labelledby="deleteChildModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header bg-danger text-white">
+                                    <h5 class="modal-title" id="deleteChildModalLabel">Delete Child Profile</h5>
+                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <p class="mb-2">Are you sure you want to delete {{ child.name }}'s profile? This action cannot be undone.</p>
+                                    <p class="text-danger fw-bold">All associated data will be permanently deleted.</p>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary rounded-pill" data-bs-dismiss="modal">Cancel</button>
+                                    <form action="{% url 'children:delete_child' child.id %}" method="post">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="next" value="{% url 'children:your_children' %}">
+                                        <button type="submit" class="btn btn-danger rounded-pill">
+                                            <i class="fa-solid fa-trash-alt me-2" aria-hidden="true"></i> Delete Permanently
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
