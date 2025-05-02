@@ -2,18 +2,26 @@
 
 <div class="row mt-5">
     <div class="col-12">
-        <h3 class="h4 mb-4 text-center">{% trans "Frequently Asked Questions" %}</h3>
+        <h3 class="h4 mb-4 text-center" id="faq-heading">{% trans "Frequently Asked Questions" %}</h3>
         
-        <div class="accordion shadow-sm rounded-4 overflow-hidden" id="contactFAQ">
+        <div class="accordion shadow-sm rounded-4 overflow-hidden" id="contactFAQ" aria-labelledby="faq-heading">
             <!-- FAQ Item 1 -->
             <div class="accordion-item border-0">
                 <h4 class="accordion-header" id="headingOne">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                           data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                    <button class="accordion-button collapsed" 
+                           type="button" 
+                           data-bs-toggle="collapse" 
+                           data-bs-target="#collapseOne" 
+                           aria-expanded="false" 
+                           aria-controls="collapseOne"
+                           aria-describedby="faq-heading">
                         {% trans "How quickly will I get a response?" %}
                     </button>
                 </h4>
-                <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#contactFAQ">
+                <div id="collapseOne" 
+                     class="accordion-collapse collapse" 
+                     aria-labelledby="headingOne" 
+                     data-bs-parent="#contactFAQ">
                     <div class="accordion-body">
                         <p class="mb-0">{% trans "We aim to respond to all inquiries within 24 business hours. For urgent matters, please call our customer service line directly." %}</p>
                     </div>
@@ -23,12 +31,20 @@
             <!-- FAQ Item 2 -->
             <div class="accordion-item border-0">
                 <h4 class="accordion-header" id="headingTwo">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                           data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                    <button class="accordion-button collapsed" 
+                           type="button" 
+                           data-bs-toggle="collapse" 
+                           data-bs-target="#collapseTwo" 
+                           aria-expanded="false" 
+                           aria-controls="collapseTwo"
+                           aria-describedby="faq-heading">
                         {% trans "How can I get technical support?" %}
                     </button>
                 </h4>
-                <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#contactFAQ">
+                <div id="collapseTwo" 
+                     class="accordion-collapse collapse" 
+                     aria-labelledby="headingTwo" 
+                     data-bs-parent="#contactFAQ">
                     <div class="accordion-body">
                         <p class="mb-0">{% trans "For technical issues with the app, please provide details in the message field or visit our Help Center for immediate assistance with common problems." %}</p>
                     </div>
@@ -38,12 +54,20 @@
             <!-- FAQ Item 3 -->
             <div class="accordion-item border-0">
                 <h4 class="accordion-header" id="headingThree">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                           data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                    <button class="accordion-button collapsed" 
+                           type="button" 
+                           data-bs-toggle="collapse" 
+                           data-bs-target="#collapseThree" 
+                           aria-expanded="false" 
+                           aria-controls="collapseThree"
+                           aria-describedby="faq-heading">
                         {% trans "Do you offer partnerships or collaborations?" %}
                     </button>
                 </h4>
-                <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#contactFAQ">
+                <div id="collapseThree" 
+                     class="accordion-collapse collapse" 
+                     aria-labelledby="headingThree" 
+                     data-bs-parent="#contactFAQ">
                     <div class="accordion-body">
                         <p class="mb-0">{% trans "Yes! We're open to partnerships with healthcare providers, educational institutions, and family service organizations. Please mention 'Partnership Inquiry' in your message." %}</p>
                     </div>

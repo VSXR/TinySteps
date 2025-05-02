@@ -11,13 +11,14 @@
         {% trans "Skip to contact form" %}
     </a>
 
-    <main id="main-content">
+    <main id="main-content" role="main">
         <!-- Page Header Component -->
         {% include "contact/components/page_header.html" %}
         
         <div class="container mb-5">
             <div class="row g-4">
-                <div class="col-lg-7">
+                <!-- Contact form section -->
+                <div class="col-lg-7 col-md-12 order-md-1 order-2">
                     <!-- Alert messages -->
                     {% if messages %}
                         <div role="alert" aria-live="polite" class="mb-4">
@@ -30,22 +31,22 @@
                 </div>
                 
                 <!-- Contact Information and Map -->
-                <div class="col-lg-5">
+                <div class="col-lg-5 col-md-12 order-md-2 order-1">
                     <!-- Contact Info Component -->
                     {% include "contact/components/contact_info.html" %}
                     
-                    <!-- Map Component -->
-                    {% include "contact/components/map.html" %}
+                    <!-- Map Component - hidden on small mobile -->
+                    <div class="d-none d-sm-block">
+                        {% include "contact/components/map.html" %}
+                    </div>
                 </div>
             </div>
             
             <!-- FAQ Component -->
             {% include "contact/components/faqs.html" %}
         </div>
-        
-        </main>
+    </main>
 {% endblock main_contents %}
-
 
 {% block extra_js %}
 <script>
@@ -73,15 +74,40 @@
             });
         });
         
-        // Form validation feedback
+        // Form validation feedback with accessibility support
         const contactForm = document.getElementById('contactForm');
         if (contactForm) {
             contactForm.addEventListener('submit', function(e) {
                 if (!this.checkValidity()) {
                     e.preventDefault();
                     e.stopPropagation();
+                    
+                    // Announce validation errors to screen readers
+                    const firstInvalid = this.querySelector(':invalid');
+                    if (firstInvalid) {
+                        firstInvalid.focus();
+                        const errorMessage = document.createElement('div');
+                        errorMessage.setAttribute('role', 'alert');
+                        errorMessage.setAttribute('aria-live', 'assertive');
+                        errorMessage.classList.add('visually-hidden');
+                        errorMessage.textContent = '{% trans "Please correct the errors in the form" %}';
+                        this.appendChild(errorMessage);
+                        setTimeout(() => errorMessage.remove(), 3000);
+                    }
                 }
                 this.classList.add('was-validated');
+            });
+            
+            // Add ARIA labels to form fields dynamically
+            const formFields = contactForm.querySelectorAll('.form-control');
+            formFields.forEach(field => {
+                const label = field.closest('.form-group').querySelector('label');
+                if (label) {
+                    const labelText = label.textContent.trim();
+                    if (labelText) {
+                        field.setAttribute('aria-label', labelText);
+                    }
+                }
             });
         }
         
@@ -96,6 +122,17 @@
                 });
             }, 1000);
         }
+        
+        // Enhance accordion accessibility
+        const accordionButtons = document.querySelectorAll('.accordion-button');
+        accordionButtons.forEach(button => {
+            button.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    this.click();
+                }
+            });
+        });
     });
 </script>
 {% endblock extra_js %}

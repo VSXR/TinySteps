@@ -13,12 +13,18 @@
 .icon-wrapper {
     width: 60px;
     height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 /* Contact info icon boxes */
 .contact-info-icon {
     width: 50px;
     height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 /* Social media icons */
@@ -40,6 +46,8 @@
 /* Map iframe styles */
 .map-iframe {
     border: 0;
+    width: 100%;
+    height: 100%;
 }
 
 /* Hover effects */
@@ -75,9 +83,45 @@
     margin-left: 0.75rem;
 }
 
-/* Responsive styles */
-@media (max-width: 767.98px) {
-    .icon-box {
+/* Form validation in accessible way */
+.was-validated .form-control:invalid {
+    border-color: #dc3545;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='%23dc3545'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23dc3545' stroke='none'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right calc(.375em + .1875rem) center;
+    background-size: calc(.75em + .375rem) calc(.75em + .375rem);
+}
+
+.was-validated .form-control:invalid:focus {
+    border-color: #dc3545;
+    box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.25);
+}
+
+.was-validated .form-control:valid {
+    border-color: #198754;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3e%3cpath fill='%23198754' d='M2.3 6.73.6 4.53c-.4-1.04.46-1.4 1.1-.8l1.1 1.4 3.4-3.8c.6-.63 1.6-.27 1.2.7l-4 4.6c-.43.5-.8.4-1.1.1z'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right calc(.375em + .1875rem) center;
+    background-size: calc(.75em + .375rem) calc(.75em + .375rem);
+}
+
+.was-validated .form-control:valid:focus {
+    border-color: #198754;
+    box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.25);
+}
+
+/* Focus styles - makes keyboard focus more visible */
+.form-control:focus,
+.btn:focus,
+.accordion-button:focus {
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.5);
+    outline: none;
+}
+
+/* Responsive styles for various screen sizes */
+/* Extra small devices (phones, less than 576px) */
+@media (max-width: 575.98px) {
+    .icon-box, .contact-info-icon {
         width: 40px;
         height: 40px;
     }
@@ -87,12 +131,71 @@
         height: 50px;
     }
     
+    .card-body {
+        padding: 1rem;
+    }
+    
+    .h4, h4 {
+        font-size: 1.3rem;
+    }
+    
+    .h5, h5 {
+        font-size: 1.15rem;
+    }
+    
+    .h6, h6 {
+        font-size: 1rem;
+    }
+    
+    .accordion-button {
+        padding: 0.75rem;
+        font-size: 0.95rem;
+    }
+}
+
+/* Small devices (landscape phones, 576px and up) */
+@media (min-width: 576px) and (max-width: 767.98px) {
+    .card-body {
+        padding: 1.25rem;
+    }
+    
+    .icon-wrapper {
+        width: 55px;
+        height: 55px;
+    }
+}
+
+/* Medium devices (tablets, 768px and up) */
+@media (min-width: 768px) and (max-width: 991.98px) {
     .contact-info-icon {
         width: 45px;
         height: 45px;
     }
     
-    .card-body {
-        padding: 1.5rem;
+    .form-group {
+        margin-bottom: 1rem;
+    }
+    
+    .btn-primary {
+        padding-left: 1.5rem !important;
+        padding-right: 1.5rem !important;
+    }
+}
+
+/* Touch-friendly enhancements for mobile */
+@media (max-width: 991.98px) {
+    /* Make buttons easier to tap */
+    .btn {
+        min-height: 44px;
+    }
+    
+    /* Increase tap target size for accordion */
+    .accordion-button {
+        min-height: 48px;
+    }
+    
+    /* More space between touch targets */
+    .form-group {
+        margin-bottom: 1.25rem;
     }
 }
