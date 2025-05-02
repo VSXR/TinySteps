@@ -5,7 +5,7 @@
 {% block title %}{% trans "Vaccination Card of" %} {{ child.name }} - Tiny Steps{% endblock %}
 
 {% block main_contents %}
-    <main id="main-content" class="container-fluid py-4">
+    <main id="main-content" class="container-fluid">
         {% csrf_token %}
         <input type="hidden" id="child-id" value="{{ child.id }}">
         <input type="hidden" id="vaccine-card-id" value="{{ vaccine_card.id }}">
@@ -53,7 +53,7 @@
                             </div>
                             <div class="vaccine-stat" style="background-color: #FBBC05;" aria-label="{% trans 'Pending vaccines:' %} {{ pending_vaccines }}" role="status">
                                 <div class="vaccine-stat-count">{{ pending_vaccines }}</div>
-                                <div class="vaccine-stat-label">{% trans "Pending" %}</div>
+                                <div class="vaccine-stat-label" style="font-size: 0.85rem;">{% trans "Pending" %}</div>
                             </div>
                             <div class="vaccine-stat" style="background-color: #EA4335;" aria-label="{% trans 'Upcoming vaccines:' %} {{ upcoming_vaccines }}" role="status">
                                 <div class="vaccine-stat-count">{{ upcoming_vaccines }}</div>
@@ -87,17 +87,19 @@
                                         <input type="text" id="vaccine-search" class="form-control rounded-pill" placeholder="{% trans 'Search vaccine...' %}" aria-label="{% trans 'Search vaccine' %}">
                                     </div>
                                 </div>
-                                <div class="col-md-6">
-                                    <div class="btn-group d-flex" role="group" aria-label="{% trans 'Vaccine filters' %}">
-                                        <button type="button" id="btn-filter-all" class="btn btn-outline-primary filter-button rounded-pill-start px-3 active" aria-pressed="true">
-                                            <i class="fa-solid fa-filter me-1" aria-hidden="true"></i> {% trans "All" %}
-                                        </button>
-                                        <button type="button" id="btn-filter-administered" class="btn btn-outline-success filter-button px-3" aria-pressed="false">
-                                            <i class="fa-solid fa-check me-1" aria-hidden="true"></i> {% trans "Administered" %}
-                                        </button>
-                                        <button type="button" id="btn-filter-pending" class="btn btn-outline-warning filter-button rounded-pill-end px-3" aria-pressed="false">
-                                            <i class="fa-solid fa-clock me-1" aria-hidden="true"></i> {% trans "Pending" %}
-                                        </button>
+                              <div class="col-md-6">
+                                    <div class="vaccine-filter-buttons">
+                                        <div class="btn-group w-100" role="group" aria-label="{% trans 'Vaccine filters' %}">
+                                            <button type="button" id="btn-filter-all" class="btn btn-outline-primary filter-button active" aria-pressed="true">
+                                                <i class="fa-solid fa-filter me-1" aria-hidden="true"></i><span>{% trans "All" %}</span>
+                                            </button>
+                                            <button type="button" id="btn-filter-administered" class="btn btn-outline-success filter-button" aria-pressed="false">
+                                                <i class="fa-solid fa-check me-1" aria-hidden="true"></i><span>{% trans "Administered" %}</span>
+                                            </button>
+                                            <button type="button" id="btn-filter-pending" class="btn btn-outline-warning filter-button" aria-pressed="false">
+                                                <i class="fa-solid fa-clock me-1" aria-hidden="true"></i><span>{% trans "Pending" %}</span>
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -287,8 +289,13 @@
                     </div>
                 </div>
 
-                <!-- Upcoming vaccines -->
-                <div class="card border-0 shadow-sm rounded-4 mb-4">
+            </div>
+        </div>
+        <!-- Horizontal cards row -->
+        <div class="row mb-4">
+            <!-- Upcoming vaccines -->
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm rounded-4 h-100">
                     <div class="card-header bg-light border-0 d-flex justify-content-between align-items-center pt-3">
                         <h3 class="h5 mb-0 d-flex align-items-center">
                             <i class="fa-solid fa-calendar-day text-primary me-2" aria-hidden="true"></i>
@@ -324,9 +331,11 @@
                         {% endif %}
                     </ul>
                 </div>
+            </div>
 
-                <!-- Vaccination guide -->
-                <div class="card border-0 shadow-sm rounded-4 mb-4">
+            <!-- Vaccination guide -->
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm rounded-4 h-100">
                     <div class="card-header bg-light border-0 pt-3">
                         <h3 class="card-title h5 mb-0 d-flex align-items-center">
                             <i class="fa-solid fa-book-medical text-primary me-2" aria-hidden="true"></i>

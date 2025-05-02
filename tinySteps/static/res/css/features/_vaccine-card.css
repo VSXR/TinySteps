@@ -203,9 +203,42 @@
     margin-bottom: 1.5rem;
 }
 
+.vaccine-filter-buttons {
+    display: flex;
+    width: 100%;
+}
+
+.vaccine-filter-buttons .btn-group {
+    width: 100%;
+    border-radius: 50rem;
+    overflow: hidden;
+    display: flex;
+}
+
 .filter-button {
     transition: all 0.3s ease;
     box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    position: relative;
+    flex: 1 1 auto;
+    border-radius: 0 !important;
+    white-space: nowrap;
+    padding-left: 0.75rem !important;
+    padding-right: 0.75rem !important;
+    text-align: center;
+    justify-content: center;
+    min-width: 0;
+}
+
+/* Arregla el primer botón */
+.filter-button:first-child {
+    border-top-left-radius: 50rem !important;
+    border-bottom-left-radius: 50rem !important;
+}
+
+/* Arregla el último botón */
+.filter-button:last-child {
+    border-top-right-radius: 50rem !important;
+    border-bottom-right-radius: 50rem !important;
 }
 
 .filter-button:hover {
@@ -216,6 +249,39 @@
 .filter-button.active {
     font-weight: 600;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+/* Adjustments for mobile */
+@media (max-width: 768px) {
+    .vaccine-filter-buttons .btn-group {
+        display: flex;
+        width: 100%;
+    }
+    
+    .filter-button {
+        flex: 1 1 33.33%;
+        padding-left: 0.25rem !important;
+        padding-right: 0.25rem !important;
+        font-size: 0.9rem;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    
+    .filter-button i {
+        margin-right: 0.25rem !important;
+    }
+}
+
+/* Very small screens */
+@media (max-width: 375px) {
+    .filter-button span {
+        display: none;
+    }
+    
+    .filter-button i {
+        margin-right: 0 !important;
+        font-size: 1rem;
+    }
 }
 
 /* ==========================================================================

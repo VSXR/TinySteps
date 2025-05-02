@@ -5,7 +5,7 @@
 {% block title %}{% trans "Calendar for" %} {{ child.name }} - Tiny Steps{% endblock %}
 
 {% block main_contents %}
-    <main id="main-content" class="container-fluid py-4">
+    <main id="main-content" class="container-fluid">
         {% csrf_token %}
         <input type="hidden" id="child-id" value="{{ child.id }}">
         
@@ -191,57 +191,57 @@
                 </form>
                 </div>
             </div>
+        </div>
 
-            <!-- Upcoming events -->
-            <div class="card border-0 shadow-sm rounded-4 mb-4">
-                <div class="card-header bg-light border-0 d-flex justify-content-between align-items-center pt-3">
-                    <h3 class="h5 mb-0 d-flex align-items-center">
-                        <i class="fa-solid fa-calendar-alt text-secondary me-2" aria-hidden="true"></i> {% trans "Upcoming Events" %}
-                    </h3>
-                    <span class="badge rounded-pill bg-secondary" id="upcoming-events-count">0</span>
-                </div>
-                <ul class="list-group list-group-flush" id="upcoming-events" role="list">
-                <li class="list-group-item text-center py-3" id="no-events">
-                    <p class="mb-0 text-muted">{% trans "No upcoming events without reminders" %}</p>
+        <!-- Upcoming events -->
+        <div class="card border-0 shadow-sm rounded-4 mb-4">
+            <div class="card-header bg-light border-0 d-flex justify-content-between align-items-center pt-3">
+                <h3 class="h5 mb-0 d-flex align-items-center">
+                    <i class="fa-solid fa-calendar-alt text-secondary me-2" aria-hidden="true"></i> {% trans "Upcoming Events" %}
+                </h3>
+                <span class="badge rounded-pill bg-secondary" id="upcoming-events-count">0</span>
+            </div>
+            <ul class="list-group list-group-flush" id="upcoming-events" role="list">
+            <li class="list-group-item text-center py-3" id="no-events">
+                <p class="mb-0 text-muted">{% trans "No upcoming events without reminders" %}</p>
+            </li>
+            </ul>
+        </div>
+
+        <!-- Upcoming reminders -->
+        <div class="card border-0 shadow-sm rounded-4 mb-4">
+            <div class="card-header bg-light border-0 d-flex justify-content-between align-items-center pt-3">
+                <h3 class="h5 mb-0 d-flex align-items-center">
+                    <i class="fa-solid fa-bell text-primary me-2" aria-hidden="true"></i> {% trans "Reminders" %}
+                </h3>
+                <span class="badge rounded-pill bg-primary" aria-label="{% trans 'Number of reminders:' %} {{ upcoming_reminders|length }}">{{ upcoming_reminders|length|default:0 }}</span>
+            </div>
+            <ul class="list-group list-group-flush" id="upcoming-reminders" role="list">
+            {% if upcoming_reminders %}
+                {% for reminder in upcoming_reminders %}
+                <li class="list-group-item reminder-item d-flex justify-content-between align-items-start" data-event-id="{{ reminder.id }}">
+                    <div>
+                    <h4 class="h6 mb-1">{{ reminder.title }}</h4>
+                    <p class="small text-muted mb-0 d-flex align-items-center">
+                        <i class="fa-solid fa-calendar-day me-1" aria-hidden="true"></i>
+                        {{ reminder.date|date:"d M Y" }}
+                        {% if reminder.time %}
+                        <span class="mx-1">•</span>
+                        <i class="fa-solid fa-clock me-1" aria-hidden="true"></i>
+                        {{ reminder.time|time:"H:i" }}
+                        {% endif %}
+                    </p>
+                    </div>
+                    <span class="badge event-type-{{ reminder.type }}">{{ reminder.type|title }}</span>
                 </li>
-                </ul>
-            </div>
-
-            <!-- Upcoming reminders -->
-            <div class="card border-0 shadow-sm rounded-4 mb-4">
-                <div class="card-header bg-light border-0 d-flex justify-content-between align-items-center pt-3">
-                    <h3 class="h5 mb-0 d-flex align-items-center">
-                        <i class="fa-solid fa-bell text-primary me-2" aria-hidden="true"></i> {% trans "Reminders" %}
-                    </h3>
-                    <span class="badge rounded-pill bg-primary" aria-label="{% trans 'Number of reminders:' %} {{ upcoming_reminders|length }}">{{ upcoming_reminders|length|default:0 }}</span>
-                </div>
-                <ul class="list-group list-group-flush" id="upcoming-reminders" role="list">
-                {% if upcoming_reminders %}
-                    {% for reminder in upcoming_reminders %}
-                    <li class="list-group-item reminder-item d-flex justify-content-between align-items-start" data-event-id="{{ reminder.id }}">
-                        <div>
-                        <h4 class="h6 mb-1">{{ reminder.title }}</h4>
-                        <p class="small text-muted mb-0 d-flex align-items-center">
-                            <i class="fa-solid fa-calendar-day me-1" aria-hidden="true"></i>
-                            {{ reminder.date|date:"d M Y" }}
-                            {% if reminder.time %}
-                            <span class="mx-1">•</span>
-                            <i class="fa-solid fa-clock me-1" aria-hidden="true"></i>
-                            {{ reminder.time|time:"H:i" }}
-                            {% endif %}
-                        </p>
-                        </div>
-                        <span class="badge event-type-{{ reminder.type }}">{{ reminder.type|title }}</span>
-                    </li>
-                    {% endfor %}
-                {% else %}
-                    <li class="list-group-item text-center py-3" id="no-reminders">
-                    <p class="mb-0 text-muted">{% trans "No upcoming reminders" %}</p>
-                    </li>
-                {% endif %}
-                </ul>
-            </div>
-            </div>
+                {% endfor %}
+            {% else %}
+                <li class="list-group-item text-center py-3" id="no-reminders">
+                <p class="mb-0 text-muted">{% trans "No upcoming reminders" %}</p>
+                </li>
+            {% endif %}
+            </ul>
+        </div>
         </div>
 
         <!-- Event details modal -->

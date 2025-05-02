@@ -21,11 +21,12 @@
         <!-- Breadcrumbs -->
         {% include "children/components/child_breadcrumbs.html" with child=child feature_type="growth" %}
         
-        <!-- Page Header -->
-        <header class="mt-4 mb-5">
-            <h1 class="h2 mb-3 text-center">Growth Charts for {{ child.name }}</h1>
-            <p class="text-muted mb-4 text-center">Track your child's physical development patterns</p>
-        </header>
+        <!-- Page Title -->
+        {% trans "Growth Charts for" as charts_prefix %}
+        {% trans "Track physical development patterns for" as subtitle_prefix %}
+        {% with page_title=charts_prefix|add:" "|add:child.name page_subtitle=subtitle_prefix|add:" "|add:child.name %}
+            {% include "children/components/page_header.html" with title=page_title subtitle=page_subtitle %}
+        {% endwith %}
         
         <!-- Messages Container -->
         <div id="messages-container" class="messages mb-4" role="alert" aria-live="polite"></div>

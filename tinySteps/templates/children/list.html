@@ -40,17 +40,17 @@
                             </form>
                         </div>
                         
-                        <!-- Filter buttons with compact styling -->
+                        <!-- Filter buttons with compact styling and nowrap -->
                         <div class="col-md-6 d-flex justify-content-md-end align-items-center">
-                            <div class="filter-buttons p-1 bg-light rounded-pill shadow-sm" role="group" aria-label="{% trans 'Filter children by age' %}">
-                                <button type="button" class="btn btn-sm btn-outline-primary filter-btn active rounded-pill px-2 px-sm-3 py-1 me-1" data-filter="all">
-                                    <i class="fa-solid fa-users me-1" aria-hidden="true"></i> <span class="d-none d-sm-inline">{% trans "All" %}</span>
+                            <div class="filter-buttons p-1 bg-light rounded-pill shadow-sm d-flex flex-nowrap" role="group" aria-label="{% trans 'Filter children by age' %}">
+                                <button type="button" class="btn btn-sm btn-outline-primary filter-btn active rounded-pill px-2 py-1 me-1" data-filter="all">
+                                    <i class="fa-solid fa-users" aria-hidden="true"></i> <span class="d-none d-sm-inline ms-1">{% trans "All" %}</span>
                                 </button>
-                                <button type="button" class="btn btn-sm btn-outline-primary filter-btn rounded-pill px-2 px-sm-3 py-1 me-1" data-filter="infants">
-                                    <i class="fa-solid fa-baby me-1" aria-hidden="true"></i> <span class="d-none d-sm-inline">{% trans "Infants" %}</span><span class="d-inline d-sm-none">0-12m</span>
+                                <button type="button" class="btn btn-sm btn-outline-primary filter-btn rounded-pill px-2 py-1 me-1" data-filter="infants">
+                                    <i class="fa-solid fa-baby" aria-hidden="true"></i> <span class="d-none d-sm-inline ms-1">{% trans "Infants" %}</span><span class="d-inline d-sm-none">0-12m</span>
                                 </button>
-                                <button type="button" class="btn btn-sm btn-outline-primary filter-btn rounded-pill px-2 px-sm-3 py-1" data-filter="toddlers">
-                                    <i class="fa-solid fa-child me-1" aria-hidden="true"></i> <span class="d-none d-sm-inline">{% trans "Toddlers" %}</span><span class="d-inline d-sm-none">1-3y</span>
+                                <button type="button" class="btn btn-sm btn-outline-primary filter-btn rounded-pill px-2 py-1" data-filter="toddlers">
+                                    <i class="fa-solid fa-child" aria-hidden="true"></i> <span class="d-none d-sm-inline ms-1">{% trans "Toddlers" %}</span><span class="d-inline d-sm-none">1-3y</span>
                                 </button>
                             </div>
                         </div>
