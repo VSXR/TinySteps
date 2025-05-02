@@ -18,8 +18,12 @@
             <a href="#" class="btn btn-sm btn-outline-primary rounded-pill d-flex align-items-center justify-content-center">
                 <i class="fa-solid fa-bell me-2" aria-hidden="true"></i> {% trans "Notification Settings" %}
             </a>
-            <a href="{% url 'logout' %}" class="btn btn-sm btn-outline-danger rounded-pill d-flex align-items-center justify-content-center"
-               onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+        </div>
+        
+        <!-- Logout button -->
+        <div class="text-center mt-3">
+            <a href="{% url 'logout' %}" class="btn btn-sm btn-outline-danger rounded-pill d-inline-flex align-items-center justify-content-center px-4"
+                onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                 <i class="fa-solid fa-sign-out-alt me-2" aria-hidden="true"></i> {% trans "Logout" %}
             </a>
             <form id="logout-form" action="{% url 'logout' %}" method="post" class="d-none">

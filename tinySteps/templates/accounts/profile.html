@@ -22,10 +22,9 @@
             </div>
         </div>
 
-        <!-- Main Profile Section -->
-        <div id="profile-main-content" class="row g-4 mb-5" role="region" aria-label="{% trans 'Profile Information' %}">
-            <!-- Profile Information Card -->
-            <div class="col-12 col-lg-4 d-flex">
+        <!-- User Profile Card (Full Width) -->
+        <div class="row mb-4">
+            <div class="col-12">
                 <div class="card border-0 shadow-sm rounded-4 w-100 content-lift">
                     <div class="card-header bg-primary bg-opacity-10 border-0 py-3 rounded-top-4" id="profile-info-header">
                         <h2 class="h5 mb-0 fw-semibold d-flex align-items-center">
@@ -38,9 +37,11 @@
                     </div>
                 </div>
             </div>
+        </div>
 
-            <!-- Children Summary Card -->
-            <div class="col-12 col-lg-8 d-flex">
+        <!-- Children Summary Card (Full Width) -->
+        <div id="profile-main-content" class="row mb-5" role="region" aria-label="{% trans 'Children Information' %}">
+            <div class="col-12">
                 <div class="card border-0 shadow-sm rounded-4 w-100 content-lift">
                     <div class="card-header bg-primary bg-opacity-10 border-0 py-3 rounded-top-4 d-flex justify-content-between align-items-center flex-wrap gap-2" id="children-section-header">
                         <h2 class="h5 mb-0 fw-semibold d-flex align-items-center">
@@ -52,47 +53,48 @@
                         </a>
                     </div>
                     <div class="card-body p-4">
-                        {% if user.children.all %}
-                            <div class="row row-cols-1 row-cols-sm-2 row-cols-xl-3 g-4" role="list" aria-labelledby="children-section-header">
-                                {% for child in user.children.all %}
-                                    <div class="col" role="listitem">
-                                        {% include "accounts/components/child_mini_card.html" with child=child %}
-                                    </div>
-                                {% endfor %}
-                            </div>
-                        {% else %}
-                            <div class="text-center py-4 empty-container" aria-live="polite">
-                                <div class="empty-icon-wrapper mb-4">
-                                    <i class="fa-solid fa-child-reaching empty-icon" aria-hidden="true"></i>
-                                </div>
-                                <h3 class="empty-title">{% trans "No Children Added Yet" %}</h3>
-                                <p class="empty-message">{% trans "Start tracking your child's development journey by adding their profile." %}</p>
-                                <a href="{% url 'children:add_child' %}" class="btn btn-primary btn-lg rounded-pill px-4 shadow-sm" aria-label="{% trans 'Add your first child' %}">
-                                    <i class="fa-solid fa-plus me-2" aria-hidden="true"></i> {% trans "Add Your First Child" %}
-                                </a>
-                            </div>
-                        {% endif %}
-                    </div>
                     {% if user.children.all %}
-                    <div class="card-footer bg-transparent border-0 pt-0 pb-4 px-4 text-center">
-                        <a href="{% url 'children:your_children' %}" class="btn btn-outline-primary rounded-pill px-4" aria-label="{% trans 'View all your children' %}">
-                            <i class="fa-solid fa-th-list me-2" aria-hidden="true"></i>{% trans "View All Children" %}
+                        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4" role="list" aria-labelledby="children-section-header">
+                        {% for child in user.children.all|slice:":3" %}
+                            <div class="col" role="listitem">
+                            {% include "accounts/components/child_mini_card.html" with child=child %}
+                            </div>
+                        {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="text-center py-4 empty-container" aria-live="polite">
+                        <div class="empty-icon-wrapper mb-4">
+                            <i class="fa-solid fa-child-reaching empty-icon" aria-hidden="true"></i>
+                        </div>
+                        <h3 class="empty-title">{% trans "No Children Added Yet" %}</h3>
+                        <p class="empty-message">{% trans "Start tracking your child's development journey by adding their profile." %}</p>
+                        <a href="{% url 'children:add_child' %}" class="btn btn-primary btn-lg rounded-pill px-4 shadow-sm" aria-label="{% trans 'Add your first child' %}">
+                            <i class="fa-solid fa-plus me-2" aria-hidden="true"></i> {% trans "Add Your First Child" %}
                         </a>
+                        </div>
+                    {% endif %}
+                    </div>
+                    {% if user.children.all.count > 0 %}
+                    <div class="card-footer bg-transparent border-0 pt-0 pb-4 px-4 text-center">
+                    <a href="{% url 'children:your_children' %}" class="btn btn-outline-primary rounded-pill px-4" aria-label="{% trans 'View all your children' %}">
+                        <i class="fa-solid fa-th-list me-2" aria-hidden="true"></i>{% trans "View All Children" %}
+                    </a>
                     </div>
                     {% endif %}
                 </div>
             </div>
         </div>
                 
-        <!-- Activity & Recommended Activities Section -->
+        <!-- Forum Activity Section  -->
         <div class="row g-4 mb-5">
-            <!-- Forum Activity -->
-            <div class="col-12 col-lg-8 d-flex">
+            <div class="col-12">
                 {% include "accounts/components/forum_activity_card.html" with user=user %}
             </div>
+        </div>
 
-            <!-- Recommended Activities Section -->
-            <div class="col-12 col-lg-4 d-flex">
+        <!-- Recommended Activities Section  -->
+        <div class="row g-4 mb-5">
+            <div class="col-12">
                 <div class="card border-0 shadow-sm rounded-4 w-100 content-lift">
                     <div class="card-header bg-primary bg-opacity-10 border-0 py-3 rounded-top-4">
                         <h2 class="h5 mb-0 fw-semibold d-flex align-items-center">
@@ -101,7 +103,7 @@
                         </h2>
                     </div>
                     <div class="card-body p-4">
-                        <div class="row row-cols-1 g-4">
+                        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4">
                             <!-- Recommended Guides -->
                             <div class="col">
                                 <div class="card h-100 border-0 shadow-sm rounded-4 element-elevation">
@@ -180,7 +182,7 @@
                 </h2>
                 </div>
                 <div class="card-body p-4">
-                <div class="row row-cols-1 row-cols-md-3 g-4" role="list" aria-labelledby="account-settings-header">
+                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4" role="list" aria-labelledby="account-settings-header">
                     <div class="col" role="listitem">
                     <a href="{% url 'password_reset' %}" class="d-flex align-items-center text-decoration-none text-body bg-light rounded-4 p-3 h-100 element-elevation">
                         <span class="icon-wrapper bg-primary bg-opacity-10 rounded-circle p-0 me-3 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
