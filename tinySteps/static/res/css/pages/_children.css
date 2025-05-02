@@ -61,6 +61,23 @@
         overflow: hidden;
     }
 
+    /* Fix gender badge position in list view */
+    .list-view .child-card .position-absolute.bottom-0.end-0.translate-middle {
+        position: absolute !important;
+        bottom: auto !important;
+        right: auto !important;
+        top: 0 !important;
+        left: 0 !important;
+        transform: translate(50%, 50%) !important;
+    }
+
+    /* Adjust badge size and appearance in list view */
+    .list-view .position-absolute.badge {
+        padding: 0.35rem !important;
+        margin-left: 10px;
+        z-index: 5;
+    }
+
     /* Left section: Photo container with full height background */
     .list-view .child-card .position-relative {
         width: 140px;
@@ -727,7 +744,6 @@
         }
     }
 
-    /* Nuevo estilo para resaltar la tarjeta al pasar el cursor */
     .child-card {
         transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
@@ -735,4 +751,137 @@
     .child-card:hover {
         transform: translateY(-5px);
         box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15) !important;
+    }
+
+    /* Responsive filter buttons */
+    .filter-buttons {
+        max-width: 100%;
+        min-width: 200px;
+        white-space: nowrap;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none; /* Firefox */
+    }
+
+    .filter-buttons::-webkit-scrollbar {
+        display: none; /* Chrome, Safari, Edge */
+    }
+
+    .filter-buttons .filter-btn {
+        flex-shrink: 0;
+        min-width: auto;
+        font-size: 0.85rem;
+    }
+
+    /* Make search responsive */
+    @media (max-width: 575.98px) {
+        .input-group .btn {
+            padding-left: 0.5rem !important;
+            padding-right: 0.5rem !important;
+        }
+        
+        .filter-buttons {
+            width: 100%;
+            justify-content: center;
+            margin-top: 0.5rem;
+        }
+        
+        .filter-buttons .filter-btn {
+            padding: 0.25rem 0.5rem !important;
+            margin-right: 0.25rem !important;
+            font-size: 0.75rem;
+        }
+        
+        .filter-buttons .filter-btn i {
+            font-size: 0.75rem;
+        }
+        
+        /* Fix view toggle buttons */
+        .btn-group .btn {
+            padding: 0.4rem 0.6rem;
+        }
+        
+        /* Center the count badge */
+        .badge.rounded-circle {
+            width: 32px !important;
+            height: 32px !important;
+        }
+    }
+
+    /* Extra small devices */
+    @media (max-width: 420px) {
+        /* Adjust the buttons for the smallest screens */
+        .d-flex.gap-3 {
+            gap: 0.5rem !important;
+        }
+        
+        .btn-group .btn,
+        .btn-primary.rounded-pill {
+            padding: 0.25rem 0.5rem !important;
+            font-size: 0.8rem;
+        }
+        
+        .btn-group .btn i,
+        .btn-primary.rounded-pill i {
+            margin-right: 0 !important;
+        }
+        
+        .btn-group .btn span,
+        .btn-primary.rounded-pill span {
+            display: none;
+        }
+    }
+
+    /* Make the cards look good in small screens */
+    @media (max-width: 575.98px) {
+        .child-card .child-banner img {
+            width: 100px !important;
+            height: 100px !important;
+        }
+        
+        .child-card h3.h4 {
+            font-size: 1.25rem;
+        }
+        
+        .child-card .badge {
+            font-size: 0.7rem;
+        }
+    }
+    
+    /* New specific mobile fixes for layout issues - added to fix UI issues */
+    @media (max-width: 576px) {
+      /* Fix filter buttons container */
+      .filter-buttons {
+        display: flex;
+        justify-content: center;
+        width: 100%;
+        padding: 0.5rem;
+        overflow-x: auto;
+      }
+      
+      /* Improve filter button styling */
+      .filter-btn {
+        flex: 0 0 auto;
+        padding: 0.5rem 0.75rem !important;
+        min-width: auto;
+        margin-right: 0.5rem;
+        white-space: nowrap;
+      }
+      
+      /* Fix search input group */
+      .input-group {
+        border-radius: 50px;
+        overflow: hidden;
+      }
+      
+      /* Ensure proper spacing */
+      .row.mb-4.align-items-center {
+        margin-top: 1rem;
+      }
+      
+      /* Fix action buttons layout */
+      .d-flex.gap-2.gap-sm-3 {
+        width: 100%;
+        justify-content: space-between;
+      }
     }
