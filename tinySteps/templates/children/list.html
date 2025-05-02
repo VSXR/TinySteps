@@ -6,7 +6,6 @@
 
 {% block main_contents %}  
 <div class="container py-5">
-    <!-- Improved header section with background -->
     <div class="mb-5 position-relative rounded-4 overflow-hidden">
         <div class="bg-primary bg-opacity-10 p-5">
             <div class="text-center">
@@ -16,7 +15,7 @@
         </div>
     </div>
     
-    <!-- Search and Filters with improved aesthetics and size adjustments -->
+    <!-- Search and Filters and size adjustments -->
     <div class="row justify-content-center mb-4">
         <div class="col-lg-11 col-xl-10">
             <div class="card border-0 shadow-sm rounded-4 hover-shadow">
@@ -60,7 +59,7 @@
             </div>
         </div>
     </div>
-    <!-- Action buttons and count with improved UI -->
+    <!-- Action buttons and count -->
     <div class="row mb-4 align-items-center">
         <div class="col-md-6">
             <div class="d-flex align-items-center">
@@ -74,7 +73,7 @@
         </div>
         <div class="col-md-6 d-flex justify-content-md-end align-items-center mt-3 mt-md-0">
             <div class="d-flex gap-3">
-                <!-- View toggle buttons with improved styling -->
+                <!-- View toggle buttons -->
                 <div class="btn-group shadow-sm overflow-hidden rounded-pill">
                     <button type="button" class="btn btn-light active px-3 py-2" id="card-view-btn" aria-label="{% trans 'Card view' %}">
                         <i class="fa-solid fa-th text-primary" aria-hidden="true"></i>
@@ -96,12 +95,10 @@
     <div class="row">
         <div class="col-12 section-spacing fade-in-up">
             {% if children %}
-                <!-- Children grid with enhanced visuals -->
                 <div class="row g-4 card-view" role="list" id="children-list-heading">
                     {% for child in children %}
                         <div class="col-md-6 col-lg-4 col-xl-3 fade-in-item" role="listitem">
                             <div class="card h-100 border-0 shadow-sm rounded-4 child-card element-elevation" data-age="{{ child.age }}">
-                                <!-- Banner with color gradient background based on gender -->
                                 <div class="position-relative">
                                     <div class="child-banner position-relative">
                                         <div class="{% if child.gender == 'M' %}bg-primary-gradient{% else %}bg-danger-gradient{% endif %} text-center py-4 w-100">
@@ -109,8 +106,8 @@
                                                 <img src="{{ child.get_image }}" alt="{{ child.name }}" 
                                                     class="rounded-circle border border-4 border-white shadow" 
                                                     loading="lazy">
-                                                <span class="position-absolute bottom-0 end-0 translate-middle badge rounded-circle {% if child.gender == 'M' %}bg-info{% else %}bg-danger{% endif %} p-2 border border-3 border-white">
-                                                    <i class="fa-solid fa-{% if child.gender == 'M' %}mars{% else %}venus{% endif %} fa-lg" aria-hidden="true"></i>
+                                                <span class="position-absolute bottom-0 end-0 translate-middle badge rounded-pill {% if child.gender == 'M' %}bg-info{% else %}bg-danger{% endif %} p-2 border border-2 border-white">
+                                                    <i class="fa-solid fa-{% if child.gender == 'M' %}mars{% else %}venus{% endif %}" aria-hidden="true"></i>
                                                     <span class="visually-hidden">{% if child.gender == 'M' %}{% trans "Male" %}{% else %}{% trans "Female" %}{% endif %}</span>
                                                 </span>
                                             </div>
@@ -153,9 +150,6 @@
                                         <a href="{% url 'children:child_detail' child.id %}" class="btn btn-primary rounded-pill shadow-sm" aria-hidden="true">
                                             <i class="fa-solid fa-eye me-2" aria-hidden="true"></i>{% trans "View Details" %}
                                         </a>
-                                        <a href="{% url 'children:child_milestones' child.id %}" class="btn btn-outline-primary rounded-pill btn-sm">
-                                            <i class="fa-solid fa-chart-line me-1" aria-hidden="true"></i>{% trans "Track Progress" %}
-                                        </a>
                                     </div>
                                 </div>
                             </div>
@@ -169,7 +163,6 @@
                     {% endfor %}
                 </div>
                 
-                <!-- Enhanced pagination with modern styling -->
                 {% if children.paginator.num_pages > 1 %}
                     <nav aria-label="{% trans 'Children pagination' %}" class="mt-5">
                         <ul class="pagination pagination-lg justify-content-center flex-wrap gap-2">
@@ -214,7 +207,6 @@
                     </nav>
                 {% endif %}
             {% else %}
-                <!-- Improved empty state with illustrations -->
                 <div class="empty-container mt-5 mb-5">
                     <div class="empty-card p-5 bg-white shadow-sm">
                         <div class="empty-icon-wrapper mb-4">
@@ -340,185 +332,5 @@
         });
     });
 </script>
-
-<!-- Add custom CSS for enhanced aesthetics -->
-<style>
-    .fade-in-up {
-        animation: fadeInUp 0.5s ease-out forwards;
-    }
-    
-    .fade-in-item {
-        opacity: 0;
-    }
-    
-    @keyframes fadeInUp {
-        from {
-            opacity: 0;
-            transform: translateY(20px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-    
-    .pulse-animation {
-        animation: pulse 2s infinite ease-in-out;
-    }
-    
-    @keyframes pulse {
-        0% { transform: scale(1); }
-        50% { transform: scale(1.1); }
-        100% { transform: scale(1); }
-    }
-    
-    /* Gradientes mejorados con mayor cobertura */
-    .bg-primary-gradient {
-        background: linear-gradient(135deg, #0d6efd 0%, #4d96ff 100%);
-        min-height: 200px; /* Mayor altura para mejor cobertura */
-    }
-    
-    .bg-danger-gradient {
-        background: linear-gradient(135deg, #dc3545 0%, #ff758f 100%);
-        min-height: 200px; /* Mayor altura para mejor cobertura */
-    }
-    
-    .hover-shadow {
-        transition: box-shadow 0.3s ease;
-    }
-    
-    .hover-shadow:hover {
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1) !important;
-    }
-    
-    /* Mejora para la foto del niño - expandida */
-    .child-banner .position-relative {
-        width: 100%;
-        display: flex;
-        justify-content: center;
-    }
-    
-    .child-banner img {
-        width: 150px !important; /* Imagen más grande */
-        height: 150px !important;
-        object-fit: cover;
-        transition: transform 0.3s ease;
-    }
-    
-    .child-banner img:hover {
-        transform: scale(1.05);
-    }
-    
-    /* Botón centrado de ver detalles */
-    .card-footer .d-grid {
-        display: flex !important;
-        flex-direction: column;
-        align-items: center;
-    }
-    
-    .card-footer .btn-primary {
-        min-width: 80%;
-        margin: 0 auto;
-    }
-    
-    /* Enhanced list view styling */
-    .list-view .child-card {
-        display: flex !important;
-        flex-direction: row;
-        align-items: center;
-        padding: 0;
-        overflow: hidden;
-        transition: all 0.3s ease;
-    }
-    
-    .list-view .child-card .position-relative {
-        width: 180px;
-        min-width: 180px;
-        height: auto;
-        margin-right: 0;
-    }
-    
-    .list-view .child-card .child-banner {
-        height: 100%;
-        width: 100%;
-    }
-    
-    /* Ajuste para la vista de lista - photo container expandido */
-    .list-view .child-card .child-banner .bg-primary-gradient,
-    .list-view .child-card .child-banner .bg-danger-gradient {
-        height: 100%;
-        min-height: 170px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 100%;
-    }
-    
-    .list-view .child-card .child-banner img {
-        width: 120px !important;
-        height: 120px !important;
-    }
-    
-    .list-view .child-card .card-body {
-        text-align: left;
-        padding: 1.5rem;
-    }
-    
-    .list-view .child-card .card-footer {
-        width: auto;
-        margin-left: auto;
-        padding: 1.5rem;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-    
-    .list-view .child-card .card-footer .btn {
-        width: 100%;
-    }
-    
-    .list-view .child-card .card-footer .btn-outline-primary {
-        display: none;
-    }
-    
-    /* Responsive adjustments for list view */
-    @media (max-width: 767.98px) {
-        .list-view .child-card {
-            flex-direction: column;
-        }
-        
-        .list-view .child-card .position-relative {
-            width: 100%;
-        }
-        
-        .list-view .child-card .card-body {
-            width: 100%;
-            text-align: center;
-        }
-        
-        .list-view .child-card .card-footer {
-            width: 100%;
-            padding: 1rem 1.5rem 1.5rem;
-        }
-        
-        .filter-buttons {
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-        
-        .filter-buttons .btn {
-            margin-bottom: 0.5rem;
-        }
-    }
-    
-    /* Nuevo estilo para resaltar la tarjeta al pasar el cursor */
-    .child-card {
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-    
-    .child-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15) !important;
-    }
-</style>
 {% endblock %}
+

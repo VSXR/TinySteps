@@ -1,2 +1,98 @@
 /* Contact page styles */
 
+/* Base icon styles */
+.icon-box {
+    width: 45px;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Icon wrapper for contact form */
+.icon-wrapper {
+    width: 60px;
+    height: 60px;
+}
+
+/* Contact info icon boxes */
+.contact-info-icon {
+    width: 50px;
+    height: 50px;
+}
+
+/* Social media icons */
+.social-icon-circle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.social-icon-link:hover .social-icon-circle {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+/* Map iframe styles */
+.map-iframe {
+    border: 0;
+}
+
+/* Hover effects */
+.hover-shadow {
+    transition: box-shadow 0.3s ease;
+}
+
+.hover-shadow:hover {
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1) !important;
+}
+
+.hover-lift {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.hover-lift:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(13, 110, 253, 0.25) !important;
+}
+
+.hover-text-primary:hover {
+    color: var(--bs-primary) !important;
+}
+
+/* Form styles */
+.contact-form-label {
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+}
+
+/* Subtitle positioning */
+.contact-subtitle {
+    margin-left: 0.75rem;
+}
+
+/* Responsive styles */
+@media (max-width: 767.98px) {
+    .icon-box {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .icon-wrapper {
+        width: 50px;
+        height: 50px;
+    }
+    
+    .contact-info-icon {
+        width: 45px;
+        height: 45px;
+    }
+    
+    .card-body {
+        padding: 1.5rem;
+    }
+}

@@ -6,71 +6,96 @@
 {% block title %}{% trans "Contact Us - Tiny Steps" %}{% endblock title %} 
 
 {% block main_contents %}
+    <!-- Skip to content link for keyboard users -->
+    <a href="#contact-form" class="visually-hidden-focusable d-inline-block p-2 m-1 bg-primary text-white text-decoration-none">
+        {% trans "Skip to contact form" %}
+    </a>
+
     <main id="main-content">
-        <div class="container my-5">
-            <div class="row mb-4">
-                <div class="col">
-                    <h1 class="display-5 fw-bold text-center" id="page-heading">{% trans "Contact Us" %}</h1>
-                    <p class="lead text-center text-muted" id="page-description">
-                        {% trans "We'd love to hear from you! Fill out the form below and we'll get back to you soon" %}
-                    </p>
-                    <hr class="my-4 w-50 mx-auto opacity-25">
-                </div>
-            </div>
-
-            <div class="row justify-content-center">
-                <div class="col-lg-6 col-md-8">
+        <!-- Page Header Component -->
+        {% include "contact/components/page_header.html" %}
+        
+        <div class="container mb-5">
+            <div class="row g-4">
+                <div class="col-lg-7">
+                    <!-- Alert messages -->
                     {% if messages %}
-                        {% include 'partials/messages.html' %}
+                        <div role="alert" aria-live="polite" class="mb-4">
+                            {% include 'partials/messages.html' %}
+                        </div>
                     {% endif %}
-
-                    <div class="card shadow-sm border-0 rounded-3 h-100" role="region" aria-labelledby="form-section-heading">
-                        <div class="card-header bg-light py-3">
-                            <h5 class="card-title mb-0 text-center" id="form-section-heading">{% trans "Get in Touch" %}</h5>
-                        </div>
-                        <div class="card-body p-4">
-                            <form method="post" action="{% url 'contact' %}" aria-labelledby="form-heading" novalidate>
-                                {% csrf_token %}
-                                <span id="form-heading" class="visually-hidden">{% trans "Contact Us Form" %}</span>
-                                
-                                {{ form|crispy }}
-
-                                <div class="d-grid mt-4">
-                                    <button type="submit" class="btn btn-primary btn-lg rounded-pill" aria-label="{% trans "Submit information request" %}">
-                                        <i class="fas fa-paper-plane me-2" aria-hidden="true"></i>{% trans "SUBMIT" %}
-                                    </button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
+                    
+                    <!-- Contact Form Component -->
+                    {% include "contact/components/contact_form.html" with form=form %}
                 </div>
                 
-                <div class="col-lg-4 mt-4 mt-lg-0">
-                    <div class="card shadow-sm border-0 rounded-3 h-100" role="region" aria-labelledby="info-section-heading">
-                        <div class="card-header bg-light py-3">
-                            <h5 class="card-title mb-0 text-center" id="info-section-heading">{% trans "Our Information" %}</h5>
-                        </div>
-                        <div class="card-body p-4">
-                            <div class="mb-4">
-                                <h6 class="fw-bold text-primary" id="address-heading"><i class="fas fa-map-marker-alt me-2" aria-hidden="true"></i>{% trans "Address" %}</h6>
-                                <p class="text-muted ms-4" aria-labelledby="address-heading">123 Tiny Steps Lane<br>Kidsville, TS 12345</p>
-                            </div>
-                            <div class="mb-4">
-                                <h6 class="fw-bold text-primary" id="phone-heading"><i class="fas fa-phone me-2" aria-hidden="true"></i>{% trans "Phone" %}</h6>
-                                <p class="text-muted ms-4" aria-labelledby="phone-heading">(123) 456-7890</p>
-                            </div>
-                            <div class="mb-4">
-                                <h6 class="fw-bold text-primary" id="email-heading"><i class="fas fa-envelope me-2" aria-hidden="true"></i>{% trans "Email" %}</h6>
-                                <p class="text-muted ms-4" aria-labelledby="email-heading">c4relecloud@gmail.com</p>
-                            </div>
-                            <div class="mb-0">
-                                <h6 class="fw-bold text-primary" id="hours-heading"><i class="fas fa-clock me-2" aria-hidden="true"></i>{% trans "Hours" %}</h6>
-                                <p class="text-muted ms-4" aria-labelledby="hours-heading">Monday-Friday: 9AM-5PM<br>Saturday-Sunday: Closed</p>
-                            </div>
-                        </div>
-                    </div>
+                <!-- Contact Information and Map -->
+                <div class="col-lg-5">
+                    <!-- Contact Info Component -->
+                    {% include "contact/components/contact_info.html" %}
+                    
+                    <!-- Map Component -->
+                    {% include "contact/components/map.html" %}
                 </div>
             </div>
+            
+            <!-- FAQ Component -->
+            {% include "contact/components/faqs.html" %}
         </div>
-    </main>
+        
+        </main>
 {% endblock main_contents %}
+
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add floating label animation
+        const formControls = document.querySelectorAll('.form-control');
+        formControls.forEach(control => {
+            // Initial state check
+            if (control.value) {
+                control.parentElement.classList.add('is-filled');
+            }
+            
+            // Event listeners
+            control.addEventListener('focus', function() {
+                this.parentElement.classList.add('is-focused');
+            });
+            
+            control.addEventListener('blur', function() {
+                this.parentElement.classList.remove('is-focused');
+                if (this.value) {
+                    this.parentElement.classList.add('is-filled');
+                } else {
+                    this.parentElement.classList.remove('is-filled');
+                }
+            });
+        });
+        
+        // Form validation feedback
+        const contactForm = document.getElementById('contactForm');
+        if (contactForm) {
+            contactForm.addEventListener('submit', function(e) {
+                if (!this.checkValidity()) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                }
+                this.classList.add('was-validated');
+            });
+        }
+        
+        // Announce screen reader messages
+        const messages = document.querySelectorAll('.alert');
+        if (messages.length > 0) {
+            setTimeout(() => {
+                messages.forEach(message => {
+                    if (message.classList.contains('alert-success')) {
+                        message.setAttribute('role', 'status');
+                    }
+                });
+            }, 1000);
+        }
+    });
+</script>
+{% endblock extra_js %}

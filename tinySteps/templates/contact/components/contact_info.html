@@ -1,0 +1,46 @@
+{% load i18n %}
+
+<div class="card border-0 shadow-sm rounded-4 mb-4">
+    <div class="card-body p-4">
+        <h3 class="h5 mb-4">{% trans "Contact Information" %}</h3>
+        
+        <ul class="list-unstyled mb-0">
+            <!-- Address -->
+            <li class="mb-4" id="contact-address">
+                <h4 class="h6 mb-3">{% trans "Our Location" %}</h4>
+                <div class="d-flex align-items-center">
+                    <div class="icon-box contact-info-icon bg-primary bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center me-3 flex-shrink-0">
+                        <i class="fas fa-map-marker-alt text-primary" aria-hidden="true"></i>
+                    </div>
+                    <p class="text-muted mb-0">123 Tiny Steps Lane<br>Madrid, TS 12345</p>
+                </div>
+            </li>
+            
+            <hr class="my-4">
+            
+            <!-- Email -->
+            <li class="mb-4" id="contact-email">
+                <h4 class="h6 mb-3">{% trans "Email Us" %}</h4>
+                <div class="d-flex align-items-center">
+                    <div class="icon-box contact-info-icon bg-primary bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center me-3 flex-shrink-0">
+                        <i class="fas fa-envelope text-primary" aria-hidden="true"></i>
+                    </div>
+                    <a href="mailto:c4relecloud@gmail.com" class="text-decoration-none text-muted hover-text-primary">c4relecloud@gmail.com</a>
+                </div>
+            </li>
+            
+            <hr class="my-4">
+            
+            <!-- Phone -->
+            <li class="mb-0" id="contact-phone">
+                <h4 class="h6 mb-3">{% trans "Call Us" %}</h4>
+                <div class="d-flex align-items-center">
+                    <div class="icon-box contact-info-icon bg-primary bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center me-3 flex-shrink-0">
+                        <i class="fas fa-phone text-primary" aria-hidden="true"></i>
+                    </div>
+                    <a href="tel:+11234567890" class="text-decoration-none text-muted hover-text-primary">(123) 456-7890</a>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>
