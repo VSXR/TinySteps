@@ -14,8 +14,9 @@
     </div>
     <div class="card-body p-4">
         {% if user.forum_posts.all %}
-            <div class="list-group list-group-flush" aria-labelledby="forum-activity-header">
-                {% for post in user.forum_posts.all|slice:":5" %}
+            {% with post_count=user.forum_posts.count %}
+            <div class="list-group list-group-flush forum-posts-container" aria-labelledby="forum-activity-header">
+                {% for post in user.forum_posts.all|slice:":7" %}
                     <a href="{% url 'forum:view_post' post.id %}" class="list-group-item list-group-item-action p-3 border-0 mb-2 rounded-3 transition-300" aria-label="{% trans 'Forum post titled' %} {{ post.title }}">
                         <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-2">
                             <h3 class="h6 mb-1 mb-sm-0 text-primary">{{ post.title }}</h3>
@@ -27,7 +28,7 @@
                     </a>
                 {% endfor %}
             </div>
-            {% if user.forum_posts.count > 5 %}
+            {% if post_count > 7 %}
                 <div class="text-center mt-4">
                     <a href="{% url 'forum:parent_forum' %}" class="btn btn-outline-primary rounded-pill px-4" aria-label="{% trans 'View all your forum posts' %}">
                         <i class="fa-solid fa-list me-2" aria-hidden="true"></i>
@@ -35,6 +36,7 @@
                     </a>
                 </div>
             {% endif %}
+            {% endwith %}
         {% else %}
             <div class="text-center py-5">
                 <div class="mb-4">

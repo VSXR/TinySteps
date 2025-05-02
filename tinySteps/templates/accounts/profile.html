@@ -84,73 +84,16 @@
             </div>
         </div>
                 
-        <!-- Activity & Actions Section -->
+        <!-- Activity & Recommended Activities Section -->
         <div class="row g-4 mb-5">
             <!-- Forum Activity -->
             <div class="col-12 col-lg-8 d-flex">
-            {% include "accounts/components/forum_activity_card.html" with user=user %}
+                {% include "accounts/components/forum_activity_card.html" with user=user %}
             </div>
-            
-            <!-- Account Actions -->
+
+            <!-- Recommended Activities Section -->
             <div class="col-12 col-lg-4 d-flex">
                 <div class="card border-0 shadow-sm rounded-4 w-100 content-lift">
-                    <div class="card-header bg-primary bg-opacity-10 border-0 py-3 rounded-top-4" id="account-actions-header">
-                        <h2 class="h5 mb-0 fw-semibold d-flex align-items-center">
-                            <i class="fa-solid fa-gear text-primary me-2" aria-hidden="true"></i>
-                            <span>{% trans "Account Settings" %}</span>
-                        </h2>
-                    </div>
-                    <div class="card-body p-4">
-                        <div class="d-flex flex-column gap-3" aria-labelledby="account-actions-header">
-                            <a href="{% url 'password_reset' %}" class="d-flex align-items-center text-decoration-none text-body bg-light rounded-pill p-3">
-                                <span class="icon-wrapper bg-primary bg-opacity-10 rounded-circle p-0 me-3 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
-                                    <i class="fa-solid fa-key text-primary" aria-hidden="true"></i>
-                                </span>
-                                <div class="flex-grow-1">
-                                    <h3 class="h6 mb-1 fw-semibold">{% trans "Change Password" %}</h3>
-                                    <p class="small text-muted mb-0">{% trans "Update your account password" %}</p>
-                                </div>
-                                <i class="fa-solid fa-chevron-right text-primary" aria-hidden="true"></i>
-                            </a>
-                            
-                            <a href="#" class="d-flex align-items-center text-decoration-none text-body bg-light rounded-pill p-3">
-                                <span class="icon-wrapper bg-primary bg-opacity-10 rounded-circle p-0 me-3 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
-                                    <i class="fa-solid fa-shield-alt text-primary" aria-hidden="true"></i>
-                                </span>
-                                <div class="flex-grow-1">
-                                    <h3 class="h6 mb-1 fw-semibold">{% trans "Privacy Settings" %}</h3>
-                                    <p class="small text-muted mb-0">{% trans "Manage your data and privacy" %}</p>
-                                </div>
-                                <i class="fa-solid fa-chevron-right text-primary" aria-hidden="true"></i>
-                            </a>
-                            
-                            <a href="#" class="d-flex align-items-center text-decoration-none text-body bg-light rounded-pill p-3">
-                                <span class="icon-wrapper bg-primary bg-opacity-10 rounded-circle p-0 me-3 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
-                                    <i class="fa-solid fa-bell text-primary" aria-hidden="true"></i>
-                                </span>
-                                <div class="flex-grow-1">
-                                    <h3 class="h6 mb-1 fw-semibold">{% trans "Notification Settings" %}</h3>
-                                    <p class="small text-muted mb-0">{% trans "Control your notifications" %}</p>
-                                </div>
-                                <i class="fa-solid fa-chevron-right text-primary" aria-hidden="true"></i>
-                            </a>
-                        </div>
-                    </div>
-                    <div class="card-footer bg-transparent border-0 p-4">
-                        <form method="post" action="{% url 'logout' %}">
-                            {% csrf_token %}
-                            <button type="submit" class="btn btn-outline-danger rounded-pill w-100" aria-label="{% trans 'Logout from your account' %}">
-                                <i class="fa-solid fa-sign-out-alt me-2" aria-hidden="true"></i>{% trans "Logout" %}
-                            </button>
-                        </form>
-                    </div>
-                </div>
-            </div></div>
-
-        <!-- Recommended Activities Section -->
-        <div class="row mb-4">
-            <div class="col-12">
-                <div class="card border-0 shadow-sm rounded-4">
                     <div class="card-header bg-primary bg-opacity-10 border-0 py-3 rounded-top-4">
                         <h2 class="h5 mb-0 fw-semibold d-flex align-items-center">
                             <i class="fa-solid fa-star text-primary me-2" aria-hidden="true"></i>
@@ -158,7 +101,7 @@
                         </h2>
                     </div>
                     <div class="card-body p-4">
-                        <div class="row row-cols-1 row-cols-md-3 g-4">
+                        <div class="row row-cols-1 g-4">
                             <!-- Recommended Guides -->
                             <div class="col">
                                 <div class="card h-100 border-0 shadow-sm rounded-4 element-elevation">
@@ -225,40 +168,75 @@
                 </div>
             </div>
         </div>
+
+        <!-- Account Settings Section -->
+        <div class="row mb-5">
+            <div class="col-12">
+            <div class="card border-0 shadow-sm rounded-4 w-100 content-lift">
+                <div class="card-header bg-primary bg-opacity-10 border-0 py-3 rounded-top-4" id="account-settings-header">
+                <h2 class="h5 mb-0 fw-semibold d-flex align-items-center">
+                    <i class="fa-solid fa-gear text-primary me-2" aria-hidden="true"></i>
+                    <span>{% trans "Account Settings" %}</span>
+                </h2>
+                </div>
+                <div class="card-body p-4">
+                <div class="row row-cols-1 row-cols-md-3 g-4" role="list" aria-labelledby="account-settings-header">
+                    <div class="col" role="listitem">
+                    <a href="{% url 'password_reset' %}" class="d-flex align-items-center text-decoration-none text-body bg-light rounded-4 p-3 h-100 element-elevation">
+                        <span class="icon-wrapper bg-primary bg-opacity-10 rounded-circle p-0 me-3 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                        <i class="fa-solid fa-key text-primary" aria-hidden="true"></i>
+                        </span>
+                        <div class="flex-grow-1">
+                        <h3 class="h6 mb-1 fw-semibold">{% trans "Change Password" %}</h3>
+                        <p class="small text-muted mb-0">{% trans "Update your account password" %}</p>
+                        </div>
+                        <i class="fa-solid fa-chevron-right text-primary" aria-hidden="true"></i>
+                    </a>
+                    </div>
+                    
+                    <div class="col" role="listitem">
+                    <a href="#" class="d-flex align-items-center text-decoration-none text-body bg-light rounded-4 p-3 h-100 element-elevation">
+                        <span class="icon-wrapper bg-primary bg-opacity-10 rounded-circle p-0 me-3 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                        <i class="fa-solid fa-shield-alt text-primary" aria-hidden="true"></i>
+                        </span>
+                        <div class="flex-grow-1">
+                        <h3 class="h6 mb-1 fw-semibold">{% trans "Privacy Settings" %}</h3>
+                        <p class="small text-muted mb-0">{% trans "Manage your data and privacy" %}</p>
+                        </div>
+                        <i class="fa-solid fa-chevron-right text-primary" aria-hidden="true"></i>
+                    </a>
+                    </div>
+                    
+                    <div class="col" role="listitem">
+                    <a href="#" class="d-flex align-items-center text-decoration-none text-body bg-light rounded-4 p-3 h-100 element-elevation">
+                        <span class="icon-wrapper bg-primary bg-opacity-10 rounded-circle p-0 me-3 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                        <i class="fa-solid fa-bell text-primary" aria-hidden="true"></i>
+                        </span>
+                        <div class="flex-grow-1">
+                        <h3 class="h6 mb-1 fw-semibold">{% trans "Notification Settings" %}</h3>
+                        <p class="small text-muted mb-0">{% trans "Control your notifications" %}</p>
+                        </div>
+                        <i class="fa-solid fa-chevron-right text-primary" aria-hidden="true"></i>
+                    </a>
+                    </div>
+                </div>
+                </div>
+                <div class="card-footer bg-transparent border-0 pt-0 pb-4 px-4 text-center">
+                <form method="post" action="{% url 'logout' %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-outline-danger rounded-pill px-4" aria-label="{% trans 'Logout from your account' %}">
+                    <i class="fa-solid fa-sign-out-alt me-2" aria-hidden="true"></i>{% trans "Logout" %}
+                    </button>
+                </form>
+                </div>
+            </div>
+            </div>
+        </div>
+
     </div>
 {% endblock main_contents %}
 
 {% block extra_js %}
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Add hover effects to cards
-        const cards = document.querySelectorAll('.element-elevation');
-        cards.forEach(card => {
-            card.addEventListener('mouseenter', function() {
-                this.classList.add('shadow');
-                this.style.transform = 'translateY(-5px)';
-            });
-            
-            card.addEventListener('mouseleave', function() {
-                this.classList.remove('shadow');
-                this.style.transform = 'translateY(0)';
-            });
-        });
-        
-        // Announce screen reader messages for better accessibility
-        const messages = document.querySelectorAll('.alert');
-        if (messages.length > 0) {
-            const messageContainer = document.getElementById('messages-container');
-            if (messageContainer) {
-                setTimeout(() => {
-                    messages.forEach(message => {
-                        if (message.classList.contains('alert-success')) {
-                            message.setAttribute('role', 'status');
-                        }
-                    });
-                }, 1000);
-            }
-        }
-    });
-</script>
+    {{ block.super }}
+    <script src="{% static 'res/javascript/pages/profile-page.js' %}"></script>
 {% endblock extra_js %}

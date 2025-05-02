@@ -36,6 +36,7 @@
 @import 'pages/_guides.css';
 @import 'pages/_home.css';
 @import 'pages/_policies.css';
+@import 'pages/_profile.css';
 
 /* Utilities */
 @import 'utils/_helpers.css';

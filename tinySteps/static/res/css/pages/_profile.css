@@ -1,0 +1,55 @@
+/* Profile page styles */
+
+.card-body .btn, 
+.card-footer .btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+}
+
+/* Buttons have proper spacing */
+.card-body .btn-outline-primary,
+.card-body .btn-primary,
+.card-footer .btn-outline-primary,
+.card-footer .btn-primary {
+    min-width: 120px;
+}
+
+/* Improve responsiveness for buttons */
+@media (max-width: 767.98px) {
+    .card-body .btn,
+    .card-footer .btn {
+        width: 100%;
+        margin-bottom: 0.5rem;
+    }
+    
+    /* Reset margin for last button */
+    .card-body .btn:last-child,
+    .card-footer .btn:last-child {
+        margin-bottom: 0;
+    }
+}
+
+/* Forum posts container scrollable area */
+.forum-posts-container {
+    max-height: calc(100vh * 0.45);
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
+}
+
+@media (min-width: 768px) {
+    .forum-posts-container {
+        max-height: 450px;
+    }
+}
+
+.forum-posts-container::-webkit-scrollbar {
+    width: 5px;
+}
+
+.forum-posts-container::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 3px;
+}
