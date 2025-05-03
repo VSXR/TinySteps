@@ -19,6 +19,10 @@ document.addEventListener('DOMContentLoaded', function() {
     updateVaccineStats();
     updateUpcomingVaccines();
     
+    // Initialize tooltips
+    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+    const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
+    
     // === Filter Buttons ===
     const btnFilterAll = document.getElementById('btn-filter-all');
     const btnFilterAdministered = document.getElementById('btn-filter-administered');
@@ -193,24 +197,28 @@ document.addEventListener('DOMContentLoaded', function() {
                     row.setAttribute('aria-label', `Vaccine: ${vaccine.name}`);
                     row.style.animationDelay = `${index * 0.05}s`; // Staggered animation
                     
-                    row.innerHTML = `
-                        <td>${vaccine.name}</td>
-                        <td>${formatDate(vaccine.date)}</td>
-                        <td>
-                            <span class="badge rounded-pill ${vaccine.administered ? 'bg-success' : 'bg-warning text-dark'}">
-                                ${vaccine.administered ? 'Yes' : 'No'}
-                            </span>
-                        </td>
-                        <td>${vaccine.next_dose_date ? formatDate(vaccine.next_dose_date) : ''}</td>
-                        <td>
-                            <button class="btn btn-sm btn-primary btn-edit-vaccine rounded-pill me-1" title="Edit" aria-label="Edit vaccine ${vaccine.name}">
+                row.innerHTML = `
+                    <td>${vaccine.name}</td>
+                    <td>${formatDate(vaccine.date)}</td>
+                    <td>
+                        <span class="badge rounded-pill ${vaccine.administered ? 'bg-success' : 'bg-warning text-dark'}">
+                            ${vaccine.administered ? 'Yes' : 'No'}
+                        </span>
+                    </td>
+                    <td>${vaccine.next_dose_date ? formatDate(vaccine.next_dose_date) : ''}</td>
+                    <td class="text-end">
+                        <div class="action-buttons d-flex justify-content-end gap-1">
+                            <button class="btn btn-sm btn-outline-primary rounded-pill btn-edit-vaccine" 
+                                    aria-label="Edit vaccine ${vaccine.name}">
                                 <i class="fas fa-edit me-1" aria-hidden="true"></i> Edit
                             </button>
-                            <button class="btn btn-sm btn-danger btn-delete-vaccine rounded-pill" title="Delete" aria-label="Delete vaccine ${vaccine.name}">
+                            <button class="btn btn-sm btn-outline-danger rounded-pill btn-delete-vaccine" 
+                                    aria-label="Delete vaccine ${vaccine.name}">
                                 <i class="fas fa-trash-alt me-1" aria-hidden="true"></i> Delete
                             </button>
-                        </td>
-                    `;
+                        </div>
+                    </td>
+                `;
                     
                     vaccineListDesktop.appendChild(row);
                     
@@ -283,7 +291,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     const card = document.createElement('div');
                     card.className = 'card vaccine-card border-0 shadow-sm rounded-3 mb-3 animate-entry';
                     card.dataset.vaccineId = vaccine.id;
-                    card.style.animationDelay = `${index * 0.05}s`; // Staggered animation
                     
                     card.innerHTML = `
                         <div class="card-body">
@@ -301,22 +308,18 @@ document.addEventListener('DOMContentLoaded', function() {
                                 </small>
                             </div>
                             ${vaccine.next_dose_date ? `
-                                <p class="card-text small mb-2 d-flex align-items-center">
-                                    <i class="fa-solid fa-calendar-plus me-1 text-primary" aria-hidden="true"></i>
-                                    <strong>Next dose:</strong> <span class="ms-1">${formatDate(vaccine.next_dose_date)}</span>
-                                </p>
+                            <p class="card-text small mb-2 d-flex align-items-center">
+                                <i class="fa-solid fa-calendar-plus me-1 text-primary" aria-hidden="true"></i>
+                                <strong>Next dose:</strong> <span class="ms-1">${formatDate(vaccine.next_dose_date)}</span>
+                            </p>
                             ` : ''}
-                            ${vaccine.notes ? `
-                                <p class="card-text small mb-2 text-muted">
-                                    <i class="fa-solid fa-sticky-note me-1" aria-hidden="true"></i>
-                                    ${vaccine.notes.length > 100 ? vaccine.notes.substring(0, 100) + '...' : vaccine.notes}
-                                </p>
-                            ` : ''}
-                            <div class="d-flex justify-content-end mt-3">
-                                <button class="btn btn-sm btn-primary btn-edit-vaccine rounded-pill me-2" aria-label="Edit vaccine ${vaccine.name}">
+                            <div class="d-flex justify-content-end mt-3 gap-2 w-100">
+                                <button class="btn btn-sm btn-outline-primary rounded-pill btn-edit-vaccine" 
+                                        aria-label="Edit vaccine ${vaccine.name}">
                                     <i class="fas fa-edit me-1" aria-hidden="true"></i> Edit
                                 </button>
-                                <button class="btn btn-sm btn-danger btn-delete-vaccine rounded-pill" aria-label="Delete vaccine ${vaccine.name}">
+                                <button class="btn btn-sm btn-outline-danger rounded-pill btn-delete-vaccine" 
+                                        aria-label="Delete vaccine ${vaccine.name}">
                                     <i class="fas fa-trash-alt me-1" aria-hidden="true"></i> Delete
                                 </button>
                             </div>
@@ -325,30 +328,46 @@ document.addEventListener('DOMContentLoaded', function() {
                     
                     vaccineListMobile.appendChild(card);
                     
-                    // Add event listeners for the entire card, edit button, and delete button
+                    // Add click event to show vaccine details
                     card.addEventListener('click', function(e) {
-                        // Only proceed if not clicking on the buttons
-                        if (!e.target.closest('button')) {
-                            showVaccineDetails(vaccine);
-                        }
+                        // Prevent click if the user clicked a button
+                        if (e.target.closest('button')) return;
+                        
+                        vaccineCardService.getVaccine(vaccine.id)
+                            .then(vaccineDetails => {
+                                showVaccineDetails(vaccineDetails);
+                            })
+                            .catch(error => {
+                                console.error('Error fetching vaccine details:', error);
+                            });
                     });
                     
+                    // Add click events for edit and delete buttons
                     const editBtn = card.querySelector('.btn-edit-vaccine');
-                    const deleteBtn = card.querySelector('.btn-delete-vaccine');
-                    
                     if (editBtn) {
-                        editBtn.addEventListener('click', function(e) {
-                            e.stopPropagation(); // Prevent card click
-                            showVaccineDetails(vaccine);
+                        editBtn.addEventListener('click', function() {
+                            vaccineCardService.getVaccine(vaccine.id)
+                                .then(vaccineDetails => {
+                                    showVaccineDetails(vaccineDetails);
+                                })
+                                .catch(error => {
+                                    console.error('Error fetching vaccine details:', error);
+                                });
                         });
                     }
                     
+                    const deleteBtn = card.querySelector('.btn-delete-vaccine');
                     if (deleteBtn) {
-                        deleteBtn.addEventListener('click', function(e) {
-                            e.stopPropagation(); // Prevent card click
-                            currentVaccine = vaccine;
-                            const deleteModal = new bootstrap.Modal(document.getElementById('deleteVaccineModal'));
-                            deleteModal.show();
+                        deleteBtn.addEventListener('click', function() {
+                            vaccineCardService.getVaccine(vaccine.id)
+                                .then(vaccineDetails => {
+                                    currentVaccine = vaccineDetails;
+                                    const deleteModal = new bootstrap.Modal(document.getElementById('deleteVaccineModal'));
+                                    deleteModal.show();
+                                })
+                                .catch(error => {
+                                    console.error('Error fetching vaccine details:', error);
+                                });
                         });
                     }
                 });

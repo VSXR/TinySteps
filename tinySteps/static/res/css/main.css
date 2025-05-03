@@ -28,6 +28,7 @@
 @import 'features/_vaccine-card.css';
 
 /* Page styles */
+@import 'pages/_index.css';
 @import 'pages/_about.css';
 @import 'pages/_children.css';
 @import 'pages/_child-detail.css';
@@ -37,6 +38,7 @@
 @import 'pages/_home.css';
 @import 'pages/_policies.css';
 @import 'pages/_profile.css';
+@import 'pages/_404.css';
 
 /* Utilities */
 @import 'utils/_helpers.css';

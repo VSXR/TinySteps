@@ -14,56 +14,35 @@
             </div>
         </div>
     </div>
-    <!-- Search and Filters -->
+    <!-- Search form -->
     <div class="row justify-content-center mb-4">
         <div class="col-12">
-            <div class="row g-3">
-                <!-- Filter buttons -->
-                <div class="col-12 col-md-6 order-md-2">
-                    <div class="card border-0 shadow-sm rounded-4 hover-shadow h-100">
-                        <div class="card-body p-3">
-                            <div class="filter-buttons p-1 bg-light rounded-pill shadow-sm d-flex overflow-auto hide-scrollbar w-100" role="group" aria-label="{% trans 'Filter children by age' %}">
-                                <button type="button" class="btn btn-sm btn-outline-primary filter-btn active rounded-pill px-3 py-1 me-2 flex-shrink-0" data-filter="all">
-                                    <i class="fa-solid fa-users" aria-hidden="true"></i> <span class="d-none d-sm-inline ms-1">{% trans "All" %}</span>
-                                </button>
-                                <button type="button" class="btn btn-sm btn-outline-primary filter-btn rounded-pill px-3 py-1 me-2 flex-shrink-0" data-filter="infants">
-                                    <i class="fa-solid fa-baby" aria-hidden="true"></i> <span class="d-none d-sm-inline ms-1">{% trans "Infants" %}</span><span class="d-inline d-sm-none">0-12m</span>
-                                </button>
-                                <button type="button" class="btn btn-sm btn-outline-primary filter-btn rounded-pill px-3 py-1 flex-shrink-0" data-filter="toddlers">
-                                    <i class="fa-solid fa-child" aria-hidden="true"></i> <span class="d-none d-sm-inline ms-1">{% trans "Toddlers" %}</span><span class="d-inline d-sm-none">1-3y</span>
-                                </button>
-                            </div>
+            <div class="card border-0 shadow-sm rounded-4 hover-shadow">
+                <div class="card-body p-3">
+                    <form method="get" action="{% url 'children:your_children' %}" class="mb-0 w-100">
+                        <div class="input-group shadow-sm rounded-pill overflow-hidden">
+                            <!-- Desktop left icon -->
+                            <span class="input-group-text bg-white border-0 ps-3 d-none d-sm-flex">
+                                <i class="fa-solid fa-search text-primary" aria-hidden="true"></i>
+                            </span>
+                            <input 
+                                type="search" 
+                                id="search-children" 
+                                name="search" 
+                                class="form-control border-0 py-2" 
+                                placeholder="{% trans 'Search by name...' %}" 
+                                value="{{ search_query|default:'' }}"
+                                aria-label="{% trans 'Search children' %}"
+                            >
+                            <!-- Different buttons for desktop/mobile -->
+                            <button type="submit" class="btn btn-primary px-4 rounded-end-pill d-none d-sm-block">
+                                {% trans "Search" %}
+                            </button>
+                            <button type="submit" class="btn btn-primary px-3 rounded-end-pill d-sm-none">
+                                <i class="fa-solid fa-search" aria-hidden="true"></i>
+                            </button>
                         </div>
-                    </div>
-                </div>
-                
-                <!-- Search form -->
-                <div class="col-12 col-md-6 order-md-1">
-                    <div class="card border-0 shadow-sm rounded-4 hover-shadow h-100">
-                        <div class="card-body p-3">
-                            <form method="get" action="{% url 'children:your_children' %}" class="mb-0">
-                                <div class="input-group shadow-sm rounded-pill overflow-hidden">
-                                    <span class="input-group-text bg-white border-0 ps-3">
-                                        <i class="fa-solid fa-search text-primary" aria-hidden="true"></i>
-                                    </span>
-                                    <input 
-                                        type="search" 
-                                        id="search-children" 
-                                        name="search" 
-                                        class="form-control border-0 py-2" 
-                                        placeholder="{% trans 'Search by name...' %}" 
-                                        value="{{ search_query|default:'' }}"
-                                        aria-label="{% trans 'Search children' %}"
-                                    >
-                                    <button 
-                                        type="submit" 
-                                        class="btn btn-primary px-3 rounded-end-pill">
-                                        {% trans "Search" %}
-                                    </button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
+                    </form>
                 </div>
             </div>
         </div>

@@ -90,13 +90,13 @@
                               <div class="col-md-6">
                                     <div class="vaccine-filter-buttons">
                                         <div class="btn-group w-100" role="group" aria-label="{% trans 'Vaccine filters' %}">
-                                            <button type="button" id="btn-filter-all" class="btn btn-outline-primary filter-button active" aria-pressed="true">
+                                            <button type="button" id="btn-filter-all" class="btn btn-outline-primary filter-button active flex-grow-1" aria-pressed="true">
                                                 <i class="fa-solid fa-filter me-1" aria-hidden="true"></i><span>{% trans "All" %}</span>
                                             </button>
-                                            <button type="button" id="btn-filter-administered" class="btn btn-outline-success filter-button" aria-pressed="false">
+                                            <button type="button" id="btn-filter-administered" class="btn btn-outline-success filter-button flex-grow-1" aria-pressed="false">
                                                 <i class="fa-solid fa-check me-1" aria-hidden="true"></i><span>{% trans "Administered" %}</span>
                                             </button>
-                                            <button type="button" id="btn-filter-pending" class="btn btn-outline-warning filter-button" aria-pressed="false">
+                                            <button type="button" id="btn-filter-pending" class="btn btn-outline-warning filter-button flex-grow-1" aria-pressed="false">
                                                 <i class="fa-solid fa-clock me-1" aria-hidden="true"></i><span>{% trans "Pending" %}</span>
                                             </button>
                                         </div>
@@ -130,13 +130,17 @@
                                                     </span>
                                                 </td>
                                                 <td>{% if vaccine.next_dose_date %}{{ vaccine.next_dose_date|date:"d/m/Y" }}{% endif %}</td>
-                                                <td>
-                                                    <button class="btn btn-sm btn-primary btn-edit-vaccine rounded-pill me-1" title="{% trans 'Edit' %}" aria-label="{% trans 'Edit vaccine' %} {{ vaccine.name }}">
-                                                        <i class="fas fa-edit me-1" aria-hidden="true"></i> {% trans "Edit" %}
-                                                    </button>
-                                                    <button class="btn btn-sm btn-danger btn-delete-vaccine rounded-pill" title="{% trans 'Delete' %}" aria-label="{% trans 'Delete vaccine' %} {{ vaccine.name }}">
-                                                        <i class="fas fa-trash-alt me-1" aria-hidden="true"></i> {% trans "Delete" %}
-                                                    </button>
+                                                <td class="text-end">
+                                                    <div class="action-buttons d-flex justify-content-end gap-1">
+                                                        <button class="btn btn-sm btn-outline-primary rounded-pill btn-edit-vaccine" 
+                                                                aria-label="{% trans 'Edit vaccine' %} {{ vaccine.name }}" style="width: 80px;">
+                                                            <i class="fas fa-edit me-1" aria-hidden="true"></i> {% trans "Edit" %}
+                                                        </button>
+                                                        <button class="btn btn-sm btn-outline-danger rounded-pill btn-delete-vaccine" 
+                                                                aria-label="{% trans 'Delete vaccine' %} {{ vaccine.name }}" style="width: 80px;">
+                                                            <i class="fas fa-trash-alt me-1" aria-hidden="true"></i> {% trans "Delete" %}
+                                                        </button>
+                                                    </div>
                                                 </td>
                                             </tr>
                                         {% endfor %}
@@ -191,11 +195,13 @@
                                                     <strong>{% trans "Next dose:" %}</strong> <span class="ms-1">{{ vaccine.next_dose_date|date:"d/m/Y" }}</span>
                                                 </p>
                                                 {% endif %}
-                                                <div class="d-flex justify-content-end mt-3">
-                                                    <button class="btn btn-sm btn-primary btn-edit-vaccine rounded-pill me-2" aria-label="{% trans 'Edit vaccine' %} {{ vaccine.name }}">
+                                                <div class="d-flex justify-content-end mt-3 gap-2 w-100">
+                                                    <button class="btn btn-sm btn-outline-primary rounded-pill btn-edit-vaccine"
+                                                            aria-label="{% trans 'Edit vaccine' %} {{ vaccine.name }}">
                                                         <i class="fas fa-edit me-1" aria-hidden="true"></i> {% trans "Edit" %}
                                                     </button>
-                                                    <button class="btn btn-sm btn-danger btn-delete-vaccine rounded-pill" aria-label="{% trans 'Delete vaccine' %} {{ vaccine.name }}">
+                                                    <button class="btn btn-sm btn-outline-danger rounded-pill btn-delete-vaccine"
+                                                            aria-label="{% trans 'Delete vaccine' %} {{ vaccine.name }}">
                                                         <i class="fas fa-trash-alt me-1" aria-hidden="true"></i> {% trans "Delete" %}
                                                     </button>
                                                 </div>

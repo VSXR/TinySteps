@@ -7,199 +7,262 @@
 {% endblock %}
 
 {% block main_contents %}
-    <!-- Hero Section -->
-    <section class="about-hero py-5 bg-light rounded-3 mb-5" role="region" aria-labelledby="hero-heading">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-lg-6 col-md-12 mb-4 mb-lg-0">
-                    <h1 id="hero-heading" class="display-4 fw-bold mb-3">{% trans "Our Story" %}</h1>
-                    <p class="lead">
-                        {% blocktrans %}
-                        We're on a mission to transform the parenting journey with innovative tools that provide guidance, 
-                        support, and confidence to parents everywhere.
-                        {% endblocktrans %}
-                    </p>
-                    <div class="text-center mt-4">
-                        <a href="{% url 'register' %}" class="btn btn-primary btn-lg px-4" role="button">
-                            {% trans "Join Our Community" %}
-                        </a>
-                    </div>
-                </div>
-                <div class="col-lg-6 col-md-12 text-center">
-                    <img src="{% static 'res/img/others/our-story.jpg' %}" class="img-fluid rounded-3 shadow" 
-                         alt="{% trans 'Happy family using TinySteps app' %}" loading="lazy" width="450">
-                </div>
-            </div>
-        </div>
-    </section>
+    <!-- Skip link for accessibility -->
+    <a href="#main-content" class="visually-hidden-focusable skip-link">{% trans "Skip to main content" %}</a>
 
-    <!-- Company Overview -->
-    <section class="about-overview py-5 mb-5" role="region" aria-labelledby="who-we-are-heading">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-lg-6 col-md-12 order-lg-2 mb-4 mb-lg-0">
-                    <div class="p-0 p-lg-4">
-                        <h2 id="who-we-are-heading" class="mb-4">{% trans "Who We Are" %}</h2>
-                        <p class="mb-4">
-                            {% blocktrans trimmed %}
-                            Tiny Steps is an app designed to support first-time parents by providing essential tools for organizing and 
-                            managing their baby's care. It offers personalized recommendations, a smart scheduling system for medical 
-                            appointments and vaccinations, and expert-verified guidance on nutrition and child development.
+    <main id="main-content">
+        <!-- Hero Section -->
+        <section class="about-hero py-5 bg-light rounded-4 mb-5 reveal-section" role="region" aria-labelledby="hero-heading">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-lg-6 col-md-12 mb-4 mb-lg-0 reveal-item fade-right">
+                        <h1 id="hero-heading" class="display-4 fw-bold mb-3">{% trans "Our Story" %}</h1>
+                        <p class="lead fw-normal">
+                            {% blocktrans %}
+                            We're on a mission to transform the parenting journey with innovative tools that provide guidance, 
+                            support, and confidence to parents everywhere.
                             {% endblocktrans %}
                         </p>
-                        <p>
-                            {% blocktrans trimmed %}
-                            With an intuitive interface and a supportive community, TinySteps helps parents navigate their child's early 
-                            years with confidence and ease.
-                            {% endblocktrans %}
-                        </p>
+                        <div class="d-flex justify-content-center justify-content-lg-start mt-4">
+                            <a href="{% url 'register' %}" class="btn btn-primary btn-lg px-4 hover-lift" 
+                               role="button" aria-label="{% trans 'Create a free account and join our community' %}">
+                                <i class="fa-solid fa-users me-2" aria-hidden="true"></i>{% trans "Join Our Community" %}
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-12 text-center reveal-item fade-left">
+                        <div class="img-container position-relative rounded-4 overflow-hidden shadow-lg">
+                            <img src="{% static 'res/img/others/our-story.jpg' %}" 
+                                 class="img-fluid w-100 zoom-on-hover" 
+                                 alt="{% trans 'Happy family using TinySteps app' %}" 
+                                 loading="lazy">
+                        </div>
                     </div>
                 </div>
-                <div class="col-lg-6 col-md-12 order-lg-1">
-                    <img src="{% static 'res/img/others/whoweare.jpg' %}" class="img-fluid rounded-3 shadow" 
-                         alt="{% trans 'Parents using the Tiny Steps app with their baby' %}" loading="lazy">
+            </div>
+        </section>
+
+        <!-- Company Overview -->
+        <section class="about-overview py-5 mb-5 reveal-section" role="region" aria-labelledby="who-we-are-heading">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-lg-6 col-md-12 order-lg-2 mb-4 mb-lg-0 reveal-item fade-left">
+                        <div class="p-0 p-lg-4">
+                            <h2 id="who-we-are-heading" class="h1 mb-4">{% trans "Who We Are" %}</h2>
+                            <p class="mb-4 fs-5">
+                                {% blocktrans trimmed %}
+                                Tiny Steps is an app designed to support first-time parents by providing essential tools for organizing and 
+                                managing their baby's care. It offers personalized recommendations, a smart scheduling system for medical 
+                                appointments and vaccinations, and expert-verified guidance on nutrition and child development.
+                                {% endblocktrans %}
+                            </p>
+                            <p class="fs-5">
+                                {% blocktrans trimmed %}
+                                With an intuitive interface and a supportive community, TinySteps helps parents navigate their child's early 
+                                years with confidence and ease.
+                                {% endblocktrans %}
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-12 order-lg-1 reveal-item fade-right">
+                        <div class="img-rounded-card">
+                            <img src="{% static 'res/img/others/whoweare.jpg' %}" 
+                                 class="img-fluid rounded-4 shadow-lg" 
+                                 alt="{% trans 'Parents using the Tiny Steps app with their baby' %}" 
+                                 loading="lazy">
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- Our Values -->
-    <section class="our-values py-5 bg-light rounded-3 mb-5" role="region" aria-labelledby="values-heading">
-        <div class="container">
-            <div class="text-center mb-5">
-                <h2 id="values-heading" class="mb-3">{% trans "Our Core Values" %}</h2>
-                <p class="lead">{% trans "The principles that guide everything we do" %}</p>
+        <!-- Our Values -->
+        <section class="our-values py-5 bg-light rounded-4 mb-5 reveal-section" role="region" aria-labelledby="values-heading">
+            <div class="container">
+                <div class="text-center mb-5 reveal-item fade-up">
+                    <h2 id="values-heading" class="h1 mb-3">{% trans "Our Core Values" %}</h2>
+                    <p class="lead mx-auto" style="max-width: 700px;">{% trans "The principles that guide everything we do at Tiny Steps to provide the best support for parents" %}</p>
+                </div>
+                
+                <div class="row g-4">
+                    <div class="col-lg-4 col-md-6 col-sm-12 reveal-item fade-up" data-delay="100">
+                        <div class="card h-100 border-0 shadow-sm hover-lift rounded-4" role="article">
+                            <div class="card-body text-center p-4 p-lg-5">
+                                <div class="value-icon-container mb-4">
+                                    <div class="value-icon-circle bg-primary bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center mx-auto" style="width: 80px; height: 80px;">
+                                        <i class="fa-solid fa-heart fa-2x text-primary" aria-hidden="true"></i>
+                                    </div>
+                                </div>
+                                <h3 class="card-title h4 mb-3">{% trans "Compassion" %}</h3>
+                                <p class="card-text">{% trans "We understand the challenges of parenting and design our tools with empathy and care, ensuring every feature addresses real needs." %}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6 col-sm-12 reveal-item fade-up" data-delay="200">
+                        <div class="card h-100 border-0 shadow-sm hover-lift rounded-4" role="article">
+                            <div class="card-body text-center p-4 p-lg-5">
+                                <div class="value-icon-container mb-4">
+                                    <div class="value-icon-circle bg-primary bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center mx-auto" style="width: 80px; height: 80px;">
+                                        <i class="fa-solid fa-lightbulb fa-2x text-primary" aria-hidden="true"></i>
+                                    </div>
+                                </div>
+                                <h3 class="card-title h4 mb-3">{% trans "Innovation" %}</h3>
+                                <p class="card-text">{% trans "We continuously improve our platform with the latest research and technology to serve parents better and stay ahead of their evolving needs." %}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6 col-sm-12 mx-auto reveal-item fade-up" data-delay="300">
+                        <div class="card h-100 border-0 shadow-sm hover-lift rounded-4" role="article">
+                            <div class="card-body text-center p-4 p-lg-5">
+                                <div class="value-icon-container mb-4">
+                                    <div class="value-icon-circle bg-primary bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center mx-auto" style="width: 80px; height: 80px;">
+                                        <i class="fa-solid fa-users fa-2x text-primary" aria-hidden="true"></i>
+                                    </div>
+                                </div>
+                                <h3 class="card-title h4 mb-3">{% trans "Community" %}</h3>
+                                <p class="card-text">{% trans "We build connections between parents, creating a supportive environment where families can learn and grow together through shared experiences." %}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Mission & Vision -->
+        <section class="mission-vision py-5 mb-5 reveal-section" role="region" aria-labelledby="mission-vision-heading">
+            <div class="container">
+            <div class="text-center mb-5 reveal-item fade-up">
+                <h2 id="mission-vision-heading" class="visually-hidden">{% trans "Mission and Vision" %}</h2>
+                <p class="lead">{% trans "Guiding principles that define our purpose and future goals" %}</p>
             </div>
             
-            <div class="row g-4">
-                <div class="col-lg-4 col-md-6 col-sm-12">
-                    <div class="card h-100 border-0 shadow-sm" role="article">
-                        <div class="card-body text-center p-4">
-                            <div class="value-icon mb-3">
-                                <i class="fa-solid fa-heart fa-3x text-primary" aria-hidden="true"></i>
-                            </div>
-                            <h3 class="h5 card-title">{% trans "Compassion" %}</h3>
-                            <p class="card-text">{% trans "We understand the challenges of parenting and design our tools with empathy and care." %}</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-6 col-sm-12">
-                    <div class="card h-100 border-0 shadow-sm" role="article">
-                        <div class="card-body text-center p-4">
-                            <div class="value-icon mb-3">
-                                <i class="fa-solid fa-lightbulb fa-3x text-primary" aria-hidden="true"></i>
-                            </div>
-                            <h3 class="h5 card-title">{% trans "Innovation" %}</h3>
-                            <p class="card-text">{% trans "We continuously improve our platform with the latest research and technology to serve parents better." %}</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-6 col-sm-12 mx-auto">
-                    <div class="card h-100 border-0 shadow-sm" role="article">
-                        <div class="card-body text-center p-4">
-                            <div class="value-icon mb-3">
-                                <i class="fa-solid fa-users fa-3x text-primary" aria-hidden="true"></i>
-                            </div>
-                            <h3 class="h5 card-title">{% trans "Community" %}</h3>
-                            <p class="card-text">{% trans "We build connections between parents, creating a supportive environment where families can learn and grow together." %}</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Mission & Vision -->
-    <section class="mission-vision py-5 mb-5" role="region" aria-label="{% trans 'Mission and Vision' %}">
-        <div class="container">
             <div class="row gy-5">
-                <div class="col-lg-6 col-md-12">
-                    <div class="mission-card p-4 h-100 rounded-3 shadow bg-primary text-white d-flex flex-column">
-                        <div>
-                            <h2 id="mission-heading" class="mb-4">{% trans "Our Mission" %}</h2>
-                            <p class="mb-4">
-                                {% blocktrans trimmed %}
-                                Our mission is to support parents in their journey by offering a comprehensive, user-friendly app 
-                                that centralizes essential childcare resources. Through personalized recommendations, scheduling tools, 
-                                and reliable information, we strive to empower parents with knowledge and confidence, ensuring their baby's 
-                                well-being and development.
-                                {% endblocktrans %}
-                            </p>
+                <div class="col-lg-6 col-md-12 reveal-item fade-right">
+                <div class="mission-card p-4 h-100 rounded-4 shadow bg-primary text-white d-flex flex-column hover-scale">
+                    <div>
+                    <div class="d-flex align-items-center mb-4">
+                        <div class="mission-icon me-3">
+                        <div class="rounded-circle bg-white bg-opacity-20 p-2 d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
+                            <i class="fa-solid fa-bullseye fa-2x text-primary" aria-hidden="true"></i>
                         </div>
-                        <div class="text-center mt-auto">
-                            <i class="fa-solid fa-bullseye fa-4x opacity-25" aria-hidden="true"></i>
                         </div>
+                        <h2 id="mission-heading" class="h2 mb-0">{% trans "Our Mission" %}</h2>
                     </div>
-                </div>
-                <div class="col-lg-6 col-md-12">
-                    <div class="vision-card p-4 h-100 rounded-3 shadow bg-secondary text-white d-flex flex-column">
-                        <div>
-                            <h2 id="vision-heading" class="mb-4">{% trans "Our Vision" %}</h2>
-                            <p class="mb-4">
-                                {% blocktrans trimmed %}
-                                We envision a world where every parent feels supported and well-equipped to provide the best care for their child. 
-                                TinySteps aims to become the go-to digital companion for new parents, fostering a community that shares experiences, 
-                                learns together, and grows with their children.
-                                {% endblocktrans %}
-                            </p>
-                        </div>
-                        <div class="text-center mt-auto">
-                            <i class="fa-solid fa-binoculars fa-4x opacity-25" aria-hidden="true"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Impact Numbers -->
-    <section class="impact-numbers py-5 bg-light rounded-3 mb-5" role="region" aria-labelledby="impact-heading">
-        <div class="container">
-            <h2 id="impact-heading" class="text-center mb-5">{% trans "Our Impact" %}</h2>
-            <div class="row text-center g-4">
-                <div class="col-md-4 col-sm-12">
-                    <div class="stat-card p-4" role="figure" aria-label="{% trans 'Over 10,000 Happy Parents' %}">
-                        <div class="stat-number display-4 fw-bold text-primary mb-2">10K+</div>
-                        <div class="stat-label">{% trans "Happy Parents" %}</div>
-                    </div>
-                </div>
-                <div class="col-md-4 col-sm-12">
-                    <div class="stat-card p-4" role="figure" aria-label="{% trans 'Over 500 Expert Articles' %}">
-                        <div class="stat-number display-4 fw-bold text-primary mb-2">500+</div>
-                        <div class="stat-label">{% trans "Expert Articles" %}</div>
-                    </div>
-                </div>
-                <div class="col-md-4 col-sm-12">
-                    <div class="stat-card p-4" role="figure" aria-label="{% trans 'Available in over 15 Countries' %}">
-                        <div class="stat-number display-4 fw-bold text-primary mb-2">15+</div>
-                        <div class="stat-label">{% trans "Countries" %}</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Join Us CTA -->
-    <section class="cta-section py-5 bg-primary text-white rounded-3 mb-5" role="region" aria-labelledby="cta-heading">
-        <div class="container">
-            <div class="row justify-content-center">
-                <div class="col-lg-10 text-center">
-                    <h2 id="cta-heading" class="mb-3">{% trans "Join Our Growing Community" %}</h2>
-                    <p class="lead mb-4">
-                        {% blocktrans %}
-                        Be part of our journey to make parenting easier, more informed, and more connected.
+                    <p class="mb-4 fs-5">
+                        {% blocktrans trimmed %}
+                        Our mission is to support parents in their journey by offering a comprehensive, user-friendly app 
+                        that centralizes essential childcare resources. Through personalized recommendations, scheduling tools, 
+                        and reliable information, we strive to empower parents with knowledge and confidence, ensuring their baby's 
+                        well-being and development.
                         {% endblocktrans %}
                     </p>
-                    <div class="d-flex flex-column flex-sm-row justify-content-center gap-3">
-                        <a href="{% url 'register' %}" class="btn btn-light btn-lg mb-2 mb-sm-0" role="button">
-                            {% trans "Get Started Today" %}
-                        </a>
-                        <a href="{% url 'contact' %}" class="btn btn-outline-light btn-lg" role="button">
-                            {% trans "Contact Us" %}
-                        </a>
+                    </div>
+                </div>
+                </div>
+                <div class="col-lg-6 col-md-12 reveal-item fade-left">
+                <div class="vision-card p-4 h-100 rounded-4 shadow bg-secondary text-white d-flex flex-column hover-scale">
+                    <div>
+                    <div class="d-flex align-items-center mb-4">
+                        <div class="vision-icon me-3">
+                        <div class="rounded-circle bg-white bg-opacity-20 p-2 d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
+                            <i class="fa-solid fa-binoculars fa-2x text-secondary" aria-hidden="true"></i>
+                        </div>
+                        </div>
+                        <h2 id="vision-heading" class="h2 mb-0">{% trans "Our Vision" %}</h2>
+                    </div>
+                    <p class="mb-4 fs-5">
+                        {% blocktrans trimmed %}
+                        We envision a world where every parent feels supported and well-equipped to provide the best care for their child. 
+                        TinySteps aims to become the go-to digital companion for new parents, fostering a community that shares experiences, 
+                        learns together, and grows with their children.
+                        {% endblocktrans %}
+                    </p>
+                    </div>
+                </div>
+                </div>
+            </div>
+            </div>
+        </section>
+
+        <!-- Impact Numbers -->
+        <section class="impact-numbers py-5 bg-light rounded-4 mb-5 reveal-section" role="region" aria-labelledby="impact-heading">
+            <div class="container">
+                <div class="text-center mb-5 reveal-item fade-up">
+                    <h2 id="impact-heading" class="h1 mb-3">{% trans "Our Impact" %}</h2>
+                    <p class="lead">{% trans "The numbers that reflect our commitment to supporting parents worldwide" %}</p>
+                </div>
+                
+                <div class="row text-center g-4">
+                    <div class="col-md-4 col-sm-12 reveal-item fade-up" data-delay="100">
+                        <div class="stat-card p-4 rounded-4 shadow-sm hover-lift bg-white" role="figure" aria-label="{% trans 'Over 10,000 Happy Parents' %}">
+                            <div class="stat-icon-container mb-3">
+                                <div class="stat-icon bg-primary bg-opacity-10 rounded-circle p-3 d-inline-flex align-items-center justify-content-center">
+                                    <i class="fa-solid fa-users fa-2x text-primary" aria-hidden="true"></i>
+                                </div>
+                            </div>
+                            <div class="stat-number display-4 fw-bold text-primary mb-2 counter" data-target="10000">10K+</div>
+                            <div class="stat-label fs-5 fw-semibold">{% trans "Happy Parents" %}</div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-12 reveal-item fade-up" data-delay="200">
+                        <div class="stat-card p-4 rounded-4 shadow-sm hover-lift bg-white" role="figure" aria-label="{% trans 'Over 500 Expert Articles' %}">
+                            <div class="stat-icon-container mb-3">
+                                <div class="stat-icon bg-primary bg-opacity-10 rounded-circle p-3 d-inline-flex align-items-center justify-content-center">
+                                    <i class="fa-solid fa-book-open fa-2x text-primary" aria-hidden="true"></i>
+                                </div>
+                            </div>
+                            <div class="stat-number display-4 fw-bold text-primary mb-2 counter" data-target="500">500+</div>
+                            <div class="stat-label fs-5 fw-semibold">{% trans "Expert Articles" %}</div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-12 reveal-item fade-up" data-delay="300">
+                        <div class="stat-card p-4 rounded-4 shadow-sm hover-lift bg-white" role="figure" aria-label="{% trans 'Available in over 15 Countries' %}">
+                            <div class="stat-icon-container mb-3">
+                                <div class="stat-icon bg-primary bg-opacity-10 rounded-circle p-3 d-inline-flex align-items-center justify-content-center">
+                                    <i class="fa-solid fa-globe fa-2x text-primary" aria-hidden="true"></i>
+                                </div>
+                            </div>
+                            <div class="stat-number display-4 fw-bold text-primary mb-2 counter" data-target="15">15+</div>
+                            <div class="stat-label fs-5 fw-semibold">{% trans "Countries" %}</div>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
+
+        <!-- Join Us CTA -->
+        <section class="cta-section py-5 mb-5 reveal-section" role="region" aria-labelledby="cta-heading">
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-lg-10 reveal-item fade-up">
+                        <div class="cta-card text-center p-4 p-md-5 rounded-4 shadow bg-primary text-white position-relative overflow-hidden">
+                            <div class="cta-bg-shapes"></div>
+                            <div class="position-relative">
+                                <h2 id="cta-heading" class="mb-4 display-6 fw-bold">{% trans "Join Our Growing Community" %}</h2>
+                                <p class="lead mb-4 mx-auto" style="max-width: 700px;">
+                                    {% blocktrans %}
+                                    Be part of our journey to make parenting easier, more informed, and more connected.
+                                    Start your parenting journey with confidence today.
+                                    {% endblocktrans %}
+                                </p>
+                                <div class="d-flex flex-column flex-md-row justify-content-center gap-3">
+                                    <a href="{% url 'register' %}" class="btn btn-light btn-lg mb-2 mb-md-0 hover-lift" role="button" aria-label="{% trans 'Create a free account and get started' %}">
+                                        <i class="fa-solid fa-user-plus me-2" aria-hidden="true"></i>{% trans "Get Started Today" %}
+                                    </a>
+                                    <a href="{% url 'contact' %}" class="btn btn-outline-light btn-lg hover-lift" role="button" aria-label="{% trans 'Contact our support team' %}">
+                                        <i class="fa-solid fa-envelope me-2" aria-hidden="true"></i>{% trans "Contact Us" %}
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
 {% endblock main_contents %}
+
+{% block extra_js %}
+    {{ block.super }}
+    <script src="{% static 'res/javascript/pages/about-page.js' %}" type="module"></script>
+{% endblock extra_js %}
