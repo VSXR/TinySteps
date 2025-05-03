@@ -1,11 +1,15 @@
 {% load i18n %}
 
-<div class="row mb-4">
-    <div class="col-12 text-center">
-        <h1 class="display-5 fw-bold text-center" id="page-heading">{{ title }}</h1>
-        {% if subtitle %}
-            <p class="lead text-center text-muted" id="page-description">{{ subtitle }}</p>
-            <hr class="my-4 w-50 mx-auto opacity-25">
-        {% endif %}
+<!-- Page Header -->
+<div class="container pt-5 pb-3">
+    <div class="mb-3 position-relative rounded-4 overflow-hidden">
+        <div class="bg-primary bg-opacity-10 p-5">
+            <div class="text-center">
+                <h1 class="display-5 fw-bold mb-2">{{ title }}</h1>
+                {% if subtitle %}
+                    <p class="lead text-muted">{{ subtitle }}</p>
+                {% endif %}
+            </div>
+        </div>
     </div>
 </div>
