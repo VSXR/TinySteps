@@ -91,32 +91,31 @@
     </section>
     
     <!-- Community Banner -->
-    <div class="card border-0 shadow-sm rounded-4 bg-light p-0 mt-4 overflow-hidden">
-        <div class="card-body p-4">
-            <div class="row align-items-center">
-                <div class="col-md-8">
-                    <h3 class="h4 mb-3">{% trans "Join Our Parenting Community" %}</h3>
-                    <p class="mb-4">{% trans "Share your parenting journey, ask questions, and connect with other parents. Your experiences can help others!" %}</p>
-                    <div class="d-flex gap-2">
-                        <a href="{% url 'forum:create_post' %}" class="btn btn-primary rounded-pill">
-                            <i class="fa-solid fa-plus me-1" aria-hidden="true"></i> {% trans "New Discussion" %}
-                        </a>
-                        <a href="#" class="btn btn-outline-primary rounded-pill">
-                            <i class="fa-solid fa-users me-1" aria-hidden="true"></i> {% trans "Join Community" %}
-                        </a>
-                    </div>
-                </div>
-                <div class="col-md-4 d-none d-md-block text-center">
-                    <div class="position-relative">
-                        <div class="text-center p-3 rounded-4 bg-white shadow-sm">
-                            <i class="fa-solid fa-users fa-5x text-primary mb-2" aria-hidden="true"></i>
-                            <div class="text-muted">{% trans "Connect with parents" %}</div>
+    <section class="cta-section py-5 mb-5 reveal-section w-100" role="region" aria-labelledby="community-heading">
+        <div class="container-fluid">
+            <div class="row justify-content-center">
+                <div class="col-12 col-xl-10 reveal-item fade-up">
+                    <div class="cta-card text-center p-4 p-md-5 rounded-4 shadow bg-primary text-white position-relative overflow-hidden mx-auto">
+                        <div class="cta-bg-shapes"></div>
+                        <div class="position-relative">
+                            <h2 id="community-heading" class="mb-4 display-6 fw-bold">{% trans "Join Our Parenting Community" %}</h2>
+                            <p class="lead mb-4 mx-auto" style="max-width: 800px;">
+                                {% trans "Share your parenting journey, ask questions, and connect with other parents. Your experiences can help others!" %}
+                            </p>
+                            <div class="d-flex flex-column flex-md-row justify-content-center gap-3">
+                                <a href="{% url 'forum:create_post' %}" class="btn btn-light btn-lg mb-2 mb-md-0 hover-lift" role="button" aria-label="{% trans 'Create a new discussion' %}">
+                                    <i class="fa-solid fa-plus me-2" aria-hidden="true"></i>{% trans "New Discussion" %}
+                                </a>
+                                <a href="#" class="btn btn-outline-light btn-lg hover-lift" role="button" aria-label="{% trans 'Join our community' %}">
+                                    <i class="fa-solid fa-users me-2" aria-hidden="true"></i>{% trans "Join Community" %}
+                                </a>
+                            </div>
                         </div>
-                        <i class="fa-solid fa-users-rectangle position-absolute top-0 end-0 text-primary fs-3 m-2" aria-hidden="true"></i>
                     </div>
                 </div>
             </div>
         </div>
+    </section>
     </div>
 {% endblock content %}
 

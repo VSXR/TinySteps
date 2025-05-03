@@ -442,13 +442,13 @@
 }
 
 .timeline-container::before {
-     background-color: #e0e0e0;
-     bottom: 0;
-     content: '';
-     left: 15px;
-     position: absolute;
-     top: 0;
-     width: 2px;
+    background-color: #e0e0e0;
+    bottom: 0;
+    content: '';
+    left: 15px;
+    position: absolute;
+    top: 0;
+    width: 2px;
 }
 
 .timeline-item {
@@ -655,9 +655,10 @@
           padding-left: 30px;
      }
           
-     .timeline-container::before {
-          left: 10px;
-     }
+    .timeline-container::before {
+        left: 10px;
+    }
+
           
      .timeline-marker {
           left: 2px;
@@ -716,88 +717,60 @@
 }
 
 @media (max-width: 575.98px) {
-     /* Images and charts */
-     .growth-chart-image {
-          max-height: 150px;
-     }
-     
-     .chart-container {
-          height: 200px !important;
-     }
-     
-     .child-profile-image {
-          height: 120px;
-          width: 120px;
-     }
-     
-     .child-card .child-banner img {
-          height: 100px !important;
-          width: 100px !important;
-     }
-     
-     /* Typography */
-     .child-card h3.h4 {
-          font-size: 1.25rem;
-     }
-     
-     .child-card .badge {
-          font-size: 0.7rem;
-     }
-     
-     /* UI components */
-     .chart-tabs .nav-link {
-          padding: 0.5rem;
-     }
-          
-     .modal-dialog {
-          margin: 0.5rem;
-     }
-     
-     /* Buttons and forms */
-     .input-group .btn {
-          padding-left: 0.5rem !important;
-          padding-right: 0.5rem !important;
-     }
-     
-     .filter-buttons {
-          justify-content: center;
-          margin-top: 0.5rem;
-          width: 100%;
-     }
-     
-     .filter-buttons .filter-btn {
-          font-size: 0.75rem;
-          margin-right: 0.25rem !important;
-          padding: 0.25rem 0.5rem !important;
-     }
-     
-     .filter-buttons .filter-btn i {
-          font-size: 0.75rem;
-     }
-     
-     .btn-group .btn {
-          padding: 0.4rem 0.6rem;
-     }
-     
-     .badge.rounded-circle {
-          height: 32px !important;
-          width: 32px !important;
-     }
-     
-     /* Search components */
-     .input-group.rounded-pill .form-control {
-          border-bottom-left-radius: 50rem !important;
-          border-radius: 0;
-          border-top-left-radius: 50rem !important;
-     }
-
-     .input-group.rounded-pill .btn {
-          border-bottom-right-radius: 50rem !important;
-          border-radius: 0;
-          border-top-right-radius: 50rem !important;
-          padding-left: 0.75rem !important;
-          padding-right: 0.75rem !important;
-     }
+    .mobile-search-container {
+        display: flex !important;
+        flex-wrap: nowrap !important;
+    }
+    
+    .mobile-search-container .form-control {
+        border-top-right-radius: 0 !important;
+        border-bottom-right-radius: 0 !important;
+        flex: 1 1 auto;
+        width: 1%;
+    }
+    
+    .mobile-search-container .input-group-text {
+        display: none;
+    }
+    
+    .mobile-search-container .btn {
+        border-top-left-radius: 0 !important;
+        border-bottom-left-radius: 0 !important;
+    }
+    
+    /* Action buttons for mobile */
+    .btn-group.rounded-pill {
+        flex-shrink: 1;
+        min-width: 0;
+    }
+    
+    .btn-group.rounded-pill button {
+        padding-left: 10px !important;
+        padding-right: 10px !important;
+    }
+    
+    .btn.rounded-pill.hover-lift {
+        min-width: 120px;
+        text-align: center;
+    }
+    
+    a.btn.btn-primary.rounded-pill[href*="add_child"] {
+        min-width: 140px;
+        padding-left: 16px !important;
+        padding-right: 16px !important;
+    }
+    
+    /* Card and list view buttons */
+    .card-view .card-footer .btn-primary,
+    .list-view .child-card .card-footer .btn {
+        width: 100% !important;
+        min-width: 100% !important;
+        padding: 0.5rem 1rem !important;
+    }
+    
+    .d-flex.gap-2.gap-sm-3.w-100.justify-content-end {
+        gap: 0.75rem !important;
+    }
 }
 
 @media (max-width: 420px) {
