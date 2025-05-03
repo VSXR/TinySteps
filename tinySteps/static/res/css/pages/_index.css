@@ -1,5 +1,4 @@
 /* Index page styles */
-
 /* Skip link for accessibility */
 .skip-link {
     position: absolute;
@@ -215,6 +214,61 @@
 @media (min-width: 768px) and (max-width: 991.98px) {
     .feature-content {
         padding: 0 1rem !important;
+    }
+}
+
+/* Button centering */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+@media (max-width: 991.98px) {
+    /* Hero section button container */
+    .hero-section .d-flex.flex-column.flex-sm-row {
+        justify-content: center !important;
+    }
+    
+    /* Feature sections */
+    .feature-content .mt-4 {
+        display: flex;
+        justify-content: center;
+    }
+    
+    .feature-content .btn,
+    .btn-primary.hover-lift,
+    .btn-outline-secondary.hover-lift {
+        min-width: 200px;
+    }
+}
+
+/* mobile adjustments */
+@media (max-width: 575.98px) {
+    /* For very small screens, ensure buttons take appropriate width */
+    .hero-section .btn,
+    .feature-content .btn,
+    .cta-card .btn {
+        width: 100%;
+        max-width: 250px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    
+    /* Center button containers that switch from row to column */
+    .d-flex.flex-column.flex-sm-row,
+    .d-flex.flex-column.flex-md-row {
+        align-items: center;
+    }
+    
+    /* CTA section buttons are properly centered */
+    .cta-card .d-flex.flex-column.flex-md-row .btn {
+        margin-bottom: 0.75rem;
+    }
+    
+    .hero-section .btn + .btn,
+    .cta-card .btn + .btn {
+        margin-top: 0.5rem;
     }
 }
 
