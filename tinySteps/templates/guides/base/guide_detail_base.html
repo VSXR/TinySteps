@@ -16,13 +16,10 @@
 <main id="main-content" role="main" class="container-fluid">
     {% include 'guides/components/breadcrumbs.html' with is_detail=True guide=guide section_type=guide.guide_type %}
     <div class="container my-4">
+        <!-- Page Header Component -->
         <div class="row mb-4">
             <div class="col-12">
-                <h1 class="text-center fw-bold fs-3 mb-2">{{ guide.title }}</h1>
-                <p class="lead text-center text-muted" id="page-description">
-                    {% if guide.subtitle %}{{ guide.subtitle }}{% endif %}
-                </p>
-                <hr class="my-3 w-50 mx-auto opacity-25">
+                {% include 'guides/components/page_header.html' with title=guide.title subtitle=guide.subtitle %}
             </div>
         </div>
         
@@ -89,7 +86,7 @@
                             </div>
                         </div>
                         
-                        <!-- Guide content -->
+                        <!-- Guide content - No title needed here, it's in the page header -->
                         <div class="guide-content mb-4">
                             {% block guide_content %}
                             {{ guide.desc|safe }}
@@ -115,7 +112,7 @@
                     </div>
                 </article>
                 
-                <!-- Comments section -->
+                <!-- Comments section remains the same -->
                 <div class="card shadow-sm border-0 rounded-4">
                     <div class="card-header bg-light border-0 pt-3">
                         <h2 id="comments-heading" class="h5 mb-0 d-flex align-items-center">
