@@ -4,120 +4,148 @@
 
 {% block title %}{% trans "Parents Forum" %} - {% trans "Tiny Steps" %}{% endblock %}
 
-{% block content %}
-    <!-- Forum Posts Section -->
-    <section aria-labelledby="forum-posts-heading">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <h2 id="forum-posts-heading" class="h3 mb-0">
-                {% trans "Discussions" %}
-                {% if posts %}<span class="badge bg-secondary rounded-pill ms-2">{{ posts.paginator.count }}</span>{% endif %}
-            </h2>
-            
-            <a href="{% url 'forum:create_post' %}" class="btn btn-primary rounded-pill">
-                <i class="fa-solid fa-plus me-1" aria-hidden="true"></i> 
-                <span class="d-none d-md-inline">{% trans "New Discussion" %}</span>
-                <span class="d-inline d-md-none">{% trans "New" %}</span>
-            </a>
+{% block main_contents %}
+<div class="container py-5">
+    <div class="mb-5 position-relative rounded-4 overflow-hidden">
+        <div class="bg-primary bg-opacity-10 p-5">
+            <div class="text-center">
+                <h1 class="display-5 fw-bold mb-2">{% trans "Parents Forum" %}</h1>
+                <p class="lead text-muted">{% trans "Connect, share and learn with other parents in our community" %}</p>
+            </div>
         </div>
-        
-        <!-- Discussions List -->
-        <div id="forum-posts-container">
-            {% if posts %}
-                {% for post in posts %}
-                    {% include "forum/components/post_card.html" with post=post %}
-                {% endfor %}
-                
-                <!-- Pagination -->
-                {% if posts.paginator.num_pages > 1 %}
-                <nav aria-label="{% trans 'Forum post pagination' %}" class="my-4">
-                    <ul class="pagination justify-content-center">
-                        {% if posts.has_previous %}
-                            <li class="page-item">
-                                <a class="page-link rounded-pill px-3" href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}{% if request.GET.category %}category={{ request.GET.category }}&{% endif %}page=1" aria-label="{% trans 'First page' %}">
-                                    <span aria-hidden="true">&laquo;</span>
-                                </a>
-                            </li>
-                            <li class="page-item">
-                                <a class="page-link rounded-pill px-3" href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}{% if request.GET.category %}category={{ request.GET.category }}&{% endif %}page={{ posts.previous_page_number }}" aria-label="{% trans 'Previous page' %}">
-                                    <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
-                                </a>
-                            </li>
-                        {% endif %}
-                        
-                        <li class="page-item active">
-                            <span class="page-link rounded-pill px-3">
-                                {% blocktrans with current=posts.number total=posts.paginator.num_pages %}{{ current }} of {{ total }}{% endblocktrans %}
-                            </span>
-                        </li>
-                        
-                        {% if posts.has_next %}
-                            <li class="page-item">
-                                <a class="page-link rounded-pill px-3" href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}{% if request.GET.category %}category={{ request.GET.category }}&{% endif %}page={{ posts.next_page_number }}" aria-label="{% trans 'Next page' %}">
-                                    <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
-                                </a>
-                            </li>
-                            <li class="page-item">
-                                <a class="page-link rounded-pill px-3" href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}{% if request.GET.category %}category={{ request.GET.category }}&{% endif %}page={{ posts.paginator.num_pages }}" aria-label="{% trans 'Last page' %}">
-                                    <span aria-hidden="true">&raquo;</span>
-                                </a>
-                            </li>
-                        {% endif %}
-                    </ul>
-                </nav>
-                {% endif %}
-            {% else %}
-                <div class="card border-0 shadow-sm rounded-4 p-4 text-center">
-                    <div class="py-4">
-                        <i class="fa-solid fa-comments fa-3x text-muted mb-3" aria-hidden="true"></i>
-                        <h3 class="h5 mb-3">{% trans "No discussions found" %}</h3>
-                        <p class="text-muted mb-3">
-                            {% if request.GET.q or request.GET.category %}
-                                {% trans "No discussions match your search criteria. Try adjusting your filters or start a new discussion." %}
-                            {% else %}
-                                {% trans "No discussions have been started yet. Be the first to create a discussion!" %}
-                            {% endif %}
-                        </p>
-                        <a href="{% if request.GET.q or request.GET.category %}{% url 'forum:parent_forum' %}{% else %}{% url 'forum:create_post' %}{% endif %}" class="btn btn-primary rounded-pill px-4">
-                            {% if request.GET.q or request.GET.category %}
-                                <i class="fa-solid fa-times me-1" aria-hidden="true"></i> {% trans "Clear Filters" %}
-                            {% else %}
-                                <i class="fa-solid fa-plus me-1" aria-hidden="true"></i> {% trans "Start Discussion" %}
-                            {% endif %}
-                        </a>
-                    </div>
+    </div>
+
+    <!-- Desktop layout (sidebar appears on left, content on right) -->
+    <div class="row">
+        <!-- Sidebar Column - Hidden on small devices, visible on medium and up -->
+        <div class="col-lg-3 col-md-4 d-none d-md-block">
+            {% include "forum/components/sidebar.html" %}
+        </div>
+
+        <!-- Main Content Column -->
+        <div class="col-lg-9 col-md-8">
+            <!-- Forum Posts Section -->
+            <section aria-labelledby="forum-posts-heading">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h2 id="forum-posts-heading" class="h3 mb-0">
+                        {% trans "Discussions" %}
+                        {% if posts %}<span class="badge bg-secondary rounded-pill ms-2">{{ posts.paginator.count }}</span>{% endif %}
+                    </h2>
+                    
+                    <a href="{% url 'forum:create_post' %}" class="btn btn-primary rounded-pill">
+                        <i class="fa-solid fa-plus me-1" aria-hidden="true"></i> 
+                        <span class="d-none d-md-inline">{% trans "New Discussion" %}</span>
+                        <span class="d-inline d-md-none">{% trans "New" %}</span>
+                    </a>
                 </div>
-            {% endif %}
+                
+                <!-- Discussions List -->
+                <div id="forum-posts-container">
+                    {% if posts %}
+                        {% for post in posts %}
+                            {% include "forum/components/post_card.html" with post=post %}
+                        {% endfor %}
+                        
+                        <!-- Pagination -->
+                        {% if posts.paginator.num_pages > 1 %}
+                        <nav aria-label="{% trans 'Forum post pagination' %}" class="my-4">
+                            <ul class="pagination justify-content-center">
+                                {% if posts.has_previous %}
+                                    <li class="page-item">
+                                        <a class="page-link rounded-pill px-3" href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}{% if request.GET.category %}category={{ request.GET.category }}&{% endif %}page=1" aria-label="{% trans 'First page' %}">
+                                            <span aria-hidden="true">&laquo;</span>
+                                        </a>
+                                    </li>
+                                    <li class="page-item">
+                                        <a class="page-link rounded-pill px-3" href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}{% if request.GET.category %}category={{ request.GET.category }}&{% endif %}page={{ posts.previous_page_number }}" aria-label="{% trans 'Previous page' %}">
+                                            <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+                                        </a>
+                                    </li>
+                                {% endif %}
+                                
+                                <li class="page-item active">
+                                    <span class="page-link rounded-pill px-3">
+                                        {% blocktrans with current=posts.number total=posts.paginator.num_pages %}{{ current }} of {{ total }}{% endblocktrans %}
+                                    </span>
+                                </li>
+                                
+                                {% if posts.has_next %}
+                                    <li class="page-item">
+                                        <a class="page-link rounded-pill px-3" href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}{% if request.GET.category %}category={{ request.GET.category }}&{% endif %}page={{ posts.next_page_number }}" aria-label="{% trans 'Next page' %}">
+                                            <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+                                        </a>
+                                    </li>
+                                    <li class="page-item">
+                                        <a class="page-link rounded-pill px-3" href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}{% if request.GET.category %}category={{ request.GET.category }}&{% endif %}page={{ posts.paginator.num_pages }}" aria-label="{% trans 'Last page' %}">
+                                            <span aria-hidden="true">&raquo;</span>
+                                        </a>
+                                    </li>
+                                {% endif %}
+                            </ul>
+                        </nav>
+                        {% endif %}
+                    {% else %}
+                        <div class="card border-0 shadow-sm rounded-4 p-4 text-center">
+                            <div class="py-4">
+                                <i class="fa-solid fa-comments fa-3x text-muted mb-3" aria-hidden="true"></i>
+                                <h3 class="h5 mb-3">{% trans "No discussions found" %}</h3>
+                                <p class="text-muted mb-3">
+                                    {% if request.GET.q or request.GET.category %}
+                                        {% trans "No discussions match your search criteria. Try adjusting your filters or start a new discussion." %}
+                                    {% else %}
+                                        {% trans "No discussions have been started yet. Be the first to create a discussion!" %}
+                                    {% endif %}
+                                </p>
+                                <a href="{% if request.GET.q or request.GET.category %}{% url 'forum:parent_forum' %}{% else %}{% url 'forum:create_post' %}{% endif %}" class="btn btn-primary rounded-pill px-4">
+                                    {% if request.GET.q or request.GET.category %}
+                                        <i class="fa-solid fa-times me-1" aria-hidden="true"></i> {% trans "Clear Filters" %}
+                                    {% else %}
+                                        <i class="fa-solid fa-plus me-1" aria-hidden="true"></i> {% trans "Start Discussion" %}
+                                    {% endif %}
+                                </a>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </section>
+
+            <!-- Mobile Sidebar - Only visible on small devices -->
+            <div class="d-md-none mt-4">
+                {% include "forum/components/sidebar.html" %}
+            </div>
         </div>
-    </section>
-    
-    <!-- Community Banner -->
-    <section class="cta-section py-5 mb-5 reveal-section w-100" role="region" aria-labelledby="community-heading">
-        <div class="container-fluid">
-            <div class="row justify-content-center">
-                <div class="col-12 col-xl-10 reveal-item fade-up">
-                    <div class="cta-card text-center p-4 p-md-5 rounded-4 shadow bg-primary text-white position-relative overflow-hidden mx-auto">
-                        <div class="cta-bg-shapes"></div>
-                        <div class="position-relative">
-                            <h2 id="community-heading" class="mb-4 display-6 fw-bold">{% trans "Join Our Parenting Community" %}</h2>
-                            <p class="lead mb-4 mx-auto" style="max-width: 800px;">
-                                {% trans "Share your parenting journey, ask questions, and connect with other parents. Your experiences can help others!" %}
-                            </p>
-                            <div class="d-flex flex-column flex-md-row justify-content-center gap-3">
-                                <a href="{% url 'forum:create_post' %}" class="btn btn-light btn-lg mb-2 mb-md-0 hover-lift" role="button" aria-label="{% trans 'Create a new discussion' %}">
-                                    <i class="fa-solid fa-plus me-2" aria-hidden="true"></i>{% trans "New Discussion" %}
-                                </a>
-                                <a href="#" class="btn btn-outline-light btn-lg hover-lift" role="button" aria-label="{% trans 'Join our community' %}">
-                                    <i class="fa-solid fa-users me-2" aria-hidden="true"></i>{% trans "Join Community" %}
-                                </a>
+    </div>
+
+    <!-- Community Banner - Inside container for better responsive behavior -->
+    <div class="row mt-5">
+        <div class="col-12">
+            <section class="cta-section py-5 mb-5 reveal-section" role="region" aria-labelledby="community-heading">
+                <div class="row justify-content-center">
+                    <div class="col-12 col-lg-10 mx-auto reveal-item fade-up">
+                        <div class="cta-card text-center p-4 p-md-5 rounded-4 shadow bg-primary text-white position-relative overflow-hidden">
+                            <div class="cta-bg-shapes"></div>
+                            <div class="position-relative">
+                                <h2 id="community-heading" class="mb-4 display-6 fw-bold">{% trans "Join Our Parenting Community" %}</h2>
+                                <p class="lead mb-4 mx-auto" style="max-width: 600px;">
+                                    {% trans "Share your parenting journey, ask questions, and connect with other parents. Your experiences can help others!" %}
+                                </p>
+                                <div class="d-flex flex-column flex-md-row justify-content-center gap-3">
+                                    <a href="{% url 'forum:create_post' %}" class="btn btn-light btn-lg mb-2 mb-md-0 hover-lift" role="button" aria-label="{% trans 'Create a new discussion' %}">
+                                        <i class="fa-solid fa-plus me-2" aria-hidden="true"></i>{% trans "New Discussion" %}
+                                    </a>
+                                    <a href="#" class="btn btn-outline-light btn-lg hover-lift" role="button" aria-label="{% trans 'Join our community' %}">
+                                        <i class="fa-solid fa-users me-2" aria-hidden="true"></i>{% trans "Join Community" %}
+                                    </a>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            </section>
         </div>
-    </section>
     </div>
-{% endblock content %}
+</div>
+{% endblock main_contents %}
 
 {% block extra_js %}
     {{ block.super }}

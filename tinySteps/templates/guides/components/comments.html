@@ -66,9 +66,11 @@
                             required
                         ></textarea>
                     </div>
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-paper-plane me-2" aria-hidden="true"></i>{% trans "Post Comment" %}
-                    </button>
+                    <div class="d-flex justify-content-end">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-paper-plane me-2" aria-hidden="true"></i>{% trans "Post Comment" %}
+                        </button>
+                    </div>
                 </form>
             {% else %}
                 <div class="alert alert-info mb-0">

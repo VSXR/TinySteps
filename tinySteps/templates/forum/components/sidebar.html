@@ -3,104 +3,51 @@
 {% load custom_filters %}
 
 <aside class="sidebar-component" aria-labelledby="sidebar-heading">
-    <!-- Actions Card -->
+    <!-- Categories Section -->
     <div class="card border-0 shadow-sm rounded-4 mb-4 content-lift">
-        <div class="card-header bg-primary text-white border-0 py-3">
-            <h3 id="sidebar-heading" class="h5 mb-0 fw-semibold d-flex align-items-center">
-                <i class="fa-solid fa-users text-white me-2" aria-hidden="true"></i>
-                {% trans "Community Hub" %}
-            </h3>
-        </div>
-        <div class="card-body p-4">
-            <div class="mb-3">
-                {% if user.is_authenticated %}
-                    <a href="{% url 'forum:create_post' %}" class="btn btn-success rounded-pill w-100 mb-3">
-                        <i class="fa-solid fa-edit me-2" aria-hidden="true"></i> {% trans "Start Discussion" %}
-                    </a>
-                    <a href="{% url 'profile' %}" class="btn btn-outline-primary rounded-pill w-100">
-                        <i class="fa-solid fa-user me-2" aria-hidden="true"></i> {% trans "My Profile" %}
-                    </a>
-                {% else %}
-                    <div class="alert alert-info rounded-3 mb-3 p-3 text-center">
-                        <i class="fa-solid fa-info-circle me-1" aria-hidden="true"></i> {% trans "Join the conversation!" %}
-                    </div>
-                    <a href="{% url 'login' %}?next={% url 'forum:create_post' %}" class="btn btn-primary rounded-pill w-100">
-                        <i class="fa-solid fa-user me-2" aria-hidden="true"></i> {% trans "Sign in to Participate" %}
-                    </a>
-                {% endif %}
-            </div>
-        </div>
-    </div>
-    
-    <!-- Categories Card -->
-    <div class="card border-0 shadow-sm rounded-4 mb-4 content-lift">
-        <div class="card-header bg-light border-0 py-3">
-            <h3 class="h5 mb-0 fw-semibold d-flex align-items-center">
+        <!-- Header: Collapsible only on small screens -->
+        <div class="card-header bg-light border-0 py-3 d-flex align-items-center justify-content-between" 
+             data-bs-toggle="collapse" data-bs-target="#categoriesCollapse" 
+             role="button" aria-expanded="true" aria-controls="categoriesCollapse" 
+             class="d-md-none">
+            <h4 class="h6 mb-0 fw-semibold d-flex align-items-center">
                 <i class="fa-solid fa-folder-tree text-primary me-2" aria-hidden="true"></i>
                 {% trans "Categories" %}
-            </h3>
+            </h4>
+            <i class="fa-solid fa-chevron-down d-md-none" aria-hidden="true"></i>
         </div>
-        <div class="card-body p-0">
-            <div class="list-group list-group-flush rounded-3">
-                <a href="{% url 'forum:parent_forum' %}" class="list-group-item list-group-item-action border-0 {% if not request.GET.category %}active{% endif %} py-3">
-                    <i class="fa-solid fa-layer-group me-2" aria-hidden="true"></i> {% trans "All Categories" %}
-                </a>
-                {% for category_value, category_name in forum_categories %}
-                    <a href="{% url 'forum:parent_forum' %}?category={{ category_value }}" 
-                       class="list-group-item list-group-item-action border-0 d-flex justify-content-between align-items-center {% if request.GET.category == category_value %}active{% endif %} py-3">
-                        <span>
-                            <i class="fa-solid fa-folder me-2" aria-hidden="true"></i> 
-                            {{ category_name }}
-                        </span>
-                        <span class="badge bg-primary rounded-pill">{{ category_counts|get_item:category_value|default:"0" }}</span>
+        <!-- Content: Always visible on all screens -->
+        <div class="collapse show d-md-block" id="categoriesCollapse">
+            <div class="card-body p-0">
+                <div class="list-group list-group-flush rounded-3">
+                    <a href="{% url 'forum:parent_forum' %}" class="list-group-item list-group-item-action border-0 {% if not request.GET.category %}active{% endif %} py-3">
+                        <i class="fa-solid fa-layer-group me-2" aria-hidden="true"></i> {% trans "All Categories" %}
                     </a>
-                {% endfor %}
+                    {% for category_value, category_name in forum_categories %}
+                        <a href="{% url 'forum:parent_forum' %}?category={{ category_value }}" 
+                           class="list-group-item list-group-item-action border-0 d-flex justify-content-between align-items-center {% if request.GET.category == category_value %}active{% endif %} py-3">
+                            <span>
+                                <i class="fa-solid fa-folder me-2" aria-hidden="true"></i> 
+                                {{ category_name }}
+                            </span>
+                            <span class="badge bg-primary rounded-pill">{{ category_counts|get_item:category_value|default:"0" }}</span>
+                        </a>
+                    {% endfor %}
+                </div>
             </div>
         </div>
     </div>
     
-    <!-- Community Guidelines Card -->
-    <div class="card border-0 shadow-sm rounded-4 mb-4 content-lift">
-        <div class="card-header bg-light border-0 py-3">
-            <h3 class="h5 mb-0 fw-semibold d-flex align-items-center">
-                <i class="fa-solid fa-scroll text-primary me-2" aria-hidden="true"></i>
-                {% trans "Guidelines" %}
-            </h3>
-        </div>
-        <div class="card-body p-4">
-            <ul class="list-group list-group-flush border-0 rounded-3 mb-3">
-                <li class="list-group-item border-0 px-0 py-2">
-                    <i class="fa-solid fa-circle-check text-success me-2" aria-hidden="true"></i>
-                    {% trans "Be respectful and supportive" %}
-                </li>
-                <li class="list-group-item border-0 px-0 py-2">
-                    <i class="fa-solid fa-circle-check text-success me-2" aria-hidden="true"></i>
-                    {% trans "Share your personal experiences" %}
-                </li>
-                <li class="list-group-item border-0 px-0 py-2">
-                    <i class="fa-solid fa-circle-check text-success me-2" aria-hidden="true"></i>
-                    {% trans "For medical concerns, consult professionals" %}
-                </li>
-            </ul>
-            
-            <div class="mt-3 pt-3 border-top">
-                <a href="#" class="btn btn-outline-primary rounded-pill w-100">
-                    <i class="fa-solid fa-book me-2" aria-hidden="true"></i> {% trans "Full Guidelines" %}
-                </a>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Popular Tags -->
+    <!-- Popular Tags Section -->
     {% if forum_tags %}
     <div class="card border-0 shadow-sm rounded-4 mb-4 content-lift">
         <div class="card-header bg-light border-0 py-3">
-            <h3 class="h5 mb-0 fw-semibold d-flex align-items-center">
+            <h4 class="h6 mb-0 fw-semibold d-flex align-items-center">
                 <i class="fa-solid fa-hashtag text-primary me-2" aria-hidden="true"></i>
                 {% trans "Popular Topics" %}
-            </h3>
+            </h4>
         </div>
-        <div class="card-body p-4">
+        <div class="card-body">
             <div class="d-flex flex-wrap gap-2">
                 {% for tag in forum_tags %}
                     <a href="{% url 'forum:parent_forum' %}?tag={{ tag.name }}" class="badge bg-light text-dark rounded-pill text-decoration-none px-3 py-2 border">

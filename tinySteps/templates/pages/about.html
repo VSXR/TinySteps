@@ -11,36 +11,17 @@
     <a href="#main-content" class="visually-hidden-focusable skip-link">{% trans "Skip to main content" %}</a>
 
     <main id="main-content">
-        <!-- Hero Section -->
-        <section class="about-hero py-5 bg-light rounded-4 mb-5 reveal-section" role="region" aria-labelledby="hero-heading">
-            <div class="container">
-                <div class="row align-items-center">
-                    <div class="col-lg-6 col-md-12 mb-4 mb-lg-0 reveal-item fade-right">
-                        <h1 id="hero-heading" class="display-4 fw-bold mb-3">{% trans "Our Story" %}</h1>
-                        <p class="lead fw-normal">
-                            {% blocktrans %}
-                            We're on a mission to transform the parenting journey with innovative tools that provide guidance, 
-                            support, and confidence to parents everywhere.
-                            {% endblocktrans %}
-                        </p>
-                        <div class="d-flex justify-content-center justify-content-lg-start mt-4">
-                            <a href="{% url 'register' %}" class="btn btn-primary btn-lg px-4 hover-lift" 
-                               role="button" aria-label="{% trans 'Create a free account and join our community' %}">
-                                <i class="fa-solid fa-users me-2" aria-hidden="true"></i>{% trans "Join Our Community" %}
-                            </a>
-                        </div>
-                    </div>
-                    <div class="col-lg-6 col-md-12 text-center reveal-item fade-left">
-                        <div class="img-container position-relative rounded-4 overflow-hidden shadow-lg">
-                            <img src="{% static 'res/img/others/our-story.jpg' %}" 
-                                 class="img-fluid w-100 zoom-on-hover" 
-                                 alt="{% trans 'Happy family using TinySteps app' %}" 
-                                 loading="lazy">
-                        </div>
-                    </div>
+        <!-- Page Header -->
+        <div class="container py-5">
+            <div class="mb-5 position-relative rounded-4 overflow-hidden">
+            <div class="bg-primary bg-opacity-10 p-5">
+                <div class="text-center">
+                <h1 class="display-5 fw-bold mb-2">{% trans "About Us" %}</h1>
+                <p class="lead text-muted">{% trans "Our story, mission, and the impact we're making for parents everywhere" %}</p>
                 </div>
             </div>
-        </section>
+            </div>
+        </div>
 
         <!-- Company Overview -->
         <section class="about-overview py-5 mb-5 reveal-section" role="region" aria-labelledby="who-we-are-heading">

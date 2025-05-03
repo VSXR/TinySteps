@@ -12,9 +12,18 @@
     </a>
 
     <main id="main-content" role="main">
-        <!-- Page Header Component -->
-        {% include "contact/components/page_header.html" %}
-        
+        <!-- Page Header -->
+        <div class="container py-5">
+            <div class="mb-5 position-relative rounded-4 overflow-hidden">
+                <div class="bg-primary bg-opacity-10 p-5">
+                    <div class="text-center">
+                        <h1 class="display-5 fw-bold mb-2">{% trans "Contact Us" %}</h1>
+                        <p class="lead text-muted">{% trans "We're here to help - reach out with any questions or feedback" %}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="container mb-5">
             <div class="row g-4">
                 <!-- Contact form section -->
