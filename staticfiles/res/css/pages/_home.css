@@ -1,0 +1,60 @@
+/* Homepage styles */
+
+/* ============ Hero Section ============ */
+.hero-section {
+    background: white;
+    border-bottom: none;
+    padding: 3rem 0;
+}
+
+.hero-content {
+    padding: 4rem 0;
+}
+
+.hero-image {
+    max-height: 350px;
+}
+
+/* ============ Background Overrides ============ */
+/* Makes the containers white and not gray */
+.hero-section.bg-light,
+.key-features.bg-light,
+.bg-light.rounded-3.mb-5 {
+    background-color: #fff !important;
+}
+
+/* ============ Testimonials ============ */
+.testimonial-avatar {
+    align-items: center;
+    background-color: var(--primary-color);
+    border-radius: 50%;
+    color: white;
+    display: flex;
+    font-weight: bold;
+    height: 48px;
+    justify-content: center;
+    width: 48px;
+}
+
+.testimonial-text {
+    font-style: italic;
+    padding-left: 1.5rem;
+    position: relative;
+}
+
+.testimonial-text::before {
+    color: var(--primary-color);
+    content: """";
+    font-size: 2rem;
+    left: 0;
+    opacity: 0.5;
+    position: absolute;
+    top: -5px;
+}
+
+/* ============ Media Queries ============ */
+@media (max-width: 992px) {
+    .hero-content {
+        padding: 2rem 0;
+    }
+}

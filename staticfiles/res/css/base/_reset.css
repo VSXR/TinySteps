@@ -1,0 +1,43 @@
+/* ==========================================================================
+    Font Imports
+    ========================================================================== */
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&display=swap&font-display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Roboto&display=swap&font-display=swap");
+
+/* ==========================================================================
+    Reset & Box Model
+    ========================================================================== */
+* {
+     box-sizing: border-box;
+     margin: 0;
+     padding: 0;
+}
+
+/* ==========================================================================
+    Typography
+    ========================================================================== */
+* {
+     font-family: "Poppins", sans-serif;
+}
+
+/* ==========================================================================
+    Base Elements
+    ========================================================================== */
+html {
+     overflow-x: hidden;
+     scroll-behavior: smooth;
+}
+
+body {
+     display: flex;
+     flex-direction: column;
+     min-height: 100vh;
+     overflow-x: hidden;
+}
+
+/* ==========================================================================
+    Utility Classes
+    ========================================================================== */
+body.navbar-open {
+     overflow: hidden;
+}

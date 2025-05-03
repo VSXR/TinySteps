@@ -1,0 +1,183 @@
+/* ===== POLICY PAGES STYLES ===== */
+
+/* === Policy Navigation === */
+.policy-nav {
+    border-radius: var(--radius-md);
+    transition: all 0.3s ease;
+}
+
+.policy-nav .list-group-item {
+    border-left: 3px solid transparent;
+    padding: 0.75rem 1rem;
+    transition: all 0.3s ease;
+}
+
+.policy-nav .list-group-item:hover,
+.policy-nav .list-group-item:focus {
+    background-color: rgba(var(--primary-color-rgb), 0.05);
+    border-left-color: var(--primary-color);
+}
+
+.policy-nav .list-group-item.active {
+    background-color: rgba(var(--primary-color-rgb), 0.1);
+    border-left-color: var(--primary-color);
+    color: var(--primary-color);
+    font-weight: 500;
+}
+
+/* === Policy Content === */
+.policy-content h2 {
+    color: var(--primary-color);
+    font-weight: 600;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+}
+
+.policy-content h3 {
+    color: var(--secondary-color);
+    font-weight: 500;
+}
+
+.policy-content p {
+    line-height: 1.7;
+    margin-bottom: 1rem;
+}
+
+.policy-content ul, 
+.policy-content ol {
+    margin-bottom: 1.5rem;
+}
+
+.policy-content li {
+    margin-bottom: 0.5rem;
+}
+
+.policy-image img {
+    max-width: 100%;
+    height: auto;
+    border-radius: var(--radius-md);
+}
+
+/* === Policy Modals === */
+.policy-modal .modal-header {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.policy-modal .modal-body {
+    padding-top: 0;
+}
+
+.policy-modal .modal-footer {
+    border-top: none;
+}
+
+.policy-preferences-modal .form-check-input,
+.policy-preferences-modal .form-check-label {
+    cursor: pointer;
+}
+
+/* ===== HELP CENTER STYLES ===== */
+
+/* === General Help Styles === */
+.help-card {
+    transition: transform 0.3s ease;
+}
+
+.help-card:hover {
+    transform: translateY(-5px);
+}
+
+/* === FAQ Accordion === */
+.accordion-button:not(.collapsed) {
+    background-color: rgba(var(--primary-color-rgb), 0.05);
+    color: var(--primary-color);
+    box-shadow: none;
+}
+
+.accordion-button:focus {
+    box-shadow: none;
+    border-color: rgba(var(--primary-color-rgb), 0.25);
+}
+
+/* === Tutorials === */
+.tutorial-card {
+    overflow: hidden;
+    transition: transform 0.3s ease;
+}
+
+.tutorial-card:hover {
+    transform: translateY(-5px);
+}
+
+.tutorial-card img {
+    transition: transform 0.5s ease;
+}
+
+.tutorial-card:hover img {
+    transform: scale(1.05);
+}
+
+/* ===== USER PREFERENCES ===== */
+
+/* === Accessibility Controls === */
+.accessibility-controls .btn-group {
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.accessibility-controls .btn {
+    font-weight: normal;
+}
+
+/* === Cookie Preferences === */
+.cookie-preferences .form-check-input {
+    width: 3rem;
+    height: 1.5rem;
+    cursor: pointer;
+}
+
+.cookie-preferences .form-check-input:checked {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.cookie-preferences .form-check-label {
+    cursor: pointer;
+}
+
+/* ===== RESPONSIVE STYLES ===== */
+
+/* === Desktop/Tablet === */
+@media (max-width: 992px) {
+    .policy-nav {
+        position: static !important;
+        top: 0 !important;
+        margin-bottom: 2rem;
+    }
+}
+
+/* === Print Styles === */
+@media print {
+    .policy-nav,
+    .d-flex.justify-content-center.gap-3.mb-5 {
+        display: none !important;
+    }
+    
+    .card {
+        box-shadow: none !important;
+        border: none !important;
+    }
+    
+    .policy-content {
+        font-size: 12pt;
+    }
+    
+    .policy-content h2 {
+        font-size: 14pt;
+        margin-top: 20pt;
+    }
+    
+    .policy-content h3 {
+        font-size: 12pt;
+    }
+}

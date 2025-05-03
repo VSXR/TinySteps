@@ -1,0 +1,796 @@
+/* ==========================================================================
+    Children Section Styles
+    ========================================================================== */
+
+/* --------------------------------
+    1. Animations
+    -------------------------------- */
+@keyframes fadeIn {
+     from { opacity: 0.7; }
+     to { opacity: 1; }
+}
+
+@keyframes fadeInUp {
+     from {
+          opacity: 0;
+          transform: translateY(20px);
+     }
+     to {
+          opacity: 1;
+          transform: translateY(0);
+     }
+}
+
+@keyframes pulse {
+     0% { transform: scale(1); }
+     50% { transform: scale(1.1); }
+     100% { transform: scale(1); }
+}
+
+/* --------------------------------
+    2. Layout and Common Elements
+    -------------------------------- */
+.section-spacing {
+     margin-bottom: 2rem;
+}
+
+/* Reusable hover effects */
+.element-elevation {
+     transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.element-elevation:hover {
+     box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+     transform: translateY(-5px);
+}
+
+.hover-shadow {
+     transition: box-shadow 0.3s ease;
+}
+
+.hover-shadow:hover {
+     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Animation utility classes */
+.fade-in-up {
+     animation: fadeInUp 0.5s ease-out forwards;
+}
+
+.fade-in-item {
+     opacity: 0;
+}
+
+.pulse-animation {
+     animation: pulse 2s infinite ease-in-out;
+}
+
+/* Gradient backgrounds */
+.bg-primary-gradient {
+     background: linear-gradient(135deg, #0d6efd 0%, #4d96ff 100%);
+     min-height: 200px;
+}
+
+.bg-danger-gradient {
+     background: linear-gradient(135deg, #dc3545 0%, #ff758f 100%);
+     min-height: 200px;
+}
+
+/* Search spinner */
+.search-spinner {
+     z-index: 3;
+}
+
+/* --------------------------------
+    3. Card Components - General
+    -------------------------------- */
+[role="listitem"] {
+     animation: none !important;
+     display: block !important;
+     margin-bottom: 1.5rem;
+     opacity: 1 !important;
+     visibility: visible !important;
+}
+
+.col-md-6.col-lg-4.col-xl-3[role="listitem"],
+.col-12[role="listitem"] {
+     animation: none !important;
+     display: block !important;
+     margin-bottom: 1.5rem;
+     opacity: 1 !important;
+     visibility: visible !important;
+}
+
+.child-card {
+     transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.child-card:hover {
+     box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15) !important;
+     transform: translateY(-5px);
+}
+
+/* --------------------------------
+    4. Card View - Grid Layout
+    -------------------------------- */
+.card-view .child-card {
+     border-radius: 0.75rem;
+     box-shadow: 0 4px 8px rgba(0,0,0,0.1) !important;
+     display: block !important;
+     flex-direction: column;
+     height: 100%;
+     opacity: 1 !important;
+     overflow: hidden;
+     transition: transform 0.3s ease, box-shadow 0.3s ease;
+     visibility: visible !important;
+}
+
+.card-view .child-card:hover {
+     box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+     transform: translateY(-5px);
+}
+
+.child-banner img {
+     height: 150px !important;
+     object-fit: cover;
+     transition: transform 0.3s ease;
+     width: 150px !important;
+}
+
+.child-banner img:hover {
+     transform: scale(1.05);
+}
+
+.child-banner .position-relative {
+     display: flex;
+     justify-content: center;
+     width: 100%;
+}
+
+.card-footer .d-grid {
+     align-items: center;
+     display: flex !important;
+     flex-direction: column;
+}
+
+.card-footer .btn-primary {
+     margin: 0 auto;
+     min-width: 80%;
+}
+
+/* --------------------------------
+    5. List View - Horizontal Layout
+    -------------------------------- */
+.list-view [role="listitem"] {
+     margin-bottom: 1rem;
+     width: 100%;
+}
+
+.list-view .child-card {
+     align-items: center;
+     border-radius: 0.75rem;
+     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+     display: flex !important;
+     flex-direction: row;
+     height: auto !important;
+     overflow: hidden;
+     padding: 0;
+     transition: all 0.3s ease;
+}
+
+.list-view .child-card:hover {
+     box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+     transform: translateY(-2px);
+}
+
+/* Left section: Photo container */
+.list-view .child-card .position-relative {
+     align-self: stretch;
+     flex-shrink: 0;
+     height: auto;
+     margin-right: 0;
+     min-width: 180px;
+     overflow: hidden;
+     width: 180px;
+}
+
+.list-view .child-card .child-banner {
+     align-items: center;
+     display: flex;
+     flex-direction: column;
+     height: 100%;
+     width: 100%;
+}
+
+.list-view .child-card .child-banner .bg-primary-gradient,
+.list-view .child-card .child-banner .bg-danger-gradient {
+     align-items: center;
+     display: flex;
+     height: 100%;
+     justify-content: center;
+     min-height: 170px;
+     width: 100%;
+}
+
+.list-view .child-card .child-banner img {
+     height: 120px !important;
+     width: 120px !important;
+}
+
+/* Background color container */
+.list-view .child-card .child-banner .bg-primary,
+.list-view .child-card .child-banner .bg-danger {
+     align-items: center;
+     display: flex;
+     flex-direction: column;
+     height: 100%;
+     justify-content: center;
+     padding: 1.5rem 0.5rem;
+     width: 100%;
+}
+
+/* Badge positioning */
+.list-view .child-card .position-absolute.bottom-0.end-0.translate-middle {
+     bottom: auto !important;
+     left: 0 !important;
+     position: absolute !important;
+     right: auto !important;
+     top: 0 !important;
+     transform: translate(50%, 50%) !important;
+}
+
+.list-view .position-absolute.badge {
+     margin-left: 10px;
+     padding: 0.35rem !important;
+     z-index: 5;
+}
+
+.list-view .child-card .position-absolute.bottom-0.start-50 {
+     margin-bottom: 0.25rem;
+     margin-top: 0.75rem;
+     position: static !important;
+     transform: none !important;
+}
+
+/* Content sections */
+.list-view .child-card .card-body {
+     flex: 1;
+     padding: 1.5rem;
+     text-align: left;
+}
+
+.list-view .child-card .card-footer {
+     align-items: center;
+     background: transparent;
+     border-top: none;
+     display: flex;
+     flex-shrink: 0;
+     justify-content: center;
+     margin-left: auto;
+     padding: 1.5rem;
+     width: auto;
+}
+
+.list-view .child-card .card-footer .btn {
+     width: 100%;
+}
+
+.list-view .child-card .card-footer .btn-outline-primary {
+     display: none;
+}
+
+/* --------------------------------
+    6. Empty States
+    -------------------------------- */
+.empty-container {
+     align-items: center;
+     display: flex;
+     justify-content: center;
+     margin-top: 1rem;
+     min-height: 50vh;
+     padding: 2rem;
+}
+
+.empty-card {
+     background-color: #f8f9fa;
+     border-radius: 1rem;
+     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+     max-width: 500px;
+     padding: 3rem 2rem;
+     text-align: center;
+     transition: all 0.4s ease;
+     width: 100%;
+}
+
+.empty-icon-wrapper {
+     margin-bottom: 1.5rem;
+     position: relative;
+}
+
+.empty-icon {
+     animation: pulse 3s infinite ease-in-out;
+     color: var(--bs-primary, #0d6efd);
+     font-size: 3.5rem;
+     opacity: 0.8;
+}
+
+.empty-title {
+     color: #212529;
+     font-size: 1.5rem;
+     font-weight: 700;
+     margin-bottom: 1rem;
+}
+
+.empty-message {
+     color: #6c757d;
+     line-height: 1.6;
+     margin-bottom: 2rem;
+}
+
+.child-empty-state {
+     background-color: rgba(0, 0, 0, 0.02);
+     border-radius: 1rem;
+     padding: 3rem 2rem;
+     text-align: center;
+}
+
+.child-empty-state i {
+     font-size: 3rem;
+     margin-bottom: 1rem;
+     opacity: 0.5;
+}
+
+/* --------------------------------
+    7. Child Profile Elements
+    -------------------------------- */
+.child-profile-image {
+     border: 4px solid #fff;
+     border-radius: 50%;
+     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+     height: 170px;
+     object-fit: cover;
+     transition: transform 0.3s ease;
+     width: 170px;
+}
+
+.child-profile-container:hover .child-profile-image {
+     transform: scale(1.05);
+}
+
+.child-gender-badge {
+     border: 2px solid #fff;
+     bottom: 0;
+     padding: 0.5rem;
+     position: absolute;
+     right: 0;
+     transform: translate(25%, 25%);
+     z-index: 1;
+}
+
+/* Gender badge icons */
+.position-absolute.badge i.fa-venus,
+.position-absolute.badge i.fa-mars {
+     align-items: center;
+     display: flex;
+     font-size: 0.85rem;
+     height: 16px;
+     justify-content: center;
+     width: 16px;
+}
+
+.rounded-pill.bg-danger,
+.rounded-pill.bg-info {
+     min-width: 28px;
+}
+
+/* Child Stats */
+.child-stat {
+     border-radius: 0.5rem;
+     transition: all 0.2s ease;
+}
+
+.child-stat:hover {
+     box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+     transform: translateY(-3px);
+}
+
+/* Child Action Buttons */
+.child-action-btn {
+     transition: all 0.2s ease;
+}
+
+.child-action-btn:hover {
+     transform: translateY(-2px);
+}
+
+.child-quick-actions .btn {
+     transition: all 0.2s ease;
+}
+
+.child-quick-actions .btn:hover {
+     transform: translateY(-3px);
+}
+
+/* --------------------------------
+    8. Section Containers
+    -------------------------------- */
+.info-section {
+     background-color: #f8f9fa;
+     border-left: 4px solid #2d62a3;
+     border-radius: 0.75rem;
+     margin-bottom: 1.5rem;
+     padding: 1.25rem;
+}
+
+.info-section-title {
+     border-bottom: 1px solid #dee2e6;
+     color: #2d62a3;
+     margin-bottom: 1rem;
+     padding-bottom: 0.5rem;
+}
+
+/* --------------------------------
+    9. Timeline & Milestones
+    -------------------------------- */
+.milestone-timeline {
+     padding: 10px 0;
+     position: relative;
+}
+
+.timeline-container {
+     position: relative;
+}
+
+.timeline-container::before {
+    background-color: #e0e0e0;
+    bottom: 0;
+    content: '';
+    left: 15px;
+    position: absolute;
+    top: 0;
+    width: 2px;
+}
+
+.timeline-item {
+     margin-bottom: 20px;
+     padding-left: 40px;
+     position: relative;
+}
+
+.timeline-marker {
+     border: 2px solid #fff;
+     border-radius: 50%;
+     box-shadow: 0 0 0 3px rgba(0,0,0,0.1);
+     height: 16px;
+     left: 7px;
+     position: absolute;
+     top: 15px;
+     width: 16px;
+}
+
+.timeline-marker.bg-success {
+     background-color: #28a745;
+}
+
+.timeline-marker.bg-warning {
+     background-color: #ffc107;
+}
+
+.timeline-content {
+     padding-bottom: 10px;
+}
+
+/* Milestone Cards */
+.milestone-card {
+     border-radius: 0.5rem;
+     transition: all 0.2s ease;
+}
+
+.milestone-card:hover {
+     background-color: rgba(0, 0, 0, 0.02);
+}
+
+.milestone-date {
+     color: #6c757d;
+     font-size: 0.85rem;
+}
+
+/* --------------------------------
+    10. Growth Charts and Measurements
+    -------------------------------- */
+.growth-chart-image {
+     max-height: 300px;
+     transition: all 0.3s ease;
+}
+
+.growth-chart-card {
+     transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.growth-chart-card:hover {
+     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1) !important;
+     transform: translateY(-5px);
+}
+
+.btn-expand {
+     align-items: center;
+     background-color: rgba(255, 255, 255, 0.8);
+     border: 1px solid rgba(0, 0, 0, 0.1);
+     display: flex;
+     height: 32px;
+     justify-content: center;
+     opacity: 0.6;
+     transition: opacity 0.3s ease;
+     width: 32px;
+}
+
+.growth-chart-card:hover .btn-expand {
+     opacity: 1;
+}
+
+#modal-chart-image {
+     max-height: 80vh;
+}
+
+[role="img"][aria-label] {
+     max-width: 100%;
+}
+
+.measurement-card {
+     box-shadow: 0 0.125rem 0.25rem rgba(0,0,0,0.075);
+     transition: transform 0.2s ease;
+}
+
+.measurement-card:hover {
+     transform: translateY(-2px);
+}
+
+/* --------------------------------
+    11. Navigation Elements
+    -------------------------------- */
+.nav-tabs .nav-link {
+     background-color: #f0f2f5;
+     border: 1px solid rgba(0,0,0,.05);
+     border-bottom: none;
+     color: #6c757d;
+     font-weight: 500;
+     margin-right: 4px;
+     position: relative;
+     top: 1px;
+     transition: all 0.3s ease;
+}
+
+.nav-tabs .nav-link:hover:not(.active) {
+     background-color: #e9ecef;
+     border-color: rgba(0,0,0,.1);
+     color: #495057;
+}
+
+.nav-tabs .nav-link.active {
+     background-color: #ffffff;
+     border-bottom: 1px solid #fff;
+     border-top: 2px solid #2d62a3;
+     color: #2d62a3;
+     font-weight: 600;
+}
+
+/* Tab indicator */
+.tab-indicator {
+     align-items: center;
+     background: #28a745;
+     border-radius: 50%;
+     color: white;
+     display: flex;
+     font-size: 10px;
+     font-weight: bold;
+     height: 18px;
+     justify-content: center;
+     position: absolute;
+     right: -8px;
+     top: -8px;
+     width: 18px;
+}
+
+/* --------------------------------
+    12. Filter and Search
+    -------------------------------- */
+.filter-buttons {
+     -webkit-overflow-scrolling: touch;
+     max-width: 100%;
+     min-width: 200px;
+     overflow-x: auto;
+     scrollbar-width: none; /* Firefox */
+     white-space: nowrap;
+}
+
+.filter-buttons::-webkit-scrollbar {
+     display: none; /* Chrome, Safari, Edge */
+}
+
+.filter-buttons .filter-btn {
+     flex-shrink: 0;
+     font-size: 0.85rem;
+     min-width: auto;
+}
+
+.input-group.rounded-pill {
+     display: flex;
+     flex-wrap: nowrap;
+}
+
+.input-group.rounded-pill .form-control {
+     flex: 1 1 auto;
+     width: 1%;
+}
+
+.input-group.rounded-pill .btn {
+     white-space: nowrap;
+}
+
+/* --------------------------------
+    13. Responsive Media Queries
+    -------------------------------- */
+@media (max-width: 767.98px) {
+     /* List view */
+     .list-view .child-card {
+          flex-direction: column;
+     }
+     
+     .list-view .child-card .position-relative {
+          width: 100%;
+     }
+     
+     .list-view .child-card .card-body {
+          text-align: center;
+          width: 100%;
+     }
+     
+     .list-view .child-card .card-footer {
+          padding: 1rem 1.5rem 1.5rem;
+          width: 100%;
+     }
+     
+     /* Timeline */
+     .timeline-item {
+          padding-left: 30px;
+     }
+          
+    .timeline-container::before {
+        left: 10px;
+    }
+
+          
+     .timeline-marker {
+          left: 2px;
+     }
+     
+     /* Charts and images */
+     .growth-chart-image {
+          max-height: 200px;
+     }
+     
+     .chart-container {
+          height: 250px !important;
+     }
+     
+     /* UI components */
+     .child-actions-container {
+          flex-direction: column;
+          gap: 0.5rem;
+     }
+          
+     .nav-tabs .nav-link {
+          font-size: 0.9rem;
+          padding: 0.5rem 1rem;
+     }
+          
+     .card-header-tabs {
+          margin-left: 0;
+          margin-right: 0;
+     }
+          
+     .btn-group {
+          width: 100%;
+     }
+          
+     .btn-group .btn {
+          flex: 1;
+     }
+          
+     .child-banner img {
+          height: 80px;
+          width: 80px;
+     }
+     
+     .resource-card {
+          margin-bottom: 1rem;
+     }
+     
+     .filter-buttons {
+          flex-wrap: wrap;
+          justify-content: center;
+     }
+     
+     .filter-buttons .btn {
+          margin-bottom: 0.5rem;
+     }
+}
+
+@media (max-width: 575.98px) {
+    .mobile-search-container {
+        display: flex !important;
+        flex-wrap: nowrap !important;
+    }
+    
+    .mobile-search-container .form-control {
+        border-top-right-radius: 0 !important;
+        border-bottom-right-radius: 0 !important;
+        flex: 1 1 auto;
+        width: 1%;
+    }
+    
+    .mobile-search-container .input-group-text {
+        display: none;
+    }
+    
+    .mobile-search-container .btn {
+        border-top-left-radius: 0 !important;
+        border-bottom-left-radius: 0 !important;
+    }
+    
+    /* Action buttons for mobile */
+    .btn-group.rounded-pill {
+        flex-shrink: 1;
+        min-width: 0;
+    }
+    
+    .btn-group.rounded-pill button {
+        padding-left: 10px !important;
+        padding-right: 10px !important;
+    }
+    
+    .btn.rounded-pill.hover-lift {
+        min-width: 120px;
+        text-align: center;
+    }
+    
+    a.btn.btn-primary.rounded-pill[href*="add_child"] {
+        min-width: 140px;
+        padding-left: 16px !important;
+        padding-right: 16px !important;
+    }
+    
+    /* Card and list view buttons */
+    .card-view .card-footer .btn-primary,
+    .list-view .child-card .card-footer .btn {
+        width: 100% !important;
+        min-width: 100% !important;
+        padding: 0.5rem 1rem !important;
+    }
+    
+    .d-flex.gap-2.gap-sm-3.w-100.justify-content-end {
+        gap: 0.75rem !important;
+    }
+}
+
+@media (max-width: 420px) {
+     .d-flex.gap-3 {
+          gap: 0.5rem !important;
+     }
+     
+     .btn-group .btn,
+     .btn-primary.rounded-pill {
+          font-size: 0.8rem;
+          padding: 0.25rem 0.5rem !important;
+     }
+     
+     .btn-group .btn i,
+     .btn-primary.rounded-pill i {
+          margin-right: 0 !important;
+     }
+     
+     .btn-group .btn span,
+     .btn-primary.rounded-pill span {
+          display: none;
+     }
+}

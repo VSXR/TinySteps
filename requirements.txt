@@ -24,6 +24,7 @@ drf-nested-routers==0.94.1
 exceptiongroup==1.2.2
 fixedint==0.1.6
 googletrans==4.0.2
+gunicorn==23.0.0
 h11==0.14.0
 h2==4.2.0
 hpack==4.1.0

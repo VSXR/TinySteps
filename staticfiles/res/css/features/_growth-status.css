@@ -1,0 +1,49 @@
+/* Growth Status Css */
+.expand-btn {
+    width: 36px !important;
+    height: 36px !important;
+    padding: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    aspect-ratio: 1 / 1;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+/* Child info card styling */
+.card-body img.rounded-circle {
+    transition: transform 0.3s ease;
+}
+
+.card-body img.rounded-circle:hover {
+    transform: scale(1.05);
+}
+
+/* Responsive adjustments */
+@media (max-width: 991.98px) {
+    .card-body .d-flex.align-items-center {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .card-body .d-flex.align-items-center .me-4 {
+        margin-right: 0 !important;
+        margin-bottom: 1rem;
+    }
+    
+    .card-body .d-flex.flex-wrap {
+        justify-content: center;
+    }
+}
+
+@media (max-width: 767.98px) {
+    .h5 i {
+        display: block;
+        margin: 0 auto 0.5rem !important;
+    }
+    
+    .expand-btn {
+        width: 32px !important;
+        height: 32px !important;
+    }
+}

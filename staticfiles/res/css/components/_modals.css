@@ -1,0 +1,26 @@
+/* Modal styles */
+
+/* Form containers */
+.event-form-container {
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    padding: 20px;
+}
+
+.vaccine-form-container {
+    position: sticky;
+    top: 20px;
+}
+
+/* Form elements */
+#form-title {
+    color: #333;
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+}
+
+.form-buttons {
+    margin-top: 20px;
+}

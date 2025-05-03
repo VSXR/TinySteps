@@ -1,0 +1,76 @@
+/* ============
+Form styles 
+=============== */
+
+/* Base form control styles */
+.form-control {
+    color: #212529;
+    background-color: #fff;
+}
+
+.form-control:focus {
+    color: #212529;
+    background-color: #fff;
+    border-color: #86b7fe;
+    outline: 0;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+.form-control::placeholder {
+    color: #6c757d;
+    opacity: 1;
+}
+
+/* Main form controls */
+.form-control-main {
+    color: #212529 !important;
+    background-color: #fff !important;
+    border: 1px solid #ced4da !important;
+}
+
+.form-control-main:focus {
+    color: #212529 !important;
+    background-color: #fff !important;
+    border-color: #86b7fe !important;
+    outline: 0 !important;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25) !important;
+}
+
+/* Footer form controls */
+footer .form-control,
+footer .form-control:focus {
+    color: var(--text-light);
+    background-color: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+footer .form-control:focus {
+    background-color: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.3);
+    box-shadow: 0 0 0 0.25rem rgba(255, 255, 255, 0.15);
+}
+
+/* ============
+Component styles 
+=============== */
+
+/* Search area */
+.search-area {
+    max-width: 550px;
+}
+
+/* Discussion content */
+.post-content {
+    font-size: 1.05rem;
+    line-height: 1.7;
+}
+
+.post-content p {
+    margin-bottom: 1rem;
+}
+
+/* Comment section */
+.comment-list {
+    max-height: 500px;
+    overflow-y: auto;
+}

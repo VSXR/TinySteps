@@ -1,0 +1,40 @@
+/* ===== ANIMATIONS & TRANSITIONS ===== */
+
+/* Transition utilities */
+.transition-300 {
+    transition: all 0.3s ease;
+}
+
+/* ===== HOVER EFFECTS ===== */
+
+/* Content lift effect */
+.content-lift {
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.content-lift:hover {
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1) !important;
+    transform: translateY(-5px);
+}
+
+/* Animated Underline */
+.custom-underline {
+    position: relative;
+}
+
+.custom-underline::after {
+    background-color: var(--text-light);
+    bottom: 0;
+    content: '';
+    height: 2px;
+    left: 0;
+    position: absolute;
+    transition: width var(--transition-fast) ease;
+    width: 0;
+}
+
+.custom-underline:hover::after,
+.custom-underline:focus::after,
+.custom-underline.active::after {
+    width: 100%;
+}
