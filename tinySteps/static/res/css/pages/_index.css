@@ -29,15 +29,7 @@
 }
 
 .blob-shape {
-    width: 450px;
-    height: 450px;
-    border-radius: 42% 58% 70% 30% / 45% 45% 55% 55%;
-    background: linear-gradient(135deg, rgba(var(--bs-primary-rgb), 0.1), rgba(var(--bs-primary-rgb), 0.2));
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 0;
-    animation: blob-animation 8s linear infinite;
+    display: none;
 }
 
 @keyframes blob-animation {
@@ -49,13 +41,13 @@
 }
 
 .hero-image {
-    transform: translateY(0);
-    transition: transform 0.6s ease;
+    transform: none !important;
+    transition: none !important;
     z-index: 2;
 }
 
 .hero-image:hover {
-    transform: translateY(-10px);
+    transform: none !important;
 }
 
 /* Feature Cards */
@@ -203,11 +195,6 @@
     
     .hero-section {
         text-align: center;
-    }
-    
-    .blob-shape {
-        width: 300px;
-        height: 300px;
     }
 }
 
