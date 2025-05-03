@@ -12,6 +12,8 @@ crispy-bootstrap4==2024.1
 csrf==0.1b1
 Deprecated==1.2.14
 Django==5.1.1
+django-appconf==1.1.0
+django-cookie-consent==0.6.0
 django-crispy-forms==2.3
 django-debug-toolbar==5.1.0
 django-rosetta==0.10.1
