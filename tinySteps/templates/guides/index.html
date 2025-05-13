@@ -14,12 +14,24 @@
         <div class="mb-5 position-relative rounded-4 overflow-hidden">
             <div class="bg-primary bg-opacity-10 p-5">
                 <div class="text-center">
-                    <h1 class="display-5 fw-bold mb-2">{% trans "Guides & Resources" %}</h1>
+                    <h1 class="display-5 fw-bold mb-2">{% trans "Guides and Resources" %}</h1>
                     <p class="lead text-muted">{% trans "Expert advice and tools to support your parenting journey" %}</p>
+                    
+                    <!-- Submit Guide Buttons -->
+                    <div class="mt-4 d-flex flex-column flex-sm-row justify-content-center gap-3">
+                        <a href="{% url 'submit_guide' %}?type=parent" class="btn btn-primary btn-lg rounded-pill">
+                            <i class="fa-solid fa-pen-to-square me-2" aria-hidden="true"></i>{% trans "Submit Parenting Guide" %}
+                        </a>
+                        <a href="{% url 'submit_guide' %}?type=nutrition" class="btn btn-success btn-lg rounded-pill">
+                            <i class="fa-solid fa-apple-whole me-2" aria-hidden="true"></i>{% trans "Submit Nutrition Guide" %}
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- Contents -->
     <div class="container-fluid px-2 px-md-3 mb-5">
         <div class="row">
             <!-- Main Content Section -->

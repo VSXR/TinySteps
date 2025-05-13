@@ -13,12 +13,14 @@
 
 {% block main_contents %}
 <main id="main-content" role="main">
-    <div class="container py-4">
-        {% include 'guides/components/breadcrumbs.html' with section_type=guide_type %}
-        
-        {% block page_header %}
-            {% include "guides/components/page_header.html" with title=title|default:"Guides" subtitle=subtitle|default:"Browse our collection of expert guides" %}
+    <div class="container-fluid">
+        {% block breadcrumbs %}
+            {% include 'guides/components/breadcrumbs.html' with section_type=guide_type %}
         {% endblock %}
+        <div class="container-lg px-4">    
+            {% block page_header %}
+                {% include "guides/components/page_header.html" with title=title|default:"Guides" subtitle=subtitle|default:"Browse our collection of expert guides" %}
+            {% endblock %}
         
         <div class="row g-4">
             <!-- Sidebar Column -->
