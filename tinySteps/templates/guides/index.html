@@ -18,6 +18,7 @@
                     <p class="lead text-muted">{% trans "Expert advice and tools to support your parenting journey" %}</p>
                     
                     <!-- Submit Guide Buttons -->
+                    {% if request.user.is_authenticated %}
                     <div class="mt-4 d-flex flex-column flex-sm-row justify-content-center gap-3">
                         <a href="{% url 'submit_guide' %}?type=parent" class="btn btn-primary btn-lg rounded-pill">
                             <i class="fa-solid fa-pen-to-square me-2" aria-hidden="true"></i>{% trans "Submit Parenting Guide" %}
@@ -26,6 +27,7 @@
                             <i class="fa-solid fa-apple-whole me-2" aria-hidden="true"></i>{% trans "Submit Nutrition Guide" %}
                         </a>
                     </div>
+                    {% endif %}
                 </div>
             </div>
         </div>
