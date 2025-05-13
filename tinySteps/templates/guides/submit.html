@@ -12,10 +12,8 @@
 {% endblock %}
 
 {% block main_contents %}
-    <main id="main-content" class="container-fluid">
-        <div class="container-lg px-4">
-            {% include "guides/components/breadcrumbs.html" with section_type=guide_type view_type="submit" %}
-        </div>
+<main id="main-content" class="container-fluid">
+        {% include "guides/components/breadcrumbs.html" with section_type=guide_type view_type="submit" %}
         
         {% if guide_type == 'nutrition' %}
             {% include "forum/components/page_header.html" with title="Submit Nutrition Guide" subtitle=subtitle|default:"Share your nutrition knowledge with other parents" %}
