@@ -81,12 +81,18 @@
         {% endif %}
         
         {% if view_type == "submit" %}
-            <li class="breadcrumb-item active fw-semibold" aria-current="page">
-                <div class="d-flex align-items-center">
-                    <i class="fa-solid fa-pen-to-square me-1" aria-hidden="true"></i>
-                    <span>{% trans "Submit Guide" %}</span>
-                </div>
-            </li>
-        {% endif %}
+        <li class="breadcrumb-item active fw-semibold" aria-current="page">
+            <div class="d-flex align-items-center">
+                <i class="fa-solid fa-pen-to-square me-1" aria-hidden="true"></i>
+                <span>
+                    {% if section_type == 'nutrition' %}
+                        {% trans "Submit Nutrition Guide" %}
+                    {% else %}
+                        {% trans "Submit Parenting Guide" %}
+                    {% endif %}
+                </span>
+            </div>
+        </li>
+    {% endif %}
     </ol>
 </nav>

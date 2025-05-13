@@ -12,152 +12,150 @@
 {% endblock %}
 
 {% block main_contents %}
-    <main id="main-content">
-        <div class="container py-4 px-3">
-            <!-- Breadcrumb Navigation -->
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="{% url 'index' %}">{% trans "Home" %}</a></li>
-                    <li class="breadcrumb-item"><a href="{% url 'guides' %}">{% trans "Guides" %}</a></li>
-
-                    <!-- Type of guide -->
-                    {% if guide_type == 'nutrition' %}
-                        <li class="breadcrumb-item"><a href="{% url 'nutrition_guides' %}">{% trans "Nutrition Guides" %}</a></li>
-                    {% else %}
-                        <li class="breadcrumb-item"><a href="{% url 'parent_guides' %}">{% trans "Parents Guides" %}</a></li>
-                    {% endif %}
-                    <li class="breadcrumb-item active" aria-current="page">{% trans "Submit Guide" %}</li>
-                </ol>
-            </nav>
-            
-            <div class="row justify-content-center">
-                <div class="col-lg-8 col-md-10">
-                    <div class="card shadow-sm border-0 rounded-4">
-                        <div class="card-header border-0 bg-light py-3">
-                            <h2 class="text-center fs-4 mb-0" id="submit-heading">
-                                {% if guide_type == 'nutrition' %}
-                                    {% trans "Share Your Nutrition Knowledge" %}
-                                {% else %}
-                                    {% trans "Share Your Parenting Advice" %}
-                                {% endif %}
-                            </h2>
-                        </div>
-                        <div class="card-body p-4">
-                            {% if messages %}
-                                <div role="alert" aria-live="polite">
-                                    {% include 'partials/messages.html' %}
-                                </div>
+    <main id="main-content" class="container-fluid">
+        <div class="container-lg px-4">
+            {% include "guides/components/breadcrumbs.html" with section_type=guide_type view_type="submit" %}
+        </div>
+        
+        {% if guide_type == 'nutrition' %}
+            {% include "forum/components/page_header.html" with title="Submit Nutrition Guide" subtitle=subtitle|default:"Share your nutrition knowledge with other parents" %}
+        {% else %}
+            {% include "forum/components/page_header.html" with title="Submit Parenting Guide" subtitle=subtitle|default:"Share your parenting advice and help other families" %}
+        {% endif %}
+        
+        <div class="row justify-content-center">
+            <div class="col-lg-8 col-md-10">
+                <div class="card shadow-sm border-0 rounded-4">
+                    <div class="card-header border-0 bg-light py-3">
+                        <h2 class="text-center fs-4 mb-0" id="submit-heading">
+                            {% if guide_type == 'nutrition' %}
+                                {% trans "Share Your Nutrition Knowledge" %}
+                            {% else %}
+                                {% trans "Share Your Parenting Advice" %}
                             {% endif %}
+                        </h2>
+                    </div>
+                    <div class="card-body p-4">
+                        {% if messages %}
+                            <div role="alert" aria-live="polite">
+                                {% include 'partials/messages.html' %}
+                            </div>
+                        {% endif %}
+                        
+                        <form method="post" enctype="multipart/form-data" id="guide-form">
+                            {% csrf_token %}
+                            <input type="hidden" name="guide_type" value="{{ guide_type }}">
                             
-                            <form method="post" enctype="multipart/form-data" id="guide-form">
-                                {% csrf_token %}
-                                <input type="hidden" name="guide_type" value="{{ guide_type }}">
+                            <!-- Title -->
+                            <div class="mb-3">
+                                <label for="id_title" class="form-label">{% trans "Title" %} <span class="text-danger">*</span></label>
+                                <input type="text" name="title" id="id_title" maxlength="100" class="form-control rounded-3" required>
+                                <div class="form-text">{% trans "Choose a descriptive title for your guide (5-100 characters)" %}</div>
+                            </div>
+                            
+                            <!-- Summary -->
+                            <div class="mb-3">
+                                <label for="id_summary" class="form-label">{% trans "Summary" %}</label>
+                                <input type="text" name="summary" id="id_summary" maxlength="200" class="form-control rounded-3">
+                                <div class="form-text">{% trans "Brief description that will appear in listings (max 200 characters)" %}</div>
+                            </div>
+                            
+                            <!-- Tags -->
+                            <div class="mb-3">
+                                <label class="form-label">{% trans "Tags" %}</label>
+                                <input type="hidden" name="tags" class="tag-hidden-input">
                                 
-                                <!-- Title -->
-                                <div class="mb-3">
-                                    <label for="id_title" class="form-label">{% trans "Title" %} <span class="text-danger">*</span></label>
-                                    <input type="text" name="title" id="id_title" maxlength="100" class="form-control rounded-3" required>
-                                    <div class="form-text">{% trans "Choose a descriptive title for your guide (5-100 characters)" %}</div>
-                                </div>
-                                
-                                <!-- Summary -->
-                                <div class="mb-3">
-                                    <label for="id_summary" class="form-label">{% trans "Summary" %}</label>
-                                    <input type="text" name="summary" id="id_summary" maxlength="200" class="form-control rounded-3">
-                                    <div class="form-text">{% trans "Brief description that will appear in listings (max 200 characters)" %}</div>
-                                </div>
-                                
-                                <!-- Tags -->
-                                <div class="mb-3">
-                                    <label class="form-label">{% trans "Tags" %}</label>
-                                    <input type="hidden" name="tags" class="tag-hidden-input">
-                                    
-                                    <div class="accordion mb-2" id="tagsAccordion">
-                                        {% for category, tags in tag_categories.items %}
-                                        <div class="accordion-item">
-                                            <h2 class="accordion-header" id="heading{{ category|slugify }}">
-                                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                                                        data-bs-target="#collapse{{ category|slugify }}" aria-expanded="false" 
-                                                        aria-controls="collapse{{ category|slugify }}">
-                                                    {{ category }}
-                                                </button>
-                                            </h2>
-                                            <div id="collapse{{ category|slugify }}" class="accordion-collapse collapse" 
-                                                 aria-labelledby="heading{{ category|slugify }}" data-bs-parent="#tagsAccordion">
-                                                <div class="accordion-body">
-                                                    <div class="d-flex flex-wrap gap-2">
-                                                        {% for tag in tags %}
-                                                        <div class="form-check">
-                                                            <input class="form-check-input tag-checkbox" type="checkbox" value="{{ tag }}" id="tag{{ tag|slugify }}">
-                                                            <label class="form-check-label" for="tag{{ tag|slugify }}">
-                                                                {{ tag }}
-                                                            </label>
-                                                        </div>
-                                                        {% endfor %}
+                                <div class="accordion mb-2" id="tagsAccordion">
+                                    {% for category, tags in tag_categories.items %}
+                                    <div class="accordion-item">
+                                        <h2 class="accordion-header" id="heading{{ category|slugify }}">
+                                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                                                    data-bs-target="#collapse{{ category|slugify }}" aria-expanded="false" 
+                                                    aria-controls="collapse{{ category|slugify }}">
+                                                {{ category }}
+                                            </button>
+                                        </h2>
+                                        <div id="collapse{{ category|slugify }}" class="accordion-collapse collapse" 
+                                                aria-labelledby="heading{{ category|slugify }}" data-bs-parent="#tagsAccordion">
+                                            <div class="accordion-body">
+                                                <div class="d-flex flex-wrap gap-2">
+                                                    {% for tag in tags %}
+                                                    <div class="form-check">
+                                                        <input class="form-check-input tag-checkbox" type="checkbox" value="{{ tag }}" id="tag{{ tag|slugify }}">
+                                                        <label class="form-check-label" for="tag{{ tag|slugify }}">
+                                                            {{ tag }}
+                                                        </label>
                                                     </div>
+                                                    {% endfor %}
                                                 </div>
                                             </div>
                                         </div>
-                                        {% endfor %}
                                     </div>
-                                    
-                                    <div id="selectedTags" class="mb-2">
-                                        <!-- Selected tags will be displayed here -->
-                                    </div>
-                                    
-                                    <div class="form-text">{% trans "Select relevant tags to help other users find your guide" %}</div>
+                                    {% endfor %}
                                 </div>
                                 
-                                <!-- Content -->
-                                <div class="mb-3">
-                                    <label for="id_desc" class="form-label">{% trans "Content" %} <span class="text-danger">*</span></label>
-                                    <textarea name="desc" id="id_desc" rows="10" class="form-control rich-text-editor" required></textarea>
-                                    <div class="form-text">{% trans "The main content of your guide (minimum 300 characters)" %}</div>
+                                <div id="selectedTags" class="mb-2">
+                                    <!-- Selected tags will be displayed here -->
                                 </div>
                                 
-                                <!-- Featured Image -->
-                                <div class="mb-4">
-                                    <label for="id_image" class="form-label">{% trans "Featured Image" %} <span class="text-danger">*</span></label>
-                                    <input type="file" name="image" id="id_image" class="form-control rounded-3" accept="image/jpeg,image/png" required>
-                                    <div class="form-text">{% trans "Upload an image to make your guide more engaging (JPEG or PNG, max 5MB)" %}</div>
-                                </div>
-                                
-                                {% if guide_type == 'nutrition' %}
-                                <!-- Nutrition-specific fields -->
-                                <div class="mb-4">
-                                    <label for="id_age_range" class="form-label">{% trans "Age Range" %}</label>
-                                    <select name="age_range" id="id_age_range" class="form-select rounded-3">
-                                        <option value="">{% trans "Select an age range" %}</option>
-                                        <option value="0-6 months">0-6 {% trans "months" %}</option>
-                                        <option value="6-12 months">6-12 {% trans "months" %}</option>
-                                        <option value="1-3 years">1-3 {% trans "years" %}</option>
-                                        <option value="3-5 years">3-5 {% trans "years" %}</option>
-                                        <option value="5+ years">5+ {% trans "years" %}</option>
-                                    </select>
-                                </div>
-                                {% endif %}
-                                
-                                <div class="alert alert-info">
-                                    <i class="fa-solid fa-info-circle me-2"></i>
-                                    {% trans "Your guide will be reviewed by our staff before being published." %}
-                                </div>
-                                
-                                <div class="d-flex justify-content-between mt-4">
-                                    <a href="{% url 'guides' %}" class="btn btn-outline-secondary rounded-pill px-4">
-                                        {% trans "Cancel" %}
-                                    </a>
-                                    <button type="submit" class="btn btn-{% if guide_type == 'nutrition' %}success{% else %}primary{% endif %} rounded-pill px-4">
-                                        <i class="fa-solid fa-paper-plane me-2" aria-hidden="true"></i>
-                                        {% trans "Submit" %}
-                                    </button>
-                                </div>
-                            </form>
-                        </div>
+                                <div class="form-text">{% trans "Select relevant tags to help other users find your guide" %}</div>
+                            </div>
+                            
+                            <!-- Content -->
+                            <div class="mb-3">
+                                <label for="id_desc" class="form-label">{% trans "Content" %} <span class="text-danger">*</span></label>
+                                <textarea name="desc" id="id_desc" rows="10" class="form-control rich-text-editor" required></textarea>
+                                <div class="form-text">{% trans "The main content of your guide (minimum 300 characters)" %}</div>
+                            </div>
+                            
+                            <!-- Featured Image -->
+                            <div class="mb-4">
+                                <label for="id_image" class="form-label">{% trans "Featured Image" %} <span class="text-danger">*</span></label>
+                                <input type="file" name="image" id="id_image" class="form-control rounded-3" accept="image/jpeg,image/png" required>
+                                <div class="form-text">{% trans "Upload an image to make your guide more engaging (JPEG or PNG, max 5MB)" %}</div>
+                            </div>
+                            
+                            {% if guide_type == 'nutrition' %}
+                            <!-- Nutrition-specific fields -->
+                            <div class="mb-4">
+                                <label for="id_age_range" class="form-label">{% trans "Age Range" %}</label>
+                                <select name="age_range" id="id_age_range" class="form-select rounded-3">
+                                    <option value="">{% trans "Select an age range" %}</option>
+                                    <option value="0-6 months">0-6 {% trans "months" %}</option>
+                                    <option value="6-12 months">6-12 {% trans "months" %}</option>
+                                    <option value="1-3 years">1-3 {% trans "years" %}</option>
+                                    <option value="3-5 years">3-5 {% trans "years" %}</option>
+                                    <option value="5+ years">5+ {% trans "years" %}</option>
+                                </select>
+                            </div>
+                            {% endif %}
+                            
+                            <div class="alert alert-info">
+                                <i class="fa-solid fa-info-circle me-2"></i>
+                                {% trans "Your guide will be reviewed by our staff before being published." %}
+                            </div>
+                            
+                            <div class="d-flex justify-content-between mt-4">
+                                <a href="{% url 'guides' %}" class="btn btn-outline-secondary rounded-pill px-4">
+                                    {% trans "Cancel" %}
+                                </a>
+                                <button type="submit" class="btn btn-{% if guide_type == 'nutrition' %}success{% else %}primary{% endif %} rounded-pill px-4" 
+                                        data-guide-type="{{ guide_type }}">
+                                    <i class="fa-solid fa-paper-plane me-2" aria-hidden="true"></i>
+                                    {% if guide_type == 'nutrition' %}
+                                        {% trans "Submit Nutrition Guide" %}
+                                    {% else %}
+                                        {% trans "Submit Parenting Guide" %}
+                                    {% endif %}
+                                </button>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
         </div>
-    </main>
+    </div>
+</main>
 {% endblock main_contents %}
 
 {% block extra_js %}
