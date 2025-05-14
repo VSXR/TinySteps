@@ -5,7 +5,6 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.shortcuts import render, redirect, get_object_or_404
 from django.utils.translation import gettext as _
 
-# Ajusta las importaciones según tu estructura
 from tinySteps.models.content.guide_models import Guides_Model
 from tinySteps.forms.content.guide_rejection_forms import GuideRejection_Form
 from tinySteps.services.guides.moderation_service import GuideModerationService
@@ -14,20 +13,17 @@ logger = logging.getLogger(__name__)
 
 @staff_member_required
 def review_guides(request):
-    """Renderizar el panel de moderación de guías"""
+    """Show guides for review"""
     service = GuideModerationService()
-    
-    # Obtener filtros de la URL
-    status = request.GET.get('status', 'pending')
+    status = request.GET.get('status', 'all')  # Changed default from 'pending' to 'all'
     guide_type = request.GET.get('type', None)
     
-    # Obtener guías según filtros
     guides = service.get_guides_by_status(status, guide_type)
     
-    # Estadísticas para el panel
     pending_count = service.get_pending_guides_count()
     approved_count = Guides_Model.objects.filter(status='approved').count()
     rejected_count = Guides_Model.objects.filter(status='rejected').count()
+    total_count = Guides_Model.objects.count()
     
     context = {
         'guides': guides,
@@ -36,14 +32,15 @@ def review_guides(request):
         'pending_count': pending_count,
         'approved_count': approved_count,
         'rejected_count': rejected_count,
-        'title': _("Revisión de Guías"),
+        'total_count': total_count,
+        'title': _("Guides Review"),
     }
     
     return render(request, 'guides/admin/admin_guides_panel.html', context)
 
 @staff_member_required
 def approve_guide(request, guide_id):
-    """Aprobar una guía por ID"""
+    """Aprove a guide and publish it"""
     next_url = request.GET.get('next', 'admin_guides_panel')
     
     try:
@@ -72,7 +69,7 @@ def approve_guide(request, guide_id):
 
 @staff_member_required
 def reject_guide(request, guide_id):
-    """Rechazar una guía con motivo"""
+    """Reject a guide and notify the author"""
     guide = get_object_or_404(Guides_Model, pk=guide_id)
     next_page = request.POST.get('next', request.GET.get('next', 'admin_guides_panel'))
     

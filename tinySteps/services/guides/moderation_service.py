@@ -77,15 +77,19 @@ class GuideModerationService:
         """Obtener todas las guías pendientes de revisión"""
         return Guides_Model.objects.filter(status='pending').order_by('-created_at')
     
-    def get_guides_by_status(self, status, guide_type=None):
-        """Obtener guías filtradas por estado y opcionalmente por tipo"""
-        guides = Guides_Model.objects.filter(status=status)
+    def get_guides_by_status(self, status=None, guide_type=None):
+        """Get guides filtered by status and optionally by type"""
+        if status and status != 'all':
+            guides = Guides_Model.objects.filter(status=status)
+        else:
+            # Return all guides when status is None or 'all'
+            guides = Guides_Model.objects.all()
         
         if guide_type:
             guides = guides.filter(guide_type=guide_type)
             
         return guides.order_by('-created_at')
-    
+
     def _send_approval_email(self, guide):
         """Enviar notificación por email para aprobación de guía"""
         try:

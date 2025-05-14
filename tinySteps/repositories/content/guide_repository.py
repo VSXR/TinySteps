@@ -63,6 +63,11 @@ class Guide_Repository(GenericRepository):
         
         if count and not page:
             query = query[:count]
+        
+        # Implementación para paginación (si se usa en el futuro)
+        # if page:
+        #     paginator = Paginator(query, per_page=count or 10)
+        #     return paginator.get_page(page)
                 
         return query
     
