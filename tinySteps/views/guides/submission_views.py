@@ -89,7 +89,14 @@ class SubmitGuide_View(LoginRequiredMixin, View):
                 messages.success(request, 
                     _("Your guide has been submitted for review. You'll be notified when it's approved."))
                 
-                return redirect('admin_guides_panel')
+                # Redirect based on user role
+                if request.user.is_staff or request.user.is_superuser:
+                    # Admins and staff go to the guide review panel
+                    return redirect('admin_guides_panel')
+                else:
+                    # Regular users go to the guide listing page
+                    return redirect('guides')
+                    
             except Exception as e:
                 logger.error(f"Error creating guide: {str(e)}")
                 messages.error(request, _("There was an error submitting your guide."))
