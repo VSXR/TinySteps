@@ -16,7 +16,7 @@
 {% block main_contents %}
 <main id="main-content" role="main">
     <!-- Page Header -->
-    <div class="container py-5">
+    <div class="container-fluid py-5">
         <div class="mb-5 position-relative rounded-4 overflow-hidden">
             <div class="bg-primary bg-opacity-10 p-5">
                 <div class="text-center">
@@ -64,7 +64,7 @@
     </div>
 
     <!-- Contents -->
-    <div class="container px-4 mb-5">
+    <div class="container-fluid px-4 mb-5">
         <div class="row">
             <!-- Main Content Section -->
             <div class="col-lg-12 order-1">
@@ -96,8 +96,8 @@
                 
                 <!-- Guide listing section -->
                 <section class="mb-4">
-                    <div class="row justify-content-center">
-                        <div class="col-10 col-md-10 col-lg-10 col-xl-9 col-xxl-8 mx-auto">
+                    <div class="row">
+                        <div class="col-12">
                             {% if section_type == 'parent' %}
                             <!-- Parent Guides -->
                             <div class="card border-0 shadow-sm mb-5">
