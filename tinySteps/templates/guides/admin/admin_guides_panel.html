@@ -148,24 +148,26 @@
                                 <td>{{ guide.author.get_full_name|default:guide.author.username }}</td>
                                 <td>{{ guide.created_at|date:"d/m/Y" }}</td>
                                 <td>
-                                    <a href="{% url 'review_guide' guide.id %}" class="btn btn-sm btn-info">
-                                        <i class="fas fa-eye"></i> {% trans "View" %}
-                                    </a>
-                                    
-                                    {% if guide.status == 'pending' %}
-                                    <a href="{% url 'approve_guide' guide.id %}?next=admin_guides_panel" class="btn btn-sm btn-success" 
-                                       onclick="return confirm('{% trans "Are you sure you want to approve this guide?" %}')">
-                                        <i class="fas fa-check"></i> {% trans "Approve" %}
-                                    </a>
-                                    <button type="button" class="btn btn-sm btn-danger reject-guide" 
-                                            data-guide-id="{{ guide.id }}" data-toggle="modal" data-target="#rejectModal">
-                                        <i class="fas fa-times"></i> {% trans "Reject" %}
-                                    </button>
-                                    {% elif guide.status == 'rejected' %}
-                                    <a href="{% url 'approve_guide' guide.id %}?next=admin_guides_panel" class="btn btn-sm btn-success" 
-                                       onclick="return confirm('{% trans "Are you sure you want to approve this previously rejected guide?" %}')">
-                                        <i class="fas fa-check"></i> {% trans "Approve" %}
-                                    </a>
+                                    <div class="d-flex flex-wrap gap-2">
+                                        <a href="{% url 'review_guide' guide.id %}" class="btn btn-sm btn-info mb-2">
+                                            <i class="fas fa-eye"></i> {% trans "View" %}
+                                        </a>
+                                        
+                                        {% if guide.status == 'pending' %}
+                                        <a href="{% url 'approve_guide' guide.id %}?next=admin_guides_panel" class="btn btn-sm btn-success mb-2" 
+                                           onclick="return confirm('{% trans "Are you sure you want to approve this guide?" %}')">
+                                            <i class="fas fa-check"></i> {% trans "Approve" %}
+                                        </a>
+                                        <button type="button" class="btn btn-sm btn-danger mb-2 reject-guide" 
+                                                data-guide-id="{{ guide.id }}" data-toggle="modal" data-target="#rejectModal">
+                                            <i class="fas fa-times"></i> {% trans "Reject" %}
+                                        </button>
+                                        {% elif guide.status == 'rejected' %}
+                                        <a href="{% url 'approve_guide' guide.id %}?next=admin_guides_panel" class="btn btn-sm btn-success mb-2" 
+                                           onclick="return confirm('{% trans "Are you sure you want to approve this previously rejected guide?" %}')">
+                                            <i class="fas fa-check"></i> {% trans "Approve" %}
+                                        </a>
+                                    </div>
                                     {% endif %}
                                 </td>
                             </tr>
