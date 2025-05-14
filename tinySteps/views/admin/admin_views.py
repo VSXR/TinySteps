@@ -1,3 +1,4 @@
+import logging
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required, user_passes_test
@@ -7,38 +8,18 @@ from django.utils.translation import gettext as _
 from tinySteps.models import Guides_Model
 from tinySteps.forms import GuideRejection_Form
 from tinySteps.services.core.admin_service import AdminGuide_Service
+from django.shortcuts import redirect
+from tinySteps.views.guides.guide_views import admin_guides_panel_view
+
+
+logger = logging.getLogger(__name__)
 
 @staff_member_required
 def review_guides(request):
-    """Admin view for reviewing pending guides"""
-    guide_type = request.GET.get('type')
-    
-    # Base query - only get pending guides
-    pending_guides = Guides_Model.objects.filter(status='pending')
-    
-    # Get counts for the dashboard
-    total_count = pending_guides.count()
-    parent_count = pending_guides.filter(guide_type='parent').count()
-    nutrition_count = pending_guides.filter(guide_type='nutrition').count()
-    
-    # Filter by type if specified
-    if guide_type in ['parent', 'nutrition']:
-        guides = pending_guides.filter(guide_type=guide_type)
-    else:
-        guides = pending_guides
-    
-    # Order by newest first
-    guides = guides.order_by('-created_at')
-    
-    context = {
-        'guides': guides,
-        'current_type': guide_type,
-        'total_count': total_count,
-        'parent_count': parent_count,
-        'nutrition_count': nutrition_count,
-    }
-    
-    return render(request, 'guides/admin/review_guides.html', context)
+    """Render the review page using the proper context from admin_guides_panel_view."""
+    if not request.user.is_authenticated:
+        return redirect('login')
+    return admin_guides_panel_view(request)
 
 @staff_member_required
 def approve_guide(request, guide_id):
@@ -64,7 +45,7 @@ def approve_guide(request, guide_id):
 def reject_guide(request, guide_id):
     """Reject a guide submission with reason"""
     guide = get_object_or_404(Guides_Model, pk=guide_id)
-    next_page = request.POST.get('next', request.GET.get('next', 'my_guides'))
+    next_page = request.POST.get('next', request.GET.get('next', 'admin_guides_panel'))
     
     if request.method == 'POST':
         rejection_reason = request.POST.get('rejection_reason', '')
@@ -77,10 +58,7 @@ def reject_guide(request, guide_id):
         else:
             messages.error(request, _("Unable to reject guide. Please provide a reason."))
         
-        # Redirect back to either review panel or my guides
-        if next_page == 'review':
-            return redirect('review_guides')
-        return redirect('my_guides')
+        return redirect('admin_guides_panel')
     
     # If not POST, show the rejection form
     form = GuideRejection_Form()
@@ -109,5 +87,3 @@ def admin_dashboard(request):
         return render(request, 'guides/admin/dashboard.html', context)
     except Exception as e:
         from tinySteps.views.base.error_views import database_error_view
-        return database_error_view(request, _("Error loading admin dashboard."))
-    

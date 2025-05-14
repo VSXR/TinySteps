@@ -1,6 +1,6 @@
 from .base_service import Guide_Service
 from tinySteps.services.external.nutrition_data_service import NutritionData_Service
-from tinySteps.models import ExternalNutritionData_Model
+from tinySteps.models import ExternalNutritionData_Model, Guides_Model
 
 class NutritionGuide_Service(Guide_Service):
     """Nutrition-specific guide service"""
@@ -130,3 +130,6 @@ class NutritionGuide_Service(Guide_Service):
     def save_user_nutrition_preference(self, user, ingredient):
         """Compatibilidad: Redirige a save_ingredient_for_user"""
         return self.save_ingredient_for_user(ingredient, user)
+    
+    def get_all_guides(self):
+        return Guides_Model.objects.filter(guide_type='nutrition')

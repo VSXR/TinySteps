@@ -1,5 +1,5 @@
 from .base_service import Guide_Service
-from tinySteps.models import ParentsGuides_Model, Category_Model
+from tinySteps.models import ParentsGuides_Model, Category_Model, Guides_Model
 from django.db.models import Count, Q
 from tinySteps.services.guides.category_service import Category_Service
 
@@ -172,3 +172,6 @@ class ParentGuide_Service(Guide_Service):
             return guide.comments.count()
         except (ValueError, TypeError, ParentsGuides_Model.DoesNotExist):
             return 0
+        
+    def get_all_guides(self):
+        return Guides_Model.objects.filter(guide_type='parent')

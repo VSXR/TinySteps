@@ -1,0 +1,2 @@
+# Problematic dependencies
+isodate==0.6.1

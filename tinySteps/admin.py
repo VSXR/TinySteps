@@ -88,7 +88,7 @@ class GuidesAdmin(admin.ModelAdmin):
                 Notification_Model.objects.create(
                     user=guide.author,
                     message=_("Your guide '{0}' was not approved.").format(guide.title),
-                    url=reverse('my_guides')
+                    url=reverse('admin_guides_panel')
                 )
             
             self.message_user(request, ngettext(

@@ -39,63 +39,85 @@
             </div>
         </div>
 
-                <!-- Staff Administration Section (Only visible to staff/admins) -->
+        <!-- Pending Reviews Alert (Only visible to staff) -->
+        {% if user.is_staff %}
+        <div class="row mb-4">
+            <div class="col-12">
+            <div class="card border-0 shadow-sm mb-4 content-lift">
+                <div class="card-header bg-warning text-dark d-flex justify-content-between align-items-center rounded-top-4">
+                <h2 class="h5 mb-0">
+                    <i class="fa-solid fa-clipboard-check me-2" aria-hidden="true"></i>{% trans "Pending Reviews" %}
+                </h2>
+                <span class="badge bg-danger rounded-pill pending-count">{{ pending_guides_count }}</span>
+                </div>
+                <div class="card-body p-3 text-center">
+                <p class="mb-3">{% trans "You have guides waiting for review and approval." %}</p>
+                <a href="{% url 'review_guides' %}" class="btn btn-warning">
+                    <i class="fa-solid fa-eye me-2" aria-hidden="true"></i>{% trans "Review Guides" %}
+                </a>
+                </div>
+            </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Staff Administration Section (Only visible to staff/admins) -->
         {% if user.is_staff or user.is_superuser %}
         <div class="row mb-5">
             <div class="col-12">
             <div class="card border-0 shadow-sm rounded-4 w-100 content-lift">
-                <div class="card-header bg-warning text-dark border-0 py-3 rounded-top-4" id="admin-section-header">
-                <h2 class="h5 mb-0 fw-semibold d-flex align-items-center">
-                    <i class="fa-solid fa-user-shield text-dark me-2" aria-hidden="true"></i>
-                    <span>{% trans "Staff Administration" %}</span>
-                </h2>
+            <div class="card-header bg-warning text-dark border-0 py-3 rounded-top-4" id="admin-section-header">
+            <h2 class="h5 mb-0 fw-semibold d-flex align-items-center">
+                <i class="fa-solid fa-user-shield text-dark me-2" aria-hidden="true"></i>
+                <span>{% trans "Staff Administration" %}</span>
+            </h2>
+            </div>
+            <div class="card-body p-4">
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4 justify-content-center" role="list" aria-labelledby="admin-section-header">
+                <!-- Guide Administration -->
+                <div class="col" role="listitem">
+                <div class="card h-100 border-0 shadow-sm rounded-4 element-elevation">
+                <div class="card-body p-4 text-center d-flex flex-column justify-content-between align-items-center">
+                <div class="mb-3">
+                    <span class="d-inline-block rounded-circle bg-warning bg-opacity-10 p-3">
+                    <i class="fa-solid fa-book-medical fa-2x text-warning" aria-hidden="true"></i>
+                    </span>
                 </div>
-                <div class="card-body p-4">
-                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4 justify-content-center" role="list" aria-labelledby="admin-section-header">
-                    <!-- Guide Administration -->
-                    <div class="col" role="listitem">
-                    <div class="card h-100 border-0 shadow-sm rounded-4 element-elevation">
-                        <div class="card-body p-4 text-center d-flex flex-column justify-content-between align-items-center">
-                        <div class="mb-3">
-                            <span class="d-inline-block rounded-circle bg-warning bg-opacity-10 p-3">
-                            <i class="fa-solid fa-book-medical fa-2x text-warning" aria-hidden="true"></i>
-                            </span>
-                        </div>
-                        <h3 class="h5 mb-3">{% trans "Guide Administration" %}</h3>
-                        <p class="text-muted mb-4">{% trans "Review, approve, or reject guide submissions from users." %}</p>
-                        <a href="{% url 'review_guides' %}" class="btn btn-warning rounded-pill" aria-label="{% trans 'Review submitted guides' %}">
-                            <i class="fa-solid fa-check-double me-2" aria-hidden="true"></i>
-                            {% trans "Review Guides" %}
-                            {% if pending_guides_count > 0 %}
-                            <span class="badge bg-danger ms-1" aria-label="{% trans 'Pending guides' %}">{{ pending_guides_count }}</span>
-                            {% endif %}
-                        </a>
-                        </div>
-                    </div>
-                    </div>
-                    
-                    <!-- Admin Dashboard (Only for superusers) -->
-                    {% if user.is_superuser %}
-                    <div class="col" role="listitem">
-                    <div class="card h-100 border-0 shadow-sm rounded-4 element-elevation">
-                        <div class="card-body p-4 text-center d-flex flex-column justify-content-between align-items-center">
-                        <div class="mb-3">
-                            <span class="d-inline-block rounded-circle bg-danger bg-opacity-10 p-3">
-                            <i class="fa-solid fa-tachometer-alt fa-2x text-danger" aria-hidden="true"></i>
-                            </span>
-                        </div>
-                        <h3 class="h5 mb-3">{% trans "Admin Dashboard" %}</h3>
-                        <p class="text-muted mb-4">{% trans "Access the full administration dashboard to manage the site." %}</p>
-                        <a href="{% url 'admin:index' %}" class="btn btn-danger rounded-pill" aria-label="{% trans 'Access admin panel' %}">
-                            <i class="fa-solid fa-cogs me-2" aria-hidden="true"></i>
-                            {% trans "Admin Panel" %}
-                        </a>
-                        </div>
-                    </div>
-                    </div>
+                <h3 class="h5 mb-3">{% trans "Guide Administration" %}</h3>
+                <p class="text-muted mb-4">{% trans "Review, approve, or reject guide submissions from users." %}</p>
+                <a href="{% url 'review_guides' %}" class="btn btn-warning rounded-pill" aria-label="{% trans 'Review submitted guides' %}">
+                    <i class="fa-solid fa-check-double me-2" aria-hidden="true"></i>
+                    {% trans "Review Guides" %}
+                    {% if pending_guides_count > 0 %}
+                    <span class="badge bg-danger ms-1" aria-label="{% trans 'Pending guides' %}">{{ pending_guides_count }}</span>
                     {% endif %}
+                </a>
                 </div>
                 </div>
+                </div>
+                
+                <!-- Admin Dashboard (Only for superusers) -->
+                {% if user.is_superuser %}
+                <div class="col" role="listitem">
+                <div class="card h-100 border-0 shadow-sm rounded-4 element-elevation">
+                <div class="card-body p-4 text-center d-flex flex-column justify-content-between align-items-center">
+                <div class="mb-3">
+                    <span class="d-inline-block rounded-circle bg-danger bg-opacity-10 p-3">
+                    <i class="fa-solid fa-tachometer-alt fa-2x text-danger" aria-hidden="true"></i>
+                    </span>
+                </div>
+                <h3 class="h5 mb-3">{% trans "Admin Dashboard" %}</h3>
+                <p class="text-muted mb-4">{% trans "Access the full administration dashboard to manage the site." %}</p>
+                <a href="{% url 'admin:index' %}" class="btn btn-danger rounded-pill" aria-label="{% trans 'Access admin panel' %}">
+                    <i class="fa-solid fa-cogs me-2" aria-hidden="true"></i>
+                    {% trans "Admin Panel" %}
+                </a>
+                </div>
+                </div>
+                </div>
+                {% endif %}
+            </div>
+            </div>
             </div>
             </div>
         </div>

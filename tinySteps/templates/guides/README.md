@@ -3,7 +3,7 @@
 ```
 guides/
 ├── index.html                       # Página principal
-├── my_guides.html                   # Página "Mis guías"
+├── admin_guides_panel.html                   # Página "Mis guías"
 ├── submit.html                      # Página para enviar guías
 ├── README.md                        # Documentación
 ├── admin/                           # Panel de administración

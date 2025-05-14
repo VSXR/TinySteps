@@ -29,7 +29,7 @@ urlpatterns = [
     # Guide routes - primary URLs
     path('guides/', guide_views.guides_page, name='guides'),
     path('guides/submit/', submission_views.SubmitGuide_View.as_view(), name='submit_guide'),
-    path('guides/my-guides/', guide_views.my_guides_view, name='my_guides'),
+    path('guides/admin-guides-panel/', guide_views.admin_guides_panel_view, name='admin_guides_panel'),
     
     # Guide type-specific routes
     *GuideUrl_Factory.create_urls('parent'),

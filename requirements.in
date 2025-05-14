@@ -1,0 +1,27 @@
+# Django Core
+Django>=4.2,<5.2
+djangorestframework
+
+# Django Extensions
+crispy-bootstrap4
+dj-database-url
+django-crispy-forms
+django-debug-toolbar
+django-rosetta
+
+# Database
+psycopg2-binary
+
+# Utilities
+Pillow
+python-dotenv
+python-gettext
+requests
+
+# Development & Testing
+pipdeptree
+pytest-django
+
+# Deployment
+gunicorn
+whitenoise

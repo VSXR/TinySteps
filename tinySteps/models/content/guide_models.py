@@ -7,6 +7,8 @@ from django.utils.translation import gettext as _
 from django.utils.text import slugify
 from django.templatetags.static import static
 
+from django.db import models
+
 from tinySteps.models.base.mixins import CommentableMixin
 from tinySteps.models.content.category_models import Category_Model
 from tinySteps.models.external.article_models import ExternalArticle_Model
@@ -118,6 +120,11 @@ class Guides_Model(Guide_Interface, CommentableMixin):
     
     # Rejection data
     rejection_reason = models.TextField(_("Rejection Reason"), max_length=500, null=True, blank=True)
+
+    # Properties
+    @property
+    def is_approved(self):
+        return self.status == 'approved'
 
     # Methods
     def __str__(self):
