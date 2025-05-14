@@ -47,11 +47,3 @@
     </div>
     {% endif %}
 {% endblock %}
-
-{% block after_parent_guides %}
-{% if guides.has_other_pages %}
-<div class="card-footer bg-white py-3">
-    {% include "guides/components/pagination.html" with page_obj=guides %}
-</div>
-{% endif %}
-{% endblock %}

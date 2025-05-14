@@ -104,13 +104,8 @@ def guide_list_view(request, guide_type):
             if not all_guides:
                 all_guides = []
                 
-            # Apply pagination
-            paginator = Paginator(all_guides, 9)  # 9 guides per page
-            page = request.GET.get('page', 1)
-            try:
-                guides = paginator.page(page)
-            except (PageNotAnInteger, EmptyPage):
-                guides = paginator.page(1)
+            # ELIMINAR PAGINACIÓN - Usar all_guides directamente
+            guides = all_guides
                 
             # Build context
             context = {
@@ -125,7 +120,7 @@ def guide_list_view(request, guide_type):
                 'current_sort': sort_by
             }
             
-            # Add query parameters for pagination links
+            # Add query parameters for pagination links - Mantener por compatibilidad
             query_params = ''
             for key, value in request.GET.items():
                 if key != 'page':
@@ -148,6 +143,7 @@ def guide_list_view(request, guide_type):
     except ValueError as e:
         messages.error(request, str(e))
         return redirect('guides')
+           
 
 def guide_detail_view(request, pk, guide_type=None):
     """View for displaying a specific guide's details"""
