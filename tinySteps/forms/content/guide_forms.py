@@ -86,10 +86,14 @@ class GuideSubmission_Form(forms.ModelForm, FormControlMixin, TextareaMixin, Fil
         return title
     
     def clean_desc(self):
-        desc = self.cleaned_data.get('desc', '')
-        if len(desc) < 300:
-            raise forms.ValidationError(_('Content must be at least 300 characters long.'))
-        return desc
+        content = self.cleaned_data.get('desc')
+        if content:
+            if len(content) < 300:
+                raise forms.ValidationError(_("Content must be at least 300 characters long."))
+            if len(content) > 2000:
+                raise forms.ValidationError(_("Content must be at most 2000 characters long."))
+        return content
+    
 
 class GuideRejection_Form(forms.Form, FormControlMixin, TextareaMixin):
     """Form for rejecting a guide submission"""

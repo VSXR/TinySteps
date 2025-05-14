@@ -1,6 +1,7 @@
 import time
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.fields import GenericRelation
+from django.core.validators import MinLengthValidator
 from django.db import models
 from django.urls import reverse
 from django.utils.translation import gettext as _
@@ -75,14 +76,14 @@ class Guides_Model(Guide_Interface, CommentableMixin):
     }
     
     # Basic fields
-    title = models.CharField(_("Title"), max_length=100)
+    title = models.CharField(max_length=100, validators=[MinLengthValidator(5)])
+    desc = models.TextField(max_length=2000, validators=[MinLengthValidator(300)])
     slug = models.SlugField(
         _("Slug"),
         unique=True,
         blank=True,
         help_text=_("SEO-friendly URL; auto-generated if empty.")
     )
-    desc = models.TextField(_("Description"), max_length=2000)
     summary = models.CharField(_("Summary"), max_length=200, blank=True, null=True)
     image = models.ImageField(
         _("Image"),

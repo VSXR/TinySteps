@@ -61,7 +61,7 @@
                         <!-- Title -->
                         <div class="mb-3">
                             <label for="id_title" class="form-label">{% trans "Title" %} <span class="text-danger">*</span></label>
-                            <input type="text" name="title" id="id_title" maxlength="100" class="form-control rounded-3" required>
+                            <input type="text" name="title" id="id_title" minlength="5" maxlength="100" class="form-control rounded-3" required>
                             <div class="form-text">{% trans "Choose a descriptive title for your guide (5-100 characters)" %}</div>
                         </div>
                         
@@ -108,17 +108,18 @@
                             </div>
                             
                             <div id="selectedTags" class="mb-2">
-                                <!-- Selected tags will be displayed here -->
+                                <!-- Selected tags will be displayed here!!! -->
                             </div>
                             
                             <div class="form-text">{% trans "Select relevant tags to help other users find your guide" %}</div>
                         </div>
                         
-                        <!-- Content -->
+                        <!-- Content Section -->
                         <div class="mb-3">
                             <label for="id_desc" class="form-label">{% trans "Content" %} <span class="text-danger">*</span></label>
-                            <textarea name="desc" id="id_desc" rows="10" class="form-control rich-text-editor" required></textarea>
-                            <div class="form-text">{% trans "The main content of your guide (minimum 300 characters)" %}</div>
+                            <textarea name="desc" id="id_desc" rows="10" class="form-control rich-text-editor" minlength="300" maxlength="2000" required></textarea>
+                            <div class="form-text">{% trans "The main content of your guide (300-2000 characters)" %}</div>
+                            <div class="character-counter small text-muted mt-1">0 / 300-2000 characters</div>
                         </div>
                         
                         <!-- Featured Image -->
