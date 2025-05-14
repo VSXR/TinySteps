@@ -8,7 +8,7 @@ from django.views import View
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.files.base import ContentFile
 from django.core.files.storage import default_storage
-from django.middleware.csrf import get_token  # Add this import
+from django.middleware.csrf import get_token
 
 from tinySteps.forms import GuideSubmission_Form
 from tinySteps.factories import GuideService_Factory
@@ -65,6 +65,8 @@ class SubmitGuide_View(LoginRequiredMixin, View):
             
             try:
                 service = GuideService_Factory.create_service(guide_type)
+                
+                # If no image was provided, use default
                 if not form.cleaned_data.get('image'):
                     try:
                         self._apply_default_image(form, guide_type, request)
@@ -72,23 +74,22 @@ class SubmitGuide_View(LoginRequiredMixin, View):
                         logger.error(f"Error applying default image: {str(e)}")
                         messages.warning(request, _("There was an issue with the default image. Your guide will be submitted without an image."))
                 
-                created_guide = service.create_guide_from_form(form, request.user)
+                # Create guide with 'pending' status
+                guide_instance = form.save(commit=False)
+                guide_instance.author = request.user
+                guide_instance.guide_type = guide_type
+                guide_instance.status = 'pending'  # Ensure status is pending
+                guide_instance.save()
                 
-                # Add debug logging
-                logger.info(f"Guide created: ID={created_guide.id}, Title='{created_guide.title}', Type='{guide_type}', Status='{created_guide.status}'")
-                
+                # Handle tags
                 tags = form.cleaned_data.get('tags', '')
-                if tags and hasattr(created_guide, 'tags'):
-                    created_guide.tags = tags.strip()
-                    created_guide.save()
+                if tags and hasattr(guide_instance, 'tags'):
+                    guide_instance.set_tags(tags)
                 
                 messages.success(request, 
-                    _("Your guide has been submitted for review. Thank you for contributing!"))
+                    _("Your guide has been submitted for review. You'll be notified when it's approved."))
                 
-                if created_guide.status == 'approved':
-                    return redirect(f'{guide_type}_guide_details', created_guide.id)
-                else:
-                    return redirect('admin_guides_panel')
+                return redirect('admin_guides_panel')
             except Exception as e:
                 logger.error(f"Error creating guide: {str(e)}")
                 messages.error(request, _("There was an error submitting your guide."))

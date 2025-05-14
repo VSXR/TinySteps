@@ -3,14 +3,21 @@ from django.shortcuts import get_object_or_404
 from django.utils.text import slugify
 import time
 from tinySteps.repositories import Guide_Repository
-from tinySteps.models import Guides_Model, ExternalArticle_Model, Comment_Model, Guides_Model
+from tinySteps.models import Guides_Model, ExternalArticle_Model, Comment_Model
+from tinySteps.registry import GuideType_Registry
 
 class Guide_Service:
     """Base service class for guide operations"""
     
     def __init__(self, guide_type):
         self.guide_type = guide_type
-        self.repository = Guide_Repository()
+        model_class = GuideType_Registry.get_model_class(guide_type)
+        
+        # Fallback to default Guides_Model if not found in registry
+        if not model_class:
+            model_class = Guides_Model
+            
+        self.repository = Guide_Repository(model_class)
     
     # Core guide operations
     def get_guide_listing(self, limit=None, exclude_id=None):

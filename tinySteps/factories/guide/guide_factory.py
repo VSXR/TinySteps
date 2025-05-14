@@ -1,6 +1,7 @@
 from django.urls import path
 
 class GuideService_Factory:
+    """Factory for guide-related services"""
     @staticmethod
     def create_service(guide_type):
         """Create a guide service instance for the given type"""
@@ -11,59 +12,44 @@ class GuideService_Factory:
         
         return service_class()
 
-
 class GuideUrl_Factory:
-    """Factory class for creating guide-related URL patterns"""
-    
     @staticmethod
-    def create_urls(guide_type):
-        """Create URL patterns for a guide section"""
-        from tinySteps.views.guides import (
-            guide_views, article_views, submission_views
-        )
+    def create_urls(guide_type=None):
+        """Crea patrones de URL para guías, opcionalmente por tipo"""
+        from tinySteps.views.guides import guide_views, article_views, submission_views
         
-        url_patterns = [
-            # Guide list view
-            path(f'guides/{guide_type}/', 
-                guide_views.guide_list_view, 
-                {'guide_type': guide_type}, 
-                name=f'{guide_type}_guides'),
+        if guide_type:
+            # URLs específicas por tipo de guía
+            url_patterns = [
+                # Vista de lista de guías
+                path(f'guides/{guide_type}/', 
+                    guide_views.guide_list_view, 
+                    {'guide_type': guide_type}, 
+                    name=f'{guide_type}_guides'),
+                
+                # Vista de detalle de guía
+                path(f'guides/{guide_type}/<int:pk>/', 
+                    guide_views.guide_detail_view, 
+                    {'guide_type': guide_type}, 
+                    name=f'{guide_type}_guide_details'),
+                
+                # Enviar guía por tipo
+                path(f'guides/{guide_type}/submit/', 
+                    submission_views.SubmitGuide_View.as_view(), 
+                    {'guide_type': guide_type}, 
+                    name=f'submit_{guide_type}_guide'),
+            ]
             
-            # Guide detail view
-            path(f'guides/{guide_type}/<int:pk>/', 
-                guide_views.guide_detail_view, 
-                {'guide_type': guide_type}, 
-                name=f'{guide_type}_guide_details'),
-            
-            path(f'guides/{guide_type}/submit/', 
-                submission_views.SubmitGuide_View.as_view(), 
-                {'guide_type': guide_type}, 
-                name=f'submit_{guide_type}_guide'),
-        ]
-        
-        if hasattr(article_views, f'{guide_type}_article_list'):
-            url_patterns.append(
-                path(f'guides/{guide_type}/articles/', 
-                    getattr(article_views, f'{guide_type}_article_list'), 
-                    name=f'{guide_type}_articles')
-            )
-            
-            url_patterns.append(
-                path(f'guides/{guide_type}/articles/<int:pk>/', 
-                    getattr(article_views, f'{guide_type}_article_detail'), 
-                    name=f'{guide_type}_article_details')
-            )
+            return url_patterns
         else:
-            url_patterns.extend([
-                path(f'guides/{guide_type}/articles/', 
-                    article_views.article_list_view, 
-                    {'guide_type': guide_type}, 
-                    name=f'{guide_type}_articles'),
-                    
-                path(f'guides/{guide_type}/articles/<int:pk>/', 
-                    article_views.article_detail_view, 
-                    {'guide_type': guide_type}, 
-                    name=f'{guide_type}_article_details'),
-            ])
-        
-        return url_patterns
+            # URLs comunes para todas las guías
+            return [
+                # Página principal de guías
+                path('guides/', guide_views.guides_page, name='guides'),
+                
+                # Formulario para enviar guía
+                path('guides/submit/', submission_views.SubmitGuide_View.as_view(), name='submit_guide'),
+                
+                # Panel de administración de guías (si no se mueve a admin_factory)
+                path('guides/admin-guides-panel/', guide_views.admin_guides_panel_view, name='admin_guides_panel'),
+            ]

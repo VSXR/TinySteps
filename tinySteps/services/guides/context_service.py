@@ -2,7 +2,7 @@ from django.utils.translation import gettext as _
 from django.core.exceptions import ObjectDoesNotExist
 
 from tinySteps.repositories import Guide_Repository, Article_Repository
-from tinySteps.models import YourChild_Model
+from tinySteps.models import YourChild_Model, Guides_Model
 from tinySteps.factories import GuideService_Factory
 from tinySteps.utils.helpers.age_helper import calculate_age_in_months
 
@@ -11,7 +11,7 @@ class GuideContext_Service:
     
     def __init__(self):
         """Initialize repositories"""
-        self.guide_repository = Guide_Repository()
+        self.guide_repository = Guide_Repository(Guides_Model)
         self.article_repository = Article_Repository()
     
     def get_guides_page_context(self, request=None):

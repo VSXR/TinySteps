@@ -12,7 +12,7 @@ from .comment.comment_factory import CommentUrl_Factory, CommentService_Factory
 # Forum Factories
 from .forum.forum_factory import ForumUrl_Factory, ForumService_Factory
 
-# Admin Factories
+# Admin Factories (includes dashboard and guide management)
 from .admin.admin_factory import AdminUrl_Factory
 
 # Contact Factories
