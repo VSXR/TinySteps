@@ -179,7 +179,7 @@ def admin_guides_panel_view(request):
             }
         }
         
-        return render(request, 'guides/admin_guides_panel.html', context)
+        return render(request, 'guides/admin/admin_guides_panel.html', context)
     except ValueError as e:
         messages.error(request, str(e))
         return redirect('guides')

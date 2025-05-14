@@ -23,26 +23,30 @@ class AdminUrl_Factory:
     @staticmethod
     def _create_guide_management_urls():
         """Create URLs for guide management"""
-        from tinySteps.views.admin import admin_views, moderation_views
+        from tinySteps.views.admin import admin_views
         
         return [
             path('guides/admin-guides-panel/', 
                  admin_views.admin_guides_panel_view, 
                  name='admin_guides_panel'),
             
+            # LIST OF GUIDES
             path('guides/review/', 
-                 moderation_views.review_guides, 
+                 admin_views.review_guides, 
                  name='review_guides'),
             
+            # INDIVIDUAL GUIDE
             path('guides/review/<int:guide_id>/', 
-                 admin_views.review_guides, 
+                 admin_views.review_guide, 
                  name='review_guide'),
             
+            # GUIDE APPROVAL
             path('guides/<int:guide_id>/approve/', 
-                 moderation_views.approve_guide, 
+                 admin_views.approve_guide, 
                  name='approve_guide'),
                  
+            # GUIDE REJECTION
             path('guides/<int:guide_id>/reject/', 
-                 moderation_views.reject_guide, 
+                 admin_views.reject_guide, 
                  name='reject_guide'),
         ]

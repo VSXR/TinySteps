@@ -20,6 +20,24 @@ def review_guides(request):
     return admin_guides_panel_view(request)
 
 @staff_member_required
+def review_guide(request, guide_id):
+    """View a specific guide for review"""
+    guide = get_object_or_404(Guides_Model, pk=guide_id)
+    
+    related_guides = []
+    try:
+        service = AdminGuide_Service()
+        related_guides = service.get_related_guides(guide_id)
+    except Exception as e:
+        logger.warning(f"Error retrieving related guides: {e}")
+    
+    return render(request, 'guides/admin/review_guide.html', {
+        'guide': guide,
+        'related_guides': related_guides,
+        'title': _("Review Guide"),
+    })
+
+@staff_member_required
 def approve_guide(request, guide_id):
     """Approve a guide by ID"""
     next_url = request.GET.get('next', 'review_guides')
