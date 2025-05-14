@@ -15,9 +15,10 @@ load_dotenv()
 # ---------------------------------------------------------------
 # ENVIRONMENT CONFIGURATION
 # ---------------------------------------------------------------
-# Use DJANGO_ENV to switch between 'development' and 'production'
-ENV = os.environ.get('DJANGO_ENV', 'development')  # default to development
-DEBUG = ENV == 'development'
+ENV = os.environ.get('DJANGO_ENV', 'development')  # Change to 'production' for production
+if ENV not in ['development', 'production']:
+    raise ValueError("DJANGO_ENV must be either 'development' or 'production'")
+DEBUG = ENV == 'development' # This makes DEBUG=True by default. When set to 'production', DEBUG will be False!
 
 # ---------------------------------------------------------------
 # CORE SETTINGS
