@@ -151,6 +151,14 @@
                             <span>{{ guide.approved_at|date:"d M Y" }}</span>
                         </li>
                         {% endif %}
+                        {% if guide.status == 'rejected' and guide.rejection_reason %}
+                        <li class="list-group-item">
+                            <p class="mb-1 fw-bold">{% trans "Rejection Reason" %}:</p>
+                            <div class="alert alert-light mb-0 mt-2">
+                                {{ guide.rejection_reason }}
+                            </div>
+                        </li>
+                        {% endif %}
                     </ul>
                 </div>
             </div>
