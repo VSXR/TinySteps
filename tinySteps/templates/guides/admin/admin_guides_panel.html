@@ -6,8 +6,9 @@
 
 {% block main_contents %}
 <div class="container-fluid py-4">
-    <h1 class="h3 mb-4">{% trans "Guides Administration Panel" %}</h1>
-    <p class="mb-4">{% trans "Manage all submitted, pending, approved, and rejected guides." %}</p>
+    <!-- Page Header Component -->
+    {% include "guides/components/page_header.html" with title=_("Guides Administration Panel") subtitle=_("Manage all submitted, pending, approved, and rejected guides.") %}
+
 
     <!-- Status Cards -->
     <div class="row mb-4">
@@ -88,49 +89,35 @@
     <div class="card mb-4">
         <div class="card-header d-flex justify-content-between align-items-center">
             <h6 class="m-0 font-weight-bold text-primary">
-                {% if status == 'pending' %}
-                <i class="fas fa-clock text-warning me-2"></i>{% trans "Pending Guides" %}
-                {% elif status == 'approved' %}
-                <i class="fas fa-check text-success me-2"></i>{% trans "Approved Guides" %}
-                {% elif status == 'rejected' %}
-                <i class="fas fa-xmark text-danger me-2"></i>{% trans "Rejected Guides" %}
-                {% else %}
-                <i class="fas fa-list me-2"></i>{% trans "All Guides" %}
-                {% endif %}
+            {% if status == 'pending' %}
+            <i class="fas fa-clock text-warning me-2"></i>{% trans "Pending Guides" %}
+            {% elif status == 'approved' %}
+            <i class="fas fa-check text-success me-2"></i>{% trans "Approved Guides" %}
+            {% elif status == 'rejected' %}
+            <i class="fas fa-xmark text-danger me-2"></i>{% trans "Rejected Guides" %}
+            {% else %}
+            <i class="fas fa-list me-2"></i>{% trans "All Guides" %}
+            {% endif %}
             </h6>
-            
+
+            <!-- Guide Type Filter -->
+            <div class="text-primary">
             <div class="btn-group" role="group">
-                <a href="?status=all" class="btn btn-sm {% if status == 'all' %}btn-primary{% else %}btn-outline-primary{% endif %}">
-                    {% trans "All" %}
+                <a href="?status={{ status }}&type=all" class="btn btn-sm {% if not guide_type %}btn-primary{% else %}btn-outline-primary{% endif %}">
+                {% trans "All Types" %}
                 </a>
-                <a href="?status=pending" class="btn btn-sm {% if status == 'pending' %}btn-primary{% else %}btn-outline-primary{% endif %}">
-                    {% trans "Pending" %}
+                <a href="?status={{ status }}&type=parent" class="btn btn-sm {% if guide_type == 'parent' %}btn-primary{% else %}btn-outline-primary{% endif %}">
+                {% trans "Parental" %}
                 </a>
-                <a href="?status=approved" class="btn btn-sm {% if status == 'approved' %}btn-primary{% else %}btn-outline-primary{% endif %}">
-                    {% trans "Approved" %}
+                <a href="?status={{ status }}&type=nutrition" class="btn btn-sm {% if guide_type == 'nutrition' %}btn-primary{% else %}btn-outline-primary{% endif %}">
+                {% trans "Nutritional" %}
                 </a>
-                <a href="?status=rejected" class="btn btn-sm {% if status == 'rejected' %}btn-primary{% else %}btn-outline-primary{% endif %}">
-                    {% trans "Rejected" %}
-                </a>
+            </div>
             </div>
         </div>
-        <div class="card-body">
-            <!-- Guide Type Filter -->
-            <div class="mb-3">
-                <div class="btn-group" role="group">
-                    <a href="?status={{ status }}&type=all" class="btn btn-sm {% if not guide_type %}btn-info{% else %}btn-outline-info{% endif %}">
-                        {% trans "All Types" %}
-                    </a>
-                    <a href="?status={{ status }}&type=parent" class="btn btn-sm {% if guide_type == 'parent' %}btn-info{% else %}btn-outline-info{% endif %}">
-                        {% trans "Parental" %}
-                    </a>
-                    <a href="?status={{ status }}&type=nutrition" class="btn btn-sm {% if guide_type == 'nutrition' %}btn-info{% else %}btn-outline-info{% endif %}">
-                        {% trans "Nutritional" %}
-                    </a>
-                </div>
-            </div>
 
-            <!-- Guides Table -->
+        <!-- Guides Table -->
+        <div class="card-body">
             {% if guides %}
                 <div class="table-responsive">
                     <table class="table table-bordered table-striped">
