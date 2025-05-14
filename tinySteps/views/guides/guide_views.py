@@ -1,6 +1,7 @@
 from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.utils.translation import gettext as _
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from tinySteps.utils.helpers.guides_helper import Guide_ViewHelper
 from tinySteps.factories import GuideService_Factory
@@ -14,15 +15,17 @@ def guides_page(request):
     parent_service = GuideService_Factory.create_service('parent')
     nutrition_service = GuideService_Factory.create_service('nutrition')
     
-    all_parent_guides = parent_service.get_recent_guides(limit=3)
-    all_nutrition_guides = nutrition_service.get_recent_guides(limit=3)
+    # Change 'limit' to 'count' in all these calls
+    all_parent_guides = parent_service.get_recent_guides(count=3)
+    all_nutrition_guides = nutrition_service.get_recent_guides(count=3)
     
-    recent_parent_guides = parent_service.get_recent_guides(limit=4)
-    recent_nutrition_guides = nutrition_service.get_recent_guides(limit=4)
+    recent_parent_guides = parent_service.get_recent_guides(count=4)
+    recent_nutrition_guides = nutrition_service.get_recent_guides(count=4)
     
-    popular_parent_guides = parent_service.get_recent_guides(limit=4)
-    popular_nutrition_guides = nutrition_service.get_recent_guides(limit=4)
+    popular_parent_guides = parent_service.get_recent_guides(count=4)
+    popular_nutrition_guides = nutrition_service.get_recent_guides(count=4)
     
+    # Rest of the function remains the same
     is_staff = request.user.is_staff
     pending_guides_count = 0
     if is_staff:
@@ -34,7 +37,7 @@ def guides_page(request):
         'title': _('Guides'),
         'is_staff': is_staff,
         'pending_guides_count': pending_guides_count,
-        'all_parent_guides': all_parent_guides,  # Use the correct variable names to match the template
+        'all_parent_guides': all_parent_guides,
         'all_nutrition_guides': all_nutrition_guides,
         'recent_parent_guides': recent_parent_guides,
         'recent_nutrition_guides': recent_nutrition_guides,
@@ -45,27 +48,55 @@ def guides_page(request):
     return render(request, 'guides/index.html', context)
 
 def guide_list_view(request, guide_type):
-    """View for listing guides of a specific type"""
+    """View for displaying all guides of a specific type with pagination"""
     try:
         service = GuideService_Factory.create_service(guide_type)
         if not service:
             raise ValueError(_("Invalid guide type."))
         
         template = view_helper.get_template(guide_type, 'list')
-        guides = service.get_recent_guides(10)
         
+        # Get all guides without limit by passing None
+        all_guides = service.get_recent_guides(count=None)
+        
+        # Add pagination - 9 guides per page
+        page = request.GET.get('page', 1)
+        paginator = Paginator(all_guides, 9)  
+        
+        try:
+            guides = paginator.page(page)
+        except PageNotAnInteger:
+            guides = paginator.page(1)
+        except EmptyPage:
+            guides = paginator.page(paginator.num_pages)
+        
+        # Build context with necessary data
         context = {
             'guides': guides,
+            'page_obj': guides,  # For pagination template
             'guide_type': guide_type,
             'view_type': 'list',
             'submit_guide_url': '/guides/submit/',
             'section_type': guide_type
         }
         
+        # Build query string for pagination links
+        query_params = ''
+        for key, value in request.GET.items():
+            if key != 'page':
+                query_params += f'&{key}={value}'
+        
+        if query_params:
+            context['query_params'] = query_params
+        
         context = view_helper.enhance_context(context, guide_type, request)
         return render(request, template, context)
+        
     except ValueError as e:
         messages.error(request, str(e))
+        return redirect('guides')
+    except Exception as e:
+        messages.error(request, _("An error occurred while loading guides"))
         return redirect('guides')
     
 def guide_detail_view(request, pk, guide_type=None):

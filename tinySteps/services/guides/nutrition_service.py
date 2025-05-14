@@ -105,13 +105,18 @@ class NutritionGuide_Service(Guide_Service):
         
         return query[:limit]
     
-    def get_recent_guides(self, limit=3):
-        """Get recent nutrition guides"""
-        return self.repository.get_guides_by_type(
-            self.guide_type,
-            status='approved',
-            count=limit
-        )
+    def get_recent_guides(self, count=None):
+        """Get nutrition guides with optional count limit"""
+        query = Guides_Model.objects.filter(
+            guide_type='nutrition',
+            status='approved'
+        ).select_related('author').order_by('-created_at')
+        
+        # Only limit results if count is provided
+        if count is not None:
+            query = query[:count]
+            
+        return query
         
     # Métodos de compatibilidad para evitar errores - devuelven valores por defecto
     def get_recent_nutrition_searches(self, limit=5, user=None):

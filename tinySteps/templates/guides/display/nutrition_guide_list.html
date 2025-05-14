@@ -11,9 +11,6 @@
     <select class="form-select" id="category" name="category">
         <option value="">{% trans "All Categories" %}</option>
         {% for category in categories %}
-            <option value="{{ category.id }}" {% if request.GET.category == category.id|stringformat:"s" %}selected{% endif %}>
-                {{ category.name }}
-            </option>
         {% endfor %}
     </select>
 </div>
@@ -29,3 +26,13 @@
 </div>
 {% endblock %}
 
+<!-- Debugging info - remove after fixing -->
+<div class="alert alert-info">
+    <p>Total guides: {{ guides.paginator.count }}</p>
+    <p>Current page: {{ page_obj.number }}</p>
+    <p>Total pages: {{ page_obj.paginator.num_pages }}</p>
+</div>
+
+{% block after_guides %}
+    {% include "guides/components/pagination.html" %}
+{% endblock %}

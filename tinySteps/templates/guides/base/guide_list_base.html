@@ -62,8 +62,8 @@
                     </section>
                 {% endif %}
                 
-                <!-- All Available Guides Section -->
-                <section>
+                <!-- Guide listing section -->
+                <section class="mb-4">
                     <div class="row justify-content-center">
                         <div class="col-10 col-md-10 col-lg-10 col-xl-9 col-xxl-8 mx-auto">
                             <!-- Parent Guides -->
@@ -89,6 +89,10 @@
                                         {% endfor %}
                                     </div>
                                 </div>
+                                
+                                {% block after_parent_guides %}
+                                    <!-- This will be overridden by child templates -->
+                                {% endblock %}
                             </div>
                             
                             <!-- Nutrition Guides -->
@@ -114,9 +118,17 @@
                                         {% endfor %}
                                     </div>
                                 </div>
+                                
+                                {% block after_nutrition_guides %}
+                                    <!-- This will be overridden by child templates -->
+                                {% endblock %}
                             </div>
                         </div>
                     </div>
+                    
+                    {% block after_guides %}
+                        <!-- This will be overridden by child templates for general pagination -->
+                    {% endblock %}
                 </section>
             </div>
         </div>
