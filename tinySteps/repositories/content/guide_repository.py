@@ -16,41 +16,19 @@ class Guide_Repository(GenericRepository):
             return None
     
     def get_guide_details(self, guide_id, guide_type=None):
-        """
-        Get detailed guide information by ID and optional guide type
-        
-        Args:
-            guide_id (int): The ID of the guide to retrieve
-            guide_type (str, optional): The type of guide ('parent' or 'nutrition')
-            
-        Returns:
-            Guide model instance or None if not found
-        """
+        """Get detailed guide information by ID and optional guide type"""
         query = Q(id=guide_id)
         
         if guide_type:
             query &= Q(guide_type=guide_type)
             
         try:
-            # Get the guide with select_related to reduce database queries
-            return self.model_class.objects.select_related('author').get(query)
+            return self.model_class.objects.get(query)
         except self.model_class.DoesNotExist:
             return None
     
     def get_guides_by_type(self, guide_type, status=None, count=None, page=None, exclude_id=None):
-        """
-        Get guides filtered by type and optionally by status
-        
-        Args:
-            guide_type (str): Type of guide ('parent' or 'nutrition')
-            status (str, optional): Status filter ('approved', 'pending', 'rejected')
-            count (int, optional): Number of results to return
-            page (int, optional): Page number for pagination
-            exclude_id (int, optional): ID of guide to exclude from results
-                
-        Returns:
-            QuerySet: Filtered guides
-        """
+        """Get guides filtered by type and optionally by status"""
         query = self.model_class.objects.filter(guide_type=guide_type)
         
         if status:
@@ -62,13 +40,9 @@ class Guide_Repository(GenericRepository):
         query = query.order_by('-created_at')
         
         if count and not page:
-            query = query[:count]
+            return query[:count]
         
-        # Implementación para paginación (si se usa en el futuro)
-        # if page:
-        #     paginator = Paginator(query, per_page=count or 10)
-        #     return paginator.get_page(page)
-                
+        # Return all results if no pagination
         return query
     
     def get_guide_by_id(self, guide_id):
@@ -127,11 +101,11 @@ class Guide_Repository(GenericRepository):
     
     def get_all(self):
         """Get all guides"""
-        return self.model_class.objects.all()
+        return self.model_class.objects.all().order_by('-created_at')
     
     def get_by_status(self, status):
         """Get guides by status"""
-        return self.model_class.objects.filter(status=status)
+        return self.model_class.objects.filter(status=status).order_by('-created_at')
     
     def get_by_author(self, author):
         """Get guides by author"""

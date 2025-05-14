@@ -107,7 +107,6 @@ def guide_detail_view(request, pk, guide_type=None):
         messages.error(request, str(e))
         return redirect('guides')
 
-    
 def admin_guides_panel_view(request):
     """Unified admin panel showing guides by type and review status"""
     try:

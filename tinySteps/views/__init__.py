@@ -35,7 +35,10 @@ from .nutrition.comparison_views import nutrition_comparison_view
 from .comments.comment_views import add_comment, delete_comment, list_comments
 
 # Admin Views
-from .admin.admin_views import review_guides, approve_guide, reject_guide, admin_dashboard
+from .admin.admin_views import review_guides, approve_guide, reject_guide, review_guide, admin_dashboard, admin_guides_panel_view
+
+# Admin Moderation Views
+from .admin.moderation_views import review_guides, review_guide, approve_guide, reject_guide
 
 # Contact Views
 from .contact.contact_views import Contact_View
@@ -58,7 +61,6 @@ __all__ = [
     'YourChild_UpdateDetails_View', 'child_milestone', 'child_calendar', 'child_vaccine_card',
     'YourChild_Calendar_View', 'YourChild_VaccineCard_View', 'get_child_statistics', 'growth_status_view',
 
-    
     # Forum views
     'parents_forum_page', 'search_posts', 'view_post', 'add_post',
     'edit_post', 'delete_post', 'add_post_comment', 'forum_post_like_toggle',
@@ -74,7 +76,11 @@ __all__ = [
     'add_comment', 'delete_comment', 'list_comments',
 
     # Admin views
-    'review_guides', 'approve_guide', 'reject_guide', 'admin_dashboard',
+    'admin_dashboard', 'admin_guides_panel_view', 'review_guide',
+    'approve_guide', 'reject_guide',
+
+    # Admin moderation views
+    'review_guides', 'review_guide', 'approve_guide', 'reject_guide',
     
     # Error views
     'custom_error_400', 'custom_error_403', 'custom_error_404',

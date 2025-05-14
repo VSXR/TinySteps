@@ -6,49 +6,44 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.utils.translation import gettext as _
 
 from tinySteps.models import Guides_Model
-from tinySteps.forms import GuideRejection_Form
 from tinySteps.services.core.admin_service import AdminGuide_Service
 from tinySteps.views.guides.guide_views import admin_guides_panel_view
+from tinySteps.views.admin.moderation_views import review_guides as moderation_review_guides
+from tinySteps.views.admin.moderation_views import approve_guide as moderation_approve_guide
+from tinySteps.views.admin.moderation_views import reject_guide as moderation_reject_guide
 
 logger = logging.getLogger(__name__)
 
 @staff_member_required
 def review_guides(request):
-    """Render the review page using the proper context from admin_guides_panel_view."""
+    """Render the review page using the moderation service."""
     if not request.user.is_authenticated:
         return redirect('login')
-    return admin_guides_panel_view(request)
+
+    return moderation_review_guides(request)
 
 @staff_member_required
 def review_guide(request, guide_id):
-    """View a specific guide for review"""
-    guide = get_object_or_404(Guides_Model, pk=guide_id)
-    
-    related_guides = []
+    """View a specific guide for review - delegates to moderation service"""
     try:
-        service = AdminGuide_Service()
-        related_guides = service.get_related_guides(guide_id)
+        from tinySteps.views.admin.moderation_views import review_guide
+        return review_guide(request, guide_id)
     except Exception as e:
-        logger.warning(f"Error retrieving related guides: {e}")
-    
-    return render(request, 'guides/admin/review_guide.html', {
-        'guide': guide,
-        'related_guides': related_guides,
-        'title': _("Review Guide"),
-    })
+        logger.error(f"Error in admin review_guide: {str(e)}")
+        messages.error(request, _("An error occurred while reviewing the guide"))
+        return redirect('review_guides')
 
 @staff_member_required
 def approve_guide(request, guide_id):
-    """Approve a guide by ID"""
+    """Approve a guide by ID - delegates to moderation service"""
     next_url = request.GET.get('next', 'review_guides')
     
     try:
-        service = AdminGuide_Service()
-        guide = service.approve_guide(guide_id)
+        response = moderation_approve_guide(request, guide_id)
         
-        messages.success(request, _(f"The guide '{guide.title}' has been approved and published!"))
-        
+        # Handle redirection based on the 'next' parameter
         if next_url == 'detail':
+            guide = get_object_or_404(Guides_Model, pk=guide_id)
             if guide.guide_type == 'nutrition':
                 return redirect('nutrition_guide_details', guide.id)
             else:
@@ -57,44 +52,30 @@ def approve_guide(request, guide_id):
         if next_url == 'admin_guides_panel':
             return redirect('admin_guides_panel')
             
-        return redirect('review_guides')
-    except ValueError as e:
-        messages.error(request, str(e))
-        return redirect('review_guides')
+        return response
     except Exception as e:
-        logger.error(f"Error approving guide: {str(e)}")
+        logger.error(f"Error in admin approve_guide: {str(e)}")
         messages.error(request, _("An error occurred while approving the guide"))
         return redirect('review_guides')
 
 @staff_member_required
 def reject_guide(request, guide_id):
-    """Reject a guide submission with reason"""
+    """Reject a guide submission with reason - delegates to moderation service"""
     guide = get_object_or_404(Guides_Model, pk=guide_id)
     next_page = request.POST.get('next', request.GET.get('next', 'admin_guides_panel'))
     
-    if request.method == 'POST':
-        rejection_reason = request.POST.get('rejection_reason', '')
-        
-        if not rejection_reason:
-            messages.error(request, _("Please provide a reason for rejecting this guide."))
-            return render(request, 'guides/admin/reject_guide.html', {'guide': guide})
-            
-        try:
-            service = AdminGuide_Service()
-            service.reject_guide(guide_id, rejection_reason)
-            
-            messages.success(request, _("The guide has been rejected and the author has been notified."))
-            
-            if next_page == 'admin_guides_panel':
-                return redirect('admin_guides_panel')
-            return redirect('review_guides')
-        except Exception as e:
-            logger.error(f"Error rejecting guide: {str(e)}")
-            messages.error(request, _("An error occurred while rejecting the guide"))
-            return redirect('review_guides')
+    # For GET requests, show the rejection form
+    if request.method != 'POST':
+        return render(request, 'guides/admin/reject_guide.html', {'guide': guide})
     
-    # If not POST, show the rejection form
-    return render(request, 'guides/admin/reject_guide.html', {'guide': guide})
+    # For POST requests, delegate to moderation view
+    response = moderation_reject_guide(request, guide_id)
+    
+    # Handle custom redirection after successful rejection
+    if next_page == 'admin_guides_panel':
+        return redirect('admin_guides_panel')
+    
+    return response
 
 @login_required
 @user_passes_test(lambda u: u.is_staff)
@@ -108,3 +89,9 @@ def admin_dashboard(request):
     }
     
     return render(request, 'admin/dashboard.html', context)
+
+@staff_member_required
+def admin_guides_panel_view(request):
+    """Admin guides panel that calls the function from guide_views.py"""
+    from tinySteps.views.guides.guide_views import admin_guides_panel_view as guide_admin_panel
+    return guide_admin_panel(request)

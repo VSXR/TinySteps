@@ -4,9 +4,9 @@ from django.utils import timezone
 
 # Ajusta las importaciones según tu estructura
 from tinySteps.models.content.guide_models import Guides_Model
-from tinySteps.services.guides.moderation_service import GuideModerationService
+from tinySteps.services.guides.moderation_service import GuideModeration_Service
 
-class GuideModerationServiceTests(TestCase):
+class GuideModeration_ServiceTests(TestCase):
     """Tests para el servicio de moderación de guías"""
     
     def setUp(self):
@@ -35,7 +35,7 @@ class GuideModerationServiceTests(TestCase):
         )
         
         # Inicializar el servicio
-        self.service = GuideModerationService()
+        self.service = GuideModeration_Service()
     
     def test_get_guide(self):
         """Probar recuperación de guía por ID"""
