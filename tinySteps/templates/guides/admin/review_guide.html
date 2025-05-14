@@ -1,179 +1,234 @@
 {% extends "base.html" %}
+{% load static %}
 {% load i18n %}
+{% load custom_filters %}
 
-{% block title %}{% trans "Guides Review" %}{% endblock %}
+{% block title %}{% trans "Review Guide" %} - {{ guide.title }}{% endblock %}
 
 {% block main_contents %}
 <div class="container-fluid py-4">
-    <h1 class="h3 mb-4">{% trans "Guides Review" %}</h1>
+    <!-- Page Header Component -->
+    {% include "guides/components/page_header.html" with title=_("Review Guide") subtitle=guide.title %}
 
-    <!-- Status Cards -->
-    <div class="row mb-4">
-        <!-- Total Guides Card -->
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-primary shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                {% trans "Total Guides" %}</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ total_count }}</div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-book fa-2x text-gray-300"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Pending Guides Card -->
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-warning shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                {% trans "Pending Guides" %}</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ pending_count }}</div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-clock fa-2x text-gray-300"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Other status cards -->
+    <!-- Back Button -->
+    <div class="mb-5 text-center">
+        <a href="{% url 'admin_guides_panel' %}" class="btn btn-outline-secondary w-50 py-2">
+            <i class="fas fa-arrow-left me-2"></i> {% trans "Back to Guide List" %}
+        </a>
     </div>
 
-    <!-- Filter Tabs -->
-    <div class="card mb-4">
-        <div class="card-header d-flex justify-content-between align-items-center">
-            <h6 class="m-0 font-weight-bold text-primary">{% trans "Guides" %}</h6>
-            
-            <div class="btn-group" role="group">
-                <a href="{% url 'review_guides' %}?status=all" class="btn btn-sm {% if status == 'all' %}btn-primary{% else %}btn-outline-primary{% endif %}">
-                    {% trans "All" %}
-                </a>
-                <a href="{% url 'review_guides' %}?status=pending" class="btn btn-sm {% if status == 'pending' %}btn-primary{% else %}btn-outline-primary{% endif %}">
-                    {% trans "Pending" %}
-                </a>
-                <a href="{% url 'review_guides' %}?status=approved" class="btn btn-sm {% if status == 'approved' %}btn-primary{% else %}btn-outline-primary{% endif %}">
-                    {% trans "Approved" %}
-                </a>
-                <a href="{% url 'review_guides' %}?status=rejected" class="btn btn-sm {% if status == 'rejected' %}btn-primary{% else %}btn-outline-primary{% endif %}">
-                    {% trans "Rejected" %}
-                </a>
+    <div class="row mb-4">
+        {% if guide.status == 'pending' %}
+        <!-- Moderation Actions Card -->
+        <div class="card shadow-sm border-0 rounded-4 mb-4">
+            <div class="card-header bg-light py-3">
+            <h3 class="h5 mb-0">{% trans "Moderation Actions" %}</h3>
+            </div>
+            <div class="card-body">
+            <div class="d-flex flex-column flex-md-row gap-3">
+                <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#approveModal">
+                <i class="fas fa-check me-2"></i> {% trans "Approve Guide" %}
+                </button>
+                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#rejectModal">
+                <i class="fas fa-times me-2"></i> {% trans "Reject Guide" %}
+                </button>
+            </div>
             </div>
         </div>
-        <div class="card-body">
-            <!-- Guide Type Filter -->
-            <div class="mb-3">
-                <div class="btn-group" role="group">
-                    <a href="?status={{ status }}&type=all" class="btn btn-sm {% if guide_type == 'all' %}btn-info{% else %}btn-outline-info{% endif %}">
-                        {% trans "All Types" %}
-                    </a>
-                    <a href="?status={{ status }}&type=parent" class="btn btn-sm {% if guide_type == 'parent' %}btn-info{% else %}btn-outline-info{% endif %}">
-                        {% trans "Parental" %}
-                    </a>
-                    <a href="?status={{ status }}&type=nutrition" class="btn btn-sm {% if guide_type == 'nutrition' %}btn-info{% else %}btn-outline-info{% endif %}">
-                        {% trans "Nutritional" %}
-                    </a>
+        {% endif %}
+
+        <!-- Guide Content Column -->
+        <div class="col-lg-8">
+            {% if guide %}
+            <div class="card shadow-sm border-0 rounded-4 mb-4">
+                <!-- Guide Header -->
+                <div class="card-header bg-light py-3 d-flex justify-content-between align-items-center">
+                    <h2 class="h4 mb-0">{{ guide.title }}</h2>
+                    {% if guide.guide_type == 'parent' %}
+                    <span class="badge bg-primary">{% trans "Parental Guide" %}</span>
+                    {% else %}
+                    <span class="badge bg-success">{% trans "Nutritional Guide" %}</span>
+                    {% endif %}
+                </div>
+                
+                <!-- Guide Content -->
+                <div class="card-body">
+                    {% if guide.image %}
+                    <div class="mb-4 text-center">
+                        <img src="{{ guide.get_image_url }}" alt="{{ guide.title }}" class="img-fluid rounded" style="max-height: 300px; object-fit: contain;">
+                    </div>
+                    {% endif %}
+                    
+                    {% if guide.summary %}
+                    <div class="alert alert-light mb-4">
+                        <h3 class="h6 mb-1">{% trans "Summary" %}</h3>
+                        <p class="mb-0">{{ guide.summary }}</p>
+                    </div>
+                    {% endif %}
+                    
+                    <div class="guide-content mb-4">
+                        <h3 class="h5 mb-3">{% trans "Content" %}</h3>
+                        {{ guide.desc|safe }}
+                    </div>
+                    
+                    {% if guide.tags %}
+                    <div class="mb-4">
+                        <h3 class="h6 mb-2">{% trans "Tags" %}</h3>
+                        <div class="d-flex flex-wrap gap-2">
+                            {% for tag in guide.tags|split_tags %}
+                            <span class="badge bg-light text-dark py-2 px-3">{{ tag }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    <div class="border-top pt-3">
+                        <div class="d-flex align-items-center">
+                            <div class="me-3">
+                                {% if guide.author.profile.get_avatar %}
+                                <img src="{{ guide.author.profile.get_avatar }}" alt="{{ guide.author.username }}" class="rounded-circle" width="40" height="40">
+                                {% else %}
+                                <span class="avatar-placeholder rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center" style="width:40px;height:40px;">
+                                    {{ guide.author.username|first|upper }}
+                                </span>
+                                {% endif %}
+                            </div>
+                            <div>
+                                <p class="mb-0"><strong>{{ guide.author.get_full_name|default:guide.author.username }}</strong></p>
+                                <small class="text-muted">{% trans "Submitted" %}: {{ guide.created_at|date:"d M Y" }}</small>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-
-            <!-- Guides Table -->
-            {% if guides %}
-                <div class="table-responsive">
-                    <table class="table table-bordered table-striped">
-                        <thead>
-                            <tr>
-                                <th>{% trans "Title" %}</th>
-                                <th>{% trans "Type" %}</th>
-                                <th>{% trans "Author" %}</th>
-                                <th>{% trans "Date" %}</th>
-                                <th>{% trans "Actions" %}</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for guide in guides %}
-                            <tr>
-                                <td>{{ guide.title }}</td>
-                                <td>
-                                    {% if guide.guide_type == 'parent' %}
-                                    {% trans "Parenting" %}
-                                    {% else %}
-                                    {% trans "Nutrition" %}
-                                    {% endif %}
-                                </td>
-                                <td>{{ guide.author.get_full_name|default:guide.author.username }}</td>
-                                <td>{{ guide.created_at|date:"d/m/Y" }}</td>
-                                <td>
-                                    <a href="{% url 'guide_detail' guide.id %}" target="_blank" class="btn btn-sm btn-info">
-                                        <i class="fas fa-eye"></i> {% trans "View" %}
-                                    </a>
-                                    {% if guide.status == 'pending' %}
-                                    <a href="{% url 'approve_guide' guide.id %}" class="btn btn-sm btn-success">
-                                        <i class="fas fa-check"></i> {% trans "Approve" %}
-                                    </a>
-                                    <button type="button" class="btn btn-sm btn-danger reject-guide" data-guide-id="{{ guide.id }}" data-toggle="modal" data-target="#rejectModal">
-                                        <i class="fas fa-times"></i> {% trans "Reject" %}
-                                    </button>
-                                    {% endif %}
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
             {% else %}
-                <div class="text-center py-5">
-                    <p>{% trans "No guides at this moment." %}</p>
+            <div class="alert alert-warning">
+                <i class="fas fa-exclamation-triangle me-2"></i>
+                {% trans "Sorry, there was a problem loading the guide content. Please try again or contact support if the issue persists." %}
+            </div>
+            {% endif %}
+        </div>
+        
+        <!-- Sidebar Column -->
+        <div class="col-lg-4">
+            <!-- Status Information -->
+            {% if guide %}
+            <div class="card shadow-sm border-0 rounded-4">
+                <div class="card-header bg-light py-3">
+                    <h3 class="h5 mb-0">{% trans "Guide Information" %}</h3>
                 </div>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            {% trans "Status" %}
+                            <span class="badge {% if guide.status == 'approved' %}bg-success{% elif guide.status == 'pending' %}bg-warning text-dark{% else %}bg-danger{% endif %} rounded-pill">
+                                {% if guide.status == 'approved' %}
+                                    {% trans "Approved" %}
+                                {% elif guide.status == 'pending' %}
+                                    {% trans "Pending" %}
+                                {% else %}
+                                    {% trans "Rejected" %}
+                                {% endif %}
+                            </span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            {% trans "Type" %}
+                            <span class="badge {% if guide.guide_type == 'parent' %}bg-primary{% else %}bg-success{% endif %} rounded-pill">
+                                {% if guide.guide_type == 'parent' %}
+                                    {% trans "Parenting" %}
+                                {% else %}
+                                    {% trans "Nutrition" %}
+                                {% endif %}
+                            </span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            {% trans "Submitted" %}
+                            <span>{{ guide.created_at|date:"d M Y" }}</span>
+                        </li>
+                        {% if guide.approved_at %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            {% trans "Approved" %}
+                            <span>{{ guide.approved_at|date:"d M Y" }}</span>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
             {% endif %}
         </div>
     </div>
 </div>
 
+<!-- Approve Modal -->
+<div class="modal fade" id="approveModal" tabindex="-1" aria-labelledby="approveModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="approveModalLabel">{% trans "Approve Guide" %}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>{% trans "Are you sure you want to approve this guide?" %}</p>
+                <p class="mb-0"><strong>{{ guide.title }}</strong></p>
+                
+                <div class="alert alert-info mt-3">
+                    <i class="fas fa-info-circle me-2"></i>
+                    {% trans "This guide will be published immediately and visible to all users." %}
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans "Cancel" %}</button>
+                <a href="{% url 'approve_guide' guide.id %}?next=admin_guides_panel" class="btn btn-success">
+                    <i class="fas fa-check me-2"></i> {% trans "Approve Guide" %}
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Reject Modal -->
-<div class="modal fade" id="rejectModal" tabindex="-1" role="dialog" aria-labelledby="rejectModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
+<div class="modal fade" id="rejectModal" tabindex="-1" aria-labelledby="rejectModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="rejectModalLabel">{% trans "Reject Guide" %}</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form id="rejectForm" method="post" action="">
+            <form action="{% url 'reject_guide' guide.id %}?next=admin_guides_panel" method="post">
                 {% csrf_token %}
                 <div class="modal-body">
-                    <div class="form-group">
-                        <label for="rejection_reason">{% trans "Rejection Reason" %}</label>
-                        <textarea id="rejection_reason" name="rejection_reason" class="form-control" required></textarea>
+                    <p>{% trans "Please provide a reason for rejecting this guide:" %}</p>
+                    <p class="mb-3"><strong>{{ guide.title }}</strong></p>
+                    
+                    <div class="mb-3">
+                        <label for="rejection_reason" class="form-label">{% trans "Rejection Reason" %}*</label>
+                        <textarea id="rejection_reason" name="rejection_reason" class="form-control" rows="5" required></textarea>
+                        <small class="text-muted">{% trans "This message will be sent to the author." %}</small>
+                    </div>
+                    
+                    <div class="alert alert-warning">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        {% trans "Rejecting this guide will send a notification to the author with your explanation." %}
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans "Cancel" %}</button>
-                    <button type="submit" class="btn btn-danger">{% trans "Reject Guide" %}</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans "Cancel" %}</button>
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fas fa-times me-2"></i> {% trans "Reject Guide" %}
+                    </button>
                 </div>
             </form>
         </div>
     </div>
 </div>
-
 {% endblock main_contents %}
 
 {% block extra_js %}
 <script>
+    // Additional JavaScript for the modals
     $(document).ready(function() {
-        // Setup reject modal
-        $('.reject-guide').click(function() {
-            var guideId = $(this).data('guide-id');
-            $('#rejectForm').attr('action', '{% url "reject_guide" 0 %}'.replace('0', guideId));
-        });
+        // Initialize Bootstrap tooltips if needed
+        $('[data-bs-toggle="tooltip"]').tooltip();
     });
 </script>
 {% endblock %}

@@ -184,15 +184,10 @@ class Guides_Model(Guide_Interface, CommentableMixin):
         return reverse(f'{self.guide_type}_guide_details', kwargs={'pk': self.pk})
     
     def get_image_url(self):
-        """Get the URL of the guide's image, or a default if none exists"""
+        """Return the image URL or a default image if not available"""
         if self.image and hasattr(self.image, 'url'):
             return self.image.url
-            
-        if self.guide_type == 'nutrition':
-            return static('res/img/others/nutrition_guide.jpg')
-        else:  # parent
-            return static('res/img/others/parent_guide.jpg')
-        
+        return static('res/img/others/default.jpg')
     @property
     def predefined_tags(self):
         return self.PREDEFINED_TAGS.get(self.guide_type, [])

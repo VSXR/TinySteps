@@ -61,3 +61,11 @@ def trim(value):
     if value:
         return value.strip()
     return ""
+
+@register.filter
+@stringfilter
+def split_tags(value):
+    """Split a comma-separated tag string into a list of individual tags."""
+    if value:
+        return [tag.strip() for tag in value.split(',') if tag.strip()]
+    return []

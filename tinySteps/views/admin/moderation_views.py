@@ -56,23 +56,30 @@ def review_guides(request):
 @staff_member_required
 def review_guide(request, guide_id):
     """View a specific guide for review"""
-    guide = get_object_or_404(Guides_Model, pk=guide_id)
-    
-    related_guides = []
     try:
-        # Get related guides directly
-        related_guides = Guides_Model.objects.filter(
-            guide_type=guide.guide_type, 
-            status='approved'
-        ).exclude(id=guide.id).order_by('-created_at')[:3]
+        guide = get_object_or_404(Guides_Model, pk=guide_id)
+        print(f"Retrieved guide: {guide.id} - '{guide.title}', content length: {len(guide.desc)}")
+        
+        related_guides = []
+        try:
+            related_guides = Guides_Model.objects.filter(
+                guide_type=guide.guide_type, 
+                status='approved'
+            ).exclude(id=guide.id).order_by('-created_at')[:3]
+        except Exception as e:
+            logger.warning(f"Error retrieving related guides: {e}")
+        
+        context = {
+            'guide': guide,
+            'related_guides': related_guides,
+            'title': _("Review Guide"),
+        }
+        
+        return render(request, 'guides/admin/review_guide.html', context)
     except Exception as e:
-        logger.warning(f"Error retrieving related guides: {e}")
-    
-    return render(request, 'guides/admin/review_guide.html', {
-        'guide': guide,
-        'related_guides': related_guides,
-        'title': _("Review Guide"),
-    })
+        logger.error(f"Error in review_guide: {str(e)}")
+        messages.error(request, _("An error occurred while loading the guide for review"))
+        return redirect('admin_guides_panel')
 
 @staff_member_required
 def approve_guide(request, guide_id):
