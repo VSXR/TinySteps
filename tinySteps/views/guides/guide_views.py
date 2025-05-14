@@ -48,57 +48,107 @@ def guides_page(request):
     return render(request, 'guides/index.html', context)
 
 def guide_list_view(request, guide_type):
-    """View for displaying all guides of a specific type with pagination"""
+    """Generic view for guide listings"""
     try:
         service = GuideService_Factory.create_service(guide_type)
         if not service:
-            raise ValueError(_("Invalid guide type."))
+            messages.error(request, _(f"Invalid guide type: {guide_type}"))
+            return redirect('guides')
         
-        template = view_helper.get_template(guide_type, 'list')
+        print(f"guide_type: {guide_type}")
         
-        # Get all guides without limit by passing None
-        all_guides = service.get_recent_guides(count=None)
-        
-        # Add pagination - 9 guides per page
-        page = request.GET.get('page', 1)
-        paginator = Paginator(all_guides, 9)  
+        show_all = request.GET.get('show_all') == 'true'
+        category_id = request.GET.get('category')
+        age_group = request.GET.get('age_group')
+        sort_by = request.GET.get('sort', 'newest')
         
         try:
-            guides = paginator.page(page)
-        except PageNotAnInteger:
-            guides = paginator.page(1)
-        except EmptyPage:
-            guides = paginator.page(paginator.num_pages)
-        
-        # Build context with necessary data
-        context = {
-            'guides': guides,
-            'page_obj': guides,  # For pagination template
-            'guide_type': guide_type,
-            'view_type': 'list',
-            'submit_guide_url': '/guides/submit/',
-            'section_type': guide_type
-        }
-        
-        # Build query string for pagination links
-        query_params = ''
-        for key, value in request.GET.items():
-            if key != 'page':
-                query_params += f'&{key}={value}'
-        
-        if query_params:
-            context['query_params'] = query_params
-        
-        context = view_helper.enhance_context(context, guide_type, request)
-        return render(request, template, context)
-        
+            # Get guides based on filters, handling the approval status properly
+            try:
+                # Try with only_approved parameter if service supports it
+                all_guides = service.get_all_guides(only_approved=True)
+            except TypeError:
+                # Fallback if the service doesn't support the parameter
+                all_guides = service.get_all_guides()
+                
+                # Check which field is used for approval status
+                model_fields = [f.name for f in all_guides.model._meta.get_fields()]
+                
+                # Filter based on the available fields
+                if 'status' in model_fields:
+                    # Assuming 'approved' is a valid status value
+                    all_guides = all_guides.filter(status='approved')
+                elif 'approved_at' in model_fields:
+                    # If there's an approved_at timestamp field, non-null means approved
+                    all_guides = all_guides.exclude(approved_at__isnull=True)
+                
+            # Rest of the filtering logic remains the same
+            if category_id and hasattr(service, 'filter_by_category'):
+                all_guides = service.filter_by_category(all_guides, category_id)
+            
+            if guide_type == 'nutrition' and age_group and hasattr(service, 'filter_by_age'):
+                all_guides = service.filter_by_age(all_guides, age_group)
+            
+            # Apply sorting
+            if sort_by == 'oldest':
+                all_guides = all_guides.order_by('created_at')
+            elif sort_by == 'popular' and hasattr(service, 'sort_by_popularity'):
+                all_guides = service.sort_by_popularity(all_guides)
+            else:  # newest by default
+                all_guides = all_guides.order_by('-created_at')
+                
+            # Get categories for filter dropdown
+            categories = service.get_categories() if hasattr(service, 'get_categories') else []
+                
+            # Handle empty results
+            if not all_guides:
+                all_guides = []
+                
+            # Apply pagination
+            paginator = Paginator(all_guides, 9)  # 9 guides per page
+            page = request.GET.get('page', 1)
+            try:
+                guides = paginator.page(page)
+            except (PageNotAnInteger, EmptyPage):
+                guides = paginator.page(1)
+                
+            # Build context
+            context = {
+                'guides': guides,
+                'categories': categories,
+                'section_type': guide_type,
+                'guide_type': guide_type,
+                'view_type': 'list',
+                'show_all': show_all,
+                'current_category': category_id,
+                'current_age_group': age_group,
+                'current_sort': sort_by
+            }
+            
+            # Add query parameters for pagination links
+            query_params = ''
+            for key, value in request.GET.items():
+                if key != 'page':
+                    query_params += f'&{key}={value}'
+            
+            if query_params:
+                context['query_params'] = query_params
+                
+            # Set template path
+            template = f'guides/display/{guide_type}_guide_list.html'
+            print(f"Using template: {template}")
+            
+            # Enhance context with additional data
+            context = view_helper.enhance_context(context, guide_type, request)
+            return render(request, template, context)
+        except Exception as e:
+            print(f"Error in guide_list_view: {str(e)}")
+            messages.error(request, str(e))
+            return redirect('guides')
     except ValueError as e:
         messages.error(request, str(e))
         return redirect('guides')
-    except Exception as e:
-        messages.error(request, _("An error occurred while loading guides"))
-        return redirect('guides')
-    
+
 def guide_detail_view(request, pk, guide_type=None):
     """View for displaying a specific guide's details"""
     try:

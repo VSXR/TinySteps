@@ -5,34 +5,64 @@
 
 {% block title %}{% trans "Nutrition Guides - Tiny Steps" %}{% endblock %}
 
-{% block extra_filters %}
-<div class="col-md-3">
-    <label for="category" class="form-label">{% trans "Category" %}</label>
-    <select class="form-select" id="category" name="category">
-        <option value="">{% trans "All Categories" %}</option>
-        {% for category in categories %}
-        {% endfor %}
-    </select>
-</div>
-<div class="col-md-3">
-    <label for="age_group" class="form-label">{% trans "Age Group" %}</label>
-    <select class="form-select" id="age_group" name="age_group">
-        <option value="">{% trans "All Ages" %}</option>
-        <option value="0-6" {% if request.GET.age_group == '0-6' %}selected{% endif %}>0-6 {% trans "months" %}</option>
-        <option value="6-12" {% if request.GET.age_group == '6-12' %}selected{% endif %}>6-12 {% trans "months" %}</option>
-        <option value="1-3" {% if request.GET.age_group == '1-3' %}selected{% endif %}>1-3 {% trans "years" %}</option>
-        <option value="3+" {% if request.GET.age_group == '3+' %}selected{% endif %}>3+ {% trans "years" %}</option>
-    </select>
-</div>
+{% block filters %}
+    {% if categories %}
+    <div class="container mb-4">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-light">
+                <h3 class="h5 mb-0">{% trans "Filter Guides" %}</h3>
+            </div>
+            <div class="card-body">
+                <form id="filter-form" class="row g-3">
+                    <div class="col-md-3 mb-3">
+                        <label for="category" class="form-label">{% trans "Category" %}</label>
+                        <select class="form-select" id="category" name="category">
+                            <option value="">{% trans "All Categories" %}</option>
+                            {% for category in categories %}
+                                <option value="{{ category.id }}" {% if request.GET.category|default:'' == category.id|stringformat:"s" %}selected{% endif %}>
+                                    {{ category.name }} {% if category.count %}({{ category.count }}){% endif %}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="col-md-3 mb-3">
+                        <label for="age_group" class="form-label">{% trans "Age Group" %}</label>
+                        <select class="form-select" id="age_group" name="age_group">
+                            <option value="">{% trans "All Ages" %}</option>
+                            <option value="0-6" {% if request.GET.age_group == '0-6' %}selected{% endif %}>0-6 {% trans "months" %}</option>
+                            <option value="6-12" {% if request.GET.age_group == '6-12' %}selected{% endif %}>6-12 {% trans "months" %}</option>
+                            <option value="1-3" {% if request.GET.age_group == '1-3' %}selected{% endif %}>1-3 {% trans "years" %}</option>
+                            <option value="3+" {% if request.GET.age_group == '3+' %}selected{% endif %}>3+ {% trans "years" %}</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-3 mb-3">
+                        <label for="sort" class="form-label">{% trans "Sort By" %}</label>
+                        <select class="form-select" id="sort" name="sort">
+                            <option value="newest" {% if request.GET.sort == 'newest' or not request.GET.sort %}selected{% endif %}>{% trans "Newest First" %}</option>
+                            <option value="oldest" {% if request.GET.sort == 'oldest' %}selected{% endif %}>{% trans "Oldest First" %}</option>
+                            <option value="popular" {% if request.GET.sort == 'popular' %}selected{% endif %}>{% trans "Most Popular" %}</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-3 mb-3">
+                        <label class="form-label d-block">&nbsp;</label>
+                        <button type="submit" class="btn btn-success w-100">
+                            <i class="fa-solid fa-filter me-2"></i>{% trans "Apply Filters" %}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    {% endif %}
 {% endblock %}
 
-<!-- Debugging info - remove after fixing -->
-<div class="alert alert-info">
-    <p>Total guides: {{ guides.paginator.count }}</p>
-    <p>Current page: {{ page_obj.number }}</p>
-    <p>Total pages: {{ page_obj.paginator.num_pages }}</p>
+{% block after_nutrition_guides %}
+{% if guides.has_other_pages %}
+<div class="card-footer bg-white py-3">
+    {% include "guides/components/pagination.html" with page_obj=guides %}
 </div>
-
-{% block after_guides %}
-    {% include "guides/components/pagination.html" %}
+{% endif %}
 {% endblock %}

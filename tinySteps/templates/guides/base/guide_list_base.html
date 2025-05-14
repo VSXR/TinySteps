@@ -4,7 +4,13 @@
 {% load custom_filters %}
 
 {% block title %}
-    {% trans "Guides and Resources - Tiny Steps" %}
+    {% if section_type == 'parent' %}
+        {% trans "Parenting Guides - Tiny Steps" %}
+    {% elif section_type == 'nutrition' %}
+        {% trans "Nutrition Guides - Tiny Steps" %}
+    {% else %}
+        {% trans "Guides and Resources - Tiny Steps" %}
+    {% endif %}
 {% endblock %}
 
 {% block main_contents %}
@@ -14,17 +20,43 @@
         <div class="mb-5 position-relative rounded-4 overflow-hidden">
             <div class="bg-primary bg-opacity-10 p-5">
                 <div class="text-center">
-                    <h1 class="display-5 fw-bold mb-2">{% trans "Guides and Resources" %}</h1>
-                    <p class="lead text-muted">{% trans "Expert advice and tools to support your parenting journey" %}</p>
+                    <h1 class="display-5 fw-bold mb-2">
+                        {% if section_type == 'parent' %}
+                            {% trans "Parenting Guides" %}
+                        {% elif section_type == 'nutrition' %}
+                            {% trans "Nutrition Guides" %}
+                        {% else %}
+                            {% trans "Guides and Resources" %}
+                        {% endif %}
+                    </h1>
+                    <p class="lead text-muted">
+                        {% if section_type == 'parent' %}
+                            {% trans "Expert parenting advice to support your journey" %}
+                        {% elif section_type == 'nutrition' %}
+                            {% trans "Helpful nutrition resources for your child's development" %}
+                        {% else %}
+                            {% trans "Expert advice and tools to support your parenting journey" %}
+                        {% endif %}
+                    </p>
                     
                     <!-- Submit Guide Buttons -->
                     <div class="mt-4 d-flex flex-column flex-sm-row justify-content-center gap-3">
-                        <a href="{% url 'submit_guide' %}?type=parent" class="btn btn-primary btn-lg rounded-pill">
-                            <i class="fa-solid fa-pen-to-square me-2" aria-hidden="true"></i>{% trans "Submit Parenting Guide" %}
-                        </a>
-                        <a href="{% url 'submit_guide' %}?type=nutrition" class="btn btn-success btn-lg rounded-pill">
-                            <i class="fa-solid fa-apple-whole me-2" aria-hidden="true"></i>{% trans "Submit Nutrition Guide" %}
-                        </a>
+                        {% if section_type == 'nutrition' %}
+                            <a href="{% url 'submit_guide' %}?type=nutrition" class="btn btn-success btn-lg rounded-pill">
+                                <i class="fa-solid fa-apple-whole me-2" aria-hidden="true"></i>{% trans "Submit Nutrition Guide" %}
+                            </a>
+                        {% elif section_type == 'parent' %}
+                            <a href="{% url 'submit_guide' %}?type=parent" class="btn btn-primary btn-lg rounded-pill">
+                                <i class="fa-solid fa-pen-to-square me-2" aria-hidden="true"></i>{% trans "Submit Parenting Guide" %}
+                            </a>
+                        {% else %}
+                            <a href="{% url 'submit_guide' %}?type=parent" class="btn btn-primary btn-lg rounded-pill">
+                                <i class="fa-solid fa-pen-to-square me-2" aria-hidden="true"></i>{% trans "Submit Parenting Guide" %}
+                            </a>
+                            <a href="{% url 'submit_guide' %}?type=nutrition" class="btn btn-success btn-lg rounded-pill">
+                                <i class="fa-solid fa-apple-whole me-2" aria-hidden="true"></i>{% trans "Submit Nutrition Guide" %}
+                            </a>
+                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -66,7 +98,64 @@
                 <section class="mb-4">
                     <div class="row justify-content-center">
                         <div class="col-10 col-md-10 col-lg-10 col-xl-9 col-xxl-8 mx-auto">
+                            {% if section_type == 'parent' %}
                             <!-- Parent Guides -->
+                            <div class="card border-0 shadow-sm mb-5">
+                                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                                    <h2 class="h4 mb-0">{% trans "Parenting Guides" %}</h2>
+                                </div>
+                                <div class="card-body p-4">
+                                    <div class="row g-4">
+                                        {% for guide in guides %}
+                                            <div class="col-md-6 col-lg-4">
+                                                {% include "guides/components/guide_card.html" with guide=guide show_author=True %}
+                                            </div>
+                                        {% empty %}
+                                            <div class="col-12">
+                                                <div class="alert alert-info">
+                                                    {% trans "No parenting guides available yet." %}
+                                                </div>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                
+                                {% block after_parent_guides %}
+                                    <!-- This will be overridden by child templates -->
+                                {% endblock %}
+                            </div>
+                            {% endif %}
+                            
+                            {% if section_type == 'nutrition' %}
+                            <!-- Nutrition Guides -->
+                            <div class="card border-0 shadow-sm">
+                                <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+                                    <h2 class="h4 mb-0">{% trans "Nutrition Guides" %}</h2>
+                                </div>
+                                <div class="card-body p-4">
+                                    <div class="row g-4">
+                                        {% for guide in guides %}
+                                            <div class="col-md-6 col-lg-4">
+                                                {% include "guides/components/guide_card.html" with guide=guide show_author=True %}
+                                            </div>
+                                        {% empty %}
+                                            <div class="col-12">
+                                                <div class="alert alert-info">
+                                                    {% trans "No nutrition guides available yet." %}
+                                                </div>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                
+                                {% block after_nutrition_guides %}
+                                    <!-- This will be overridden by child templates -->
+                                {% endblock %}
+                            </div>
+                            {% endif %}
+                            
+                            {% if not section_type or section_type == 'index' %}
+                            <!-- All Guides when on index page -->
                             <div class="card border-0 shadow-sm mb-5">
                                 <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
                                     <h2 class="h4 mb-0">{% trans "Parenting Guides" %}</h2>
@@ -89,17 +178,12 @@
                                         {% endfor %}
                                     </div>
                                 </div>
-                                
-                                {% block after_parent_guides %}
-                                    <!-- This will be overridden by child templates -->
-                                {% endblock %}
                             </div>
                             
-                            <!-- Nutrition Guides -->
                             <div class="card border-0 shadow-sm">
                                 <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
                                     <h2 class="h4 mb-0">{% trans "Nutrition Guides" %}</h2>
-                                    <a href="{% url 'nutrition_guides' %}" class="btn btn-sm btn-outline-light">
+                                    <a href="{% url 'nutrition_guides' %}?show_all=true" class="btn btn-sm btn-outline-light">
                                         {% trans "View All" %} <i class="bi bi-arrow-right ms-1" aria-hidden="true"></i>
                                     </a>
                                 </div>
@@ -118,17 +202,10 @@
                                         {% endfor %}
                                     </div>
                                 </div>
-                                
-                                {% block after_nutrition_guides %}
-                                    <!-- This will be overridden by child templates -->
-                                {% endblock %}
                             </div>
+                            {% endif %}
                         </div>
                     </div>
-                    
-                    {% block after_guides %}
-                        <!-- This will be overridden by child templates for general pagination -->
-                    {% endblock %}
                 </section>
             </div>
         </div>
