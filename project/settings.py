@@ -39,8 +39,9 @@ ALLOWED_HOSTS = (
 # ---------------------------------------------------------------
 CSRF_TRUSTED_ORIGINS = [
     'http://localhost:8000',
+    'https://tinysteps-webapp-gwgkf2e6e4dqduh9.spaincentral-01.azurewebsites.net/',
     'https://tinysteps-6tb4.onrender.com',
-    'https://tinysteps-django.azurewebsites.net',
+    
 ]
 
 if not DEBUG:
@@ -136,14 +137,16 @@ TEMPLATES = [
 # ---------------------------------------------------------------
 db_host = os.environ.get('DB_HOST')
 can_connect_to_db = False
+
 if db_host:
     try:
         socket.gethostbyname(db_host)
         can_connect_to_db = True
     except socket.gaierror:
-        pass
+        can_connect_to_db = False
 
 if DEBUG or not can_connect_to_db:
+    # Development database (SQLite)
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
@@ -151,20 +154,21 @@ if DEBUG or not can_connect_to_db:
         }
     }
 else:
+    # Production database (PostgreSQL)
     DATABASES = {
-        'default': dj_database_url.parse(
-            os.environ.get('DATABASE_URL', ''),
-            conn_max_age=600,
-            default={
-                'ENGINE': 'django.db.backends.postgresql',
-                'NAME': os.environ.get('DB_NAME'),
-                'USER': os.environ.get('DB_USER'),
-                'PASSWORD': os.environ.get('DB_PASSWORD'),
-                'HOST': db_host,
-                'PORT': os.environ.get('DB_PORT', '5432'),
-                'CONN_MAX_AGE': 60,
-            }
-        )
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': os.environ.get('DB_NAME'),
+            'USER': os.environ.get('DB_USER'),
+            'PASSWORD': os.environ.get('DB_PASSWORD'),
+            'HOST': db_host,
+            'PORT': os.environ.get('DB_PORT', '5432'),
+            'OPTIONS': {
+                'sslmode': 'require',
+                'sslrootcert': 'Microsoft RSA Root Certificate Authority 2017.crt',
+            },
+            'CONN_MAX_AGE': 60,  # Keep connections alive for 60 seconds
+        }
     }
 
 # ---------------------------------------------------------------
